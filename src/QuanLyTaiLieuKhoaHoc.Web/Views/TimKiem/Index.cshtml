@@ -2,232 +2,234 @@
     ViewData["Title"] = "Tìm kiếm Tài liệu";
 }
 
-<div class="page-header mb-4">
-    <div class="row align-items-center">
-        <div class="col">
-            <h1 class="page-title">
-                <i class="fas fa-search me-3"></i>Tìm kiếm Tài liệu
-            </h1>
-            <p class="page-subtitle">Tìm kiếm tài liệu theo nhiều tiêu chí khác nhau</p>
-        </div>
-        <div class="col-auto">
-            <a asp-action="Advanced" class="btn btn-outline-primary">
-                <i class="fas fa-cogs me-2"></i>Tìm kiếm Nâng cao
-            </a>
+<div class="container py-4">
+    <div class="page-header mb-4">
+        <div class="row align-items-center">
+            <div class="col">
+                <h1 class="page-title">
+                    <i class="fas fa-search me-3"></i>Tìm kiếm Tài liệu
+                </h1>
+                <p class="page-subtitle">Tìm kiếm tài liệu theo nhiều tiêu chí khác nhau</p>
+            </div>
+            <div class="col-auto">
+                <a asp-action="Advanced" class="btn btn-outline-primary">
+                    <i class="fas fa-cogs me-2"></i>Tìm kiếm Nâng cao
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Quick Search Section -->
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-bolt me-2"></i>Tìm kiếm Nhanh
-        </h5>
-    </div>
-    <div class="card-body">
-        <form asp-action="Results" method="get" class="search-form">
-            <div class="row g-3">
-                <div class="col-md-8">
-                    <div class="search-input-group">
-                        <div class="form-floating">
-                            <input type="text" class="form-control form-control-lg" id="quickSearch" name="query" 
-                                   placeholder="Nhập từ khóa tìm kiếm..." autocomplete="off">
-                            <label for="quickSearch">
-                                <i class="fas fa-search me-2"></i>Từ khóa, tên tài liệu, tác giả...
-                            </label>
-                        </div>
-                        <div id="searchSuggestions" class="search-suggestions"></div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="form-floating">
-                        <select class="form-select form-select-lg" name="type">
-                            <option value="">Tất cả</option>
-                            <option value="article">Bài báo</option>
-                            <option value="thesis">Đề tài</option>
-                            <option value="textbook">Giáo trình</option>
-                        </select>
-                        <label>Loại tài liệu</label>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary btn-lg h-100 w-100">
-                        <i class="fas fa-search me-2"></i>Tìm kiếm
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Popular Searches -->
-<div class="row mb-4">
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-header">
-                <h6 class="card-title mb-0">
-                    <i class="fas fa-fire me-2"></i>Từ khóa phổ biến
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="popular-tags">
-                    <a href="#" class="badge bg-primary-soft text-primary me-2 mb-2">Machine Learning</a>
-                    <a href="#" class="badge bg-success-soft text-success me-2 mb-2">Trí tuệ nhân tạo</a>
-                    <a href="#" class="badge bg-info-soft text-info me-2 mb-2">Khoa học dữ liệu</a>
-                    <a href="#" class="badge bg-warning-soft text-warning me-2 mb-2">Blockchain</a>
-                    <a href="#" class="badge bg-danger-soft text-danger me-2 mb-2">Internet of Things</a>
-                    <a href="#" class="badge bg-secondary-soft text-secondary me-2 mb-2">Cloud Computing</a>
-                    <a href="#" class="badge bg-primary-soft text-primary me-2 mb-2">Cyber Security</a>
-                    <a href="#" class="badge bg-success-soft text-success me-2 mb-2">Big Data</a>
-                </div>
-            </div>
+    <!-- Quick Search Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-bolt me-2"></i>Tìm kiếm Nhanh
+            </h5>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="card h-100">
-            <div class="card-header">
-                <h6 class="card-title mb-0">
-                    <i class="fas fa-star me-2"></i>Tài liệu được quan tâm
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="trending-docs">
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <div class="trending-item d-flex align-items-center mb-2">
-                            <span class="trending-rank me-3 text-muted">#@i</span>
-                            <div class="flex-grow-1">
-                                <a href="#" class="text-decoration-none fw-medium">
-                                    Nghiên cứu ứng dụng AI trong giáo dục @i
-                                </a>
-                                <div class="small text-muted">234 lượt xem tuần này</div>
+        <div class="card-body">
+            <form asp-action="Results" method="get" class="search-form">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <div class="search-input-group">
+                            <div class="form-floating">
+                                <input type="text" class="form-control form-control-lg" id="quickSearch" name="query"
+                                    placeholder="Nhập từ khóa tìm kiếm..." autocomplete="off">
+                                <label for="quickSearch">
+                                    <i class="fas fa-search me-2"></i>Từ khóa, tên tài liệu, tác giả...
+                                </label>
                             </div>
+                            <div id="searchSuggestions" class="search-suggestions"></div>
                         </div>
-                    }
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-floating">
+                            <select class="form-select form-select-lg" name="type">
+                                <option value="">Tất cả</option>
+                                <option value="article">Bài báo</option>
+                                <option value="thesis">Đề tài</option>
+                                <option value="textbook">Giáo trình</option>
+                            </select>
+                            <label>Loại tài liệu</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary btn-lg h-100 w-100">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popular Searches -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-fire me-2"></i>Từ khóa phổ biến
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="popular-tags">
+                        <a href="#" class="badge bg-primary-soft text-primary me-2 mb-2">Machine Learning</a>
+                        <a href="#" class="badge bg-success-soft text-success me-2 mb-2">Trí tuệ nhân tạo</a>
+                        <a href="#" class="badge bg-info-soft text-info me-2 mb-2">Khoa học dữ liệu</a>
+                        <a href="#" class="badge bg-warning-soft text-warning me-2 mb-2">Blockchain</a>
+                        <a href="#" class="badge bg-danger-soft text-danger me-2 mb-2">Internet of Things</a>
+                        <a href="#" class="badge bg-secondary-soft text-secondary me-2 mb-2">Cloud Computing</a>
+                        <a href="#" class="badge bg-primary-soft text-primary me-2 mb-2">Cyber Security</a>
+                        <a href="#" class="badge bg-success-soft text-success me-2 mb-2">Big Data</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-star me-2"></i>Tài liệu được quan tâm
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="trending-docs">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            <div class="trending-item d-flex align-items-center mb-2">
+                                <span class="trending-rank me-3 text-muted">#@i</span>
+                                <div class="flex-grow-1">
+                                    <a href="#" class="text-decoration-none fw-medium">
+                                        Nghiên cứu ứng dụng AI trong giáo dục @i
+                                    </a>
+                                    <div class="small text-muted">234 lượt xem tuần này</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Search Categories -->
-<div class="card">
-    <div class="card-header">
-        <h5 class="card-title mb-0">
-            <i class="fas fa-sitemap me-2"></i>Tìm kiếm theo Chuyên ngành
-        </h5>
-    </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-3 mb-3">
-                <div class="category-card text-center p-3 border rounded">
-                    <div class="category-icon mb-2">
-                        <i class="fas fa-laptop-code text-primary" style="font-size: 2rem;"></i>
+    <!-- Search Categories -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-sitemap me-2"></i>Tìm kiếm theo Chuyên ngành
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="category-card text-center p-3 border rounded">
+                        <div class="category-icon mb-2">
+                            <i class="fas fa-laptop-code text-primary" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="fw-bold">Khoa học Máy tính</h6>
+                        <p class="text-muted small mb-2">456 tài liệu</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
                     </div>
-                    <h6 class="fw-bold">Khoa học Máy tính</h6>
-                    <p class="text-muted small mb-2">456 tài liệu</p>
-                    <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
                 </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="category-card text-center p-3 border rounded">
-                    <div class="category-icon mb-2">
-                        <i class="fas fa-calculator text-success" style="font-size: 2rem;"></i>
+                <div class="col-md-3 mb-3">
+                    <div class="category-card text-center p-3 border rounded">
+                        <div class="category-icon mb-2">
+                            <i class="fas fa-calculator text-success" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="fw-bold">Toán học</h6>
+                        <p class="text-muted small mb-2">234 tài liệu</p>
+                        <a href="#" class="btn btn-outline-success btn-sm">Xem tất cả</a>
                     </div>
-                    <h6 class="fw-bold">Toán học</h6>
-                    <p class="text-muted small mb-2">234 tài liệu</p>
-                    <a href="#" class="btn btn-outline-success btn-sm">Xem tất cả</a>
                 </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="category-card text-center p-3 border rounded">
-                    <div class="category-icon mb-2">
-                        <i class="fas fa-atom text-info" style="font-size: 2rem;"></i>
+                <div class="col-md-3 mb-3">
+                    <div class="category-card text-center p-3 border rounded">
+                        <div class="category-icon mb-2">
+                            <i class="fas fa-atom text-info" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="fw-bold">Vật lý</h6>
+                        <p class="text-muted small mb-2">189 tài liệu</p>
+                        <a href="#" class="btn btn-outline-info btn-sm">Xem tất cả</a>
                     </div>
-                    <h6 class="fw-bold">Vật lý</h6>
-                    <p class="text-muted small mb-2">189 tài liệu</p>
-                    <a href="#" class="btn btn-outline-info btn-sm">Xem tất cả</a>
                 </div>
-            </div>
-            <div class="col-md-3 mb-3">
-                <div class="category-card text-center p-3 border rounded">
-                    <div class="category-icon mb-2">
-                        <i class="fas fa-flask text-warning" style="font-size: 2rem;"></i>
+                <div class="col-md-3 mb-3">
+                    <div class="category-card text-center p-3 border rounded">
+                        <div class="category-icon mb-2">
+                            <i class="fas fa-flask text-warning" style="font-size: 2rem;"></i>
+                        </div>
+                        <h6 class="fw-bold">Hóa học</h6>
+                        <p class="text-muted small mb-2">167 tài liệu</p>
+                        <a href="#" class="btn btn-outline-warning btn-sm">Xem tất cả</a>
                     </div>
-                    <h6 class="fw-bold">Hóa học</h6>
-                    <p class="text-muted small mb-2">167 tài liệu</p>
-                    <a href="#" class="btn btn-outline-warning btn-sm">Xem tất cả</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts {
-    <script>
-        $(document).ready(function() {
-            // Auto-suggestion for search
-            $('#quickSearch').on('input', debounce(function() {
-                var query = $(this).val();
-                if (query.length >= 2) {
-                    fetchSuggestions(query);
-                } else {
-                    $('#searchSuggestions').empty().hide();
-                }
-            }, 300));
-
-            // Hide suggestions when clicking outside
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('.search-input-group').length) {
-                    $('#searchSuggestions').hide();
-                }
-            });
-
-            // Popular tag clicks
-            $('.popular-tags .badge').on('click', function(e) {
-                e.preventDefault();
-                var tag = $(this).text();
-                $('#quickSearch').val(tag);
-                $('.search-form').submit();
-            });
-
-            // Category card animations
-            $('.category-card').hover(
-                function() {
-                    $(this).addClass('shadow-sm border-primary');
-                },
-                function() {
-                    $(this).removeClass('shadow-sm border-primary');
-                }
-            );
-        });
-
-        function fetchSuggestions(query) {
-            $.get('/TimKiem/Suggestions', { term: query })
-                .done(function(data) {
-                    var html = '';
-                    if (data && data.length > 0) {
-                        html += '<div class="suggestion-list">';
-                        data.forEach(function(item) {
-                            html += '<div class="suggestion-item">' + item + '</div>';
-                        });
-                        html += '</div>';
+    @section Scripts {
+        <script>
+            $(document).ready(function () {
+                // Auto-suggestion for search
+                $('#quickSearch').on('input', debounce(function () {
+                    var query = $(this).val();
+                    if (query.length >= 2) {
+                        fetchSuggestions(query);
+                    } else {
+                        $('#searchSuggestions').empty().hide();
                     }
-                    $('#searchSuggestions').html(html).show();
+                }, 300));
+
+                // Hide suggestions when clicking outside
+                $(document).on('click', function (e) {
+                    if (!$(e.target).closest('.search-input-group').length) {
+                        $('#searchSuggestions').hide();
+                    }
                 });
-        }
 
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
+                // Popular tag clicks
+                $('.popular-tags .badge').on('click', function (e) {
+                    e.preventDefault();
+                    var tag = $(this).text();
+                    $('#quickSearch').val(tag);
+                    $('.search-form').submit();
+                });
+
+                // Category card animations
+                $('.category-card').hover(
+                    function () {
+                        $(this).addClass('shadow-sm border-primary');
+                    },
+                    function () {
+                        $(this).removeClass('shadow-sm border-primary');
+                    }
+                );
+            });
+
+            function fetchSuggestions(query) {
+                $.get('/TimKiem/Suggestions', { term: query })
+                    .done(function (data) {
+                        var html = '';
+                        if (data && data.length > 0) {
+                            html += '<div class="suggestion-list">';
+                            data.forEach(function (item) {
+                                html += '<div class="suggestion-item">' + item + '</div>';
+                            });
+                            html += '</div>';
+                        }
+                        $('#searchSuggestions').html(html).show();
+                    });
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
                     clearTimeout(timeout);
-                    func(...args);
+                    timeout = setTimeout(later, wait);
                 };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-    </script>
-}
+            }
+        </script>
+    }
+</div>

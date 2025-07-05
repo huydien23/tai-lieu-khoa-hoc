@@ -5,6 +5,7 @@
 
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -161,18 +162,29 @@
             opacity: 0.9;
         }
 
-        .text-primary { color: #5BA7D9 !important; }
-        .text-primary:hover { color: #2E5A8A !important; }
+        .text-primary {
+            color: #5BA7D9 !important;
+        }
+
+        .text-primary:hover {
+            color: #2E5A8A !important;
+        }
 
         @@keyframes float {
-            0% { transform: translateX(0) translateY(0); }
-            100% { transform: translateX(-50px) translateY(-50px); }
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+
+            100% {
+                transform: translateX(-50px) translateY(-50px);
+            }
         }
 
         @@media (max-width: 991.98px) {
             .auth-container {
                 max-width: 500px;
             }
+
             .auth-left {
                 display: none;
             }
@@ -182,6 +194,7 @@
             body {
                 padding: 0.5rem;
             }
+
             .auth-right {
                 padding: 1.5rem;
             }
@@ -200,7 +213,7 @@
                     </div>
                     <h3 class="fw-bold mb-3">Hệ thống Quản lý<br>Tài liệu Khoa học</h3>
                     <p class="mb-4 opacity-75">Nền tảng hiện đại cho việc quản lý và tìm kiếm tài liệu khoa học</p>
-                    
+
                     <div class="feature-cards">
                         <div class="feature-card">
                             <i class="fas fa-search"></i>
@@ -232,12 +245,14 @@
                     <!-- Login Form -->
                     <form id="loginForm" method="post" asp-action="Login">
                         <div class="form-floating">
-                            <input type="text" class="form-control" id="username" name="Username" placeholder="Tên đăng nhập" required>
+                            <input type="text" class="form-control" id="username" name="Username"
+                                placeholder="Tên đăng nhập" required>
                             <label for="username"><i class="fas fa-user me-2"></i>Tên đăng nhập</label>
                         </div>
 
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="password" name="Password" placeholder="Mật khẩu" required>
+                            <input type="password" class="form-control" id="password" name="Password"
+                                placeholder="Mật khẩu" required>
                             <label for="password"><i class="fas fa-lock me-2"></i>Mật khẩu</label>
                         </div>
 
@@ -290,7 +305,7 @@
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
@@ -307,7 +322,7 @@
 
                 // Add visual feedback
                 $(this).html('<i class="fas fa-spinner fa-spin me-1"></i>Đang đăng nhập...');
-                
+
                 // Auto submit after delay
                 setTimeout(function () {
                     // For demo purposes, redirect based on role
@@ -330,10 +345,10 @@
             // Form submission
             $('#loginForm').on('submit', function (e) {
                 e.preventDefault();
-                
+
                 var username = $('#username').val();
                 var password = $('#password').val();
-                
+
                 if (!username || !password) {
                     alert('Vui lòng nhập đầy đủ thông tin đăng nhập');
                     return false;
@@ -351,4 +366,21 @@
         });
     </script>
 </body>
+
 </html>
+
+
+           
+       
+
+           
+       
+               
+           
+
+               
+           
+
+
+                               
+                               
