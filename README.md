@@ -558,11 +558,11 @@ Cảm ơn các thư viện và tools đã hỗ trợ trong quá trình phát tri
 
 ## 📞 LIÊN HỆ
 
-**📧 Email**: your-email@domain.com  
-**🌐 Website**: https://your-website.com  
-**📱 Phone**: +84 xxx-xxx-xxx  
-**💼 LinkedIn**: linkedin.com/in/your-profile  
-**🐙 GitHub**: github.com/your-username  
+**📧 Email**: nhdiendnc.dev@gmail.com
+**🌐 Website**: https://diendev.netlify.app  
+**📱 Phone**: +84 945700813
+**💼 LinkedIn**: linkedin.com/in/huydien23  
+**🐙 GitHub**: github.com/huydien23 
 
 ---
 
@@ -580,4 +580,4 @@ Cảm ơn các thư viện và tools đã hỗ trợ trong quá trình phát tri
 
 *📝 Cập nhật lần cuối: Tháng 7/2025*  
 *📊 Version: 1.0.0*  
-*👨‍💻 Tác giả: [Tên của bạn]*
+*👨‍💻 Tác giả: [Huy Điền]*

@@ -48,7 +48,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         public IActionResult Register()
         {
+            ViewData["Title"] = "Đăng ký Tài khoản";
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(string username, string email, string password, string confirmPassword, string role = "student")
+        {
+            // TODO: Implement registration logic
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                TempData["ErrorMessage"] = "Vui lòng điền đầy đủ thông tin";
+                return View();
+            }
+
+            if (password != confirmPassword)
+            {
+                TempData["ErrorMessage"] = "Mật khẩu xác nhận không khớp";
+                return View();
+            }
+
+            // Demo: Always success for now
+            TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+            return RedirectToAction("Login");
         }
 
         public IActionResult Logout()
@@ -60,6 +82,52 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         public IActionResult ForgotPassword()
         {
+            ViewData["Title"] = "Quên Mật khẩu";
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(string email)
+        {
+            // TODO: Implement forgot password logic
+            TempData["SuccessMessage"] = "Hướng dẫn đặt lại mật khẩu đã được gửi tới email của bạn";
+            return View();
+        }
+
+        public IActionResult Profile()
+        {
+            ViewData["Title"] = "Thông tin Cá nhân";
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login");
+            }
+            ViewBag.Username = username;
+            return View();
+        }
+
+        public IActionResult ChangePassword()
+        {
+            ViewData["Title"] = "Đổi Mật khẩu";
+            var username = HttpContext.Session.GetString("Username");
+            if (string.IsNullOrEmpty(username))
+            {
+                return RedirectToAction("Login");
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+        {
+            // TODO: Implement change password logic
+            if (newPassword != confirmPassword)
+            {
+                TempData["ErrorMessage"] = "Mật khẩu mới và xác nhận không khớp";
+                return View();
+            }
+
+            TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
             return View();
         }
     }

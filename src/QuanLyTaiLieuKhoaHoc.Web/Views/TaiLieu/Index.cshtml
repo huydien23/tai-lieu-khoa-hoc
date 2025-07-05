@@ -1,0 +1,263 @@
+@{
+    ViewData["Title"] = "Danh sách Tài liệu";
+}
+
+<div class="page-header mb-4">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1 class="page-title">
+                <i class="fas fa-book me-3"></i>Danh sách Tài liệu
+            </h1>
+            <p class="page-subtitle">Quản lý và tìm kiếm tài liệu khoa học</p>
+        </div>
+        <div class="col-auto">
+            @* Check if user is admin/librarian *@
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Thêm Tài liệu
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="card card-body mb-4">
+    <form class="row g-3" method="get">
+        <div class="col-md-4">
+            <div class="form-floating">
+                <input type="text" class="form-control" id="searchQuery" name="query" placeholder="Tìm kiếm..."
+                    value="@ViewBag.Query">
+                <label for="searchQuery"><i class="fas fa-search me-2"></i>Từ khóa</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" id="docType" name="type">
+                    <option value="">Tất cả loại</option>
+                    <option value="article">Bài báo khoa học</option>
+                    <option value="thesis">Đề tài nghiên cứu</option>
+                    <option value="textbook">Giáo trình</option>
+                </select>
+                <label for="docType"><i class="fas fa-file-alt me-2"></i>Loại tài liệu</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">
+                <select class="form-select" id="category" name="category">
+                    <option value="">Tất cả chuyên ngành</option>
+                    <option value="cs">Khoa học máy tính</option>
+                    <option value="math">Toán học</option>
+                    <option value="physics">Vật lý</option>
+                    <option value="chemistry">Hóa học</option>
+                </select>
+                <label for="category"><i class="fas fa-tags me-2"></i>Chuyên ngành</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary h-100 w-100">
+                <i class="fas fa-search me-2"></i>Tìm
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Results Summary -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="results-info">
+        <span class="text-muted">Hiển thị <strong>1-20</strong> trong tổng số <strong>156</strong> tài liệu</span>
+    </div>
+    <div class="view-options">
+        <div class="btn-group" role="group">
+            <input type="radio" class="btn-check" name="viewMode" id="gridView" checked>
+            <label class="btn btn-outline-secondary" for="gridView">
+                <i class="fas fa-th"></i>
+            </label>
+            <input type="radio" class="btn-check" name="viewMode" id="listView">
+            <label class="btn btn-outline-secondary" for="listView">
+                <i class="fas fa-list"></i>
+            </label>
+        </div>
+        <select class="form-select ms-2" style="width: auto; display: inline-block;">
+            <option>Mới nhất</option>
+            <option>Tên A-Z</option>
+            <option>Nhiều lượt xem</option>
+        </select>
+    </div>
+</div>
+
+<!-- Document Grid -->
+<div id="documentsGrid" class="row">
+    <!-- Sample documents - replace with real data -->
+    @for (int i = 1; i <= 12; i++)
+    {
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card document-card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-primary-soft text-primary">Bài báo khoa học</span>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Xem chi tiết</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Chỉnh sửa</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Tải xuống</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Xóa</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h5 class="card-title">
+                        <a asp-action="Details" asp-route-id="@i" class="text-decoration-none">
+                            Nghiên cứu về Machine Learning trong y học @i
+                        </a>
+                    </h5>
+
+                    <p class="card-text text-muted small mb-2">
+                        <i class="fas fa-user me-1"></i>Tác giả: Nguyễn Văn A, Trần Thị B
+                    </p>
+
+                    <p class="card-text text-muted small mb-2">
+                        <i class="fas fa-calendar me-1"></i>Năm xuất bản: 2023
+                    </p>
+
+                    <p class="card-text text-muted small mb-3">
+                        <i class="fas fa-building me-1"></i>Tạp chí: IEEE Computer Science
+                    </p>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="rating">
+                            @{
+                                for (int star = 1; star <= 5; star++)
+                                {
+                                    <i class="fas fa-star @(star <= 4 ? "text-warning" : "text-muted")"></i>
+                                }
+                            }
+                            <span class="ms-1 small text-muted">(4.2)</span>
+                        </div>
+                        <div class="document-stats">
+                            <span class="badge bg-light text-dark me-1">
+                                <i class="fas fa-eye me-1"></i>234
+                            </span>
+                            <span class="badge bg-light text-dark">
+                                <i class="fas fa-download me-1"></i>56
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent">
+                    <div class="row g-2">
+                        <div class="col">
+                            <a asp-action="Details" asp-route-id="@i" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="fas fa-eye me-1"></i>Xem
+                            </a>
+                        </div>
+                        <div class="col">
+                            <button class="btn btn-outline-success btn-sm w-100" data-bs-toggle="modal"
+                                data-bs-target="#borrowModal">
+                                <i class="fas fa-book-reader me-1"></i>Mượn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Pagination -->
+<nav aria-label="Document pagination">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+            <a class="page-link" href="#">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<!-- Borrow Modal -->
+<div class="modal fade" id="borrowModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-book-reader me-2"></i>Mượn Tài liệu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có muốn mượn tài liệu này không?</p>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Thời gian mượn: 14 ngày. Hạn trả: <strong>@DateTime.Now.AddDays(14).ToString("dd/MM/yyyy")</strong>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary">Xác nhận mượn</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // View mode toggle
+            $('input[name="viewMode"]').on('change', function () {
+                if ($(this).attr('id') === 'listView') {
+                    switchToListView();
+                } else {
+                    switchToGridView();
+                }
+            });
+
+            // Search with AJAX
+            $('#searchQuery').on('input', debounce(function () {
+                performSearch();
+            }, 300));
+        });
+
+        function switchToListView() {
+            $('#documentsGrid').removeClass('row').addClass('list-group');
+            $('.document-card').addClass('list-group-item').removeClass('card h-100');
+        }
+
+        function switchToGridView() {
+            $('#documentsGrid').addClass('row').removeClass('list-group');
+            $('.document-card').removeClass('list-group-item').addClass('card h-100');
+        }
+
+        function performSearch() {
+            // TODO: Implement AJAX search
+            console.log('Performing search...');
+        }
+
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+}

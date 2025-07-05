@@ -1,0 +1,188 @@
+@{
+    ViewData["Title"] = "Đăng ký Tài khoản";
+}
+
+<div class="auth-container">
+    <div class="container-fluid">
+        <div class="row min-vh-100">
+            <!-- Left side - Registration Form -->
+            <div class="col-lg-6 d-flex align-items-center justify-content-center py-5">
+                <div class="auth-form-container">
+                    <div class="text-center mb-4">
+                        <div class="auth-logo mb-3">
+                            <i class="fas fa-user-plus text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h2 class="fw-bold text-primary mb-2">Tạo Tài khoản Mới</h2>
+                        <p class="text-muted">Đăng ký để sử dụng hệ thống quản lý tài liệu</p>
+                    </div>
+
+                    <form asp-action="Register" method="post" class="auth-form" novalidate>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Tên đăng nhập" required>
+                                    <label for="username"><i class="fas fa-user me-2"></i>Tên đăng nhập</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Email"
+                                        required>
+                                    <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="Mật khẩu" required>
+                                    <label for="password"><i class="fas fa-lock me-2"></i>Mật khẩu</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                        name="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+                                    <label for="confirmPassword"><i class="fas fa-lock me-2"></i>Xác nhận mật
+                                        khẩu</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fas fa-user-tag me-2"></i>Vai trò
+                            </label>
+                            <div class="role-selection">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="role" id="student"
+                                        value="student" checked>
+                                    <label class="form-check-label" for="student">
+                                        <i class="fas fa-graduation-cap me-1"></i>Sinh viên
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="role" id="lecturer"
+                                        value="lecturer">
+                                    <label class="form-check-label" for="lecturer">
+                                        <i class="fas fa-chalkboard-teacher me-1"></i>Giảng viên
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                Tôi đồng ý với <a href="#" class="text-primary">Điều khoản sử dụng</a> và <a href="#"
+                                    class="text-primary">Chính sách bảo mật</a>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-user-plus me-2"></i>Tạo Tài khoản
+                        </button>
+
+                        <div class="text-center">
+                            <p class="mb-0">Đã có tài khoản?
+                                <a asp-action="Login" class="text-primary fw-semibold">Đăng nhập ngay</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Right side - Information -->
+            <div class="col-lg-6 auth-side-panel d-none d-lg-flex">
+                <div class="auth-side-content">
+                    <div class="text-center">
+                        <h3 class="text-white fw-bold mb-4">Chào mừng đến với QLTLKH</h3>
+                        <div class="auth-features">
+                            <div class="feature-item mb-4">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <h5 class="text-white mb-2">Thư viện Số</h5>
+                                <p class="text-white-50">Truy cập hàng ngàn tài liệu khoa học chất lượng cao</p>
+                            </div>
+                            <div class="feature-item mb-4">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h5 class="text-white mb-2">Tìm kiếm Thông minh</h5>
+                                <p class="text-white-50">Công cụ tìm kiếm mạnh mẽ với nhiều tiêu chí lọc</p>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon mb-3">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h5 class="text-white mb-2">Báo cáo Chi tiết</h5>
+                                <p class="text-white-50">Thống kê và báo cáo toàn diện về hoạt động</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Form validation
+            $('.auth-form').on('submit', function (e) {
+                var isValid = true;
+                var password = $('#password').val();
+                var confirmPassword = $('#confirmPassword').val();
+
+                // Check password match
+                if (password !== confirmPassword) {
+                    showToast('Mật khẩu xác nhận không khớp', 'error');
+                    e.preventDefault();
+                    isValid = false;
+                }
+
+                // Check password strength
+                if (password.length < 6) {
+                    showToast('Mật khẩu phải có ít nhất 6 ký tự', 'error');
+                    e.preventDefault();
+                    isValid = false;
+                }
+
+                if (isValid) {
+                    showLoading('Đang tạo tài khoản...');
+                }
+            });
+
+            // Password strength indicator
+            $('#password').on('input', function () {
+                var password = $(this).val();
+                var strength = checkPasswordStrength(password);
+                // You can add visual feedback here
+            });
+        });
+
+        function checkPasswordStrength(password) {
+            var strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.match(/[a-z]/)) strength++;
+            if (password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            return strength;
+        }
+    </script>
+}
+
+                                       
+                                       
+                                       
+                                       
+                                       
+                                       
+                                       
+                                      

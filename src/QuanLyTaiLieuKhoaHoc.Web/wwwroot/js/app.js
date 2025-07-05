@@ -1,6 +1,6 @@
 // ===================================
 // HỆ THỐNG QUẢN LÝ TÀI LIỆU KHOA HỌC
-// Custom JavaScript
+// Enhanced Custom JavaScript
 // ===================================
 
 $(document).ready(function () {
@@ -18,6 +18,53 @@ $(document).ready(function () {
   );
   var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl);
+  });
+
+  // Enhanced Navbar Scroll Effect
+  let lastScrollTop = 0;
+  $(window).scroll(function () {
+    const currentScroll = $(this).scrollTop();
+    const navbar = $(".navbar-custom");
+
+    if (currentScroll > 100) {
+      navbar.addClass("scrolled");
+    } else {
+      navbar.removeClass("scrolled");
+    }
+
+    // Hide/show navbar on scroll
+    if (currentScroll > lastScrollTop && currentScroll > 200) {
+      navbar.css("transform", "translateY(-100%)");
+    } else {
+      navbar.css("transform", "translateY(0)");
+    }
+    lastScrollTop = currentScroll;
+  });
+
+  // Card Hover Effects with 3D Transform
+  $(".floating-card").hover(
+    function () {
+      $(this).css("transform", "translateY(-12px) rotateX(5deg) rotateY(5deg)");
+    },
+    function () {
+      $(this).css("transform", "translateY(0) rotateX(0) rotateY(0)");
+    }
+  );
+
+  // Enhanced Loading Animation
+  $(".btn").on("click", function () {
+    const btn = $(this);
+    const originalText = btn.html();
+
+    if (!btn.hasClass("no-loading")) {
+      btn.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang xử lý...');
+      btn.prop("disabled", true);
+
+      setTimeout(() => {
+        btn.html(originalText);
+        btn.prop("disabled", false);
+      }, 2000);
+    }
   });
 
   // Auto-hide alerts after 5 seconds
@@ -41,13 +88,31 @@ $(document).ready(function () {
     }
   });
 
-  // Loading overlay for forms
-  $("form").on("submit", function () {
-    showLoadingOverlay();
+  // Enhanced Form Validation
+  $("form").on("submit", function (e) {
+    const form = $(this);
+    let isValid = true;
+
+    // Check required fields
+    form.find("[required]").each(function () {
+      const field = $(this);
+      if (!field.val().trim()) {
+        field.addClass("is-invalid");
+        isValid = false;
+      } else {
+        field.removeClass("is-invalid");
+      }
+    });
+
+    if (!isValid) {
+      e.preventDefault();
+      showToast("Vui lòng điền đầy đủ thông tin bắt buộc!", "error");
+    }
   });
 
-  // Search suggestions (placeholder - to be implemented with backend)
-  $("#quickSearch").on("input", function () {
+  // Real-time Search Suggestions
+  let searchTimeout;
+  $('input[name="query"]').on("input", function () {
     var query = $(this).val();
     if (query.length >= 2) {
       // TODO: Implement search suggestions
