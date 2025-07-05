@@ -3,55 +3,82 @@
    Custom CSS cho giao diện chuyên nghiệp
    =================================== */
 
-/* CSS Variables - Enhanced for Modern UI */
+/* CSS Variables - User's Custom Blue Tone Palette */
 :root {
-    --primary-color: #4f46e5;
-    --primary-dark: #3730a3;
-    --primary-light: #6366f1;
-    --primary-hover: #5b21b6;
+    /* Primary Blues - Exact from user's palette image */
+    --blue-50: #F0F8FE;    /* Lightest blue */
+    --blue-100: #DEEFFB;   /* Very light blue */
+    --blue-200: #C4E5F9;   /* Light blue */
+    --blue-300: #9BD4F5;   /* Medium light blue */
+    --blue-400: #6BBCEF;   /* Medium blue */
+    --blue-500: #49A0E8;   /* Primary blue */
+    --blue-600: #3484DC;   /* Dark blue */
+    --blue-700: #2A6DC6;   /* Darker blue */
+    --blue-800: #295BA4;   /* Very dark blue */
+    --blue-900: #264D82;   /* Darkest blue */
+    --blue-950: #1C304F;   /* Deep blue */
     
-    --secondary-color: #64748b;
-    --secondary-dark: #475569;
-    --secondary-light: #94a3b8;
+    /* Main Color Variables */
+    --primary-color: var(--blue-600);      /* #3484DC */
+    --primary-dark: var(--blue-700);       /* #2A6DC6 */
+    --primary-light: var(--blue-500);      /* #49A0E8 */
+    --primary-lighter: var(--blue-400);    /* #6BBCEF */
+    --primary-lightest: var(--blue-300);   /* #9BD4F5 */
+    --primary-hover: var(--blue-800);      /* #295BA4 */
     
-    --success-color: #059669;
-    --success-light: #10b981;
-    --warning-color: #d97706;
-    --warning-light: #f59e0b;
-    --danger-color: #dc2626;
-    --info-color: #0891b2;
+    /* Secondary Colors */
+    --secondary-color: #64748b;  /* slate-500 */
+    --secondary-dark: #475569;   /* slate-600 */
+    --secondary-light: #94a3b8;  /* slate-400 */
     
-    --text-dark: #111827;
-    --text-medium: #374151;
-    --text-muted: #6b7280;
-    --text-light: #9ca3af;
+    /* Supporting Colors */
+    --success-color: #10b981;    /* emerald-500 */
+    --success-light: #34d399;    /* emerald-400 */
+    --warning-color: #f59e0b;    /* amber-500 */
+    --warning-light: #fbbf24;    /* amber-400 */
+    --danger-color: #ef4444;     /* red-500 */
+    --info-color: var(--blue-500); /* Use blue palette for info */
     
+    /* Text Colors */
+    --text-dark: #111827;        /* gray-900 */
+    --text-medium: #374151;      /* gray-700 */
+    --text-muted: #6b7280;       /* gray-500 */
+    --text-light: #9ca3af;       /* gray-400 */
+    
+    /* Background Colors */
     --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --bg-light: #f3f4f6;
-    --bg-darker: #e5e7eb;
+    --bg-secondary: var(--blue-50);   /* Very light blue background */
+    --bg-light: var(--blue-100);      /* Light blue background */
+    --bg-darker: var(--blue-200);     /* Medium light blue */
     
-    --border-color: #e5e7eb;
-    --border-light: #f3f4f6;
+    /* Border Colors */
+    --border-color: var(--blue-200);  /* Light blue border */
+    --border-light: var(--blue-100);  /* Very light blue border */
     
+    /* Enhanced Shadows */
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     
+    /* Border Radius */
     --border-radius-sm: 6px;
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;
     
+    /* Transitions */
     --transition-fast: all 0.15s ease;
     --transition: all 0.3s ease;
     --transition-slow: all 0.5s ease;
     
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --gradient-modern: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
-    --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+    /* Updated Gradients with User's Blue Theme */
+    --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    --gradient-modern: linear-gradient(135deg, var(--blue-400) 0%, var(--blue-600) 50%, var(--blue-800) 100%);
+    --gradient-card: linear-gradient(145deg, #ffffff 0%, var(--blue-50) 100%);
+    --gradient-hero: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-600) 100%);
+    --gradient-soft: linear-gradient(135deg, var(--blue-100) 0%, var(--blue-200) 100%);
 }
 
 /* Container rộng hơn cho màn hình lớn */
@@ -119,13 +146,12 @@ p {
     color: var(--text-light) !important;
 }
 
-/* Welcome Section - Enhanced Modern Design */
+/* Welcome Section - Clean and Modern */
 .welcome-section {
-    background: var(--gradient-modern);
-    color: white;
+    background: var(--bg-secondary);
     position: relative;
     overflow: hidden;
-    padding: 4rem 0;
+    padding: 4rem 0 3rem;
     margin-bottom: 3rem;
 }
 
@@ -136,8 +162,8 @@ p {
     left: 0;
     right: 0;
     bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-    opacity: 0.1;
+    background: linear-gradient(135deg, var(--blue-100) 0%, var(--blue-50) 100%);
+    opacity: 0.5;
 }
 
 .welcome-section .container {
@@ -146,18 +172,19 @@ p {
 }
 
 .welcome-section h1 {
-    color: white;
-    font-size: 3rem;
-    font-weight: 800;
+    color: var(--text-dark);
+    font-size: 2.5rem;
+    font-weight: 700;
     margin-bottom: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    letter-spacing: -0.02em;
 }
 
 .welcome-section p {
-    font-size: 1.25rem;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 0;
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
     font-weight: 400;
+    line-height: 1.7;
 }
 
 /* Card Styling - Enhanced Modern Design */
@@ -838,27 +865,91 @@ p {
 }
 
 /* ===================================
-   DASHBOARD SPECIFIC
+   DASHBOARD SPECIFIC - Optimized for User Experience
    =================================== */
 .dashboard-header {
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
+    background: var(--gradient-soft);
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
     padding: 2rem 0;
     margin-bottom: 2rem;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-lg);
 }
 
 .dashboard-card {
-    background: var(--bg-card);
+    background: var(--bg-primary);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     transition: var(--transition);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-light);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
 }
 
 .dashboard-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+    border-color: var(--primary-lighter);
+}
+
+/* Stats Cards - Better spacing and no overflow */
+.stats-card {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    transition: var(--transition);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 140px;
+}
+
+.stats-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.stats-card .stats-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.stats-card .stats-number {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.stats-card .stats-label {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Card Headers */
+.card-header-custom {
+    background: var(--bg-light);
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem 1.5rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.card-custom {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.card-custom .card-body {
+    padding: 1.5rem;
 }
 
 /* ===================================
@@ -880,27 +971,34 @@ p {
 .text-info-soft { color: var(--info-color) !important; }
 
 /* ===================================
-   RESPONSIVE DESIGN
+   RESPONSIVE DESIGN - Optimized for all devices
    =================================== */
 @media (max-width: 768px) {
     .navbar-custom .navbar-brand span {
         font-size: 1rem;
     }
     
-    .hero-section {
-        padding: 3rem 0;
+    .welcome-section {
+        padding: 2.5rem 0 2rem;
+        margin-bottom: 2rem;
     }
     
-    .hero-section h1 {
+    .welcome-section h1 {
         font-size: 2rem;
     }
     
     .stats-card {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
+        min-height: 120px;
+        padding: 1rem;
+    }
+    
+    .stats-card .stats-number {
+        font-size: 1.75rem;
     }
     
     .category-card {
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
     }
     
     .main-content {
@@ -910,10 +1008,25 @@ p {
     .dashboard-header {
         padding: 1.5rem 0;
         text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .dashboard-header h1 {
+        font-size: 1.75rem;
     }
     
     .table-responsive {
         border-radius: var(--border-radius);
+        margin: 0 -0.5rem; /* Prevent horizontal overflow */
+    }
+    
+    .card-custom {
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn-group {
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 }
 
@@ -923,23 +1036,56 @@ p {
         padding-right: 1rem;
     }
     
-    .hero-section h1 {
+    .welcome-section {
+        padding: 2rem 0 1.5rem;
+    }
+    
+    .welcome-section h1 {
         font-size: 1.75rem;
     }
     
-    .search-hero .input-group {
-        flex-direction: column;
+    .stats-card {
+        min-height: 100px;
+        padding: 0.75rem;
     }
     
-    .search-hero .btn {
-        border-radius: 0 0 50px 50px !important;
-    }
-    
-    .stats-number {
+    .stats-card .stats-number {
         font-size: 1.5rem;
     }
     
-    .btn-custom {
+    .dashboard-header {
+        padding: 1rem 0;
+    }
+    
+    .card-custom .card-body {
+        padding: 1rem;
+    }
+    
+    .table-responsive {
+        margin: 0 -1rem; /* Full width on small screens */
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 480px) {
+    .welcome-section h1 {
+        font-size: 1.5rem;
+    }
+    
+    .welcome-section p {
+        font-size: 1rem;
+    }
+    
+    .stats-card .stats-number {
+        font-size: 1.25rem;
+    }
+    
+    .btn-group .btn {
         width: 100%;
         margin-bottom: 0.5rem;
     }

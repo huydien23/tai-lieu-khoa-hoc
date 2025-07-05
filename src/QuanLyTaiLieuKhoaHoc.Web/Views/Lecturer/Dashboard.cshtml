@@ -2,74 +2,101 @@
     ViewData["Title"] = "Dashboard Giảng viên";
 }
 
-<!-- Lecturer Header -->
-<div class="dashboard-header text-center fade-in-up">
-    <div class="row align-items-center">
-        <div class="col-md-10 mx-auto">
-            <h1 class="display-6 fw-bold mb-3">
-                <i class="fas fa-chalkboard-teacher me-3"></i>
-                Dashboard Giảng viên
-            </h1>
-            <p class="lead mb-4">
-                Tra cứu, tìm kiếm và xem thống kê tài liệu khoa học theo chuyên môn
-            </p>
-            <div class="d-flex gap-3 justify-content-center flex-wrap">
-                <span class="badge bg-light text-dark fs-6 px-3 py-2">
-                    <i class="fas fa-user-tie me-2"></i>Chào mừng, Giảng viên
-                </span>
-                <span class="badge bg-light text-dark fs-6 px-3 py-2">
-                    <i class="fas fa-graduation-cap me-2"></i>Khoa Công nghệ Thông tin
-                </span>
+<!-- Lecturer Header - Clean and Focused -->
+<div class="container">
+    <div class="dashboard-header text-center fade-in-up">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto">
+                <h1 class="h2 fw-bold mb-3">
+                    <i class="fas fa-chalkboard-teacher me-3 text-primary"></i>
+                    Dashboard Giảng viên
+                </h1>
+                <p class="text-muted mb-0">
+                    Truy cập tài liệu nghiên cứu và giảng dạy
+                </p>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Stats for Lecturer -->
-<div class="row mb-5">
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card primary fade-in-up">
-            <div class="stats-icon">
-                <i class="fas fa-search"></i>
+<!-- Research & Teaching Stats -->
+<div class="container">
+    <div class="row g-4 mb-5">
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card fade-in-up">
+                <div class="stats-icon text-primary">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="stats-number">45</div>
+                <div class="stats-label">Tài liệu theo chuyên môn</div>
+                <small class="text-muted">
+                    <i class="fas fa-laptop-code me-1"></i>Công nghệ thông tin
+                </small>
             </div>
-            <div class="stats-number">127</div>
-            <div class="stats-label">Lượt tìm kiếm của bạn</div>
-            <small class="text-muted">Tháng này</small>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card fade-in-up">
+                <div class="stats-icon text-success">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="stats-number">89</div>
+                <div class="stats-label">Đã tải xuống</div>
+                <small class="text-success">
+                    <i class="fas fa-arrow-up me-1"></i>+15 tuần này
+                </small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card fade-in-up">
+                <div class="stats-icon text-info">
+                    <i class="fas fa-bookmark"></i>
+                </div>
+                <div class="stats-number">23</div>
+                <div class="stats-label">Đã lưu</div>
+                <small class="text-muted">
+                    <i class="fas fa-folder me-1"></i>Nghiên cứu
+                </small>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+            <div class="stats-card fade-in-up">
+                <div class="stats-icon text-warning">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="stats-number">127</div>
+                <div class="stats-label">Lượt tìm kiếm</div>
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i>Tháng này
+                </small>
+            </div>
         </div>
     </div>
-    
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card success fade-in-up">
-            <div class="stats-icon">
-                <i class="fas fa-book-open"></i>
-            </div>
-            <div class="stats-number">45</div>
-            <div class="stats-label">Tài liệu theo chuyên môn</div>
-            <small class="text-muted">Công nghệ thông tin</small>
+</div>
+
+<div class="col-lg-3 col-md-6 mb-4">
+    <div class="stats-card warning fade-in-up">
+        <div class="stats-icon">
+            <i class="fas fa-download"></i>
         </div>
+        <div class="stats-number">89</div>
+        <div class="stats-label">Tài liệu đã tải xuống</div>
+        <small class="text-muted">Tuần này</small>
     </div>
-    
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card warning fade-in-up">
-            <div class="stats-icon">
-                <i class="fas fa-download"></i>
-            </div>
-            <div class="stats-number">89</div>
-            <div class="stats-label">Tài liệu đã tải xuống</div>
-            <small class="text-muted">Tuần này</small>
+</div>
+
+<div class="col-lg-3 col-md-6 mb-4">
+    <div class="stats-card info fade-in-up">
+        <div class="stats-icon">
+            <i class="fas fa-star"></i>
         </div>
+        <div class="stats-number">12</div>
+        <div class="stats-label">Tài liệu yêu thích</div>
+        <small class="text-muted">Đã lưu</small>
     </div>
-    
-    <div class="col-lg-3 col-md-6 mb-4">
-        <div class="stats-card info fade-in-up">
-            <div class="stats-icon">
-                <i class="fas fa-star"></i>
-            </div>
-            <div class="stats-number">12</div>
-            <div class="stats-label">Tài liệu yêu thích</div>
-            <small class="text-muted">Đã lưu</small>
-        </div>
-    </div>
+</div>
 </div>
 
 <!-- Lecturer Tools & Quick Access -->
@@ -94,14 +121,15 @@
                     <a href="/TaiLieu/ChuyenNganh" class="btn btn-warning-custom btn-custom">
                         <i class="fas fa-filter me-2"></i>Lọc theo chuyên ngành
                     </a>
-                    <a href="/BaoCao/XuatDanhSach" class="btn btn-info" style="background: linear-gradient(135deg, #06b6d4, #0891b2); border: none; color: white;">
+                    <a href="/BaoCao/XuatDanhSach" class="btn btn-info"
+                        style="background: linear-gradient(135deg, #06b6d4, #0891b2); border: none; color: white;">
                         <i class="fas fa-file-export me-2"></i>Xuất danh sách
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <!-- Documents by Subject -->
     <div class="col-lg-8 mb-4">
         <div class="card-custom h-100">
@@ -252,7 +280,8 @@
                 <form>
                     <div class="mb-3">
                         <label class="form-label">Từ khóa</label>
-                        <input type="text" class="form-control form-control-custom" placeholder="Nhập từ khóa tìm kiếm...">
+                        <input type="text" class="form-control form-control-custom"
+                            placeholder="Nhập từ khóa tìm kiếm...">
                     </div>
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -284,7 +313,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Recent Searches -->
     <div class="col-lg-6 mb-4">
         <div class="card-custom">
@@ -346,68 +375,68 @@
 </div>
 
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    $(document).ready(function() {
-        // Subject statistics chart
-        const ctx = document.getElementById('subjectStatsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Lập trình', 'Cơ sở dữ liệu', 'AI/ML', 'Mạng máy tính', 'Hệ điều hành', 'Phần mềm'],
-                datasets: [{
-                    label: 'Số lượng tài liệu',
-                    data: [45, 32, 28, 19, 15, 22],
-                    backgroundColor: [
-                        'rgba(37, 99, 235, 0.8)',
-                        'rgba(16, 185, 129, 0.8)',
-                        'rgba(245, 158, 11, 0.8)',
-                        'rgba(239, 68, 68, 0.8)',
-                        'rgba(139, 92, 246, 0.8)',
-                        'rgba(6, 182, 212, 0.8)'
-                    ],
-                    borderColor: [
-                        'rgba(37, 99, 235, 1)',
-                        'rgba(16, 185, 129, 1)',
-                        'rgba(245, 158, 11, 1)',
-                        'rgba(239, 68, 68, 1)',
-                        'rgba(139, 92, 246, 1)',
-                        'rgba(6, 182, 212, 1)'
-                    ],
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Subject statistics chart
+            const ctx = document.getElementById('subjectStatsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lập trình', 'Cơ sở dữ liệu', 'AI/ML', 'Mạng máy tính', 'Hệ điều hành', 'Phần mềm'],
+                    datasets: [{
+                        label: 'Số lượng tài liệu',
+                        data: [45, 32, 28, 19, 15, 22],
+                        backgroundColor: [
+                            'rgba(37, 99, 235, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(6, 182, 212, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(37, 99, 235, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(6, 182, 212, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
                 },
-                plugins: {
-                    legend: {
-                        display: false
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
                     }
                 }
-            }
+            });
+
+            // Add click handlers for favorite buttons
+            $('.btn-outline-warning').on('click', function () {
+                var $this = $(this);
+                var $icon = $this.find('i');
+
+                if ($icon.hasClass('fas')) {
+                    $icon.removeClass('fas').addClass('far');
+                    $this.removeClass('btn-outline-warning').addClass('btn-outline-secondary');
+                    AppUtils.showToast('Đã bỏ khỏi danh sách yêu thích', 'info');
+                } else {
+                    $icon.removeClass('far').addClass('fas');
+                    $this.removeClass('btn-outline-secondary').addClass('btn-outline-warning');
+                    AppUtils.showToast('Đã thêm vào danh sách yêu thích', 'success');
+                }
+            });
         });
-        
-        // Add click handlers for favorite buttons
-        $('.btn-outline-warning').on('click', function() {
-            var $this = $(this);
-            var $icon = $this.find('i');
-            
-            if ($icon.hasClass('fas')) {
-                $icon.removeClass('fas').addClass('far');
-                $this.removeClass('btn-outline-warning').addClass('btn-outline-secondary');
-                AppUtils.showToast('Đã bỏ khỏi danh sách yêu thích', 'info');
-            } else {
-                $icon.removeClass('far').addClass('fas');
-                $this.removeClass('btn-outline-secondary').addClass('btn-outline-warning');
-                AppUtils.showToast('Đã thêm vào danh sách yêu thích', 'success');
-            }
-        });
-    });
-</script>
+    </script>
 }
