@@ -28,53 +28,37 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
             <div class="container">
-                <!-- Brand với animation -->
-                <a class="navbar-brand fw-bold d-flex align-items-center" asp-area="" asp-controller="Home"
-                    asp-action="Index">
-                    <div class="icon-wrapper me-2" style="width: 2.5rem; height: 2.5rem; font-size: 1rem;">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                        <span class="d-none d-lg-inline fs-6 lh-1">Quản lý Tài liệu Khoa học</span>
-                        <span class="d-lg-none fw-bold">QLTL KH</span>
-                        <small class="d-none d-xl-inline text-white-50" style="font-size: 0.7rem;">Digital Library
-                            System</small>
-                    </div>
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-book-reader me-2"></i>
+                    <span class="d-none d-md-inline">Quản lý Tài liệu Khoa học</span>
+                    <span class="d-md-none">QLTL</span>
                 </a>
 
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                    aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <!-- Main Navigation -->
-                    <ul class="navbar-nav me-auto ms-lg-4">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                                <i class="fas fa-home me-2"></i>Trang chủ
+                                <i class="fas fa-home me-1"></i>Trang chủ
                             </a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-book me-2"></i>Tài liệu
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="TaiLieu" asp-action="Index">
+                                <i class="fas fa-book me-1"></i>Tài liệu
                             </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-controller="TaiLieu" asp-action="Index">
-                                        <i class="fas fa-list me-2"></i>Danh sách tài liệu
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                        <i class="fas fa-star me-2"></i>Tài liệu nổi bật
-                                    </a></li>
-                                <li><a class="dropdown-item" href="#">
-                                        <i class="fas fa-clock me-2"></i>Mới cập nhật
-                                    </a></li>
-                            </ul>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="TimKiem" asp-action="Index">
-                                <i class="fas fa-search me-2"></i>Tìm kiếm nâng cao
+                                <i class="fas fa-search me-1"></i>Tìm kiếm
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="ThongKe" asp-action="Index">
+                                <i class="fas fa-chart-bar me-1"></i>Thống kê
                             </a>
                         </li>
                     </ul>
@@ -86,31 +70,29 @@
     </header>
 
     <main class="main-content">
-        <!-- Alerts/Messages - Full width -->
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="container">
+        <div class="container">
+            <!-- Alerts/Messages -->
+            @if (TempData["SuccessMessage"] != null)
+            {
                 <div class="alert alert-success-custom alert-dismissible fade show" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
                     @TempData["SuccessMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
-        }
+            }
 
-        @if (TempData["ErrorMessage"] != null)
-        {
-            <div class="container">
+            @if (TempData["ErrorMessage"] != null)
+            {
                 <div class="alert alert-danger-custom alert-dismissible fade show" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i>
                     @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
-        }
+            }
 
-        <!-- Main content -->
-        @RenderBody()
+            <!-- Main content -->
+            @RenderBody()
+        </div>
     </main>
 
     <footer class="footer-custom bg-light mt-5">

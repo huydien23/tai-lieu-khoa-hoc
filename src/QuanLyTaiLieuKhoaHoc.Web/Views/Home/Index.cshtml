@@ -2,225 +2,397 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<!-- Hero Section - Clean and Focused -->
-<div class="welcome-section">
-    <div class="container">
-        <div class="row align-items-center justify-content-center text-center">
-            <div class="col-lg-10 col-xl-8">
-                <div class="fade-in">
-                    <h1 class="display-4 fw-bold mb-4 text-dark">
-                        Thư viện Số Khoa học
-                    </h1>
-                    <p class="lead mb-5 text-muted">
-                        Khám phá tri thức, chia sẻ nghiên cứu
-                        <br class="d-none d-md-block">
-                        Nơi hội tụ những tài liệu khoa học chất lượng cao
-                    </p>
+<!-- Hero Section -->
+<div class="dashboard-header text-center fade-in-up">
+    <div class="row align-items-center">
+        <div class="col-md-8 mx-auto">
+            <h1 class="display-5 fw-bold mb-3">
+                <i class="fas fa-book-open me-3"></i>
+                Chào mừng đến với Hệ thống Quản lý Tài liệu Khoa học
+            </h1>
+            <p class="lead mb-4">
+                Nền tảng hiện đại giúp bạn quản lý, tìm kiếm và truy cập tài liệu khoa học một cách dễ dàng và hiệu quả
+            </p>
 
-                    <!-- CTA Buttons -->
-                    <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
-                        <a asp-controller="TaiLieu" asp-action="Index" class="btn btn-primary btn-lg px-4">
-                            <i class="fas fa-book-open me-2"></i>Khám phá tài liệu
-                        </a>
-                        <a asp-controller="TimKiem" asp-action="Index" class="btn btn-outline-primary btn-lg px-4">
-                            <i class="fas fa-search me-2"></i>Tìm kiếm nâng cao
-                        </a>
-                    </div>
+            <!-- Quick Search -->
+            <div class="search-container mx-auto mb-4">
+                <div class="position-relative">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="form-control search-input" placeholder="Tìm kiếm tài liệu khoa học..."
+                        id="quickSearch">
+                    <button class="btn btn-light position-absolute end-0 top-0 h-100" type="button"
+                        style="border-radius: 0 50px 50px 0;">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
 
-<!-- Quick Search Section -->
-<div class="container mb-section">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 col-xl-6">
-            <div class="card floating-card glow-on-hover">
-                <div class="card-body p-4">
-                    <form asp-controller="TimKiem" asp-action="Results" method="get">
-                        <div class="input-group input-group-lg">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
-                            </span>
-                            <input type="text" name="query" class="form-control border-start-0 ps-0"
-                                placeholder="Tìm kiếm tài liệu theo từ khóa, tác giả, chủ đề...">
-                            <button class="btn btn-primary px-4" type="submit">
-                                <i class="fas fa-search me-2"></i>Tìm kiếm
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Featured Documents Section -->
-<div class="container">
-    <!-- Section Header -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                    <h2 class="gradient-text mb-2">Tài liệu nổi bật</h2>
-                    <p class="text-muted mb-0">Khám phá những tài liệu được quan tâm nhất</p>
-                </div>
-                <a asp-controller="TaiLieu" asp-action="Index" class="btn btn-outline-primary">
-                    <i class="fas fa-arrow-right me-2"></i>Xem tất cả
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="/TaiLieu" class="btn btn-light btn-custom pulse">
+                    <i class="fas fa-book me-2"></i>Danh sách tài liệu
+                </a>
+                <a href="/TimKiem" class="btn btn-outline-light btn-custom">
+                    <i class="fas fa-search-plus me-2"></i>Tìm kiếm nâng cao
+                </a>
+                <a href="/ThongKe" class="btn btn-outline-light btn-custom">
+                    <i class="fas fa-chart-line me-2"></i>Xem thống kê
                 </a>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Documents Grid -->
-    <div class="row g-4">
-        @for (int i = 1; i <= 8; i++)
-        {
-            <div class="col-xl-3 col-lg-4 col-md-6">
-                <div class="card floating-card h-100">
-                    <div class="card-body d-flex flex-column">
-                        <!-- Category Badge -->
-                        <div class="mb-3">
-                            @if (i % 3 == 1)
-                            {
-                                <span class="badge bg-primary">
-                                    <i class="fas fa-file-alt me-1"></i>Bài báo khoa học
-                                </span>
-                            }
-                            else if (i % 3 == 2)
-                            {
-                                <span class="badge bg-success">
-                                    <i class="fas fa-book me-1"></i>Giáo trình
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-warning">
-                                    <i class="fas fa-lightbulb me-1"></i>Đề tài nghiên cứu
-                                </span>
-                            }
-                        </div>
-
-                        <!-- Document Title -->
-                        <h6 class="card-title mb-3">
-                            <a href="#" class="text-decoration-none">
-                                Nghiên cứu ứng dụng Machine Learning trong y học hiện đại @i
-                            </a>
-                        </h6>
-
-                        <!-- Document Meta -->
-                        <div class="document-meta mb-3 flex-grow-1">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="fas fa-user text-muted me-2"></i>
-                                <span class="small text-muted">PGS.TS. Nguyễn Văn A</span>
-                            </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="fas fa-calendar text-muted me-2"></i>
-                                <span class="small text-muted">Năm xuất bản: 2024</span>
-                            </div>
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="fas fa-eye text-muted me-2"></i>
-                                <span class="small text-muted">@((i * 247) + 156) lượt xem</span>
-                            </div>
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-download text-muted me-2"></i>
-                                <span class="small text-muted">@((i * 43) + 28) lượt tải</span>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="mt-auto">
-                            <div class="d-grid gap-2">
-                                <a asp-controller="TaiLieu" asp-action="Details" asp-route-id="@i"
-                                    class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-eye me-2"></i>Xem chi tiết
-                                </a>
-                                <button class="btn btn-success btn-sm" onclick="borrowDocument(@i)">
-                                    <i class="fas fa-book-reader me-2"></i>Mượn tài liệu
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<!-- Quick Stats -->
+<div class="row mb-5">
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stats-card primary fade-in-up">
+            <div class="stats-icon">
+                <i class="fas fa-book"></i>
             </div>
-        }
+            <div class="stats-number" id="totalDocuments">1,245</div>
+            <div class="stats-label">Tổng số tài liệu</div>
+            <small class="text-muted">
+                <i class="fas fa-arrow-up text-success me-1"></i>
+                +12% so với tháng trước
+            </small>
+        </div>
     </div>
 
-    <!-- Quick Stats Section -->
-    <div class="row mt-5 pt-5 border-top">
-        <div class="col-12 mb-4 text-center">
-            <h3 class="gradient-text">Thống kê hệ thống</h3>
-            <p class="text-muted">Những con số ấn tượng về thư viện số của chúng tôi</p>
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stats-card success fade-in-up">
+            <div class="stats-icon">
+                <i class="fas fa-newspaper"></i>
+            </div>
+            <div class="stats-number" id="totalPapers">856</div>
+            <div class="stats-label">Bài báo khoa học</div>
+            <small class="text-muted">
+                <i class="fas fa-arrow-up text-success me-1"></i>
+                +8% so với tháng trước
+            </small>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card text-center floating-card">
-                <div class="card-body">
-                    <div class="icon-wrapper mx-auto mb-3">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    <h4 class="fw-bold text-primary mb-2">12,543</h4>
-                    <p class="text-muted mb-0">Tài liệu</p>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stats-card warning fade-in-up">
+            <div class="stats-icon">
+                <i class="fas fa-flask"></i>
+            </div>
+            <div class="stats-number" id="totalProjects">189</div>
+            <div class="stats-label">Đề tài nghiên cứu</div>
+            <small class="text-muted">
+                <i class="fas fa-arrow-up text-success me-1"></i>
+                +15% so với tháng trước
+            </small>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6 mb-4">
+        <div class="stats-card info fade-in-up">
+            <div class="stats-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="stats-number" id="totalTextbooks">200</div>
+            <div class="stats-label">Giáo trình</div>
+            <small class="text-muted">
+                <i class="fas fa-arrow-up text-success me-1"></i>
+                +5% so với tháng trước
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions & Recent Documents -->
+<div class="row">
+    <!-- Quick Actions -->
+    <div class="col-lg-4 mb-4">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Thao tác nhanh
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="d-grid gap-3">
+                    <a href="/TaiLieu/Create" class="btn btn-primary-custom btn-custom">
+                        <i class="fas fa-plus me-2"></i>Thêm tài liệu mới
+                    </a>
+                    <a href="/TimKiem/Advanced" class="btn btn-success-custom btn-custom">
+                        <i class="fas fa-search-plus me-2"></i>Tìm kiếm nâng cao
+                    </a>
+                    <a href="/BaoCao" class="btn btn-warning-custom btn-custom">
+                        <i class="fas fa-file-export me-2"></i>Xuất báo cáo
+                    </a>
+                    <a href="/QuanLy/MuonTra" class="btn btn-info"
+                        style="background: linear-gradient(135deg, #06b6d4, #0891b2); border: none; color: white;">
+                        <i class="fas fa-exchange-alt me-2"></i>Quản lý mượn trả
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card text-center floating-card">
-                <div class="card-body">
-                    <div class="icon-wrapper mx-auto mb-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h4 class="fw-bold text-success mb-2">3,247</h4>
-                    <p class="text-muted mb-0">Người dùng</p>
+    </div>
+
+    <!-- Recent Documents -->
+    <div class="col-lg-8 mb-4">
+        <div class="card-custom h-100">
+            <div class="card-header-custom">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>
+                    Tài liệu mới nhất
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0 ps-4">Tiêu đề</th>
+                                <th class="border-0">Loại</th>
+                                <th class="border-0">Tác giả</th>
+                                <th class="border-0">Ngày thêm</th>
+                                <th class="border-0 pe-4">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-newspaper text-primary me-3"></i>
+                                        <div>
+                                            <div class="fw-medium">Nghiên cứu về AI trong giáo dục</div>
+                                            <small class="text-muted">Tạp chí Khoa học Công nghệ</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-custom badge-primary-custom">Bài báo</span>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 120px;">
+                                        TS. Nguyễn Văn A
+                                    </div>
+                                </td>
+                                <td>
+                                    <small class="text-muted">2 giờ trước</small>
+                                </td>
+                                <td class="pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" title="Tải về">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-flask text-warning me-3"></i>
+                                        <div>
+                                            <div class="fw-medium">Phát triển ứng dụng IoT cho nông nghiệp</div>
+                                            <small class="text-muted">Đề tài cấp trường 2024</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-custom badge-warning-custom">Đề tài</span>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 120px;">
+                                        PGS. Trần Thị B
+                                    </div>
+                                </td>
+                                <td>
+                                    <small class="text-muted">1 ngày trước</small>
+                                </td>
+                                <td class="pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" title="Tải về">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-graduation-cap text-info me-3"></i>
+                                        <div>
+                                            <div class="fw-medium">Giáo trình Lập trình Web nâng cao</div>
+                                            <small class="text-muted">Khoa Công nghệ Thông tin</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge-custom badge-info-custom">Giáo trình</span>
+                                </td>
+                                <td>
+                                    <div class="text-truncate" style="max-width: 120px;">
+                                        ThS. Lê Văn C
+                                    </div>
+                                </td>
+                                <td>
+                                    <small class="text-muted">2 ngày trước</small>
+                                </td>
+                                <td class="pe-4">
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-outline-primary btn-sm" title="Xem chi tiết">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-outline-success btn-sm" title="Tải về">
+                                            <i class="fas fa-download"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-3 border-top">
+                    <a href="/TaiLieu" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-arrow-right me-1"></i>
+                        Xem tất cả tài liệu
+                    </a>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card text-center floating-card">
-                <div class="card-body">
-                    <div class="icon-wrapper mx-auto mb-3">
-                        <i class="fas fa-download"></i>
-                    </div>
-                    <h4 class="fw-bold text-warning mb-2">58,921</h4>
-                    <p class="text-muted mb-0">Lượt tải</p>
-                </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mt-5">
+    <div class="col-12 mb-4">
+        <h3 class="text-center text-primary-custom mb-5">
+            <i class="fas fa-star me-2"></i>
+            Tính năng nổi bật
+        </h3>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="dashboard-card text-center p-4 h-100">
+            <div class="mb-3">
+                <i class="fas fa-search fa-3x text-primary"></i>
             </div>
+            <h5>Tìm kiếm thông minh</h5>
+            <p class="text-muted">
+                Hỗ trợ tìm kiếm đa tiêu chí với thuật toán thông minh,
+                giúp bạn tìm được tài liệu cần thiết một cách nhanh chóng.
+            </p>
+            <a href="/TimKiem" class="btn btn-outline-primary btn-sm">
+                Khám phá ngay <i class="fas fa-arrow-right ms-1"></i>
+            </a>
         </div>
-        <div class="col-lg-3 col-md-6 mb-4">
-            <div class="card text-center floating-card">
-                <div class="card-body">
-                    <div class="icon-wrapper mx-auto mb-3">
-                        <i class="fas fa-bookmark"></i>
-                    </div>
-                    <h4 class="fw-bold text-info mb-2">1,834</h4>
-                    <p class="text-muted mb-0">Đang mượn</p>
-                </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="dashboard-card text-center p-4 h-100">
+            <div class="mb-3">
+                <i class="fas fa-chart-line fa-3x text-success"></i>
             </div>
+            <h5>Báo cáo trực quan</h5>
+            <p class="text-muted">
+                Thống kê chi tiết với biểu đồ tương tác,
+                giúp bạn có cái nhìn tổng quan về tình hình sử dụng tài liệu.
+            </p>
+            <a href="/ThongKe" class="btn btn-outline-success btn-sm">
+                Xem thống kê <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="dashboard-card text-center p-4 h-100">
+            <div class="mb-3">
+                <i class="fas fa-mobile-alt fa-3x text-warning"></i>
+            </div>
+            <h5>Giao diện thân thiện</h5>
+            <p class="text-muted">
+                Thiết kế responsive, hoạt động mượt mà trên mọi thiết bị
+                từ máy tính đến điện thoại di động.
+            </p>
+            <a href="#" class="btn btn-outline-warning btn-sm">
+                Tìm hiểu thêm <i class="fas fa-arrow-right ms-1"></i>
+            </a>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        function borrowDocument(id) {
-            // Check if user is logged in
-            @if (Context.Session.GetString("Username") == null)
-                {
-                    <text>
-                        if (confirm('Bạn cần đăng nhập để mượn tài liệu. Chuyển đến trang đăng nhập?')) {
-                            window.location.href = '/Account/Login';
-                                        }
-                    </text>
+        $(document).ready(function () {
+            // Quick search functionality
+            $('#quickSearch').on('keypress', function (e) {
+                if (e.which === 13) {
+                    performQuickSearch();
+                }
+            });
+
+            $('.search-container .btn').on('click', function () {
+                performQuickSearch();
+            });
+
+            function performQuickSearch() {
+                var searchTerm = $('#quickSearch').val().trim();
+                if (searchTerm) {
+                    window.location.href = '/TimKiem?q=' + encodeURIComponent(searchTerm);
+                }
             }
-                else
-                {
-                    <text>
-                        if (confirm('Bạn có muốn mượn tài liệu này không?')) {
-                            showToast('Đã ghi nhận yêu cầu mượn tài liệu!', 'success');
-                                            // TODO: Implement actual borrow logic
-                                        }
-                    </text>
+
+            // Animate numbers
+            animateNumbers();
+
+            function animateNumbers() {
+                $('.stats-number').each(function () {
+                    var $this = $(this);
+                    var target = parseInt($this.text().replace(/,/g, ''));
+                    $this.text('0');
+
+                    $({ counter: 0 }).animate({ counter: target }, {
+                        duration: 2000,
+                        easing: 'swing',
+                        step: function () {
+                            $this.text(Math.ceil(this.counter).toLocaleString());
+                        },
+                        complete: function () {
+                            $this.text(target.toLocaleString());
+                        }
+                    });
+                });
             }
-                    }
+
+            // Add hover effects
+            $('.stats-card, .dashboard-card').hover(
+                function () {
+                    $(this).addClass('shadow-custom');
+                },
+                function () {
+                    $(this).removeClass('shadow-custom');
+                }
+            );
+        });
     </script>
 }
+ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+           
+           
+                                                         
+         
+                }
+
+    
+                 
+                                          }
+
+                                          
