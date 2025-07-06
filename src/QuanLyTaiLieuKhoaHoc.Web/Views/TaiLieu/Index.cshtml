@@ -1,3 +1,7 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
 @{
     ViewData["Title"] = "Danh sách Tài liệu";
 }
@@ -11,12 +15,14 @@
                 </h1>
                 <p class="page-subtitle">Quản lý và tìm kiếm tài liệu khoa học</p>
             </div>
-            <div class="col-auto">
-                @* Check if user is admin/librarian *@
-                <a asp-action="Create" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Thêm Tài liệu
-                </a>
-            </div>
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <div class="col-auto">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Thêm Tài liệu
+                    </a>
+                </div>
+            }
         </div>
     </div>
 
@@ -101,17 +107,19 @@
                                     <i class="fas fa-ellipsis-v"></i>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Xem chi tiết</a>
-                                    </li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Chỉnh sửa</a></li>
-                                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Tải xuống</a>
-                                    </li>
-                                    <li>
-                                        <hr class="dropdown-divider">
-                                    </li>
-                                    <li><a class="dropdown-item text-danger" href="#"><i
-                                                class="fas fa-trash me-2"></i>Xóa</a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>Xem chi tiết</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-download me-2"></i>Tải xuống</a></li>
+                                    @if (SignInManager.IsSignedIn(User))
+                                    {
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-star me-2"></i>Yêu thích</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-share me-2"></i>Chia sẻ</a></li>
+                                    }
+                                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+                                    {
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Chỉnh sửa</a></li>
+                                        <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Xóa</a></li>
+                                    }
                                 </ul>
                             </div>
                         </div>
@@ -157,17 +165,20 @@
 
                     <div class="card-footer bg-transparent">
                         <div class="row g-2">
-                            <div class="col">
+                            <div class="@(SignInManager.IsSignedIn(User) ? "col" : "col-12")">
                                 <a asp-action="Details" asp-route-id="@i" class="btn btn-outline-primary btn-sm w-100">
                                     <i class="fas fa-eye me-1"></i>Xem
                                 </a>
                             </div>
-                            <div class="col">
-                                <button class="btn btn-outline-success btn-sm w-100" data-bs-toggle="modal"
-                                    data-bs-target="#borrowModal">
-                                    <i class="fas fa-book-reader me-1"></i>Mượn
-                                </button>
-                            </div>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <div class="col">
+                                    <button class="btn btn-outline-success btn-sm w-100" data-bs-toggle="modal"
+                                        data-bs-target="#borrowModal">
+                                        <i class="fas fa-book-reader me-1"></i>Mượn
+                                    </button>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

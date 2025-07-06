@@ -44,12 +44,14 @@
     --text-medium: #374151;      /* gray-700 */
     --text-muted: #6b7280;       /* gray-500 */
     --text-light: #9ca3af;       /* gray-400 */
+    --text-color: #333333;      /* General text color */
     
     /* Background Colors */
     --bg-primary: #ffffff;
     --bg-secondary: var(--blue-50);   /* Very light blue background */
     --bg-light: var(--blue-100);      /* Light blue background */
     --bg-darker: var(--blue-200);     /* Medium light blue */
+    --light-bg: #f9f9f9;          /* Light background for cards and sections */
     
     /* Border Colors */
     --border-color: var(--blue-200);  /* Light blue border */
@@ -1012,131 +1014,205 @@ p {
     padding: 1.5rem;
 }
 
-/* ===================================
-   DOCUMENT CARDS
-   =================================== */
-.document-type-icon i {
-    font-size: 1.2rem;
+/* Document Card Styles */
+.document-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    display: flex;
+    gap: 1rem;
 }
 
-/* ===================================
-   RESPONSIVE DESIGN - Optimized for all devices
-   =================================== */
+.document-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+}
+
+.document-icon {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--light-bg);
+    border-radius: 10px;
+}
+
+.document-icon i {
+    font-size: 1.5rem;
+}
+
+.document-info {
+    flex: 1;
+}
+
+.document-title {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.document-meta {
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.document-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Borrowed Item Styles */
+.borrowed-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.borrowed-item {
+    background: var(--light-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.borrowed-info {
+    flex: 1;
+}
+
+.borrowed-title {
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+}
+
+.borrowed-meta {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.borrowed-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Subject List Styles */
+.subject-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.subject-item {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.subject-item:last-child {
+    border-bottom: none;
+}
+
+.subject-name {
+    font-weight: 500;
+}
+
+/* Progress Circle */
+.progress-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary-color) 0deg 270deg, var(--border-color) 270deg 360deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-circle::before {
+    content: '';
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: white;
+    position: absolute;
+}
+
+.progress-value {
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Recommendation Card */
+.recommendation-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.rec-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.rec-info h6 {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-    .navbar-custom .navbar-brand span {
-        font-size: 1rem;
-    }
-    
-    .welcome-section {
-        padding: 2.5rem 0 2rem;
-        margin-bottom: 2rem;
-    }
-    
-    .welcome-section h1 {
-        font-size: 2rem;
-    }
-    
-    .stats-card {
-        margin-bottom: 1.5rem;
-        min-height: 120px;
-        padding: 1rem;
-    }
-    
-    .stats-card .stats-number {
-        font-size: 1.75rem;
-    }
-    
-    .category-card {
-        margin-bottom: 1.5rem;
-    }
-    
-    .main-content {
-        padding-top: 70px;
-    }
-    
-    .dashboard-header {
-        padding: 1.5rem 0;
+    .document-card {
+        flex-direction: column;
         text-align: center;
-        margin-bottom: 1.5rem;
     }
     
-    .dashboard-header h1 {
-        font-size: 1.75rem;
+    .borrowed-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
     }
     
-    .table-responsive {
-        border-radius: var(--border-radius);
-        margin: 0 -0.5rem; /* Prevent horizontal overflow */
-    }
-    
-    .card-custom {
-        margin-bottom: 1.5rem;
-    }
-    
-    .btn-group {
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-}
-
-@media (max-width: 576px) {
-    .container {
-        padding-left: 1rem;
-        padding-right: 1rem;
-    }
-    
-    .welcome-section {
-        padding: 2rem 0 1.5rem;
-    }
-    
-    .welcome-section h1 {
-        font-size: 1.75rem;
-    }
-    
-    .stats-card {
-        min-height: 100px;
-        padding: 0.75rem;
-    }
-    
-    .stats-card .stats-number {
-        font-size: 1.5rem;
-    }
-    
-    .dashboard-header {
-        padding: 1rem 0;
-    }
-    
-    .card-custom .card-body {
-        padding: 1rem;
-    }
-    
-    .table-responsive {
-        margin: 0 -1rem; /* Full width on small screens */
-    }
-    
-    .btn-sm {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-    }
-}
-
-/* Additional mobile optimizations */
-@media (max-width: 480px) {
-    .welcome-section h1 {
-        font-size: 1.5rem;
-    }
-    
-    .welcome-section p {
-        font-size: 1rem;
-    }
-    
-    .stats-card .stats-number {
-        font-size: 1.25rem;
-    }
-    
-    .btn-group .btn {
+    .borrowed-status {
         width: 100%;
-        margin-bottom: 0.5rem;
+        justify-content: space-between;
+    }
+    
+    .progress-circle {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .progress-circle::before {
+        width: 45px;
+        height: 45px;
     }
 }
 
@@ -2008,68 +2084,89 @@ p {
     }
 }
 
-/* Container rộng hơn cho màn hình lớn */
-@media (min-width: 1200px) {
-    .container,
-    .container-xl {
-        max-width: 1920px !important;
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
+/* Dashboard Navigation Styles */
+.dashboard-nav .nav-link {
+    border: none;
+    border-radius: 0;
+    border-left: 3px solid transparent;
+    background: transparent;
+    color: var(--text-color);
+    padding: 1rem 1.5rem;
+    transition: all 0.3s ease;
+    margin-bottom: 2px;
+    text-align: left;
+    font-weight: 500;
 }
 
-@media (min-width: 1400px) {
-    .container,
-    .container-xxl {
-        max-width: 1940px !important;
-        padding-left: 3rem;
-        padding-right: 3rem;
-    }
+.dashboard-nav .nav-link:hover {
+    background: var(--light-bg);
+    border-left-color: var(--primary-color);
+    color: var(--primary-color);
 }
 
-/* Enhanced Container Spacing for Better UX */
-.container-xl {
-    padding-left: 1rem;
-    padding-right: 1rem;
+.dashboard-nav .nav-link.active {
+    background: var(--primary-light);
+    border-left-color: var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 600;
 }
 
-@media (min-width: 576px) {
-    .container-xl {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
+.dashboard-nav .nav-link i {
+    width: 20px;
+    text-align: center;
 }
 
-@media (min-width: 768px) {
-    .container-xl {
-        padding-left: 2rem;
-        padding-right: 2rem;
-    }
+/* Tab Content Animation */
+.tab-pane {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
 }
 
-@media (min-width: 992px) {
-    .container-xl {
-        padding-left: 2.5rem;
-        padding-right: 2.5rem;
-    }
+.tab-pane.active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-/* Mobile-first spacing improvements */
-@media (max-width: 575.98px) {
-    .py-4 {
-        padding-top: 1.5rem !important;
-        padding-bottom: 1.5rem !important;
+/* Dashboard Responsive */
+@media (max-width: 991.98px) {
+    .dashboard-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
     }
     
-    .mb-4 {
-        margin-bottom: 1.5rem !important;
+    .dashboard-nav .nav-link {
+        flex: 1;
+        min-width: 150px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        text-align: center;
+        padding: 0.75rem 1rem;
     }
     
-    .page-header h1 {
-        font-size: 1.75rem !important;
+    .dashboard-nav .nav-link:hover,
+    .dashboard-nav .nav-link.active {
+        border-left: none;
+        border-bottom-color: var(--primary-color);
     }
-    
-    .page-subtitle {
-        font-size: 0.9rem !important;
-    }
+}
+
+/* Card Footer Custom */
+.card-footer-custom {
+    background: var(--light-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 1rem;
+}
+
+/* Page Actions */
+.page-actions .btn {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Stats Card Hover Effects */
+.stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
 }

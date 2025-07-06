@@ -2,241 +2,611 @@
     ViewData["Title"] = "Dashboard Thủ thư";
 }
 
-<!-- Admin Header - Clean and Focused -->
-<div class="container">
-    <div class="dashboard-header text-center fade-in-up">
-        <div class="row align-items-center">
-            <div class="col-lg-8 mx-auto">
-                <h1 class="h2 fw-bold mb-3">
-                    <i class="fas fa-tachometer-alt me-3 text-primary"></i>
-                    Dashboard Thủ thư
-                </h1>
-                <p class="text-muted mb-0">
-                    Quản lý hệ thống tài liệu khoa học hiệu quả
-                </p>
+<!-- Dashboard Header -->
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="h2 fw-bold mb-2">
+                <i class="fas fa-tachometer-alt me-3 text-primary"></i>
+                Dashboard Thủ thư
+            </h1>
+            <p class="text-muted mb-0">Quản lý hệ thống tài liệu khoa học hiệu quả</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+                <i class="fas fa-plus me-2"></i>Thêm tài liệu
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Key Statistics -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="stats-icon text-primary">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stats-number">1,245</div>
+            <div class="stats-label">Tổng tài liệu</div>
+            <small class="text-success">
+                <i class="fas fa-arrow-up me-1"></i>+12% tháng này
+            </small>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="stats-icon text-success">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="stats-number">156</div>
+            <div class="stats-label">Đang mượn</div>
+            <small class="text-warning">
+                <i class="fas fa-exclamation-triangle me-1"></i>12 quá hạn
+            </small>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="stats-icon text-info">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stats-number">89</div>
+            <div class="stats-label">Người dùng hoạt động</div>
+            <small class="text-muted">
+                <i class="fas fa-clock me-1"></i>Tuần này
+            </small>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card">
+            <div class="stats-icon text-primary">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="stats-number">2,340</div>
+            <div class="stats-label">Lượt tải xuống</div>
+            <small class="text-success">
+                <i class="fas fa-arrow-up me-1"></i>+25% tuần này
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Content with Tab Layout -->
+<div class="row g-4">
+    <!-- Tab Navigation (Left) -->
+    <div class="col-lg-3">
+        <div class="card-custom">
+            <div class="card-header-custom">
+                <h6 class="mb-0">
+                    <i class="fas fa-layer-group me-2"></i>
+                    Quản lý nhanh
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                <div class="nav flex-column nav-pills dashboard-nav" id="v-pills-tab" role="tablist">
+                    <button class="nav-link active" id="v-pills-overview-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-overview" type="button" role="tab">
+                        <i class="fas fa-chart-pie me-2"></i>Tổng quan
+                    </button>
+                    <button class="nav-link" id="v-pills-documents-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-documents" type="button" role="tab">
+                        <i class="fas fa-book me-2"></i>Tài liệu
+                    </button>
+                    <button class="nav-link" id="v-pills-users-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-users" type="button" role="tab">
+                        <i class="fas fa-users me-2"></i>Người dùng
+                    </button>
+                    <button class="nav-link" id="v-pills-borrowing-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-borrowing" type="button" role="tab">
+                        <i class="fas fa-handshake me-2"></i>Mượn/Trả
+                    </button>
+                    <button class="nav-link" id="v-pills-reports-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-reports" type="button" role="tab">
+                        <i class="fas fa-chart-bar me-2"></i>Báo cáo
+                    </button>
+                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-settings" type="button" role="tab">
+                        <i class="fas fa-cog me-2"></i>Cài đặt
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Content (Right) -->
+    <div class="col-lg-9">
+        <div class="tab-content" id="v-pills-tabContent">
+            <!-- Overview Tab -->
+            <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
+                <div class="row g-4">
+                    <!-- Chart Section -->
+                    <div class="col-12">
+                        <div class="card-custom">
+                            <div class="card-header-custom">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-chart-line me-2"></i>
+                                    Thống kê truy cập
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <canvas id="accessChart" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activities -->
+                    <div class="col-12">
+                        <div class="card-custom">
+                            <div class="card-header-custom">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-history me-2"></i>
+                                    Hoạt động gần đây
+                                </h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th class="border-0 ps-3">Hoạt động</th>
+                                                <th class="border-0">Người thực hiện</th>
+                                                <th class="border-0">Thời gian</th>
+                                                <th class="border-0 pe-3">Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="ps-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-book text-primary me-2"></i>
+                                                        <div>
+                                                            <div class="fw-medium">Thêm tài liệu mới</div>
+                                                            <small class="text-muted">Nghiên cứu về AI trong giáo
+                                                                dục</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <div class="fw-medium">TS. Nguyễn Văn A</div>
+                                                        <small class="text-muted">Khoa CNTT</small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">10 phút trước</small>
+                                                </td>
+                                                <td class="pe-3">
+                                                    <span class="badge bg-success">Thành công</span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-3">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="fas fa-handshake text-warning me-2"></i>
+                                                        <div>
+                                                            <div class="fw-medium">Mượn tài liệu</div>
+                                                            <small class="text-muted">Giáo trình Lập trình Web</small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <div class="fw-medium">Sinh viên: Trần Văn B</div>
+                                                        <small class="text-muted">MSSV: 20210001</small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">1 giờ trước</small>
+                                                </td>
+                                                <td class="pe-3">
+                                                    <span class="badge bg-warning">Đang mượn</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer-custom text-center">
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Xem tất cả hoạt động</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Tab -->
+            <div class="tab-pane fade" id="v-pills-documents" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom d-flex justify-content-between align-items-center">
+                        <h6 class="mb-0">
+                            <i class="fas fa-book me-2"></i>
+                            Quản lý tài liệu
+                        </h6>
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-2"></i>Thêm mới
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <input type="search" class="form-control" placeholder="Tìm kiếm tài liệu...">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Tên tài liệu</th>
+                                        <th>Tác giả</th>
+                                        <th>Ngày thêm</th>
+                                        <th>Trạng thái</th>
+                                        <th class="text-end">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fw-medium">Lập trình Web nâng cao</div>
+                                            <small class="text-muted">PDF - 15.2 MB</small>
+                                        </td>
+                                        <td>TS. Nguyễn Văn A</td>
+                                        <td>15/01/2025</td>
+                                        <td><span class="badge bg-success">Có sẵn</span></td>
+                                        <td class="text-end">
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li><a class="dropdown-item" href="#"><i
+                                                                class="fas fa-eye me-2"></i>Xem</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i
+                                                                class="fas fa-edit me-2"></i>Sửa</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i
+                                                                class="fas fa-trash me-2"></i>Xóa</a></li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div class="tab-pane fade" id="v-pills-users" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Quản lý người dùng
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">Quản lý tài khoản người dùng, phân quyền và trạng thái hoạt động.</p>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-primary">
+                                <i class="fas fa-user-plus me-2"></i>Thêm người dùng mới
+                            </a>
+                            <a href="#" class="btn btn-outline-info">
+                                <i class="fas fa-users-cog me-2"></i>Quản lý phân quyền
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Borrowing Tab -->
+            <div class="tab-pane fade" id="v-pills-borrowing" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-handshake me-2"></i>
+                            Quản lý mượn/trả
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Có <strong>12 tài liệu</strong> đang quá hạn trả cần xử lý
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-warning">
+                                <i class="fas fa-clock me-2"></i>Xem danh sách quá hạn
+                            </a>
+                            <a href="#" class="btn btn-outline-success">
+                                <i class="fas fa-check me-2"></i>Xử lý trả tài liệu
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-pane fade" id="v-pills-reports" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Báo cáo thống kê
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-file-alt me-2"></i>Báo cáo tài liệu
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-outline-success w-100">
+                                    <i class="fas fa-chart-line me-2"></i>Thống kê truy cập
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-users me-2"></i>Báo cáo người dùng
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="#" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-download me-2"></i>Xuất báo cáo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-cog me-2"></i>
+                            Cài đặt hệ thống
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-secondary">
+                                <i class="fas fa-database me-2"></i>Sao lưu dữ liệu
+                            </a>
+                            <a href="#" class="btn btn-outline-info">
+                                <i class="fas fa-sliders-h me-2"></i>Cấu hình hệ thống
+                            </a>
+                            <a href="#" class="btn btn-outline-warning">
+                                <i class="fas fa-shield-alt me-2"></i>Bảo mật
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Key Statistics - Clean Display -->
-<div class="container">
-    <div class="row g-4 mb-5">
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card fade-in-up">
-                <div class="stats-icon text-primary">
-                    <i class="fas fa-book-open"></i>
-                </div>
-                <div class="stats-number">1,245</div>
-                <div class="stats-label">Tổng tài liệu</div>
-                <small class="text-success">
-                    <i class="fas fa-arrow-up me-1"></i>+12% tháng này
-                </small>
+<!-- Add Document Modal -->
+<div class="modal fade" id="addDocumentModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-plus me-2"></i>Thêm tài liệu mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card fade-in-up">
-                <div class="stats-icon text-success">
-                    <i class="fas fa-exchange-alt"></i>
-                </div>
-                <div class="stats-number">156</div>
-                <div class="stats-label">Đang mượn</div>
-                <small class="text-warning">
-                    <i class="fas fa-exclamation-triangle me-1"></i>12 quá hạn
-                </small>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Tên tài liệu</label>
+                        <input type="text" class="form-control" placeholder="Nhập tên tài liệu">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Tác giả</label>
+                        <input type="text" class="form-control" placeholder="Nhập tên tác giả">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">File tài liệu</label>
+                        <input type="file" class="form-control" accept=".pdf,.doc,.docx">
+                    </div>
+                </form>
             </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card fade-in-up">
-                <div class="stats-icon text-info">
-                    <i class="fas fa-users"></i>
-                </div>
-                <div class="stats-number">89</div>
-                <div class="stats-label">Người dùng hoạt động</div>
-                <small class="text-muted">
-                    <i class="fas fa-clock me-1"></i>Tuần này
-                </small>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="stats-card fade-in-up">
-                <div class="stats-icon text-primary">
-                    <i class="fas fa-download"></i>
-                </div>
-                <div class="stats-number">2,340</div>
-                <div class="stats-label">Lượt tải xuống</div>
-                <small class="text-success">
-                    <i class="fas fa-arrow-up me-1"></i>+25% tuần này
-                </small>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Lưu tài liệu
+                </button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Main Dashboard Content -->
-<div class="container">
-    <div class="row g-4">
-        <!-- Quick Management Actions -->
-        <div class="col-lg-4">
-            <div class="card-custom h-100">
-                <div class="card-header-custom">
-                    <h5 class="mb-0">
-                        <i class="fas fa-cogs me-2"></i>
-                        Quản lý nhanh
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="d-grid gap-3">
-                        <a href="#" class="btn btn-primary">
-                            <i class="fas fa-plus me-2"></i>Thêm tài liệu mới
-                        </a>
-                        <a href="#" class="btn btn-success">
-                            <i class="fas fa-user-plus me-2"></i>Quản lý người dùng
-                        </a>
-                        <a href="#" class="btn btn-warning">
-                            <i class="fas fa-handshake me-2"></i>Xử lý mượn/trả
-                        </a>
-                        <a href="#" class="btn btn-info">
-                            <i class="fas fa-file-export me-2"></i>Xuất báo cáo
-                        </a>
-                        <a href="#" class="btn btn-outline-secondary">
-                            <i class="fas fa-cog me-2"></i>Cài đặt hệ thống
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize Chart
+            const ctx = document.getElementById('accessChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                    datasets: [{
+                        label: 'Lượt truy cập',
+                        data: [65, 59, 80, 81, 56, 55, 40],
+                        borderColor: '#5BA7D9',
+                        backgroundColor: 'rgba(91, 167, 217, 0.1)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
 
-        <!-- Recent Activities -->
-        <div class="col-lg-8">
-            <div class="card-custom h-100">
-                <div class="card-header-custom d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="fas fa-history me-2"></i>
-                        Hoạt động gần đây
-                    </h5>
-                    <small class="text-muted">Cập nhật: @DateTime.Now.ToString("HH:mm")</small>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0 ps-4">Hoạt động</th>
-                                    <th class="border-0">Người thực hiện</th>
-                                    <th class="border-0">Thời gian</th>
-                                    <th class="border-0 pe-4">Trạng thái</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-book text-primary me-3"></i>
-                                            <div>
-                            <tbody>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-book text-primary me-3"></i>
-                                            <div>
-                                                <div class="fw-medium">Thêm tài liệu mới</div>
-                                                <small class="text-muted">Nghiên cứu về AI trong giáo dục</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <div class="fw-medium">TS. Nguyễn Văn A</div>
-                                            <small class="text-muted">Khoa CNTT</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">10 phút trước</small>
-                                    </td>
-                                    <td class="pe-4">
-                                        <span class="badge bg-success">Thành công</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-handshake text-warning me-3"></i>
-                                            <div>
-                                                <div class="fw-medium">Mượn tài liệu</div>
-                                                <small class="text-muted">Giáo trình Lập trình Web</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <div class="fw-medium">Sinh viên: Trần Văn B</div>
-                                            <small class="text-muted">MSSV: 20210001</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">1 giờ trước</small>
-                                    </td>
-                                    <td class="pe-4">
-                                        <span class="badge bg-warning">Đang mượn</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-user-plus text-success me-3"></i>
-                                            <div>
-                                                <div class="fw-medium">Tạo tài khoản mới</div>
-                                                <small class="text-muted">Giảng viên Khoa Kinh tế</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <div class="fw-medium">Admin</div>
-                                            <small class="text-muted">Hệ thống</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">2 giờ trước</small>
-                                    </td>
-                                    <td class="pe-4">
-                                        <span class="badge bg-success">Hoàn tất</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="ps-4">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-undo text-info me-3"></i>
-                                            <div>
-                                                <div class="fw-medium">Trả tài liệu</div>
-                                                <small class="text-muted">Sách: Cơ sở dữ liệu nâng cao</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            <div class="fw-medium">Sinh viên: Lê Thị C</div>
-                                            <small class="text-muted">MSSV: 20210002</small>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">3 giờ trước</small>
-                                    </td>
-                                    <td class="pe-4">
-                                        <span class="badge bg-info">Đã trả</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            // Tab switching animation
+            $('button[data-bs-toggle="pill"]').on('shown.bs.tab', function (e) {
+                $($(e.target).attr('data-bs-target')).addClass('fade-in-up');
+            });
+        });
+    </script>
+}
+</a>
+<a href="#" class="btn btn-info">
+    <i class="fas fa-file-export me-2"></i>Xuất báo cáo
+</a>
+<a href="#" class="btn btn-outline-secondary">
+    <i class="fas fa-cog me-2"></i>Cài đặt hệ thống
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Recent Activities -->
+<div class="col-lg-8">
+    <div class="card-custom h-100">
+        <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-history me-2"></i>
+                Hoạt động gần đây
+            </h5>
+            <small class="text-muted">Cập nhật: @DateTime.Now.ToString("HH:mm")</small>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="border-0 ps-4">Hoạt động</th>
+                            <th class="border-0">Người thực hiện</th>
+                            <th class="border-0">Thời gian</th>
+                            <th class="border-0 pe-4">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-book text-primary me-3"></i>
+                                    <div>
+                    <tbody>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-book text-primary me-3"></i>
+                                    <div>
+                                        <div class="fw-medium">Thêm tài liệu mới</div>
+                                        <small class="text-muted">Nghiên cứu về AI trong giáo dục</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div class="fw-medium">TS. Nguyễn Văn A</div>
+                                    <small class="text-muted">Khoa CNTT</small>
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">10 phút trước</small>
+                            </td>
+                            <td class="pe-4">
+                                <span class="badge bg-success">Thành công</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-handshake text-warning me-3"></i>
+                                    <div>
+                                        <div class="fw-medium">Mượn tài liệu</div>
+                                        <small class="text-muted">Giáo trình Lập trình Web</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div class="fw-medium">Sinh viên: Trần Văn B</div>
+                                    <small class="text-muted">MSSV: 20210001</small>
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">1 giờ trước</small>
+                            </td>
+                            <td class="pe-4">
+                                <span class="badge bg-warning">Đang mượn</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user-plus text-success me-3"></i>
+                                    <div>
+                                        <div class="fw-medium">Tạo tài khoản mới</div>
+                                        <small class="text-muted">Giảng viên Khoa Kinh tế</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div class="fw-medium">Admin</div>
+                                    <small class="text-muted">Hệ thống</small>
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">2 giờ trước</small>
+                            </td>
+                            <td class="pe-4">
+                                <span class="badge bg-success">Hoàn tất</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-undo text-info me-3"></i>
+                                    <div>
+                                        <div class="fw-medium">Trả tài liệu</div>
+                                        <small class="text-muted">Sách: Cơ sở dữ liệu nâng cao</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>
+                                    <div class="fw-medium">Sinh viên: Lê Thị C</div>
+                                    <small class="text-muted">MSSV: 20210002</small>
+                                </div>
+                            </td>
+                            <td>
+                                <small class="text-muted">3 giờ trước</small>
+                            </td>
+                            <td class="pe-4">
+                                <span class="badge bg-info">Đã trả</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
+</div>
 </div>
 
 @section Scripts {
@@ -314,4 +684,4 @@ console.log('Refreshing dashboard data...');
 }, 30000 );
 });
 </script>
-}
+}  
