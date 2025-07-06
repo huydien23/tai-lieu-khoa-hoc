@@ -1,0 +1,64 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.TaiLieuViewModel
+@{
+    ViewData["Title"] = "Xóa tài liệu";
+}
+
+<div class="container py-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="/TaiLieu">Tài liệu</a></li>
+            <li class="breadcrumb-item active">Xóa tài liệu</li>
+        </ol>
+    </nav>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Xác nhận xóa tài liệu
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-warning me-2"></i>
+                        <strong>Cảnh báo:</strong> Thao tác này không thể hoàn tác. Tài liệu sẽ bị xóa vĩnh viễn khỏi hệ
+                        thống.
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Tên tài liệu:</strong> @Model.TenTaiLieu
+                    </div>
+                    <div class="mb-3">
+                        <strong>Mô tả:</strong> @Model.MoTa
+                    </div>
+                    <div class="mb-3">
+                        <strong>Chuyên ngành:</strong> @Model.TenChuyenNganh
+                    </div>
+                    <div class="mb-3">
+                        <strong>Loại tài liệu:</strong> @Model.TenLoaiTaiLieu
+                    </div>
+                    <div class="mb-3">
+                        <strong>Ngày tải lên:</strong> @Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")
+                    </div>
+
+                    <form method="post" asp-action="DeleteConfirmed">
+                        <input type="hidden" name="id" value="@Model.MaTaiLieu" />
+
+                        <div class="d-flex justify-content-between">
+                            <a href="/TaiLieu/Details/@Model.MaTaiLieu" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Hủy bỏ
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash me-2"></i>Xóa tài liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                       

@@ -1,58 +1,91 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QuanLyTaiLieuKhoaHoc.Web.Data;
+using QuanLyTaiLieuKhoaHoc.Web.Models;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
     public class TimKiemController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public TimKiemController(ApplicationDbContext context)
         {
-            ViewData["Title"] = "Tìm kiếm Tài liệu";
-            return View();
+            _context = context;
         }
 
-        public IActionResult Advanced()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(string? q = null, int? chuyenNganh = null, int? loaiTaiLieu = null, int trang = 1)
         {
-            ViewData["Title"] = "Tìm kiếm Nâng cao";
-            return View();
-        }
+            ViewData["Title"] = "Tìm kiếm tài liệu";
 
-        [HttpGet]
-        public IActionResult Results(string query, string type, string category, string author, int? year)
-        {
-            ViewData["Title"] = "Kết quả Tìm kiếm";
-            ViewBag.Query = query;
-            ViewBag.Type = type;
-            ViewBag.Category = category;
-            ViewBag.Author = author;
-            ViewBag.Year = year;
-            return View();
-        }
+            var query = _context.TaiLieu
+                .Include(t => t.ChuyenNganh)
+                .Include(t => t.LoaiTaiLieu)
+                .Include(t => t.NguoiTaiLen)
+                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
-        [HttpPost]
-        public IActionResult Search(string query, string searchType = "basic")
-        {
-            if (string.IsNullOrWhiteSpace(query))
+            // Tìm kiếm theo từ khóa
+            if (!string.IsNullOrEmpty(q))
             {
-                TempData["ErrorMessage"] = "Vui lòng nhập từ khóa tìm kiếm";
-                return RedirectToAction("Index");
+                query = query.Where(t => t.TenTaiLieu.Contains(q) || t.MoTa.Contains(q));
+                ViewBag.TimKiem = q;
             }
 
-            return RedirectToAction("Results", new { query });
+            // Lọc theo chuyên ngành
+            if (chuyenNganh.HasValue)
+            {
+                query = query.Where(t => t.MaChuyenNganh == chuyenNganh.Value);
+                ViewBag.ChuyenNganhSelected = chuyenNganh.Value;
+            }
+
+            // Lọc theo loại tài liệu
+            if (loaiTaiLieu.HasValue)
+            {
+                query = query.Where(t => t.MaLoaiTaiLieu == loaiTaiLieu.Value);
+                ViewBag.LoaiTaiLieuSelected = loaiTaiLieu.Value;
+            }
+
+            // Phân trang
+            const int kichThuocTrang = 12;
+            var tongSoKetQua = await query.CountAsync();
+            var taiLieu = await query
+                .OrderByDescending(t => t.NgayTaiLen)
+                .Skip((trang - 1) * kichThuocTrang)
+                .Take(kichThuocTrang)
+                .ToListAsync();
+
+            ViewBag.TrangHienTai = trang;
+            ViewBag.TongSoTrang = (int)Math.Ceiling((double)tongSoKetQua / kichThuocTrang);
+            ViewBag.TongSoKetQua = tongSoKetQua;
+
+            // Dropdown data
+            ViewBag.ChuyenNganh = await _context.ChuyenNganh
+                .Where(cn => cn.TrangThaiHoatDong)
+                .ToListAsync();
+
+            ViewBag.LoaiTaiLieu = await _context.LoaiTaiLieu
+                .Where(lt => lt.TrangThaiHoatDong)
+                .ToListAsync();
+
+            return View(taiLieu);
         }
 
         [HttpGet]
-        public IActionResult Suggestions(string term)
+        public async Task<IActionResult> Suggestions(string term)
         {
-            // TODO: Return JSON suggestions based on term
-            var suggestions = new[]
+            if (string.IsNullOrEmpty(term))
             {
-                "Khoa học máy tính",
-                "Toán học ứng dụng",
-                "Vật lý lý thuyết",
-                "Hóa học hữu cơ",
-                "Sinh học phân tử"
-            }.Where(s => s.Contains(term, StringComparison.OrdinalIgnoreCase))
-             .Take(5);
+                return Json(new string[0]);
+            }
+
+            var suggestions = await _context.TaiLieu
+                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet && t.TenTaiLieu.Contains(term))
+                .Select(t => t.TenTaiLieu)
+                .Distinct()
+                .Take(5)
+                .ToListAsync();
 
             return Json(suggestions);
         }

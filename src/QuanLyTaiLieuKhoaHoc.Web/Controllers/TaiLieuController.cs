@@ -1,74 +1,213 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using QuanLyTaiLieuKhoaHoc.Web.Data;
+using QuanLyTaiLieuKhoaHoc.Web.Models;
+using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
+using QuanLyTaiLieuKhoaHoc.Web.Services;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
+    [Authorize]
     public class TaiLieuController : Controller
     {
-        public IActionResult Index()
+        private readonly ITaiLieuService _taiLieuService;
+        private readonly ApplicationDbContext _context;
+        private readonly UserManager<NguoiDung> _userManager;
+
+        public TaiLieuController(ITaiLieuService taiLieuService, ApplicationDbContext context, UserManager<NguoiDung> userManager)
+        {
+            _taiLieuService = taiLieuService;
+            _context = context;
+            _userManager = userManager;
+        }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(int trang = 1, string? timKiem = null, int? maChuyenNganh = null,
+            int? maLoaiTaiLieu = null, string? sapXep = null)
         {
             ViewData["Title"] = "Danh sách Tài liệu";
-            return View();
+
+            // Chuẩn bị data cho dropdown
+            await LoadDropdownData();
+
+            var model = await _taiLieuService.GetDanhSachTaiLieuAsync(trang, 12, timKiem, maChuyenNganh, maLoaiTaiLieu, sapXep);
+            return View(model);
         }
 
-        public IActionResult Details(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int id)
         {
-            ViewData["Title"] = "Chi tiết Tài liệu";
-            ViewBag.DocumentId = id;
-            return View();
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id);
+            if (taiLieu == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["Title"] = $"Chi tiết: {taiLieu.TenTaiLieu}";
+            return View(taiLieu);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["Title"] = "Thêm Tài liệu mới";
-            return View();
+            await LoadDropdownData();
+            return View(new TaiLieuViewModel());
         }
 
         [HttpPost]
-        public IActionResult Create(string title, string author, string category, string type)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(TaiLieuViewModel model)
         {
-            // TODO: Implement create logic
-            TempData["SuccessMessage"] = "Thêm tài liệu thành công!";
+            if (ModelState.IsValid)
+            {
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser != null)
+                {
+                    var result = await _taiLieuService.TaoTaiLieuAsync(model, currentUser.Id);
+                    if (result)
+                    {
+                        TempData["SuccessMessage"] = "Thêm tài liệu thành công! Tài liệu đang chờ duyệt.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Có lỗi xảy ra khi thêm tài liệu.");
+                    }
+                }
+            }
+
+            await LoadDropdownData();
+            return View(model);
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id);
+            if (taiLieu == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.QuanTriVien &&
+                await _context.TaiLieu.AnyAsync(t => t.MaTaiLieu == id && t.MaNguoiTaiLen != currentUser.Id)))
+            {
+                return Forbid();
+            }
+
+            ViewData["Title"] = $"Chỉnh sửa: {taiLieu.TenTaiLieu}";
+            await LoadDropdownData();
+            return View(taiLieu);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(TaiLieuViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _taiLieuService.CapNhatTaiLieuAsync(model);
+                if (result)
+                {
+                    TempData["SuccessMessage"] = "Cập nhật tài liệu thành công!";
+                    return RedirectToAction("Details", new { id = model.MaTaiLieu });
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Có lỗi xảy ra khi cập nhật tài liệu.");
+                }
+            }
+
+            await LoadDropdownData();
+            return View(model);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id);
+            if (taiLieu == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.QuanTriVien &&
+                await _context.TaiLieu.AnyAsync(t => t.MaTaiLieu == id && t.MaNguoiTaiLen != currentUser.Id)))
+            {
+                return Forbid();
+            }
+
+            ViewData["Title"] = $"Xóa: {taiLieu.TenTaiLieu}";
+            return View(taiLieu);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var result = await _taiLieuService.XoaTaiLieuAsync(id);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Xóa tài liệu thành công!";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi xóa tài liệu.";
+            }
+
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int id)
+        [AllowAnonymous]
+        public async Task<IActionResult> Download(int id)
         {
-            ViewData["Title"] = "Chỉnh sửa Tài liệu";
-            ViewBag.DocumentId = id;
-            return View();
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = currentUser?.Id ?? "anonymous";
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            var filePath = await _taiLieuService.TaiFileAsync(id, userId, ipAddress);
+            if (string.IsNullOrEmpty(filePath))
+            {
+                return NotFound();
+            }
+
+            var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", filePath.TrimStart('/'));
+            if (!System.IO.File.Exists(fullPath))
+            {
+                return NotFound();
+            }
+
+            var fileName = Path.GetFileName(fullPath);
+            var fileBytes = await System.IO.File.ReadAllBytesAsync(fullPath);
+
+            return File(fileBytes, "application/octet-stream", fileName);
         }
 
-        [HttpPost]
-        public IActionResult Edit(int id, string title, string author, string category, string type)
+        public async Task<IActionResult> MyDocuments(int trang = 1)
         {
-            // TODO: Implement edit logic
-            TempData["SuccessMessage"] = "Cập nhật tài liệu thành công!";
-            return RedirectToAction("Details", new { id });
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            ViewData["Title"] = "Tài liệu của tôi";
+            var taiLieu = await _taiLieuService.GetTaiLieuCuaNguoiDungAsync(currentUser.Id, trang);
+            return View(taiLieu);
         }
 
-        public IActionResult Delete(int id)
+        private async Task LoadDropdownData()
         {
-            ViewData["Title"] = "Xóa Tài liệu";
-            ViewBag.DocumentId = id;
-            return View();
-        }
+            ViewBag.ChuyenNganh = new SelectList(
+                await _context.ChuyenNganh.Where(cn => cn.TrangThaiHoatDong).ToListAsync(),
+                "MaChuyenNganh", "TenChuyenNganh");
 
-        [HttpPost]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            // TODO: Implement delete logic
-            TempData["SuccessMessage"] = "Xóa tài liệu thành công!";
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public IActionResult Search(string query, string category, string author)
-        {
-            ViewData["Title"] = "Tìm kiếm Tài liệu";
-            ViewBag.Query = query;
-            ViewBag.Category = category;
-            ViewBag.Author = author;
-            return View();
+            ViewBag.LoaiTaiLieu = new SelectList(
+                await _context.LoaiTaiLieu.Where(lt => lt.TrangThaiHoatDong).ToListAsync(),
+                "MaLoaiTaiLieu", "TenLoaiTaiLieu");
         }
     }
 }

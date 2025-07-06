@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@using QuanLyTaiLieuKhoaHoc.Web.Models
+@inject SignInManager<NguoiDung> SignInManager
+@inject UserManager<NguoiDung> UserManager
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -62,6 +63,11 @@
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="TaiLieu" asp-action="MyDocuments">
+                                    <i class="fas fa-user-files me-1"></i>Tài liệu của tôi
+                                </a>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" asp-area="" asp-controller="ThongKe" asp-action="Index">
                                     <i class="fas fa-chart-bar me-1"></i>Thống kê

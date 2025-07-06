@@ -1,5 +1,6 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.DashboardViewModel
 @{
-    ViewData["Title"] = "Dashboard Thủ thư";
+    ViewData["Title"] = "Dashboard Quản trị";
 }
 
 <!-- Dashboard Header -->
@@ -8,14 +9,14 @@
         <div>
             <h1 class="h2 fw-bold mb-2">
                 <i class="fas fa-tachometer-alt me-3 text-primary"></i>
-                Dashboard Thủ thư
+                Dashboard Quản trị
             </h1>
             <p class="text-muted mb-0">Quản lý hệ thống tài liệu khoa học hiệu quả</p>
         </div>
         <div class="page-actions">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDocumentModal">
+            <a href="/TaiLieu/Create" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i>Thêm tài liệu
-            </button>
+            </a>
         </div>
     </div>
 </div>
@@ -684,4 +685,4 @@ console.log('Refreshing dashboard data...');
 }, 30000 );
 });
 </script>
-}  
+} 
