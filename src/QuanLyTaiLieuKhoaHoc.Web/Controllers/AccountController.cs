@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
@@ -219,6 +220,71 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
 
             return View();
+        }
+
+        // Temporary method to force seed users
+        [HttpGet]
+        public async Task<IActionResult> ForceSeed()
+        {
+            try
+            {
+                var existingUser = await _userManager.FindByEmailAsync("thuthu@library.edu.vn");
+                if (existingUser == null)
+                {
+                    // Tạo thủ thư
+                    var librarianUser = new NguoiDung
+                    {
+                        UserName = "thuthu@library.edu.vn",
+                        Email = "thuthu@library.edu.vn",
+                        EmailConfirmed = true,
+                        HoTen = "Nguyễn Thị Hoa",
+                        VaiTro = VaiTroNguoiDung.ThuThu,
+                        MaChuyenNganh = 1,
+                        MaSo = "TT001",
+                        NgayTao = DateTime.Now,
+                        TrangThaiHoatDong = true
+                    };
+                    var result = await _userManager.CreateAsync(librarianUser, "ThuThu@2024");
+
+                    if (result.Succeeded)
+                    {
+                        return Json(new { success = true, message = "Tài khoản thủ thư đã được tạo thành công!" });
+                    }
+                    else
+                    {
+                        return Json(new { success = false, errors = result.Errors });
+                    }
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Tài khoản thủ thư đã tồn tại!" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // Temporary method to check users in database
+        [HttpGet]
+        public async Task<IActionResult> CheckUsers()
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var result = users.Select(u => new
+            {
+                u.Email,
+                u.UserName,
+                u.HoTen,
+                u.VaiTro,
+                u.TrangThaiHoatDong
+            }).ToList();
+
+            return Json(new
+            {
+                TotalUsers = users.Count,
+                Users = result
+            });
         }
     }
 }
