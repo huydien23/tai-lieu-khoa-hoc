@@ -89,8 +89,8 @@
                     Thống kê tài liệu theo tháng (12 tháng gần nhất)
                 </h5>
             </div>
-            <div class="card-body">
-                <canvas id="monthlyChart" width="400" height="200"></canvas>
+            <div class="card-body" style="height:300px;">
+                <canvas id="monthlyChart"></canvas>
             </div>
         </div>
     </div>
@@ -104,9 +104,8 @@
                     Người dùng theo vai trò
                 </h5>
             </div>
-            <div class="card-body">
-                <canvas id="userRoleChart" width="300" height="300"></canvas>
-                
+            <div class="card-body" style="height:300px;">
+                <canvas id="userRoleChart"></canvas>
                 <div class="mt-3">
                     @if (userRoleStats != null)
                     {
@@ -154,11 +153,10 @@
                     Tài liệu theo chuyên ngành
                 </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="height:300px;">
                 @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
                 {
-                    <canvas id="categoryChart" width="400" height="300"></canvas>
-                    
+                    <canvas id="categoryChart"></canvas>
                     <div class="mt-3">
                         @foreach (var category in Model.ThongKeTheoChuyenNganh.OrderByDescending(x => x.Value).Take(10))
                         {
@@ -192,11 +190,10 @@
                     Tài liệu theo loại
                 </h5>
             </div>
-            <div class="card-body">
+            <div class="card-body" style="height:300px;">
                 @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
                 {
-                    <canvas id="documentTypeChart" width="400" height="300"></canvas>
-                    
+                    <canvas id="documentTypeChart"></canvas>
                     <div class="mt-3">
                         @foreach (var docType in Model.ThongKeTheoLoaiTaiLieu.OrderByDescending(x => x.Value).Take(10))
                         {

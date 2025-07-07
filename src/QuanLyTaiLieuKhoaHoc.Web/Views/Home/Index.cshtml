@@ -8,7 +8,8 @@
         <div class="row align-items-center">
             <div class="col-lg-6">
                 <h1 class="fw-bold">Hệ thống Quản lý Tài liệu Khoa học</h1>
-                <p class="lead">Nền tảng hiện đại giúp bạn dễ dàng tìm kiếm, quản lý và chia sẻ tài liệu khoa học một cách hiệu quả.</p>
+                <p class="lead">Nền tảng hiện đại giúp bạn dễ dàng tìm kiếm, quản lý và chia sẻ tài liệu khoa học một
+                    cách hiệu quả.</p>
 
                 <div class="d-flex flex-wrap gap-2 mb-4">
                     <a href="/TaiLieu" class="btn btn-primary">
@@ -20,53 +21,14 @@
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <img src="~/images/hero-illustration.svg" alt="Minh họa tài liệu khoa học" class="img-fluid" onerror="this.style.display='none'">
+                <img src="~/images/hero-illustration.svg" alt="Minh họa tài liệu khoa học" class="img-fluid"
+                    onerror="this.style.display='none'">
             </div>
         </div>
     </div>
 </div>
 
 <div class="container py-5">
-    <!-- Thống kê nhanh -->
-    <div class="row mb-5">
-        <div class="col-md-3 mb-3">
-            <div class="card text-center bg-primary text-white">
-                <div class="card-body">
-                    <i class="fas fa-file-alt fa-2x mb-2"></i>
-                    <h3 class="mb-0">@Model.TongSoTaiLieu</h3>
-                    <small>Tài liệu</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card text-center bg-success text-white">
-                <div class="card-body">
-                    <i class="fas fa-users fa-2x mb-2"></i>
-                    <h3 class="mb-0">@Model.TongSoNguoiDung</h3>
-                    <small>Người dùng</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card text-center bg-info text-white">
-                <div class="card-body">
-                    <i class="fas fa-download fa-2x mb-2"></i>
-                    <h3 class="mb-0">@Model.TongSoLuotTai</h3>
-                    <small>Lượt tải</small>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3 mb-3">
-            <div class="card text-center bg-warning text-white">
-                <div class="card-body">
-                    <i class="fas fa-plus-circle fa-2x mb-2"></i>
-                    <h3 class="mb-0">@Model.TaiLieuMoiTrongThang</h3>
-                    <small>Mới tháng này</small>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Tài liệu mới nhất -->
     <div class="mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -88,16 +50,17 @@
                             <p class="card-text text-muted small">
                                 <i class="fas fa-user me-1"></i>@taiLieu.TenNguoiTaiLen
                             </p>
-                            <p class="card-text">@Html.Raw(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa)</p>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-primary">@taiLieu.TenLoaiTaiLieu</span>
-                                <small class="text-muted">@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</small>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-muted small">
-                                    <i class="fas fa-download me-1"></i>@taiLieu.LuotTai lượt tải
-                                </span>
-                                @if (taiLieu.SoLuotDanhGia > 0)
+                            <p class="card-text">@Html.Raw(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) +
+                                                            "..." : taiLieu.MoTa)</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-primary">@taiLieu.TenLoaiTaiLieu</span>
+                            <small class="text-muted">@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted small">
+                                <i class="fas fa-download me-1"></i>@taiLieu.LuotTai lượt tải
+                            </span>
+                            @if (taiLieu.SoLuotDanhGia > 0)
                                 {
                                     <span class="text-warning small">
                                         <i class="fas fa-star"></i> @taiLieu.DiemDanhGiaTrungBinh.ToString("F1")
@@ -132,16 +95,17 @@
                             <p class="card-text text-muted small">
                                 <i class="fas fa-user me-1"></i>@taiLieu.TenNguoiTaiLen
                             </p>
-                            <p class="card-text">@Html.Raw(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa)</p>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-success">@taiLieu.TenChuyenNganh</span>
-                                <small class="text-muted">@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</small>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="text-primary small">
-                                    <i class="fas fa-fire me-1"></i>@taiLieu.LuotTai lượt tải
-                                </span>
-                                @if (taiLieu.SoLuotDanhGia > 0)
+                            <p class="card-text">@Html.Raw(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) +
+                                                            "..." : taiLieu.MoTa)</p>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="badge bg-success">@taiLieu.TenChuyenNganh</span>
+                            <small class="text-muted">@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</small>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary small">
+                                <i class="fas fa-fire me-1"></i>@taiLieu.LuotTai lượt tải
+                            </span>
+                            @if (taiLieu.SoLuotDanhGia > 0)
                                 {
                                     <span class="text-warning small">
                                         <i class="fas fa-star"></i> @taiLieu.DiemDanhGiaTrungBinh.ToString("F1")
@@ -173,7 +137,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header">
