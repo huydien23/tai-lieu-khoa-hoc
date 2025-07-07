@@ -22,6 +22,22 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     {
         base.OnModelCreating(builder);
 
+        // Cấu hình tên bảng rõ ràng (thay đổi tên bảng Identity mặc định)
+        builder.Entity<NguoiDung>().ToTable("NguoiDung");
+        builder.Entity<TaiLieu>().ToTable("TaiLieu");
+        builder.Entity<ChuyenNganh>().ToTable("ChuyenNganh");
+        builder.Entity<LoaiTaiLieu>().ToTable("LoaiTaiLieu");
+        builder.Entity<LichSuTaiTaiLieu>().ToTable("LichSuTaiTaiLieu");
+        builder.Entity<DanhGiaTaiLieu>().ToTable("DanhGiaTaiLieu");
+
+        // Cấu hình tên bảng Identity cho dễ hiểu
+        builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().ToTable("VaiTro");
+        builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>().ToTable("NguoiDung_VaiTro");
+        builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserClaim<string>>().ToTable("NguoiDung_Claims");
+        builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserLogin<string>>().ToTable("NguoiDung_Logins");
+        builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserToken<string>>().ToTable("NguoiDung_Tokens");
+        builder.Entity<Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>>().ToTable("VaiTro_Claims");
+
         // Cấu hình relationships
         builder.Entity<TaiLieu>()
             .HasOne(t => t.ChuyenNganh)

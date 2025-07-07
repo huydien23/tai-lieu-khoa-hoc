@@ -18,22 +18,28 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             return View();
         }
-
         [HttpPost]
-        public async Task<IActionResult> Login(string username, string password, string role)
+        public async Task<IActionResult> Login(string Email, string Password, bool RememberMe = false)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Password))
             {
                 TempData["ErrorMessage"] = "Vui lòng nhập đầy đủ thông tin đăng nhập";
                 return View();
             }
 
-            // Tìm user bằng username hoặc email
-            var user = await _userManager.FindByNameAsync(username) ?? await _userManager.FindByEmailAsync(username);
+            // Tìm user bằng email hoặc username
+            var user = await _userManager.FindByEmailAsync(Email) ?? await _userManager.FindByNameAsync(Email);
 
             if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                // Kiểm tra tài khoản có bị khóa không
+                if (!user.TrangThaiHoatDong)
+                {
+                    TempData["ErrorMessage"] = "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.";
+                    return View();
+                }
+
+                var result = await _signInManager.PasswordSignInAsync(user, Password, RememberMe, false);
                 if (result.Succeeded)
                 {
                     TempData["SuccessMessage"] = $"Đăng nhập thành công! Chào mừng {user.HoTen ?? user.UserName}";
@@ -43,12 +49,24 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                         return RedirectToAction("Dashboard", "Admin");
                     else if (user.VaiTro == VaiTroNguoiDung.GiangVien)
                         return RedirectToAction("Dashboard", "Lecturer");
-                    else
+                    else if (user.VaiTro == VaiTroNguoiDung.SinhVien)
                         return RedirectToAction("Dashboard", "Student");
+                    else
+                        return RedirectToAction("Index", "Home");
+                }
+                else if (result.IsLockedOut)
+                {
+                    TempData["ErrorMessage"] = "Tài khoản bị khóa do đăng nhập sai nhiều lần. Vui lòng thử lại sau.";
+                    return View();
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Mật khẩu không chính xác";
+                    return View();
                 }
             }
 
-            TempData["ErrorMessage"] = "Thông tin đăng nhập không chính xác";
+            TempData["ErrorMessage"] = "Email không tồn tại trong hệ thống";
             return View();
         }
 
@@ -73,6 +91,22 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return View();
             }
 
+            // Kiểm tra email đã tồn tại
+            var existingEmailUser = await _userManager.FindByEmailAsync(email);
+            if (existingEmailUser != null)
+            {
+                TempData["ErrorMessage"] = "Email này đã được sử dụng";
+                return View();
+            }
+
+            // Kiểm tra username đã tồn tại
+            var existingUserNameUser = await _userManager.FindByNameAsync(username);
+            if (existingUserNameUser != null)
+            {
+                TempData["ErrorMessage"] = "Tên đăng nhập này đã được sử dụng";
+                return View();
+            }
+
             // Tạo user mới
             var user = new NguoiDung
             {
@@ -81,12 +115,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 HoTen = username, // Tạm thời dùng username làm họ tên
                 VaiTro = role switch
                 {
-                    "admin" => VaiTroNguoiDung.QuanTriVien,
                     "lecturer" => VaiTroNguoiDung.GiangVien,
+                    "admin" => VaiTroNguoiDung.QuanTriVien,
                     _ => VaiTroNguoiDung.SinhVien
                 },
                 EmailConfirmed = true,
-                TrangThaiHoatDong = true
+                TrangThaiHoatDong = true,
+                NgayTao = DateTime.Now
             };
 
             var result = await _userManager.CreateAsync(user, password);
@@ -96,11 +131,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return RedirectToAction("Login");
             }
 
-            foreach (var error in result.Errors)
-            {
-                TempData["ErrorMessage"] = error.Description;
-                break; // Chỉ hiển thị lỗi đầu tiên
-            }
+            // Hiển thị lỗi từ Identity
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            TempData["ErrorMessage"] = $"Đăng ký thất bại: {errors}";
 
             return View();
         }
