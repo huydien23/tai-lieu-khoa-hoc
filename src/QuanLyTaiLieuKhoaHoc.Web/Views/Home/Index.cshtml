@@ -28,6 +28,29 @@
     </div>
 </div>
 
+<!-- Tìm kiếm nhanh -->
+<div class="search-section rounded-lg p-5 mb-5 bg-light">
+    <h2 class="fw-bold mb-4 text-center">Tìm kiếm tài liệu</h2>
+
+    <form action="/TimKiem" method="get" class="mb-4">
+        <div class="input-group input-group-lg">
+            <input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." name="q">
+            <button class="btn btn-primary" type="submit">
+                <i class="fas fa-search me-2"></i>Tìm kiếm
+            </button>
+        </div>
+    </form>
+
+    <div class="popular-keywords text-center">
+        <span class="text-muted me-2">Từ khóa phổ biến:</span>
+        <a href="/TimKiem?q=machine+learning" class="badge bg-light text-dark me-2 mb-2">Machine Learning</a>
+        <a href="/TimKiem?q=blockchain" class="badge bg-light text-dark me-2 mb-2">Blockchain</a>
+        <a href="/TimKiem?q=data+science" class="badge bg-light text-dark me-2 mb-2">Data Science</a>
+        <a href="/TimKiem?q=internet+of+things" class="badge bg-light text-dark me-2 mb-2">Internet of Things</a>
+        <a href="/TimKiem?q=cloud+computing" class="badge bg-light text-dark me-2 mb-2">Cloud Computing</a>
+    </div>
+</div>
+
 <div class="container py-5">
     <!-- Tài liệu mới nhất -->
     <div class="mb-5">
@@ -153,29 +176,6 @@
                     }
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Tìm kiếm nhanh -->
-    <div class="search-section rounded-lg p-5 mb-5 bg-light">
-        <h2 class="fw-bold mb-4 text-center">Tìm kiếm tài liệu</h2>
-
-        <form action="/TimKiem" method="get" class="mb-4">
-            <div class="input-group input-group-lg">
-                <input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." name="q">
-                <button class="btn btn-primary" type="submit">
-                    <i class="fas fa-search me-2"></i>Tìm kiếm
-                </button>
-            </div>
-        </form>
-
-        <div class="popular-keywords text-center">
-            <span class="text-muted me-2">Từ khóa phổ biến:</span>
-            <a href="/TimKiem?q=machine+learning" class="badge bg-light text-dark me-2 mb-2">Machine Learning</a>
-            <a href="/TimKiem?q=blockchain" class="badge bg-light text-dark me-2 mb-2">Blockchain</a>
-            <a href="/TimKiem?q=data+science" class="badge bg-light text-dark me-2 mb-2">Data Science</a>
-            <a href="/TimKiem?q=internet+of+things" class="badge bg-light text-dark me-2 mb-2">Internet of Things</a>
-            <a href="/TimKiem?q=cloud+computing" class="badge bg-light text-dark me-2 mb-2">Cloud Computing</a>
         </div>
     </div>
 </div>
