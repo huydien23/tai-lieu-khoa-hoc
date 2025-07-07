@@ -19,11 +19,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Mô tả")]
         public string MoTa { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Đường dẫn file không được để trống")]
+        [Required(ErrorMessage = "Tác giả không được để trống")]
+        [StringLength(200, ErrorMessage = "Tên tác giả không được vượt quá 200 ký tự")]
+        [Display(Name = "Tác giả")]
+        public string TacGia { get; set; } = string.Empty;
+
         [Display(Name = "Đường dẫn file")]
         public string DuongDanFile { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Loại file không được để trống")]
         [StringLength(10, ErrorMessage = "Loại file không được vượt quá 10 ký tự")]
         [Display(Name = "Loại file")]
         public string LoaiFile { get; set; } = string.Empty;
@@ -50,7 +53,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Loại tài liệu")]
         public int MaLoaiTaiLieu { get; set; }
 
-        [Required(ErrorMessage = "Người tải lên không được để trống")]
         [Display(Name = "Người tải lên")]
         public string MaNguoiTaiLen { get; set; } = string.Empty;
 

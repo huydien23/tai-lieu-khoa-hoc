@@ -1,0 +1,161 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.TaiLieu
+
+<form id="createDocumentForm" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="TenTaiLieu" class="form-label fw-semibold">
+                    <i class="fas fa-file-alt me-1"></i>
+                    Tên tài liệu <span class="text-danger">*</span>
+                </label>
+                <input asp-for="TenTaiLieu" class="form-control" placeholder="Nhập tên tài liệu..." />
+                <span asp-validation-for="TenTaiLieu" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="taiLieuFile" class="form-label fw-semibold">
+                    <i class="fas fa-upload me-1"></i>
+                    File tài liệu <span class="text-danger">*</span>
+                </label>
+                <input type="file" class="form-control" id="taiLieuFile" name="taiLieuFile"
+                    accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" />
+                <div class="form-text">Chấp nhận: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX (Max: 50MB)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="MoTa" class="form-label fw-semibold">
+            <i class="fas fa-align-left me-1"></i>
+            Mô tả <span class="text-danger">*</span>
+        </label>
+        <textarea asp-for="MoTa" class="form-control" rows="3"
+            placeholder="Nhập mô tả chi tiết về tài liệu..."></textarea>
+        <span asp-validation-for="MoTa" class="text-danger small"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TacGia" class="form-label fw-semibold">
+            <i class="fas fa-user-edit me-1"></i>
+            Tác giả <span class="text-danger">*</span>
+        </label>
+        <input asp-for="TacGia" class="form-control" placeholder="Nhập tên tác giả..." />
+        <span asp-validation-for="TacGia" class="text-danger small"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="MaChuyenNganh" class="form-label fw-semibold">
+                    <i class="fas fa-layer-group me-1"></i>
+                    Chuyên ngành <span class="text-danger">*</span>
+                </label>
+                <select asp-for="MaChuyenNganh" class="form-select">
+                    <option value="">-- Chọn chuyên ngành --</option>
+                    @if (ViewBag.ChuyenNganh != null)
+                    {
+                        var chuyenNganhList = ViewBag.ChuyenNganh as List<QuanLyTaiLieuKhoaHoc.Web.Models.ChuyenNganh>;
+                        if (chuyenNganhList != null)
+                        {
+                            foreach (var item in chuyenNganhList)
+                            {
+                                <option value="@item.MaChuyenNganh">@item.TenChuyenNganh</option>
+                            }
+                        }
+                    }
+                </select>
+                <span asp-validation-for="MaChuyenNganh" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label asp-for="MaLoaiTaiLieu" class="form-label fw-semibold">
+                    <i class="fas fa-tag me-1"></i>
+                    Loại tài liệu <span class="text-danger">*</span>
+                </label>
+                <select asp-for="MaLoaiTaiLieu" class="form-select">
+                    <option value="">-- Chọn loại tài liệu --</option>
+                    @if (ViewBag.LoaiTaiLieu != null)
+                    {
+                        var loaiTaiLieuList = ViewBag.LoaiTaiLieu as List<QuanLyTaiLieuKhoaHoc.Web.Models.LoaiTaiLieu>;
+                        if (loaiTaiLieuList != null)
+                        {
+                            foreach (var item in loaiTaiLieuList)
+                            {
+                                <option value="@item.MaLoaiTaiLieu">@item.TenLoaiTaiLieu</option>
+                            }
+                        }
+                    }
+                </select>
+                <span asp-validation-for="MaLoaiTaiLieu" class="text-danger small"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i>Hủy
+        </button>
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-save me-1"></i>Lưu tài liệu
+        </button>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#createDocumentForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.html();
+
+            // Disable submit button
+            submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin me-1"></i>Đang lưu...');
+
+            $.ajax({
+                url: '@Url.Action("CreateDocument")',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        $('#createDocumentModal').modal('hide');
+
+                        // Show success message
+                        toastr.success(response.message);
+
+                        // Refresh page or update list
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                        if (response.errors) {
+                            response.errors.forEach(function (error) {
+                                toastr.error(error);
+                            });
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Có lỗi xảy ra: ' + error);
+                },
+                complete: function () {
+                    // Re-enable submit button
+                    submitBtn.prop('disabled', false).html(originalText);
+                }
+            });
+        });
+
+        // Focus on first input
+        $('#TenTaiLieu').focus();
+    });
+</script>

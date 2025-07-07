@@ -304,6 +304,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 MaTaiLieu = taiLieu.MaTaiLieu,
                 TenTaiLieu = taiLieu.TenTaiLieu,
                 MoTa = taiLieu.MoTa,
+                TacGia = taiLieu.TacGia,
                 MaChuyenNganh = taiLieu.MaChuyenNganh,
                 MaLoaiTaiLieu = taiLieu.MaLoaiTaiLieu,
                 MaNguoiTaiLen = taiLieu.MaNguoiTaiLen,

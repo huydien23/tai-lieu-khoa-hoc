@@ -14,6 +14,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         [Display(Name = "Mô tả")]
         public string MoTa { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Tác giả không được để trống")]
+        [Display(Name = "Tác giả")]
+        public string TacGia { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Chuyên ngành không được để trống")]
         [Display(Name = "Chuyên ngành")]
         public int MaChuyenNganh { get; set; }

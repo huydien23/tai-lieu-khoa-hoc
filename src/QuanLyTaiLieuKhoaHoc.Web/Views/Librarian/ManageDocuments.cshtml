@@ -1,0 +1,333 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.TaiLieu>
+@using QuanLyTaiLieuKhoaHoc.Web.Models
+
+@{
+    ViewData["Title"] = "Quản lý Tài liệu";
+}
+
+<div class="content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">
+            <i class="fas fa-file-alt me-2 text-primary"></i>
+            Quản lý Tài liệu
+        </h2>
+        <div class="d-flex gap-2">
+            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDocumentModal">
+                <i class="fas fa-plus me-1"></i>Thêm tài liệu
+            </button>
+            <div class="input-group" style="width: 300px;">
+                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm tài liệu...">
+                <button class="btn btn-outline-secondary" type="button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">
+            <i class="fas fa-list me-2"></i>
+            Danh sách tài liệu (@Model.Count() tài liệu)
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
+                <p class="text-muted">Chưa có tài liệu nào trong hệ thống.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="documentsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">
+                                <i class="fas fa-file me-1"></i>
+                                Tên tài liệu
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-user-edit me-1"></i>
+                                Tác giả
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-layer-group me-1"></i>
+                                Chuyên ngành
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-tag me-1"></i>
+                                Loại tài liệu
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-calendar me-1"></i>
+                                Ngày tải lên
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-download me-1"></i>
+                                Lượt tải
+                            </th>
+                            <th scope="col">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Trạng thái
+                            </th>
+                            <th scope="col" class="text-center">
+                                <i class="fas fa-cogs me-1"></i>
+                                Thao tác
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold text-primary">@item.TenTaiLieu</div>
+                                    <small class="text-muted">@(item.MoTa.Length > 50 ? item.MoTa.Substring(0, 50) + "..." :
+                                                                        item.MoTa)</small>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-edit text-secondary me-2"></i>
+                                        <span>@item.TacGia</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@item.ChuyenNganh?.TenChuyenNganh</span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info text-dark">@item.LoaiTaiLieu?.TenLoaiTaiLieu</span>
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        @item.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")
+                                    </small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-success">@item.LuotTai</span>
+                                </td>
+                                <td>
+                                    @switch (item.TrangThai)
+                                    {
+                                        case TrangThaiTaiLieu.DaDuyet:
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Đã duyệt
+                                            </span>
+                                            break;
+                                        case TrangThaiTaiLieu.ChoDuyet:
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-clock me-1"></i>
+                                                Chờ duyệt
+                                            </span>
+                                            break;
+                                        case TrangThaiTaiLieu.TuChoi:
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times-circle me-1"></i>
+                                                Từ chối
+                                            </span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex justify-content-center gap-1">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" title="Xem chi tiết"
+                                            onclick="viewDocumentDetails(@item.MaTaiLieu)">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+
+                                        @if (item.TrangThai == TrangThaiTaiLieu.ChoDuyet)
+                                        {
+                                            <form asp-action="ApproveDocument" method="post" style="display: inline;">
+                                                <input type="hidden" name="id" value="@item.MaTaiLieu" />
+                                                <button type="submit" class="btn btn-outline-success btn-sm" title="Duyệt tài liệu"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn duyệt tài liệu này?')">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+
+                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Từ chối tài liệu"
+                                                data-bs-toggle="modal" data-bs-target="#rejectModal"
+                                                data-document-id="@item.MaTaiLieu" data-document-name="@item.TenTaiLieu">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(item.DuongDanFile))
+                                        {
+                                            <a href="@item.DuongDanFile" class="btn btn-outline-secondary btn-sm" title="Tải xuống"
+                                                target="_blank">
+                                                <i class="fas fa-download"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal từ chối tài liệu -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">
+                    <i class="fas fa-times-circle text-danger me-2"></i>
+                    Từ chối tài liệu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="RejectDocument" method="post">
+                <div class="modal-body">
+                    <input type="hidden" id="rejectDocumentId" name="id" />
+                    <p>Bạn có chắc chắn muốn từ chối tài liệu <strong id="rejectDocumentName"></strong>?</p>
+                    <div class="mb-3">
+                        <label for="lyDo" class="form-label">Lý do từ chối (tùy chọn):</label>
+                        <textarea class="form-control" id="lyDo" name="lyDo" rows="3"
+                            placeholder="Nhập lý do từ chối tài liệu..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Hủy
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-times-circle me-1"></i>Từ chối
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal xem chi tiết tài liệu -->
+<div class="modal fade" id="documentDetailsModal" tabindex="-1" aria-labelledby="documentDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="documentDetailsModalLabel">
+                    <i class="fas fa-file-alt text-primary me-2"></i>
+                    Chi tiết tài liệu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="documentDetailsContent">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal thêm tài liệu -->
+<div class="modal fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDocumentModalLabel">
+                    <i class="fas fa-plus-circle text-success me-2"></i>
+                    Thêm tài liệu mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="createDocumentContent">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải form...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Tìm kiếm tài liệu
+        document.getElementById('searchInput').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const table = document.getElementById('documentsTable');
+            const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const text = row.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        });
+
+        // Xử lý modal từ chối
+        const rejectModal = document.getElementById('rejectModal');
+        rejectModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const documentId = button.getAttribute('data-document-id');
+            const documentName = button.getAttribute('data-document-name');
+
+            document.getElementById('rejectDocumentId').value = documentId;
+            document.getElementById('rejectDocumentName').textContent = documentName;
+        });
+
+        // Xem chi tiết tài liệu
+        function viewDocumentDetails(documentId) {
+            $('#documentDetailsModal').modal('show');
+            $.get('@Url.Action("GetDocumentDetails")', { id: documentId }, function (data) {
+                $('#documentDetailsContent').html(data);
+            }).fail(function () {
+                $('#documentDetailsContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải thông tin!</div>');
+            });
+        }
+
+        // Load create document modal
+        $('#createDocumentModal').on('show.bs.modal', function (e) {
+            $.get('@Url.Action("CreateDocument")', function (data) {
+                $('#createDocumentContent').html(data);
+            }).fail(function () {
+                $('#createDocumentContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải form!</div>');
+            });
+        });
+
+        // Reset modals when hidden
+        $('#createDocumentModal').on('hidden.bs.modal', function (e) {
+            $('#createDocumentContent').html(`
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải form...</p>
+                    </div>
+                `);
+        });
+
+        $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
+            $('#documentDetailsContent').html(`
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                    </div>
+                `);
+        });
+    </script>
+}
+
+                                                                

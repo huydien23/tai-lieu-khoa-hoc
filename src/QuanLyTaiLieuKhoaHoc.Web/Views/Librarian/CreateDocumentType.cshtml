@@ -1,0 +1,165 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.LoaiTaiLieu
+
+@{
+    ViewData["Title"] = "Thêm loại tài liệu mới";
+}
+
+<div class="content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">
+            <i class="fas fa-plus-circle me-2 text-success"></i>
+            Thêm loại tài liệu mới
+        </h2>
+        <a asp-action="ManageDocumentTypes" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Quay lại danh sách
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Thông tin loại tài liệu
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateDocumentType" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    
+                    <div class="mb-4">
+                        <label asp-for="TenLoaiTaiLieu" class="form-label fw-semibold">
+                            <i class="fas fa-tag me-1"></i>
+                            Tên loại tài liệu <span class="text-danger">*</span>
+                        </label>
+                        <input asp-for="TenLoaiTaiLieu" class="form-control" placeholder="Nhập tên loại tài liệu..." />
+                        <span asp-validation-for="TenLoaiTaiLieu" class="text-danger small"></span>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Ví dụ: Luận văn, Đề tài nghiên cứu, Báo cáo thực tập, Giáo trình...
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="MoTa" class="form-label fw-semibold">
+                            <i class="fas fa-align-left me-1"></i>
+                            Mô tả
+                        </label>
+                        <textarea asp-for="MoTa" class="form-control" rows="4" 
+                                  placeholder="Nhập mô tả chi tiết về loại tài liệu này..."></textarea>
+                        <span asp-validation-for="MoTa" class="text-danger small"></span>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Mô tả ngắn gọn về đặc điểm và mục đích sử dụng của loại tài liệu này.
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input asp-for="TrangThaiHoatDong" class="form-check-input" type="checkbox" checked />
+                            <label asp-for="TrangThaiHoatDong" class="form-check-label fw-semibold">
+                                <i class="fas fa-toggle-on me-1 text-success"></i>
+                                Kích hoạt ngay sau khi tạo
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Loại tài liệu được kích hoạt sẽ hiển thị trong danh sách khi thêm tài liệu mới.
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save me-1"></i>Lưu loại tài liệu
+                        </button>
+                        <a asp-action="ManageDocumentTypes" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Hủy
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Gợi ý
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6 class="fw-semibold mb-3">Các loại tài liệu phổ biến:</h6>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Luận văn tốt nghiệp">Luận văn tốt nghiệp</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Đề tài nghiên cứu">Đề tài nghiên cứu</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Báo cáo thực tập">Báo cáo thực tập</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Giáo trình">Giáo trình</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Bài giảng">Bài giảng</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Tài liệu tham khảo">Tài liệu tham khảo</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Khóa luận">Khóa luận</span>
+                    <span class="badge bg-light text-dark border suggest-item" data-name="Luận án">Luận án</span>
+                </div>
+                <small class="text-muted">
+                    <i class="fas fa-hand-pointer me-1"></i>
+                    Nhấp vào gợi ý để điền nhanh tên loại tài liệu.
+                </small>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Lưu ý quan trọng
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Tên loại tài liệu phải rõ ràng, dễ hiểu
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Mô tả giúp người dùng hiểu rõ mục đích sử dụng
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Có thể kích hoạt/vô hiệu hóa sau khi tạo
+                    </li>
+                    <li class="mb-0">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Loại tài liệu được sử dụng để phân loại tài liệu trong hệ thống
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Xử lý gợi ý nhanh
+        document.querySelectorAll('.suggest-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const name = this.getAttribute('data-name');
+                document.getElementById('TenLoaiTaiLieu').value = name;
+                
+                // Thêm hiệu ứng visual
+                this.classList.add('bg-primary', 'text-white');
+                setTimeout(() => {
+                    this.classList.remove('bg-primary', 'text-white');
+                }, 500);
+            });
+        });
+        
+        // Tự động focus vào ô đầu tiên
+        document.getElementById('TenLoaiTaiLieu').focus();
+    </script>
+}

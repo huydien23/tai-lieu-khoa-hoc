@@ -81,6 +81,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Giáo trình Lập trình C# cơ bản",
+                    TacGia = "Nguyễn Văn A",
                     MoTa = "Tài liệu hướng dẫn lập trình C# từ cơ bản đến nâng cao, bao gồm cú pháp, OOP, và các framework phổ biến.",
                     DuongDanFile = "/uploads/documents/csharp-basic.pdf",
                     LoaiFile = ".pdf",
@@ -95,6 +96,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Bài giảng Machine Learning",
+                    TacGia = "TS. Trần Thị B",
                     MoTa = "Slide bài giảng về Machine Learning, bao gồm các thuật toán cơ bản như Linear Regression, Decision Tree, Neural Networks.",
                     DuongDanFile = "/uploads/documents/ml-slides.pptx",
                     LoaiFile = ".pptx",
@@ -109,6 +111,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Đề thi Cấu trúc dữ liệu và Giải thuật",
+                    TacGia = "PGS. Lê Văn C",
                     MoTa = "Đề thi giữa kỳ môn Cấu trúc dữ liệu và Giải thuật, bao gồm các bài tập về stack, queue, tree, và thuật toán sắp xếp.",
                     DuongDanFile = "/uploads/documents/dsa-exam.pdf",
                     LoaiFile = ".pdf",
@@ -123,6 +126,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Bài tập ASP.NET Core MVC",
+                    TacGia = "ThS. Phạm Thị D",
                     MoTa = "Tập hợp các bài tập thực hành ASP.NET Core MVC, từ cơ bản đến nâng cao, có kèm lời giải chi tiết.",
                     DuongDanFile = "/uploads/documents/aspnet-exercises.docx",
                     LoaiFile = ".docx",
@@ -137,6 +141,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Luận văn: Ứng dụng AI trong y tế",
+                    TacGia = "Võ Văn E",
                     MoTa = "Luận văn thạc sĩ về ứng dụng trí tuệ nhân tạo trong chẩn đoán và điều trị y tế, nghiên cứu trường hợp thực tế.",
                     DuongDanFile = "/uploads/documents/ai-healthcare-thesis.pdf",
                     LoaiFile = ".pdf",
@@ -151,6 +156,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Tài liệu tham khảo Database Design",
+                    TacGia = "Dr. Hoàng Văn F",
                     MoTa = "Tài liệu tham khảo về thiết kế cơ sở dữ liệu, bao gồm ERD, normalization, và các best practices.",
                     DuongDanFile = "/uploads/documents/database-design-ref.pdf",
                     LoaiFile = ".pdf",
@@ -166,6 +172,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Giáo trình Kinh tế học vĩ mô",
+                    TacGia = "GS. Nguyễn Thị G",
                     MoTa = "Giáo trình về kinh tế học vĩ mô, bao gồm các chỉ số kinh tế, chính sách tài khóa và tiền tệ.",
                     DuongDanFile = "/uploads/documents/macro-economics.pdf",
                     LoaiFile = ".pdf",
@@ -180,6 +187,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new TaiLieu
                 {
                     TenTaiLieu = "Bài giảng Marketing Digital",
+                    TacGia = "ThS. Trần Văn H",
                     MoTa = "Slide bài giảng về marketing kỹ thuật số, SEO, SEM, và social media marketing trong thời đại 4.0.",
                     DuongDanFile = "/uploads/documents/digital-marketing.pptx",
                     LoaiFile = ".pptx",

@@ -1,0 +1,225 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.LoaiTaiLieu>
+
+@{
+    ViewData["Title"] = "Quản lý Loại tài liệu";
+}
+
+<div class="content-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">
+            <i class="fas fa-tags me-2 text-primary"></i>
+            Quản lý Loại tài liệu
+        </h2>
+        <div class="d-flex gap-2">
+            <a asp-action="CreateDocumentType" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Thêm loại tài liệu
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-list me-2"></i>
+                    Danh sách loại tài liệu (@Model.Count() loại)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Chưa có loại tài liệu nào trong hệ thống.</p>
+                        <a asp-action="CreateDocumentType" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>Thêm loại tài liệu đầu tiên
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">
+                                        <i class="fas fa-tag me-1"></i>
+                                        Tên loại tài liệu
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fas fa-align-left me-1"></i>
+                                        Mô tả
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Ngày tạo
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fas fa-file-alt me-1"></i>
+                                        Số tài liệu
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fas fa-toggle-on me-1"></i>
+                                        Trạng thái
+                                    </th>
+                                    <th scope="col" class="text-center">
+                                        <i class="fas fa-cogs me-1"></i>
+                                        Thao tác
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold text-primary">@item.TenLoaiTaiLieu</div>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">
+                                                @if (!string.IsNullOrEmpty(item.MoTa))
+                                                {
+                                                    @(item.MoTa.Length > 50 ? item.MoTa.Substring(0, 50) + "..." : item.MoTa)
+                                                }
+                                                else
+                                                {
+                                                    <em>Chưa có mô tả</em>
+                                                }
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                @item.NgayTao.ToString("dd/MM/yyyy")
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info text-dark">
+                                                @item.TaiLieu?.Count ?? 0 tài liệu
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (item.TrangThaiHoatDong)
+                                            {
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check-circle me-1"></i>
+                                                    Hoạt động
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-times-circle me-1"></i>
+                                                    Vô hiệu hóa
+                                                </span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <div class="d-flex justify-content-center gap-1">
+                                                <a asp-action="EditDocumentType" asp-route-id="@item.MaLoaiTaiLieu" 
+                                                   class="btn btn-outline-primary btn-sm" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                
+                                                <form asp-action="ToggleDocumentTypeStatus" method="post" style="display: inline;">
+                                                    <input type="hidden" name="id" value="@item.MaLoaiTaiLieu" />
+                                                    @if (item.TrangThaiHoatDong)
+                                                    {
+                                                        <button type="submit" class="btn btn-outline-warning btn-sm" 
+                                                                title="Vô hiệu hóa" onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa loại tài liệu này?')">
+                                                            <i class="fas fa-ban"></i>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button type="submit" class="btn btn-outline-success btn-sm" 
+                                                                title="Kích hoạt" onclick="return confirm('Bạn có chắc chắn muốn kích hoạt loại tài liệu này?')">
+                                                            <i class="fas fa-check"></i>
+                                                        </button>
+                                                    }
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>
+                    Thống kê nhanh
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border rounded p-3 mb-3">
+                            <div class="text-primary fs-4 fw-bold">@Model.Count()</div>
+                            <small class="text-muted">Tổng loại tài liệu</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="border rounded p-3 mb-3">
+                            <div class="text-success fs-4 fw-bold">@Model.Count(l => l.TrangThaiHoatDong)</div>
+                            <small class="text-muted">Đang hoạt động</small>
+                        </div>
+                    </div>
+                </div>
+                
+                @if (Model.Any())
+                {
+                    <hr>
+                    <h6 class="fw-semibold mb-3">
+                        <i class="fas fa-crown me-2 text-warning"></i>
+                        Top loại tài liệu phổ biến
+                    </h6>
+                    @foreach (var item in Model.Where(l => l.TaiLieu != null).OrderByDescending(l => l.TaiLieu!.Count).Take(5))
+                    {
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small">@item.TenLoaiTaiLieu</span>
+                            <span class="badge bg-secondary">@(item.TaiLieu?.Count ?? 0)</span>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Hướng dẫn
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Thêm loại tài liệu mới để phân loại tài liệu
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-edit text-primary me-2"></i>
+                        Chỉnh sửa thông tin loại tài liệu
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-toggle-on text-warning me-2"></i>
+                        Kích hoạt/vô hiệu hóa loại tài liệu
+                    </li>
+                    <li class="mb-0">
+                        <i class="fas fa-chart-bar text-info me-2"></i>
+                        Xem thống kê số lượng tài liệu theo loại
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

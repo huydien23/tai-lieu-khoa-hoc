@@ -14,6 +14,10 @@
             <p class="text-muted mb-0">Quản lý và giám sát tài liệu khoa học</p>
         </div>
         <div class="page-actions">
+            <button type="button" class="btn btn-success me-2" data-bs-toggle="modal"
+                data-bs-target="#createDocumentModal">
+                <i class="fas fa-plus me-2"></i>Thêm tài liệu
+            </button>
             <a href="@Url.Action("ManageDocuments")" class="btn btn-primary me-2">
                 <i class="fas fa-tasks me-2"></i>Quản lý tài liệu
             </a>
@@ -125,7 +129,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <div class="text-dark">@taiLieu.TenNguoiTaiLen</div>
+                                            <div class="text-dark">@taiLieu.TacGia</div>
                                         </td>
                                         <td>
                                             <span class="badge bg-light text-dark">
@@ -479,3 +483,52 @@
         animation: shimmer 1.5s infinite;
     }
 </style>
+
+<!-- Modal for creating new document -->
+<div class="modal fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDocumentModalLabel">
+                    <i class="fas fa-plus-circle text-success me-2"></i>
+                    Thêm tài liệu mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="createDocumentContent">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải form...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Load create document modal
+        $('#createDocumentModal').on('show.bs.modal', function (e) {
+            $.get('@Url.Action("CreateDocument")', function (data) {
+                $('#createDocumentContent').html(data);
+            }).fail(function () {
+                $('#createDocumentContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải form!</div>');
+            });
+        });
+
+        // Reset modal when hidden
+        $('#createDocumentModal').on('hidden.bs.modal', function (e) {
+            $('#createDocumentContent').html(`
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải form...</p>
+                        </div>
+                    `);
+        });
+    </script>
+}
