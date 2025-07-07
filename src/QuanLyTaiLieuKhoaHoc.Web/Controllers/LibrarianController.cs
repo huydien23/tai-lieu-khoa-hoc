@@ -125,22 +125,27 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleUserStatus(string userId)
         {
-            var user = await _context.Users.FindAsync(userId);
-            if (user != null)
+            try
             {
-                user.TrangThaiHoatDong = !user.TrangThaiHoatDong;
-                user.NgayCapNhatCuoi = DateTime.Now;
-                await _context.SaveChangesAsync();
+                var user = await _context.Users.FindAsync(userId);
+                if (user != null)
+                {
+                    user.TrangThaiHoatDong = !user.TrangThaiHoatDong;
+                    user.NgayCapNhatCuoi = DateTime.Now;
+                    await _context.SaveChangesAsync();
 
-                string status = user.TrangThaiHoatDong ? "kích hoạt" : "vô hiệu hóa";
-                TempData["SuccessMessage"] = $"Đã {status} tài khoản {user.HoTen} thành công!";
+                    string status = user.TrangThaiHoatDong ? "kích hoạt" : "vô hiệu hóa";
+                    return Json(new { success = true, message = $"Đã {status} tài khoản '{user.HoTen}' thành công!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = "Không tìm thấy người dùng!";
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
             }
-
-            return RedirectToAction(nameof(ManageUsers));
         }
 
         // QUẢN LÝ CHUYÊN NGÀNH
@@ -229,6 +234,45 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return RedirectToAction(nameof(ManageCategories));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            try
+            {
+                var category = await _context.ChuyenNganh
+                    .Include(c => c.TaiLieu)
+                    .Include(c => c.NguoiDung)
+                    .Where(c => c.MaChuyenNganh == id)
+                    .FirstOrDefaultAsync();
+
+                if (category == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy chuyên ngành!" });
+                }
+
+                // Kiểm tra xem có tài liệu nào thuộc chuyên ngành này không
+                if (category.TaiLieu.Any())
+                {
+                    return Json(new { success = false, message = $"Không thể xóa chuyên ngành '{category.TenChuyenNganh}' vì còn có {category.TaiLieu.Count} tài liệu thuộc chuyên ngành này!" });
+                }
+
+                // Kiểm tra xem có người dùng nào thuộc chuyên ngành này không
+                if (category.NguoiDung.Any())
+                {
+                    return Json(new { success = false, message = $"Không thể xóa chuyên ngành '{category.TenChuyenNganh}' vì còn có {category.NguoiDung.Count} người dùng thuộc chuyên ngành này!" });
+                }
+
+                _context.ChuyenNganh.Remove(category);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã xóa chuyên ngành '{category.TenChuyenNganh}' thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa chuyên ngành: " + ex.Message });
+            }
+        }
+
         // QUẢN LÝ LOẠI TÀI LIỆU
         [HttpGet]
         public async Task<IActionResult> ManageDocumentTypes()
@@ -312,6 +356,38 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
 
             return RedirectToAction(nameof(ManageDocumentTypes));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDocumentType(int id)
+        {
+            try
+            {
+                var documentType = await _context.LoaiTaiLieu
+                    .Include(l => l.TaiLieu)
+                    .Where(l => l.MaLoaiTaiLieu == id)
+                    .FirstOrDefaultAsync();
+
+                if (documentType == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy loại tài liệu!" });
+                }
+
+                // Kiểm tra xem có tài liệu nào thuộc loại này không
+                if (documentType.TaiLieu.Any())
+                {
+                    return Json(new { success = false, message = $"Không thể xóa loại tài liệu '{documentType.TenLoaiTaiLieu}' vì còn có {documentType.TaiLieu.Count} tài liệu thuộc loại này!" });
+                }
+
+                _context.LoaiTaiLieu.Remove(documentType);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã xóa loại tài liệu '{documentType.TenLoaiTaiLieu}' thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa loại tài liệu: " + ex.Message });
+            }
         }
 
         // THỐNG KÊ
@@ -499,5 +575,56 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra khi xóa tài liệu: " + ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+                }
+
+                // Kiểm tra xem người dùng có tài liệu nào không
+                var userDocuments = await _context.TaiLieu.Where(t => t.MaNguoiTaiLen == id).CountAsync();
+                if (userDocuments > 0)
+                {
+                    return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });
+                }
+
+                // Xóa các bản ghi liên quan khác nếu có
+                var userRatings = await _context.DanhGiaTaiLieu.Where(d => d.MaNguoiDung == id).ToListAsync();
+                _context.DanhGiaTaiLieu.RemoveRange(userRatings);
+
+                var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
+                _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);
+
+                await _context.SaveChangesAsync();
+
+                var result = await _userManager.DeleteAsync(user);
+                if (result.Succeeded)
+                {
+                    return Json(new { success = true, message = $"Đã xóa người dùng '{user.HoTen}' thành công!" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Có lỗi xảy ra khi xóa người dùng: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa người dùng: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CaiDat()
+        {
+            ViewData["Title"] = "Cài đặt hệ thống";
+            return View();
+        }
+
     }
 }

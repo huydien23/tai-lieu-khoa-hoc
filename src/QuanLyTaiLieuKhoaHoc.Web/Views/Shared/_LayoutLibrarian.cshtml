@@ -172,20 +172,20 @@
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("QuanLyChuyenNganh", "Librarian")"
-                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyChuyenNganh" ? "active" : "")">
+                    <a href="@Url.Action("ManageCategories", "Librarian")"
+                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageCategories" ? "active" : "")">
                         <i class="fas fa-graduation-cap"></i> Quản lý Chuyên ngành
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("QuanLyLoaiTaiLieu", "Librarian")"
-                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyLoaiTaiLieu" ? "active" : "")">
+                    <a href="@Url.Action("ManageDocumentTypes", "Librarian")"
+                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageDocumentTypes" ? "active" : "")">
                         <i class="fas fa-tags"></i> Quản lý Loại tài liệu
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("ThongKe", "Librarian")"
-                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ThongKe" ? "active" : "")">
+                    <a href="@Url.Action("Statistics", "Librarian")"
+                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Statistics" ? "active" : "")">
                         <i class="fas fa-chart-bar"></i> Thống kê
                     </a>
                 </li>

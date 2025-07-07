@@ -97,21 +97,28 @@
                                         <td>@user.NgayTao.ToString("dd/MM/yyyy")</td>
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa">
+                                                <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa"
+                                                    onclick="editUser('@user.Id', '@user.HoTen')">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 @if (user.TrangThaiHoatDong)
                                                 {
-                                                    <button type="button" class="btn btn-outline-warning" title="Vô hiệu hóa">
+                                                    <button type="button" class="btn btn-outline-warning" title="Vô hiệu hóa"
+                                                        onclick="toggleUserStatus('@user.Id', '@user.HoTen', false)">
                                                         <i class="fas fa-ban"></i>
                                                     </button>
                                                 }
                                                 else
                                                 {
-                                                    <button type="button" class="btn btn-outline-success" title="Kích hoạt">
+                                                    <button type="button" class="btn btn-outline-success" title="Kích hoạt"
+                                                        onclick="toggleUserStatus('@user.Id', '@user.HoTen', true)">
                                                         <i class="fas fa-check"></i>
                                                     </button>
                                                 }
+                                                <button type="button" class="btn btn-outline-danger" title="Xóa"
+                                                    onclick="deleteUser('@user.Id', '@user.HoTen')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -160,3 +167,57 @@
         vertical-align: middle;
     }
 </style>
+
+<script>
+    function editUser(userId, userName) {
+        toastr.info('Chức năng chỉnh sửa người dùng đang được phát triển...');
+    }
+
+    function toggleUserStatus(userId, userName, isActivating) {
+        const action = isActivating ? 'kích hoạt' : 'vô hiệu hóa';
+        if (confirm(`Bạn có chắc chắn muốn ${action} tài khoản "${userName}"?`)) {
+            $.ajax({
+                url: '@Url.Action("ToggleUserStatus")',
+                type: 'POST',
+                data: { userId: userId },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Có lỗi xảy ra: ' + error);
+                }
+            });
+        }
+    }
+
+    function deleteUser(userId, userName) {
+        if (confirm(`Bạn có chắc chắn muốn xóa người dùng "${userName}"?\n\nLưu ý: Chỉ có thể xóa khi người dùng không còn tài liệu nào trong hệ thống.`)) {
+            $.ajax({
+                url: '@Url.Action("DeleteUser")',
+                type: 'POST',
+                data: { id: userId },
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Có lỗi xảy ra: ' + error);
+                }
+            });
+        }
+    }
+</script>
+                                                                                                                                                                                                

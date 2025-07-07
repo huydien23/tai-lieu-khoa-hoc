@@ -121,6 +121,11 @@
                                                 </button>
                                             }
                                         </form>
+
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                title="Xóa" onclick="deleteCategory(@item.MaChuyenNganh, '@item.TenChuyenNganh')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -177,3 +182,28 @@
     margin-right: 2px;
 }
 </style>
+
+<script>
+function deleteCategory(id, name) {
+    if (confirm(`Bạn có chắc chắn muốn xóa chuyên ngành "${name}"?\n\nLưu ý: Chỉ có thể xóa khi chuyên ngành không còn tài liệu hoặc người dùng nào.`)) {
+        $.ajax({
+            url: '@Url.Action("DeleteCategory")',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Có lỗi xảy ra: ' + error);
+            }
+        });
+    }
+}
+</script>

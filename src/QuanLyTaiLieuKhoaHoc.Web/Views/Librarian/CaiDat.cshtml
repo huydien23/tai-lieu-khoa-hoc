@@ -1,0 +1,134 @@
+@{
+    ViewData["Title"] = "Cài đặt";
+    Layout = "~/Views/Shared/_LayoutLibrarian.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cog"></i> Cài đặt hệ thống
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0"><i class="fas fa-user-cog"></i> Cài đặt tài khoản</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
+                                            <input type="password" class="form-control" id="currentPassword" placeholder="Nhập mật khẩu hiện tại">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                                            <input type="password" class="form-control" id="newPassword" placeholder="Nhập mật khẩu mới">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu mới</label>
+                                            <input type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu mới">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Đổi mật khẩu
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="fas fa-cogs"></i> Cài đặt hệ thống</h6>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label for="maxFileSize" class="form-label">Kích thước tệp tối đa (MB)</label>
+                                            <input type="number" class="form-control" id="maxFileSize" value="10" min="1" max="100">
+                                            <div class="form-text">Kích thước tối đa cho mỗi tệp tải lên</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="allowedExtensions" class="form-label">Định dạng tệp cho phép</label>
+                                            <input type="text" class="form-control" id="allowedExtensions" value=".pdf,.doc,.docx,.ppt,.pptx">
+                                            <div class="form-text">Các định dạng tệp được phép tải lên</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="autoApprove" checked>
+                                                <label class="form-check-label" for="autoApprove">
+                                                    Tự động duyệt tài liệu mới
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-info">
+                                            <i class="fas fa-save"></i> Lưu cài đặt
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-warning text-dark">
+                                    <h6 class="mb-0"><i class="fas fa-database"></i> Bảo trì hệ thống</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="d-grid">
+                                                <button type="button" class="btn btn-outline-primary">
+                                                    <i class="fas fa-broom"></i> Dọn dẹp tệp tạm
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Xóa các tệp tạm và cache không cần thiết</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-grid">
+                                                <button type="button" class="btn btn-outline-success">
+                                                    <i class="fas fa-download"></i> Sao lưu dữ liệu
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Tạo bản sao lưu cơ sở dữ liệu</small>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="d-grid">
+                                                <button type="button" class="btn btn-outline-info">
+                                                    <i class="fas fa-sync-alt"></i> Cập nhật hệ thống
+                                                </button>
+                                            </div>
+                                            <small class="text-muted">Kiểm tra và cập nhật phiên bản mới</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Xử lý đổi mật khẩu
+    $('form').on('submit', function(e) {
+        e.preventDefault();
+        toastr.info('Chức năng đang được phát triển!');
+    });
+    
+    // Xử lý các nút bảo trì
+    $('.btn-outline-primary, .btn-outline-success, .btn-outline-info').on('click', function() {
+        toastr.info('Chức năng đang được phát triển!');
+    });
+});
+</script>
