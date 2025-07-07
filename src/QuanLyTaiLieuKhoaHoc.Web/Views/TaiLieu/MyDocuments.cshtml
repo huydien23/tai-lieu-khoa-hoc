@@ -29,8 +29,8 @@
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
-                                <span class="badge @GetTrangThaiBadgeClass(item.TrangThai ?? "")">
-                                    @GetTrangThaiText(item.TrangThai ?? "")
+                                <span class="badge @GetTrangThaiBadgeClass(item.TrangThai)">
+                                    @GetTrangThaiText(item.TrangThai)
                                 </span>
                                 <div class="dropdown">
                                     <button class="btn btn-link btn-sm" type="button" data-bs-toggle="dropdown">
@@ -84,7 +84,7 @@
                                 <a href="/TaiLieu/Edit/@item.MaTaiLieu" class="btn btn-outline-success btn-sm">
                                     <i class="fas fa-edit me-1"></i>Sửa
                                 </a>
-                                @if (item.TrangThai == "DaDuyet")
+                                @if (item.TrangThai == 1) // DaDuyet
                                 {
                                     <a href="/TaiLieu/Download/@item.MaTaiLieu" class="btn btn-outline-info btn-sm">
                                         <i class="fas fa-download me-1"></i>Tải
@@ -140,26 +140,26 @@
 </div>
 
 @functions {
-    private string GetTrangThaiBadgeClass(string trangThai)
+    private string GetTrangThaiBadgeClass(int trangThai)
     {
         return trangThai switch
         {
-            "ChoDuyet" => "bg-warning text-dark",
-            "DaDuyet" => "bg-success",
-            "BiTuChoi" => "bg-danger",
-            "NgungHoatDong" => "bg-secondary",
+            0 => "bg-warning text-dark", // ChoDuyet
+            1 => "bg-success",           // DaDuyet
+            2 => "bg-danger",            // TuChoi
+            3 => "bg-secondary",         // An
             _ => "bg-secondary"
         };
     }
 
-    private string GetTrangThaiText(string trangThai)
+    private string GetTrangThaiText(int trangThai)
     {
         return trangThai switch
         {
-            "ChoDuyet" => "Chờ duyệt",
-            "DaDuyet" => "Đã duyệt",
-            "BiTuChoi" => "Bị từ chối",
-            "NgungHoatDong" => "Ngừng hoạt động",
+            0 => "Chờ duyệt",
+            1 => "Đã duyệt",
+            2 => "Bị từ chối",
+            3 => "Đã ẩn",
             _ => "Không xác định"
         };
     }

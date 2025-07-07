@@ -25,13 +25,16 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         [Display(Name = "File tài liệu")]
         public IFormFile? FileTaiLieu { get; set; }
 
+        // For tracking
+        public string? MaNguoiTaiLen { get; set; }
+
         // Properties for display
         public string? TenChuyenNganh { get; set; }
         public string? TenLoaiTaiLieu { get; set; }
         public string? TenNguoiTaiLen { get; set; }
         public DateTime NgayTaiLen { get; set; }
         public int LuotTai { get; set; }
-        public string? TrangThai { get; set; }
+        public int TrangThai { get; set; } // 0: ChoDuyet, 1: DaDuyet, 2: TuChoi, 3: An
         public string? DuongDanFile { get; set; }
         public string? LoaiFile { get; set; }
         public long KichThuocFile { get; set; }

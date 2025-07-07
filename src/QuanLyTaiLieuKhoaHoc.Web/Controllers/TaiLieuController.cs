@@ -100,7 +100,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.QuanTriVien &&
+            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.ThuThu &&
                 await _context.TaiLieu.AnyAsync(t => t.MaTaiLieu == id && t.MaNguoiTaiLen != currentUser.Id)))
             {
                 return Forbid();
@@ -142,8 +142,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.QuanTriVien &&
-                await _context.TaiLieu.AnyAsync(t => t.MaTaiLieu == id && t.MaNguoiTaiLen != currentUser.Id)))
+            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.ThuThu &&
+                taiLieu.MaNguoiTaiLen != currentUser.Id))
             {
                 return Forbid();
             }

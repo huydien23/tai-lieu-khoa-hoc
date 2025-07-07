@@ -27,28 +27,33 @@
                         <input type="hidden" asp-for="MaTaiLieu" />
 
                         <div class="mb-3">
-                            <label asp-for="TenTaiLieu" class="form-label">Tên tài liệu <span class="text-danger">*</span></label>
+                            <label asp-for="TenTaiLieu" class="form-label">Tên tài liệu <span
+                                    class="text-danger">*</span></label>
                             <input asp-for="TenTaiLieu" class="form-control" placeholder="Nhập tên tài liệu..." />
                             <span asp-validation-for="TenTaiLieu" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="MoTa" class="form-label">Mô tả <span class="text-danger">*</span></label>
-                            <textarea asp-for="MoTa" class="form-control" rows="4" placeholder="Mô tả chi tiết về nội dung tài liệu..."></textarea>
+                            <textarea asp-for="MoTa" class="form-control" rows="4"
+                                placeholder="Mô tả chi tiết về nội dung tài liệu..."></textarea>
                             <span asp-validation-for="MoTa" class="text-danger"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="MaChuyenNganh" class="form-label">Chuyên ngành <span class="text-danger">*</span></label>
+                                    <label asp-for="MaChuyenNganh" class="form-label">Chuyên ngành <span
+                                            class="text-danger">*</span></label>
                                     <select asp-for="MaChuyenNganh" class="form-select">
                                         <option value="">-- Chọn chuyên ngành --</option>
-                                        @if (ViewBag.ChuyenNganh != null)
+                                        @if (ViewBag.ChuyenNganh is List<SelectListItem> chuyenNganhList)
                                         {
-                                            @foreach (var item in ViewBag.ChuyenNganh as List<SelectListItem>)
+                                            @foreach (var item in chuyenNganhList)
                                             {
-                                                <option value="@item.Value" selected="@(item.Value == Model.MaChuyenNganh.ToString())">@item.Text</option>
+                                                <option value="@item.Value"
+                                                    selected="@(item.Value == Model.MaChuyenNganh.ToString())">@item.Text
+                                                </option>
                                             }
                                         }
                                     </select>
@@ -57,14 +62,17 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label asp-for="MaLoaiTaiLieu" class="form-label">Loại tài liệu <span class="text-danger">*</span></label>
+                                    <label asp-for="MaLoaiTaiLieu" class="form-label">Loại tài liệu <span
+                                            class="text-danger">*</span></label>
                                     <select asp-for="MaLoaiTaiLieu" class="form-select">
                                         <option value="">-- Chọn loại tài liệu --</option>
-                                        @if (ViewBag.LoaiTaiLieu != null)
+                                        @if (ViewBag.LoaiTaiLieu is List<SelectListItem> loaiTaiLieuList)
                                         {
-                                            @foreach (var item in ViewBag.LoaiTaiLieu as List<SelectListItem>)
+                                            @foreach (var item in loaiTaiLieuList)
                                             {
-                                                <option value="@item.Value" selected="@(item.Value == Model.MaLoaiTaiLieu.ToString())">@item.Text</option>
+                                                <option value="@item.Value"
+                                                    selected="@(item.Value == Model.MaLoaiTaiLieu.ToString())">@item.Text
+                                                </option>
                                             }
                                         }
                                     </select>
@@ -82,9 +90,11 @@
 
                         <div class="mb-3">
                             <label asp-for="FileTaiLieu" class="form-label">Thay đổi file (tùy chọn)</label>
-                            <input asp-for="FileTaiLieu" type="file" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" />
+                            <input asp-for="FileTaiLieu" type="file" class="form-control"
+                                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt" />
                             <div class="form-text">
-                                Để trống nếu không muốn thay đổi file. Chấp nhận các định dạng: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX, TXT. Tối đa 50MB.
+                                Để trống nếu không muốn thay đổi file. Chấp nhận các định dạng: PDF, DOC, DOCX, PPT,
+                                PPTX, XLS, XLSX, TXT. Tối đa 50MB.
                             </div>
                             <span asp-validation-for="FileTaiLieu" class="text-danger"></span>
                         </div>

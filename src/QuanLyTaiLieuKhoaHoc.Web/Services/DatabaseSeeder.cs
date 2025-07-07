@@ -13,41 +13,43 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             if (await userManager.Users.AnyAsync())
                 return;
 
-            // Tạo admin user
-            var adminUser = new NguoiDung
+            // Tạo thủ thư
+            var librarianUser = new NguoiDung
             {
-                UserName = "admin@qlkh.edu.vn",
-                Email = "admin@qlkh.edu.vn",
+                UserName = "thuthu@library.edu.vn",
+                Email = "thuthu@library.edu.vn",
                 EmailConfirmed = true,
-                HoTen = "Quản trị viên hệ thống",
-                VaiTro = VaiTroNguoiDung.QuanTriVien,
+                HoTen = "Nguyễn Thị Hoa",
+                VaiTro = VaiTroNguoiDung.ThuThu,
                 MaChuyenNganh = 1,
+                MaSo = "TT001",
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
-            await userManager.CreateAsync(adminUser, "123456");
+            await userManager.CreateAsync(librarianUser, "ThuThu@2024");
 
             // Tạo giảng viên
             var lecturerUser = new NguoiDung
             {
-                UserName = "giangvien@qlkh.edu.vn",
-                Email = "giangvien@qlkh.edu.vn",
+                UserName = "giangvien@university.edu.vn",
+                Email = "giangvien@university.edu.vn",
                 EmailConfirmed = true,
-                HoTen = "PGS.TS Nguyễn Văn A",
+                HoTen = "PGS.TS Nguyễn Văn An",
                 VaiTro = VaiTroNguoiDung.GiangVien,
                 MaChuyenNganh = 1,
+                MaSo = "GV001",
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
-            await userManager.CreateAsync(lecturerUser, "123456");
+            await userManager.CreateAsync(lecturerUser, "GiangVien@2024");
 
             // Tạo sinh viên
             var studentUser = new NguoiDung
             {
-                UserName = "sinhvien@qlkh.edu.vn",
-                Email = "sinhvien@qlkh.edu.vn",
+                UserName = "sinhvien@student.edu.vn",
+                Email = "sinhvien@student.edu.vn",
                 EmailConfirmed = true,
-                HoTen = "Trần Thị B",
+                HoTen = "Trần Thị Bình",
                 VaiTro = VaiTroNguoiDung.SinhVien,
                 MaChuyenNganh = 1,
                 MaSo = "20210001",
@@ -55,7 +57,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
-            await userManager.CreateAsync(studentUser, "123456");
+            await userManager.CreateAsync(studentUser, "SinhVien@2024");
 
             // Chờ để đảm bảo users được tạo thành công
             await context.SaveChangesAsync();
@@ -65,12 +67,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 return;
 
             // Lấy lại users đã tạo để có ID
-            var admin = await userManager.FindByEmailAsync("admin@qlkh.edu.vn");
-            var lecturer = await userManager.FindByEmailAsync("giangvien@qlkh.edu.vn");
-            var student = await userManager.FindByEmailAsync("sinhvien@qlkh.edu.vn");
+            var librarian = await userManager.FindByEmailAsync("thuthu@library.edu.vn");
+            var lecturer = await userManager.FindByEmailAsync("giangvien@university.edu.vn");
+            var student = await userManager.FindByEmailAsync("sinhvien@student.edu.vn");
 
             // Đảm bảo users được tạo thành công
-            if (admin == null || lecturer == null || student == null)
+            if (librarian == null || lecturer == null || student == null)
                 return;
 
             // Tạo tài liệu mẫu
@@ -209,7 +211,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 new DanhGiaTaiLieu
                 {
                     MaTaiLieu = docs[0].MaTaiLieu,
-                    MaNguoiDung = admin.Id,
+                    MaNguoiDung = librarian.Id,
                     DiemDanhGia = 4,
                     NhanXet = "Nội dung tốt, trình bày khá rõ ràng.",
                     NgayDanhGia = DateTime.Now.AddDays(-3)

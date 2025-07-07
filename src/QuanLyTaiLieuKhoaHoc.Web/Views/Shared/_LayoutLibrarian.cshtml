@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hệ thống Quản lý Tài liệu Khoa học</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/QuanLyTaiLieuKhoaHoc.Web.styles.css" asp-append-version="true" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-header {
+            padding: 20px;
+            background: rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .sidebar-header h4 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .sidebar-header .user-info {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255,255,255,0.1);
+            border-left-color: #ffc107;
+            color: white;
+        }
+        
+        .sidebar-menu i {
+            width: 20px;
+            margin-right: 10px;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 0;
+            background: #f8f9fa;
+        }
+        
+        .top-bar {
+            background: white;
+            padding: 15px 30px;
+            border-bottom: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .content-area {
+            padding: 30px;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+        }
+        
+        .logout-btn a {
+            display: block;
+            padding: 10px;
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            border-radius: 5px;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn a:hover {
+            background: rgba(220, 53, 69, 0.3);
+            color: white;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h4><i class="fas fa-book-open"></i> Thủ thư</h4>
+                <div class="user-info">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        @User.Identity.Name
+                    }
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="@Url.Action("Dashboard", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard" ? "active" : "")">
+                        <i class="fas fa-tachometer-alt"></i> Tổng quan
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("QuanLyTaiLieu", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyTaiLieu" ? "active" : "")">
+                        <i class="fas fa-file-alt"></i> Quản lý Tài liệu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("QuanLyNguoiDung", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyNguoiDung" ? "active" : "")">
+                        <i class="fas fa-users"></i> Quản lý Người dùng
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("QuanLyChuyenNganh", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyChuyenNganh" ? "active" : "")">
+                        <i class="fas fa-graduation-cap"></i> Quản lý Chuyên ngành
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("QuanLyLoaiTaiLieu", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyLoaiTaiLieu" ? "active" : "")">
+                        <i class="fas fa-tags"></i> Quản lý Loại tài liệu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ThongKe", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ThongKe" ? "active" : "")">
+                        <i class="fas fa-chart-bar"></i> Thống kê
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("CaiDat", "Librarian")" class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "CaiDat" ? "active" : "")">
+                        <i class="fas fa-cog"></i> Cài đặt
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="logout-btn">
+                <a href="@Url.Action("Logout", "Account")">
+                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">@ViewData["Title"]</h5>
+                    <div class="text-muted">
+                        <i class="fas fa-calendar-day"></i> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -76,7 +76,7 @@
                         <p class="text-muted">@Model.MoTa</p>
                     </div>
 
-                    @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="d-flex gap-2">
                             <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
@@ -113,7 +113,7 @@
 </div>
 
 <!-- Rating Modal -->
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity?.IsAuthenticated == true)
 {
     <div class="modal fade" id="ratingModal" tabindex="-1">
         <div class="modal-dialog">
@@ -178,6 +178,3 @@
         color: #ffc107;
     }
 </style>
-
-                               
-                                                                                                   

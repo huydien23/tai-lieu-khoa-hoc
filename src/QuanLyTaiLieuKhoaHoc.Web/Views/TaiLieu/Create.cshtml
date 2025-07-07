@@ -45,9 +45,9 @@
                                             class="text-danger">*</span></label>
                                     <select asp-for="MaChuyenNganh" class="form-select">
                                         <option value="">-- Chọn chuyên ngành --</option>
-                                        @if (ViewBag.ChuyenNganh != null)
+                                        @if (ViewBag.ChuyenNganh is List<SelectListItem> chuyenNganhList)
                                         {
-                                            @foreach (var item in ViewBag.ChuyenNganh as List<SelectListItem>)
+                                            @foreach (var item in chuyenNganhList)
                                             {
                                                 <option value="@item.Value">@item.Text</option>
                                             }
@@ -62,9 +62,9 @@
                                             class="text-danger">*</span></label>
                                     <select asp-for="MaLoaiTaiLieu" class="form-select">
                                         <option value="">-- Chọn loại tài liệu --</option>
-                                        @if (ViewBag.LoaiTaiLieu != null)
+                                        @if (ViewBag.LoaiTaiLieu is List<SelectListItem> loaiTaiLieuList)
                                         {
-                                            @foreach (var item in ViewBag.LoaiTaiLieu as List<SelectListItem>)
+                                            @foreach (var item in loaiTaiLieuList)
                                             {
                                                 <option value="@item.Value">@item.Text</option>
                                             }

@@ -49,8 +49,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
 
     public enum VaiTroNguoiDung
     {
-        [Display(Name = "Quản trị viên")]
-        QuanTriVien = 0,
+        [Display(Name = "Thủ thư")]
+        ThuThu = 0,
 
         [Display(Name = "Giảng viên")]
         GiangVien = 1,

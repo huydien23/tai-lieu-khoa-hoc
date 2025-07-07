@@ -45,8 +45,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     TempData["SuccessMessage"] = $"Đăng nhập thành công! Chào mừng {user.HoTen ?? user.UserName}";
 
                     // Redirect based on role
-                    if (user.VaiTro == VaiTroNguoiDung.QuanTriVien)
-                        return RedirectToAction("Dashboard", "Admin");
+                    if (user.VaiTro == VaiTroNguoiDung.ThuThu)
+                        return RedirectToAction("Dashboard", "Librarian");
                     else if (user.VaiTro == VaiTroNguoiDung.GiangVien)
                         return RedirectToAction("Dashboard", "Lecturer");
                     else if (user.VaiTro == VaiTroNguoiDung.SinhVien)
@@ -116,7 +116,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 VaiTro = role switch
                 {
                     "lecturer" => VaiTroNguoiDung.GiangVien,
-                    "admin" => VaiTroNguoiDung.QuanTriVien,
+                    "librarian" => VaiTroNguoiDung.ThuThu,
                     _ => VaiTroNguoiDung.SinhVien
                 },
                 EmailConfirmed = true,
