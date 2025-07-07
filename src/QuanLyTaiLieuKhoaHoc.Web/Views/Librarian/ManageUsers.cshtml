@@ -1,0 +1,162 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung>
+
+@{
+    ViewData["Title"] = "Quản lý Người dùng";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-users me-2"></i>
+                    Quản lý Người dùng
+                </h5>
+                <a href="#" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>
+                    Thêm người dùng
+                </a>
+            </div>
+            <div class="card-body">
+                @if (Model?.Any() == true)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Họ tên</th>
+                                    <th>Email</th>
+                                    <th>Mã số</th>
+                                    <th>Vai trò</th>
+                                    <th>Chuyên ngành</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-circle me-2">
+                                                    @user.HoTen.Substring(0, 1).ToUpper()
+                                                </div>
+                                                <span>@user.HoTen</span>
+                                            </div>
+                                        </td>
+                                        <td>@user.Email</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(user.MaSo))
+                                            {
+                                                <span class="badge bg-secondary">@user.MaSo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @switch (user.VaiTro)
+                                            {
+                                                case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.ThuThu:
+                                                    <span class="badge bg-primary">Thủ thư</span>
+                                                    break;
+                                                case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.GiangVien:
+                                                    <span class="badge bg-success">Giảng viên</span>
+                                                    break;
+                                                case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.SinhVien:
+                                                    <span class="badge bg-info">Sinh viên</span>
+                                                    break;
+                                                default:
+                                                    <span class="badge bg-secondary">Không xác định</span>
+                                                    break;
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.ChuyenNganh != null)
+                                            {
+                                                @user.ChuyenNganh.TenChuyenNganh
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (user.TrangThaiHoatDong)
+                                            {
+                                                <span class="badge bg-success">Hoạt động</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning">Không hoạt động</span>
+                                            }
+                                        </td>
+                                        <td>@user.NgayTao.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                @if (user.TrangThaiHoatDong)
+                                                {
+                                                    <button type="button" class="btn btn-outline-warning" title="Vô hiệu hóa">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    <button type="button" class="btn btn-outline-success" title="Kích hoạt">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Không có người dùng nào</h5>
+                        <p class="text-muted">Hiện tại chưa có người dùng nào trong hệ thống.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .badge {
+        font-size: 0.75rem;
+    }
+
+    .btn-group-sm .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>

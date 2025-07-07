@@ -19,7 +19,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 UserName = "thuthu@library.edu.vn",
                 Email = "thuthu@library.edu.vn",
                 EmailConfirmed = true,
-                HoTen = "Nguyễn Thị Hoa",
+                HoTen = "Thủ Thư",
                 VaiTro = VaiTroNguoiDung.ThuThu,
                 MaChuyenNganh = 1,
                 MaSo = "TT001",
