@@ -97,6 +97,16 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         {
             try
             {
+                // Kiểm tra file bắt buộc
+                if (model.FileTaiLieu == null || model.FileTaiLieu.Length == 0)
+                {
+                    _logger.LogWarning("Không có file được upload");
+                    return false;
+                }
+
+                // Xử lý upload file trước
+                var uploadResult = await UploadFileAsync(model.FileTaiLieu);
+
                 var taiLieu = new TaiLieu
                 {
                     TenTaiLieu = model.TenTaiLieu,
@@ -105,17 +115,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     MaLoaiTaiLieu = model.MaLoaiTaiLieu,
                     MaNguoiTaiLen = maNguoiDung,
                     NgayTaiLen = DateTime.Now,
-                    TrangThai = TrangThaiTaiLieu.ChoDuyet
+                    TrangThai = TrangThaiTaiLieu.ChoDuyet,
+                    DuongDanFile = uploadResult.FilePath,
+                    LoaiFile = uploadResult.FileExtension,
+                    KichThuocFile = uploadResult.FileSize,
+                    LuotTai = 0
                 };
-
-                // Xử lý upload file
-                if (model.FileTaiLieu != null)
-                {
-                    var uploadResult = await UploadFileAsync(model.FileTaiLieu);
-                    taiLieu.DuongDanFile = uploadResult.FilePath;
-                    taiLieu.LoaiFile = uploadResult.FileExtension;
-                    taiLieu.KichThuocFile = uploadResult.FileSize;
-                }
 
                 _context.TaiLieu.Add(taiLieu);
                 await _context.SaveChangesAsync();

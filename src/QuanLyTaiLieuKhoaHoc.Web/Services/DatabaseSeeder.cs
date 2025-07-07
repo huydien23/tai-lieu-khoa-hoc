@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
@@ -6,32 +7,31 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
 {
     public static class DatabaseSeeder
     {
-        public static async Task SeedSampleDataAsync(ApplicationDbContext context)
+        public static async Task SeedSampleDataAsync(ApplicationDbContext context, UserManager<NguoiDung> userManager)
         {
-            // Kiểm tra xem đã có dữ liệu chưa
-            if (await context.TaiLieu.AnyAsync())
+            // Kiểm tra xem đã có dữ liệu user chưa
+            if (await userManager.Users.AnyAsync())
                 return;
 
-            // Tạo một admin user mẫu
+            // Tạo admin user
             var adminUser = new NguoiDung
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = "admin@admin.com",
-                Email = "admin@admin.com",
+                UserName = "admin@qlkh.edu.vn",
+                Email = "admin@qlkh.edu.vn",
                 EmailConfirmed = true,
-                HoTen = "Quản trị viên",
+                HoTen = "Quản trị viên hệ thống",
                 VaiTro = VaiTroNguoiDung.QuanTriVien,
                 MaChuyenNganh = 1,
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
+            await userManager.CreateAsync(adminUser, "123456");
 
-            // Tạo một giảng viên mẫu
+            // Tạo giảng viên
             var lecturerUser = new NguoiDung
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = "gv@gv.com",
-                Email = "gv@gv.com",
+                UserName = "giangvien@qlkh.edu.vn",
+                Email = "giangvien@qlkh.edu.vn",
                 EmailConfirmed = true,
                 HoTen = "PGS.TS Nguyễn Văn A",
                 VaiTro = VaiTroNguoiDung.GiangVien,
@@ -39,13 +39,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
+            await userManager.CreateAsync(lecturerUser, "123456");
 
-            // Tạo một sinh viên mẫu
+            // Tạo sinh viên
             var studentUser = new NguoiDung
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = "sv@sv.com",
-                Email = "sv@sv.com",
+                UserName = "sinhvien@qlkh.edu.vn",
+                Email = "sinhvien@qlkh.edu.vn",
                 EmailConfirmed = true,
                 HoTen = "Trần Thị B",
                 VaiTro = VaiTroNguoiDung.SinhVien,
@@ -55,8 +55,23 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
+            await userManager.CreateAsync(studentUser, "123456");
 
-            context.Users.AddRange(adminUser, lecturerUser, studentUser);
+            // Chờ để đảm bảo users được tạo thành công
+            await context.SaveChangesAsync();
+
+            // Kiểm tra xem đã có tài liệu chưa
+            if (await context.TaiLieu.AnyAsync())
+                return;
+
+            // Lấy lại users đã tạo để có ID
+            var admin = await userManager.FindByEmailAsync("admin@qlkh.edu.vn");
+            var lecturer = await userManager.FindByEmailAsync("giangvien@qlkh.edu.vn");
+            var student = await userManager.FindByEmailAsync("sinhvien@qlkh.edu.vn");
+
+            // Đảm bảo users được tạo thành công
+            if (admin == null || lecturer == null || student == null)
+                return;
 
             // Tạo tài liệu mẫu
             var sampleDocuments = new List<TaiLieu>
@@ -73,7 +88,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = 1,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 },
                 new TaiLieu
                 {
@@ -87,7 +102,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = 2,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 },
                 new TaiLieu
                 {
@@ -101,7 +116,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = 3,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 },
                 new TaiLieu
                 {
@@ -115,7 +130,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = 4,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 },
                 new TaiLieu
                 {
@@ -129,7 +144,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = 5,
-                    MaNguoiTaiLen = studentUser.Id
+                    MaNguoiTaiLen = student.Id
                 },
                 new TaiLieu
                 {
@@ -143,7 +158,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = 6,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 },
                 // Thêm tài liệu cho chuyên ngành Kinh tế
                 new TaiLieu
@@ -158,7 +173,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 2,
                     MaLoaiTaiLieu = 1,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 },
                 new TaiLieu
                 {
@@ -172,36 +187,37 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 2,
                     MaLoaiTaiLieu = 2,
-                    MaNguoiTaiLen = lecturerUser.Id
+                    MaNguoiTaiLen = lecturer.Id
                 }
             };
 
             context.TaiLieu.AddRange(sampleDocuments);
             await context.SaveChangesAsync(); // Lưu tài liệu trước để có ID
 
-            // Tạo một số đánh giá mẫu
+            // Tạo một số đánh giá mẫu sử dụng ID thực tế
+            var docs = await context.TaiLieu.Take(3).ToListAsync();
             var sampleRatings = new List<DanhGiaTaiLieu>
             {
                 new DanhGiaTaiLieu
                 {
-                    MaTaiLieu = sampleDocuments[0].MaTaiLieu,
-                    MaNguoiDung = studentUser.Id,
+                    MaTaiLieu = docs[0].MaTaiLieu,
+                    MaNguoiDung = student.Id,
                     DiemDanhGia = 5,
                     NhanXet = "Tài liệu rất hữu ích và dễ hiểu!",
                     NgayDanhGia = DateTime.Now.AddDays(-5)
                 },
                 new DanhGiaTaiLieu
                 {
-                    MaTaiLieu = sampleDocuments[0].MaTaiLieu,
-                    MaNguoiDung = adminUser.Id,
+                    MaTaiLieu = docs[0].MaTaiLieu,
+                    MaNguoiDung = admin.Id,
                     DiemDanhGia = 4,
                     NhanXet = "Nội dung tốt, trình bày khá rõ ràng.",
                     NgayDanhGia = DateTime.Now.AddDays(-3)
                 },
                 new DanhGiaTaiLieu
                 {
-                    MaTaiLieu = sampleDocuments[1].MaTaiLieu,
-                    MaNguoiDung = studentUser.Id,
+                    MaTaiLieu = docs[1].MaTaiLieu,
+                    MaNguoiDung = student.Id,
                     DiemDanhGia = 5,
                     NhanXet = "Slide rất chi tiết và có nhiều ví dụ thực tế.",
                     NgayDanhGia = DateTime.Now.AddDays(-1)

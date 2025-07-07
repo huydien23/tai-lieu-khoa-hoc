@@ -63,6 +63,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Kiểm tra file upload
+                if (model.FileTaiLieu == null || model.FileTaiLieu.Length == 0)
+                {
+                    ModelState.AddModelError("FileTaiLieu", "Vui lòng chọn file tài liệu để upload.");
+                    await LoadDropdownData();
+                    return View(model);
+                }
+
                 var currentUser = await _userManager.GetUserAsync(User);
                 if (currentUser != null)
                 {
@@ -74,7 +82,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Có lỗi xảy ra khi thêm tài liệu.");
+                        ModelState.AddModelError("", "Có lỗi xảy ra khi thêm tài liệu. Vui lòng thử lại.");
                     }
                 }
             }
