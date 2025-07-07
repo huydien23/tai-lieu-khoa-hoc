@@ -467,5 +467,37 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDocument(int id)
+        {
+            try
+            {
+                var taiLieu = await _context.TaiLieu.FindAsync(id);
+                if (taiLieu == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
+                }
+
+                // Xóa file vật lý nếu tồn tại
+                if (!string.IsNullOrEmpty(taiLieu.DuongDanFile))
+                {
+                    var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", taiLieu.DuongDanFile.TrimStart('/'));
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+                }
+
+                _context.TaiLieu.Remove(taiLieu);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Xóa tài liệu thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa tài liệu: " + ex.Message });
+            }
+        }
     }
 }

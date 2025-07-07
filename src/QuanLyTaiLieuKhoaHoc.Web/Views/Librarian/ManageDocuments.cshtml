@@ -163,6 +163,11 @@
                                                 <i class="fas fa-download"></i>
                                             </a>
                                         }
+
+                                        <button type="button" class="btn btn-outline-danger btn-sm" title="Xóa tài liệu"
+                                            onclick="deleteDocument(@item.MaTaiLieu, '@item.TenTaiLieu')">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -308,26 +313,52 @@
         // Reset modals when hidden
         $('#createDocumentModal').on('hidden.bs.modal', function (e) {
             $('#createDocumentContent').html(`
-                    <div class="text-center py-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải form...</p>
                         </div>
-                        <p class="mt-2 text-muted">Đang tải form...</p>
-                    </div>
-                `);
+                    `);
         });
 
         $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
             $('#documentDetailsContent').html(`
-                    <div class="text-center py-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải thông tin...</p>
                         </div>
-                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                    </div>
-                `);
+                    `);
         });
+
+        // Delete document function
+        function deleteDocument(id, name) {
+            if (confirm(`Bạn có chắc chắn muốn xóa tài liệu "${name}"?\n\nLưu ý: Thao tác này không thể hoàn tác!`)) {
+                $.ajax({
+                    url: '@Url.Action("DeleteDocument")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            // Refresh page after 1 second
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Có lỗi xảy ra khi xóa tài liệu: ' + error);
+                    }
+                });
+            }
+        }
+
+        // Make deleteDocument function global
+        window.deleteDocument = deleteDocument;
     </script>
 }
-
-                                                                
