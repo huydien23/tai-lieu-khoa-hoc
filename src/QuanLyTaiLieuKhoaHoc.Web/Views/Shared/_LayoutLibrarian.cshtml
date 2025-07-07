@@ -97,28 +97,29 @@
             padding: 30px;
         }
 
-        .logout-btn {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
-        }
-
-        .logout-btn a {
-            display: block;
-            padding: 10px;
-            background: rgba(220, 53, 69, 0.2);
-            border: 1px solid rgba(220, 53, 69, 0.5);
-            border-radius: 5px;
-            color: white;
+        .logout-btn-small {
+            padding: 5px 12px;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            border-radius: 20px;
+            color: #dc3545;
             text-decoration: none;
-            text-align: center;
+            font-size: 0.875rem;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .logout-btn a:hover {
-            background: rgba(220, 53, 69, 0.3);
-            color: white;
+        .logout-btn-small:hover {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+        }
+
+        .logout-btn-small i {
+            font-size: 0.8rem;
         }
 
         .card {
@@ -158,14 +159,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("QuanLyTaiLieu", "Librarian")"
-                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyTaiLieu" ? "active" : "")">
+                    <a href="@Url.Action("ManageDocuments", "Librarian")"
+                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageDocuments" ? "active" : "")">
                         <i class="fas fa-file-alt"></i> Quản lý Tài liệu
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("QuanLyNguoiDung", "Librarian")"
-                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "QuanLyNguoiDung" ? "active" : "")">
+                    <a href="@Url.Action("ManageUsers", "Librarian")"
+                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageUsers" ? "active" : "")">
                         <i class="fas fa-users"></i> Quản lý Người dùng
                     </a>
                 </li>
@@ -194,12 +195,6 @@
                     </a>
                 </li>
             </ul>
-
-            <div class="logout-btn">
-                <a href="@Url.Action("Logout", "Account")">
-                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
-                </a>
-            </div>
         </div>
 
         <!-- Main Content -->
@@ -207,8 +202,13 @@
             <div class="top-bar">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">@ViewData["Title"]</h5>
-                    <div class="text-muted">
-                        <i class="fas fa-calendar-day"></i> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-muted">
+                            <i class="fas fa-calendar-day"></i> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                        <a href="@Url.Action("Logout", "Account")" class="logout-btn-small">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
                     </div>
                 </div>
             </div>
