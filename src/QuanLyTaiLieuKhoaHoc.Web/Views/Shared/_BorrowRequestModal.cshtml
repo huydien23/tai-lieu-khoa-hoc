@@ -1,0 +1,45 @@
+@* Modal gửi yêu cầu mượn tài liệu cho sinh viên *@
+<div class="modal fade" id="borrowRequestModal" tabindex="-1" aria-labelledby="borrowRequestModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="borrowRequestModalLabel">
+                    <i class="fas fa-hand-paper me-2 text-success"></i>Gửi yêu cầu mượn tài liệu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="borrowRequestForm" method="post" action="/TaiLieu/RequestBorrow">
+                <div class="modal-body">
+                    <input type="hidden" name="MaTaiLieu" id="borrowMaTaiLieu" />
+                    <div class="mb-3">
+                        <label for="borrowNote" class="form-label">Ghi chú (tuỳ chọn)</label>
+                        <textarea class="form-control" id="borrowNote" name="GhiChu" rows="2"
+                            placeholder="Bạn có thể ghi chú cho thủ thư..."></textarea>
+                    </div>
+                    <div class="alert alert-info small">
+                        Yêu cầu mượn sẽ được gửi tới thủ thư. Bạn sẽ nhận được thông báo khi được duyệt.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-success">Gửi yêu cầu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Gán mã tài liệu vào modal khi bấm nút mượn
+    document.addEventListener('DOMContentLoaded', function () {
+        var borrowModal = document.getElementById('borrowRequestModal');
+        borrowModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var maTaiLieu = button.getAttribute('data-tai-lieu-id');
+            document.getElementById('borrowMaTaiLieu').value = maTaiLieu;
+        });
+    });
+</script>
+
+   
+                           
