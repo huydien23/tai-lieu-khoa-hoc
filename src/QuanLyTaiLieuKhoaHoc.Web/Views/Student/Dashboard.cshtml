@@ -109,6 +109,10 @@
                         data-bs-target="#v-pills-recommendations" type="button" role="tab">
                         <i class="fas fa-lightbulb me-2"></i>Đề xuất
                     </button>
+                    <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-settings" type="button" role="tab">
+                        <i class="fas fa-cog me-2"></i>Cài đặt tài khoản
+                    </button>
                 </div>
             </div>
         </div>
@@ -117,6 +121,40 @@
     <!-- Tab Content (Right) -->
     <div class="col-lg-9">
         <div class="tab-content" id="v-pills-tabContent">
+            <!-- Account Settings Tab Content (moved here) -->
+            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-cog me-2"></i>
+                            Cài đặt tài khoản
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Họ tên</label>
+                                <input type="text" class="form-control" placeholder="Nhập họ tên mới">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu hiện tại</label>
+                                <input type="password" class="form-control" placeholder="Nhập mật khẩu hiện tại">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mật khẩu mới</label>
+                                <input type="password" class="form-control" placeholder="Nhập mật khẩu mới">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nhập lại mật khẩu mới</label>
+                                <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới">
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>Lưu thay đổi
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
             <!-- Overview Tab -->
             <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
                 <div class="row g-4">
