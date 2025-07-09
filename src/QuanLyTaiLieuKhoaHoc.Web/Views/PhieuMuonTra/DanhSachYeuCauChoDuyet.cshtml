@@ -1,0 +1,40 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>
+@{
+    ViewData["Title"] = "Danh sách yêu cầu mượn chờ duyệt";
+}
+<h2>@ViewData["Title"]</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã phiếu</th>
+            <th>Tài liệu</th>
+            <th>Người mượn</th>
+            <th>Ghi chú</th>
+            <th>Ngày yêu cầu</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.MaPhieu</td>
+            <td>@item.TaiLieu?.TenTaiLieu</td>
+            <td>@item.NguoiMuon?.HoTen</td>
+            <td>@item.GhiChu</td>
+            <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>
+                <form asp-action="DuyetYeuCauMuon" method="post" style="display:inline">
+                    <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
+                    <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
+                </form>
+                <form asp-action="TuChoiYeuCauMuon" method="post" style="display:inline">
+                    <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
+                    <input type="text" name="lyDo" placeholder="Lý do từ chối" class="form-control form-control-sm mb-1" />
+                    <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

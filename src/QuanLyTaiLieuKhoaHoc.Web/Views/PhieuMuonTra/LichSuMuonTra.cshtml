@@ -1,0 +1,50 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>
+@{
+    ViewData["Title"] = "Lịch sử mượn/trả của tôi";
+}
+<h2>@ViewData["Title"]</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã phiếu</th>
+            <th>Tài liệu</th>
+            <th>Ngày mượn</th>
+            <th>Ngày trả</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaPhieu</td>
+                <td>@item.TaiLieu?.TenTaiLieu</td>
+                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(item.NgayTra.HasValue? item.NgayTra.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                <td>
+                    @switch (item.TrangThai)
+                    {
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                            ;
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
+                            <span class="badge bg-primary">Đã duyệt</span>
+                            ;
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
+                            <span class="badge bg-success">Đã trả</span>
+                            ;
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
+                            <span class="badge bg-danger">Từ chối</span>
+                            ;
+                            break;
+                    }
+                </td>
+                <td>@item.GhiChu</td>
+            </tr>
+        }
+    </tbody>
+</table>

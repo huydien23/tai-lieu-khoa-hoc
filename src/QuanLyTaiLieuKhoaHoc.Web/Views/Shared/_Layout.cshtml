@@ -74,6 +74,23 @@
                                 </a>
                             </li>
                         } *@
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="PhieuMuonTra" asp-action="LichSuMuonTra">
+                                    <i class="fas fa-history me-1"></i>Lịch sử mượn/trả
+                                </a>
+                            </li>
+                            @if (User.IsInRole("ThuThu"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="PhieuMuonTra"
+                                        asp-action="DanhSachYeuCauChoDuyet">
+                                        <i class="fas fa-tasks me-1"></i>Yêu cầu mượn chờ duyệt
+                                    </a>
+                                </li>
+                            }
+                        }
                     </ul>
 
                     <partial name="_LoginPartial" />

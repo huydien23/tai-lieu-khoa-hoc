@@ -17,6 +17,7 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     public DbSet<LoaiTaiLieu> LoaiTaiLieu { get; set; }
     public DbSet<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; }
     public DbSet<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; }
+    public DbSet<PhieuMuonTra> PhieuMuonTra { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

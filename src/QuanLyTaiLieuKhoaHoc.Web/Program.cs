@@ -35,6 +35,7 @@ builder.Services.AddSession(options =>
 
 // Register custom services
 builder.Services.AddScoped<ITaiLieuService, TaiLieuService>();
+builder.Services.AddScoped<IPhieuMuonTraService, PhieuMuonTraService>();
 
 builder.Services.AddControllersWithViews();
 
