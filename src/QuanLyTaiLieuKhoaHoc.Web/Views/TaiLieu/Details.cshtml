@@ -27,7 +27,6 @@
                             <strong>Ngày tải lên:</strong> @Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <strong>Chuyên ngành:</strong>
@@ -38,7 +37,6 @@
                             <span class="badge bg-primary">@Model.TenLoaiTaiLieu</span>
                         </div>
                     </div>
-
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <strong>Lượt tải:</strong> @Model.LuotTai
@@ -47,7 +45,6 @@
                             <strong>Kích thước:</strong> @((Model.KichThuocFile / 1024).ToString("F1")) KB
                         </div>
                     </div>
-
                     @if (Model.SoLuotDanhGia > 0)
                     {
                         <div class="row mb-3">
@@ -56,7 +53,7 @@
                                 <span class="text-warning">
                                     @for (int i = 1; i <= 5; i++)
                                     {
-                                        @if (i <= Model.DiemDanhGiaTrungBinh)
+                                        if (i <= Model.DiemDanhGiaTrungBinh)
                                         {
                                             <i class="fas fa-star"></i>
                                         }
@@ -70,12 +67,10 @@
                             </div>
                         </div>
                     }
-
                     <div class="mb-4">
                         <h5>Mô tả:</h5>
                         <p class="text-muted">@Model.MoTa</p>
                     </div>
-
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="d-flex gap-2">
@@ -98,7 +93,6 @@
                 </div>
             </div>
         </div>
-
         <div class="col-lg-4">
             <div class="card">
                 <div class="card-header">
@@ -125,7 +119,6 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" name="MaTaiLieu" value="@Model.MaTaiLieu" />
-
                         <div class="mb-3">
                             <label class="form-label">Điểm đánh giá:</label>
                             <div class="rating">
@@ -138,7 +131,6 @@
                                 }
                             </div>
                         </div>
-
                         <div class="mb-3">
                             <label for="nhanXet" class="form-label">Nhận xét:</label>
                             <textarea class="form-control" id="nhanXet" name="NhanXet" rows="3"
@@ -155,38 +147,20 @@
     </div>
 }
 
-@if (User.Identity?.IsAuthenticated == true && (User.IsInRole("SinhVien") || User.IsInRole("GiangVien")))
-{
-    <form method="post" action="/PhieuMuonTra/GuiYeuCauMuon" class="mt-3">
-        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-        <div class="mb-2">
-            <label for="ghiChu" class="form-label">Ghi chú cho thủ thư (tuỳ chọn):</label>
-            <textarea class="form-control" name="ghiChu" id="ghiChu" rows="2"
-            placeholder="Bạn có thể ghi chú cho thủ thư..."></textarea>
-        </div>
-        <button type="submit" class="btn btn-warning">
-            <i class="fas fa-hand-paper me-2"></i>Yêu cầu mượn tài liệu
-        </button>
-    </form>
-}
-
 <style>
     .rating {
         direction: rtl;
         display: inline-block;
     }
-
     .rating input {
         display: none;
     }
-
     .rating label {
         color: #ddd;
         font-size: 1.5rem;
         cursor: pointer;
         transition: color 0.2s;
     }
-
     .rating label:hover,
     .rating label:hover~label,
     .rating input:checked~label {

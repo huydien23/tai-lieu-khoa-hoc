@@ -13,29 +13,11 @@
             </h1>
             <p class="text-muted mb-0">Khám phá tài liệu học tập và nghiên cứu</p>
         </div>
-        <div class="page-actions">
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#borrowRequestModal">
-                <i class="fas fa-hand-paper me-2"></i>Yêu cầu mượn
-            </button>
-        </div>
     </div>
 </div>
 
-<!-- Key Statistics -->
+<!-- Key Statistics (chỉ giữ lại các thống kê phù hợp) -->
 <div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-primary">
-                <i class="fas fa-book-open"></i>
-            </div>
-            <div class="stats-number">5</div>
-            <div class="stats-label">Đang mượn</div>
-            <small class="text-muted">
-                <i class="fas fa-calendar me-1"></i>Còn 7 ngày
-            </small>
-        </div>
-    </div>
-
     <div class="col-xl-3 col-md-6">
         <div class="stats-card">
             <div class="stats-icon text-success">
@@ -48,7 +30,6 @@
             </small>
         </div>
     </div>
-
     <div class="col-xl-3 col-md-6">
         <div class="stats-card">
             <div class="stats-icon text-info">
@@ -61,7 +42,6 @@
             </small>
         </div>
     </div>
-
     <div class="col-xl-3 col-md-6">
         <div class="stats-card">
             <div class="stats-icon text-warning">
@@ -93,17 +73,9 @@
                         data-bs-target="#v-pills-overview" type="button" role="tab">
                         <i class="fas fa-chart-pie me-2"></i>Tổng quan
                     </button>
-                    <button class="nav-link" id="v-pills-borrowed-tab" data-bs-toggle="pill"
-                        data-bs-target="#v-pills-borrowed" type="button" role="tab">
-                        <i class="fas fa-book me-2"></i>Đang mượn
-                    </button>
                     <button class="nav-link" id="v-pills-favorites-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-favorites" type="button" role="tab">
                         <i class="fas fa-star me-2"></i>Yêu thích
-                    </button>
-                    <button class="nav-link" id="v-pills-history-tab" data-bs-toggle="pill"
-                        data-bs-target="#v-pills-history" type="button" role="tab">
-                        <i class="fas fa-history me-2"></i>Lịch sử
                     </button>
                     <button class="nav-link" id="v-pills-recommendations-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-recommendations" type="button" role="tab">
@@ -117,11 +89,10 @@
             </div>
         </div>
     </div>
-
     <!-- Tab Content (Right) -->
     <div class="col-lg-9">
         <div class="tab-content" id="v-pills-tabContent">
-            <!-- Account Settings Tab Content (moved here) -->
+            <!-- Account Settings Tab Content -->
             <div class="tab-pane fade" id="v-pills-settings" role="tabpanel">
                 <div class="card-custom">
                     <div class="card-header-custom">
@@ -201,8 +172,7 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Quick Actions -->
+                    <!-- Quick Actions (chỉ giữ lại tìm kiếm, yêu thích, đề xuất) -->
                     <div class="col-12">
                         <div class="card-custom">
                             <div class="card-header-custom">
@@ -213,25 +183,19 @@
                             </div>
                             <div class="card-body">
                                 <div class="row g-3">
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <a href="#" class="btn btn-outline-primary w-100">
                                             <i class="fas fa-search me-2"></i>Tìm tài liệu
                                         </a>
                                     </div>
-                                    <div class="col-md-3">
-                                        <button class="btn btn-outline-success w-100" data-bs-toggle="modal"
-                                            data-bs-target="#borrowRequestModal">
-                                            <i class="fas fa-hand-paper me-2"></i>Mượn tài liệu
-                                        </button>
-                                    </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <a href="#" class="btn btn-outline-info w-100">
                                             <i class="fas fa-star me-2"></i>Xem yêu thích
                                         </a>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <a href="#" class="btn btn-outline-warning w-100">
-                                            <i class="fas fa-history me-2"></i>Xem lịch sử
+                                            <i class="fas fa-lightbulb me-2"></i>Đề xuất
                                         </a>
                                     </div>
                                 </div>
@@ -240,54 +204,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Borrowed Documents Tab -->
-            <div class="tab-pane fade" id="v-pills-borrowed" role="tabpanel">
-                <div class="card-custom">
-                    <div class="card-header-custom d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">
-                            <i class="fas fa-book me-2"></i>
-                            Tài liệu đang mượn
-                        </h6>
-                        <span class="badge bg-primary">5 tài liệu</span>
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Bạn có <strong>2 tài liệu</strong> sắp đến hạn trả (trong 3 ngày)
-                        </div>
-
-                        <div class="borrowed-list">
-                            <div class="borrowed-item">
-                                <div class="borrowed-info">
-                                    <h6 class="borrowed-title">Lập trình Web nâng cao</h6>
-                                    <p class="borrowed-meta">Mượn ngày: 01/01/2025 • Hạn trả: 15/01/2025</p>
-                                </div>
-                                <div class="borrowed-status">
-                                    <span class="badge bg-warning">Sắp hết hạn</span>
-                                    <button class="btn btn-sm btn-outline-success ms-2">
-                                        <i class="fas fa-undo me-1"></i>Gia hạn
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="borrowed-item">
-                                <div class="borrowed-info">
-                                    <h6 class="borrowed-title">Cơ sở dữ liệu Oracle</h6>
-                                    <p class="borrowed-meta">Mượn ngày: 28/12/2024 • Hạn trả: 11/01/2025</p>
-                                </div>
-                                <div class="borrowed-status">
-                                    <span class="badge bg-success">Còn thời gian</span>
-                                    <button class="btn btn-sm btn-outline-primary ms-2">
-                                        <i class="fas fa-eye me-1"></i>Xem
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Favorites Tab -->
             <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel">
                 <div class="card-custom">
@@ -325,53 +241,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- History Tab -->
-            <div class="tab-pane fade" id="v-pills-history" role="tabpanel">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h6 class="mb-0">
-                            <i class="fas fa-history me-2"></i>
-                            Lịch sử mượn/trả
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Tài liệu</th>
-                                        <th>Ngày mượn</th>
-                                        <th>Ngày trả</th>
-                                        <th>Trạng thái</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="fw-medium">Hệ điều hành Linux</div>
-                                            <small class="text-muted">PDF - 2.8 MB</small>
-                                        </td>
-                                        <td>20/12/2024</td>
-                                        <td>28/12/2024</td>
-                                        <td><span class="badge bg-success">Đã trả</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="fw-medium">Mạng máy tính</div>
-                                            <small class="text-muted">PDF - 3.5 MB</small>
-                                        </td>
-                                        <td>15/12/2024</td>
-                                        <td>25/12/2024</td>
-                                        <td><span class="badge bg-success">Đã trả</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Recommendations Tab -->
             <div class="tab-pane fade" id="v-pills-recommendations" role="tabpanel">
                 <div class="card-custom">
