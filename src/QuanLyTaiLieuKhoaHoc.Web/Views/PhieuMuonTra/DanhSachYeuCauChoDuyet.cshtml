@@ -11,30 +11,49 @@
             <th>Người mượn</th>
             <th>Ghi chú</th>
             <th>Ngày yêu cầu</th>
+            <th>Trạng thái</th>
             <th>Thao tác</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.MaPhieu</td>
-            <td>@item.TaiLieu?.TenTaiLieu</td>
-            <td>@item.NguoiMuon?.HoTen</td>
-            <td>@item.GhiChu</td>
-            <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
-            <td>
-                <form asp-action="DuyetYeuCauMuon" method="post" style="display:inline">
-                    <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
-                    <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
-                </form>
-                <form asp-action="TuChoiYeuCauMuon" method="post" style="display:inline">
-                    <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
-                    <input type="text" name="lyDo" placeholder="Lý do từ chối" class="form-control form-control-sm mb-1" />
-                    <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
-                </form>
-            </td>
-        </tr>
-    }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaPhieu</td>
+                <td>@item.TaiLieu?.TenTaiLieu</td>
+                <td>@item.NguoiMuon?.HoTen</td>
+                <td>@item.GhiChu</td>
+                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @switch (item.TrangThai)
+                    {
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
+                            <span class="badge bg-primary">Đã duyệt</span>
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
+                            <span class="badge bg-success">Đã trả</span>
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
+                            <span class="badge bg-danger">Từ chối</span>
+                            break;
+                    }
+                </td>
+                <td>
+                    <form asp-action="DuyetYeuCauMuon" method="post" style="display:inline">
+                        <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
+                        <button type="submit" class="btn btn-success btn-sm">Duyệt</button>
+                    </form>
+                    <form asp-action="TuChoiYeuCauMuon" method="post" style="display:inline">
+                        <input type="hidden" name="maPhieu" value="@item.MaPhieu" />
+                        <input type="text" name="lyDo" placeholder="Lý do từ chối"
+                            class="form-control form-control-sm mb-1" />
+                        <button type="submit" class="btn btn-danger btn-sm">Từ chối</button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
