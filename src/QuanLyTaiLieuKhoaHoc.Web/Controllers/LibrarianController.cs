@@ -1,6 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
@@ -21,6 +21,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             _context = context;
             _taiLieuService = taiLieuService;
             _userManager = userManager;
+        }
+
+        // API tìm kiếm thành viên hệ thống cho autocomplete phiếu mượn
+        [HttpGet]
+        public async Task<IActionResult> SearchMember(string q)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
+                return Json(new object[0]);
+
+            var users = await _context.Users
+                .Where(u => (u.MaSo != null && u.MaSo.Contains(q)) || (u.HoTen != null && u.HoTen.Contains(q)) || (u.Email != null && u.Email.Contains(q)))
+                .Select(u => new
+                {
+                    maSo = u.MaSo,
+                    hoTen = u.HoTen,
+                    email = u.Email,
+                    sdt = u.PhoneNumber,
+                    loai = u.VaiTro // Ví dụ: "SinhVien", "GiangVien", "ThuThu"
+                })
+                .Take(10)
+                .ToListAsync();
+
+            return Json(users);
         }
 
         public async Task<IActionResult> Dashboard()
@@ -664,6 +687,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             ViewData["Title"] = "Cài đặt hệ thống";
             return View();
         }
+
+
 
         // LẬP PHIẾU MƯỢN TÀI LIỆU
         [HttpPost]

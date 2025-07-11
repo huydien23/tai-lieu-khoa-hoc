@@ -196,31 +196,76 @@
             <form id="createPhieuMuonForm">
                 <div class="modal-body">
                     <input type="hidden" id="phieuMaTaiLieu" name="maTaiLieu" />
-                    <div class="mb-3">
-                        <label for="phieuTenTaiLieu" class="form-label">Tên tài
-                            liệu</label>
-                        <input type="text" class="form-control" id="phieuTenTaiLieu" name="tenTaiLieu" readonly />
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" value="true" id="isMemberCheckbox">
+                        <label class="form-check-label" for="isMemberCheckbox">
+                            Người mượn là thành viên hệ thống
+                        </label>
                     </div>
-                    <div class="mb-3">
-                        <label for="phieuMaNguoiMuon" class="form-label">Mã số người
-                            mượn</label>
-                        <input type="text" class="form-control" id="phieuMaNguoiMuon" name="maNguoiMuon" required />
+                    <div class="mb-3 d-none" id="memberSearchGroup">
+                        <label for="memberSearch" class="form-label">Tìm thành viên (mã số, tên, email)</label>
+                        <input type="text" class="form-control" id="memberSearch" autocomplete="off"
+                            placeholder="Nhập mã số, tên hoặc email...">
+                        <div class="list-group position-absolute w-100" id="memberSearchResults" style="z-index: 1000;">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="phieuHoTenNguoiMuon" class="form-label">Họ tên người
-                            mượn</label>
-                        <input type="text" class="form-control" id="phieuHoTenNguoiMuon" name="hoTenNguoiMuon"
-                            required />
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuTenTaiLieu" class="form-label">Tên tài liệu</label>
+                            <input type="text" class="form-control" id="phieuTenTaiLieu" name="tenTaiLieu" readonly />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuMaNguoiMuon" class="form-label">Mã số người mượn</label>
+                            <input type="text" class="form-control" id="phieuMaNguoiMuon" name="maNguoiMuon" required />
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="phieuGhiChu" class="form-label">Ghi chú</label>
-                        <textarea class="form-control" id="phieuGhiChu" name="ghiChu" rows="2"></textarea>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuHoTenNguoiMuon" class="form-label">Họ tên người mượn</label>
+                            <input type="text" class="form-control" id="phieuHoTenNguoiMuon" name="hoTenNguoiMuon"
+                                required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuEmailNguoiMuon" class="form-label">Email người mượn</label>
+                            <input type="email" class="form-control" id="phieuEmailNguoiMuon" name="emailNguoiMuon" />
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuSDTNguoiMuon" class="form-label">Số điện thoại người mượn</label>
+                            <input type="text" class="form-control" id="phieuSDTNguoiMuon" name="sdtNguoiMuon" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuLoaiNguoiMuon" class="form-label">Loại người mượn</label>
+                            <input type="text" class="form-control" id="phieuLoaiNguoiMuon" name="loaiNguoiMuon"
+                                readonly />
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuNgayMuon" class="form-label">Ngày mượn</label>
+                            <input type="date" class="form-control" id="phieuNgayMuon" name="ngayMuon" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuNgayTraDuKien" class="form-label">Ngày trả dự kiến</label>
+                            <input type="date" class="form-control" id="phieuNgayTraDuKien" name="ngayTraDuKien" />
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuSoLuong" class="form-label">Số lượng mượn</label>
+                            <input type="number" class="form-control" id="phieuSoLuong" name="soLuong" min="1"
+                                value="1" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phieuGhiChu" class="form-label">Ghi chú</label>
+                            <textarea class="form-control" id="phieuGhiChu" name="ghiChu" rows="2"></textarea>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-warning">Lập phiếu
-                        mượn</button>
+                    <button type="submit" class="btn btn-warning">Lập phiếu mượn</button>
                 </div>
             </form>
         </div>
@@ -316,9 +361,19 @@
         function openCreatePhieuMuonModal(maTaiLieu, tenTaiLieu) {
             $('#phieuMaTaiLieu').val(maTaiLieu);
             $('#phieuTenTaiLieu').val(tenTaiLieu);
-            $('#phieuMaNguoiMuon').val("");
-            $('#phieuHoTenNguoiMuon').val("");
+            $('#phieuMaNguoiMuon').val("").prop('readonly', false);
+            $('#phieuHoTenNguoiMuon').val("").prop('readonly', false);
+            $('#phieuEmailNguoiMuon').val("").prop('readonly', false);
+            $('#phieuSDTNguoiMuon').val("").prop('readonly', false);
+            $('#phieuLoaiNguoiMuon').val("");
+            $('#phieuNgayMuon').val(new Date().toISOString().slice(0, 10));
+            $('#phieuNgayTraDuKien').val("");
+            $('#phieuSoLuong').val(1);
             $('#phieuGhiChu').val("");
+            $('#isMemberCheckbox').prop('checked', false);
+            $('#memberSearchGroup').addClass('d-none');
+            $('#memberSearch').val("");
+            $('#memberSearchResults').empty();
             $('#createPhieuMuonModal').modal('show');
         }
         window.openCreatePhieuMuonModal = openCreatePhieuMuonModal;
@@ -330,6 +385,12 @@
                 maTaiLieu: $('#phieuMaTaiLieu').val(),
                 maNguoiMuon: $('#phieuMaNguoiMuon').val(),
                 hoTenNguoiMuon: $('#phieuHoTenNguoiMuon').val(),
+                emailNguoiMuon: $('#phieuEmailNguoiMuon').val(),
+                sdtNguoiMuon: $('#phieuSDTNguoiMuon').val(),
+                loaiNguoiMuon: $('#phieuLoaiNguoiMuon').val(),
+                ngayMuon: $('#phieuNgayMuon').val(),
+                ngayTraDuKien: $('#phieuNgayTraDuKien').val(),
+                soLuong: $('#phieuSoLuong').val(),
                 ghiChu: $('#phieuGhiChu').val()
             };
             $.ajax({
@@ -348,6 +409,46 @@
                     toastr.error('Có lỗi xảy ra khi lập phiếu: ' + error);
                 }
             });
+        });
+
+        // Xử lý checkbox thành viên hệ thống
+        $('#isMemberCheckbox').on('change', function () {
+            if ($(this).is(':checked')) {
+                $('#memberSearchGroup').removeClass('d-none');
+                $('#phieuMaNguoiMuon, #phieuHoTenNguoiMuon, #phieuEmailNguoiMuon, #phieuSDTNguoiMuon, #phieuLoaiNguoiMuon').prop('readonly', true);
+            } else {
+                $('#memberSearchGroup').addClass('d-none');
+                $('#phieuMaNguoiMuon, #phieuHoTenNguoiMuon, #phieuEmailNguoiMuon, #phieuSDTNguoiMuon, #phieuLoaiNguoiMuon').prop('readonly', false);
+                $('#memberSearch').val("");
+                $('#memberSearchResults').empty();
+            }
+        });
+
+        // Autocomplete tìm thành viên hệ thống
+        $('#memberSearch').on('input', function () {
+            var query = $(this).val();
+            if (query.length < 2) {
+                $('#memberSearchResults').empty();
+                return;
+            }
+            $.get('/Librarian/SearchMember', { q: query }, function (data) {
+                var results = data || [];
+                var html = '';
+                results.forEach(function (m) {
+                    html += `<button type="button" class="list-group-item list-group-item-action" data-maso="${m.maSo}" data-hoten="${m.hoTen}" data-email="${m.email}" data-sdt="${m.sdt}" data-loai="${m.loai}">${m.maSo} - ${m.hoTen} (${m.loai})</button>`;
+                });
+                $('#memberSearchResults').html(html);
+            });
+        });
+
+        // Chọn thành viên từ autocomplete
+        $('#memberSearchResults').on('click', 'button', function () {
+            $('#phieuMaNguoiMuon').val($(this).data('maso'));
+            $('#phieuHoTenNguoiMuon').val($(this).data('hoten'));
+            $('#phieuEmailNguoiMuon').val($(this).data('email'));
+            $('#phieuSDTNguoiMuon').val($(this).data('sdt'));
+            $('#phieuLoaiNguoiMuon').val($(this).data('loai'));
+            $('#memberSearchResults').empty();
         });
 
         // Tìm kiếm tài liệu
@@ -400,24 +501,24 @@
         // Reset modals when hidden
         $('#createDocumentModal').on('hidden.bs.modal', function (e) {
             $('#createDocumentContent').html(`
-                                            <div class="text-center py-3">
-                                                <div class="spinner-border text-primary" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                <p class="mt-2 text-muted">Đang tải form...</p>
-                                            </div>
-                                        `);
+                                                    <div class="text-center py-3">
+                                                        <div class="spinner-border text-primary" role="status">
+                                                            <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        <p class="mt-2 text-muted">Đang tải form...</p>
+                                                    </div>
+                                                `);
         });
 
         $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
             $('#documentDetailsContent').html(`
-                                            <div class="text-center py-3">
-                                                <div class="spinner-border text-primary" role="status">
-                                                    <span class="visually-hidden">Loading...</span>
-                                                </div>
-                                                <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                                            </div>
-                                        `);
+                                                    <div class="text-center py-3">
+                                                        <div class="spinner-border text-primary" role="status">
+                                                            <span class="visually-hidden">Loading...</span>
+                                                        </div>
+                                                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                                                    </div>
+                                                `);
         });
 
         // Delete document function
@@ -449,4 +550,4 @@
         window.deleteDocument = deleteDocument;
     </script>
 }
-if chối
+if chối if chối
