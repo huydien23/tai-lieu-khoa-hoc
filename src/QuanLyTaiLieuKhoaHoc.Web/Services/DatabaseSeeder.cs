@@ -58,11 +58,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 TrangThaiHoatDong = true
             };
             await userManager.CreateAsync(studentUser, "SinhVien@2024");
-
-            // Chờ để đảm bảo users được tạo thành công
             await context.SaveChangesAsync();
-
-            // Kiểm tra xem đã có tài liệu chưa
             if (await context.TaiLieu.AnyAsync())
                 return;
 

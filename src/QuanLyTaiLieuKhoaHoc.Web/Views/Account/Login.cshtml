@@ -343,6 +343,20 @@
                             </button>
                         </div>
 
+                        <!--Login fast-->
+                        @if (ViewContext.HttpContext.Request.Host.Host == "localhost")
+                        {
+                            <div class="mb-3 text-center">
+                                <button type="button" class="btn btn-outline-primary btn-sm me-1"
+                                    onclick="fillTestAccount('thuthu@library.edu.vn','ThuThu@2024')">Thủ thư</button>
+                                <button type="button" class="btn btn-outline-success btn-sm me-1"
+                                    onclick="fillTestAccount('giangvien@university.edu.vn','GiangVien@2024')">Giảng
+                                    viên</button>
+                                <button type="button" class="btn btn-outline-info btn-sm"
+                                    onclick="fillTestAccount('sinhvien@student.edu.vn','SinhVien@2024')">Sinh viên</button>
+                            </div>
+                        }
+
                         <div class="form-check mb-3">
                             <input class="form-check-input" type="checkbox" name="RememberMe" id="rememberMe">
                             <label class="form-check-label text-muted" for="rememberMe">
@@ -396,7 +410,6 @@
     <script src="~/js/app.js" asp-append-version="true"></script>
 
     <script>
-        // Toggle password visibility
         function togglePassword() {
             const passwordField = document.getElementById('password');
             const passwordEye = document.getElementById('password-eye');
@@ -410,7 +423,6 @@
             }
         }
 
-        // Auto-fill test account (only in development)
         function fillTestAccount(email, password) {
             document.getElementById('email').value = email;
             document.getElementById('password').value = password;
@@ -433,11 +445,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     `;
-
-                    // Remove existing alerts
                     $('.alert').remove();
-
-                    // Add new alert
                     $('form').before(errorMsg);
 
                     return false;
@@ -448,14 +456,12 @@
                 const originalText = submitBtn.html();
                 submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang đăng nhập...');
                 submitBtn.prop('disabled', true);
-
-                // Restore button if needed (in case of client-side error)
                 setTimeout(() => {
                     if (submitBtn.prop('disabled')) {
                         submitBtn.html(originalText);
                         submitBtn.prop('disabled', false);
                     }
-                }, 10000); // 10 seconds timeout
+                }, 10000);
             });
 
             // Auto-dismiss alerts after 5 seconds
@@ -466,4 +472,4 @@
     </script>
 </body>
 
-</html>   
+</html>

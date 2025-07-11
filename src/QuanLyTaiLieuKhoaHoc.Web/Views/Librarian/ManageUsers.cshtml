@@ -12,10 +12,11 @@
                     <i class="fas fa-users me-2"></i>
                     Quản lý Người dùng
                 </h5>
-                <a href="#" class="btn btn-light btn-sm">
+                <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#addUserModal">
                     <i class="fas fa-plus me-1"></i>
                     Thêm người dùng
-                </a>
+                </button>
             </div>
             <div class="card-body">
                 @if (Model?.Any() == true)
@@ -140,6 +141,205 @@
     </div>
 </div>
 
+<!-- Modal thêm người dùng -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">
+                    <i class="fas fa-user-plus text-primary me-2"></i>Thêm người dùng mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="addUserForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="addUserHoTen" class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" id="addUserHoTen" name="HoTen" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="addUserEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="addUserEmail" name="Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="addUserMaSo" class="form-label">Mã số</label>
+                        <input type="text" class="form-control" id="addUserMaSo" name="MaSo" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="addUserVaiTro" class="form-label">Vai trò</label>
+                        <select class="form-select" id="addUserVaiTro" name="VaiTro" required>
+                            <option value="">-- Chọn vai trò --</option>
+                            <option value="ThuThu">Thủ thư</option>
+                            <option value="GiangVien">Giảng viên</option>
+                            <option value="SinhVien">Sinh viên</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="addUserChuyenNganh" class="form-label">Chuyên ngành</label>
+                        <input type="text" class="form-control" id="addUserChuyenNganh" name="ChuyenNganh" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chỉnh sửa người dùng -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">
+                    <i class="fas fa-user-edit text-primary me-2"></i>Chỉnh sửa người dùng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editUserForm">
+                <input type="hidden" id="editUserId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="editUserHoTen" class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" id="editUserHoTen" name="HoTen" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserEmail" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="editUserEmail" name="Email" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserMaSo" class="form-label">Mã số</label>
+                        <input type="text" class="form-control" id="editUserMaSo" name="MaSo" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserVaiTro" class="form-label">Vai trò</label>
+                        <select class="form-select" id="editUserVaiTro" name="VaiTro" required>
+                            <option value="">-- Chọn vai trò --</option>
+                            <option value="ThuThu">Thủ thư</option>
+                            <option value="GiangVien">Giảng viên</option>
+                            <option value="SinhVien">Sinh viên</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserChuyenNganh" class="form-label">Chuyên ngành</label>
+                        <input type="text" class="form-control" id="editUserChuyenNganh" name="ChuyenNganh" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#addUserForm').on('submit', function (e) {
+            e.preventDefault();
+            toastr.info('Chức năng thêm người dùng đang được phát triển...');
+            $('#addUserModal').modal('hide');
+        });
+
+        // Sửa người dùng
+        function editUser(userId, userName) {
+            // Lấy dữ liệu user bằng AJAX
+            $.ajax({
+                url: '@Url.Action("GetUserById", "Librarian")',
+                type: 'GET',
+                data: { id: userId },
+                success: function (user) {
+                    if (user) {
+                        $('#editUserId').val(user.id);
+                        $('#editUserHoTen').val(user.hoTen);
+                        $('#editUserEmail').val(user.email);
+                        $('#editUserMaSo').val(user.maSo);
+                        $('#editUserVaiTro').val(user.vaiTro);
+                        $('#editUserChuyenNganh').val(user.chuyenNganh || '');
+                        $('#editUserModal').modal('show');
+                    } else {
+                        toastr.error('Không tìm thấy thông tin người dùng.');
+                    }
+                },
+                error: function () {
+                    toastr.error('Không thể lấy dữ liệu người dùng.');
+                }
+            });
+        }
+
+        // Xử lý submit form chỉnh sửa
+        $('#editUserForm').on('submit', function (e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: '@Url.Action("EditUser", "Librarian")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#editUserModal').modal('hide');
+                        setTimeout(function () { location.reload(); }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function () {
+                    toastr.error('Có lỗi xảy ra khi lưu thay đổi.');
+                }
+            });
+        });
+
+        // Kích hoạt/Vô hiệu hóa tài khoản
+        function toggleUserStatus(userId, userName, isActivating) {
+            const action = isActivating ? 'kích hoạt' : 'vô hiệu hóa';
+            if (confirm(`Bạn có chắc chắn muốn ${action} tài khoản "${userName}"?`)) {
+                $.ajax({
+                    url: '@Url.Action("ToggleUserStatus", "Librarian")',
+                    type: 'POST',
+                    data: { userId: userId },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () { location.reload(); }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Có lỗi xảy ra: ' + error);
+                    }
+                });
+            }
+        }
+
+        // Xóa người dùng
+        function deleteUser(userId, userName) {
+            if (confirm(`Bạn có chắc chắn muốn xóa người dùng "${userName}"?\n\nLưu ý: Chỉ có thể xóa khi người dùng không còn tài liệu nào trong hệ thống.`)) {
+                $.ajax({
+                    url: '@Url.Action("DeleteUser", "Librarian")',
+                    type: 'POST',
+                    data: { id: userId },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () { location.reload(); }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Có lỗi xảy ra: ' + error);
+                    }
+                });
+            }
+        }
+    </script>
+}
+
 <style>
     .avatar-circle {
         width: 35px;
@@ -167,57 +367,3 @@
         vertical-align: middle;
     }
 </style>
-
-<script>
-    function editUser(userId, userName) {
-        toastr.info('Chức năng chỉnh sửa người dùng đang được phát triển...');
-    }
-
-    function toggleUserStatus(userId, userName, isActivating) {
-        const action = isActivating ? 'kích hoạt' : 'vô hiệu hóa';
-        if (confirm(`Bạn có chắc chắn muốn ${action} tài khoản "${userName}"?`)) {
-            $.ajax({
-                url: '@Url.Action("ToggleUserStatus")',
-                type: 'POST',
-                data: { userId: userId },
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error('Có lỗi xảy ra: ' + error);
-                }
-            });
-        }
-    }
-
-    function deleteUser(userId, userName) {
-        if (confirm(`Bạn có chắc chắn muốn xóa người dùng "${userName}"?\n\nLưu ý: Chỉ có thể xóa khi người dùng không còn tài liệu nào trong hệ thống.`)) {
-            $.ajax({
-                url: '@Url.Action("DeleteUser")',
-                type: 'POST',
-                data: { id: userId },
-                success: function (response) {
-                    if (response.success) {
-                        toastr.success(response.message);
-                        setTimeout(function () {
-                            location.reload();
-                        }, 1000);
-                    } else {
-                        toastr.error(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    toastr.error('Có lỗi xảy ra: ' + error);
-                }
-            });
-        }
-    }
-</script>
-                                                                                                                                                                                                

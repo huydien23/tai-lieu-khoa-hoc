@@ -28,7 +28,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> SearchMember(string q)
         {
             if (string.IsNullOrWhiteSpace(q) || q.Length < 2)
-                return Json(new object[0]);
+                return Json(Array.Empty<object>());
 
             var users = await _context.Users
                 .Where(u => (u.MaSo != null && u.MaSo.Contains(q)) || (u.HoTen != null && u.HoTen.Contains(q)) || (u.Email != null && u.Email.Contains(q)))
@@ -64,15 +64,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
-
                 TaiLieuMoiNhat = await _taiLieuService.GetTaiLieuMoiNhatAsync(10),
                 TaiLieuPhoBien = await _taiLieuService.GetTaiLieuPhoBienAsync(10),
-
                 ThongKeTheoChuyenNganh = await _context.TaiLieu
                     .Include(t => t.ChuyenNganh)
                     .GroupBy(t => t.ChuyenNganh!.TenChuyenNganh)
                     .ToDictionaryAsync(g => g.Key, g => g.Count()),
-
                 ThongKeTheoLoaiTaiLieu = await _context.TaiLieu
                     .Include(t => t.LoaiTaiLieu)
                     .GroupBy(t => t.LoaiTaiLieu!.TenLoaiTaiLieu)
@@ -280,13 +277,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 }
 
                 // Kiểm tra xem có tài liệu nào thuộc chuyên ngành này không
-                if (category.TaiLieu.Any())
+                if (category.TaiLieu.Count > 0)
                 {
                     return Json(new { success = false, message = $"Không thể xóa chuyên ngành '{category.TenChuyenNganh}' vì còn có {category.TaiLieu.Count} tài liệu thuộc chuyên ngành này!" });
                 }
 
                 // Kiểm tra xem có người dùng nào thuộc chuyên ngành này không
-                if (category.NguoiDung.Any())
+                if (category.NguoiDung.Count > 0)
                 {
                     return Json(new { success = false, message = $"Không thể xóa chuyên ngành '{category.TenChuyenNganh}' vì còn có {category.NguoiDung.Count} người dùng thuộc chuyên ngành này!" });
                 }
@@ -320,6 +317,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             ViewData["Title"] = "Quản lý Loại tài liệu";
             return View(documentTypes);
         }
+
         public IActionResult CreateDocumentType()
         {
             var currentUser = _userManager.GetUserAsync(User).Result;
@@ -436,7 +434,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 }
 
                 // Kiểm tra xem có tài liệu nào thuộc loại này không
-                if (documentType.TaiLieu.Any())
+                if (documentType.TaiLieu.Count > 0)
                 {
                     return Json(new { success = false, message = $"Không thể xóa loại tài liệu '{documentType.TenLoaiTaiLieu}' vì còn có {documentType.TaiLieu.Count} tài liệu thuộc loại này!" });
                 }
@@ -464,12 +462,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
-
                 ThongKeTheoChuyenNganh = await _context.TaiLieu
                     .Include(t => t.ChuyenNganh)
                     .GroupBy(t => t.ChuyenNganh!.TenChuyenNganh)
                     .ToDictionaryAsync(g => g.Key, g => g.Count()),
-
                 ThongKeTheoLoaiTaiLieu = await _context.TaiLieu
                     .Include(t => t.LoaiTaiLieu)
                     .GroupBy(t => t.LoaiTaiLieu!.TenLoaiTaiLieu)
@@ -547,7 +543,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 if (taiLieuFile == null || taiLieuFile.Length == 0)
                 {
                     return Json(new { success = false, message = "Vui lòng chọn file tài liệu để tải lên!" });
-                }                // Validate form fields (excluding auto-generated fields)
+                }
+
+                // Validate form fields (excluding auto-generated fields)
                 if (string.IsNullOrWhiteSpace(model.TenTaiLieu))
                 {
                     return Json(new { success = false, message = "Tên tài liệu không được để trống!" });
@@ -688,8 +686,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return View();
         }
 
-
-
         // LẬP PHIẾU MƯỢN TÀI LIỆU
         [HttpPost]
         public async Task<IActionResult> LapPhieuMuon(int maTaiLieu, string maNguoiMuon, DateTime ngayMuon, DateTime ngayTraDuKien)
@@ -747,5 +743,63 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return Json(new { success = true, message = "Lập phiếu mượn thành công!" });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetUserById(string id)
+        {
+            var user = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == id);
+            if (user == null)
+                return Json(null);
+
+            return Json(new
+            {
+                id = user.Id,
+                hoTen = user.HoTen,
+                email = user.Email,
+                maSo = user.MaSo,
+                vaiTro = user.VaiTro.ToString(),
+                chuyenNganh = user.ChuyenNganh?.TenChuyenNganh
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUser(string Id, string HoTen, string Email, string MaSo, string VaiTro, string ChuyenNganh)
+        {
+            var user = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == Id);
+            if (user == null)
+                return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+
+            user.HoTen = HoTen;
+            user.Email = Email;
+            user.UserName = Email;
+            user.MaSo = MaSo;
+            if (Enum.TryParse<VaiTroNguoiDung>(VaiTro, out var vaitroValue))
+                user.VaiTro = vaitroValue;
+            else
+                return Json(new { success = false, message = "Vai trò không hợp lệ!" });
+
+            if (!string.IsNullOrEmpty(ChuyenNganh))
+            {
+                var chuyenNganh = await _context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == ChuyenNganh);
+                if (chuyenNganh != null)
+                    user.MaChuyenNganh = chuyenNganh.MaChuyenNganh;
+                else
+                    user.MaChuyenNganh = null;
+            }
+            else
+            {
+                user.MaChuyenNganh = null;
+            }
+
+            user.NgayCapNhatCuoi = DateTime.Now;
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Cập nhật người dùng thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
     }
 }

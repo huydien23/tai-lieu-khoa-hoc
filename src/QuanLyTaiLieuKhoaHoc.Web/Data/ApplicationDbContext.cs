@@ -23,7 +23,7 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     {
         base.OnModelCreating(builder);
 
-        // Cấu hình tên bảng rõ ràng (thay đổi tên bảng Identity mặc định)
+        // Cấu hình tên bảng
         builder.Entity<NguoiDung>().ToTable("NguoiDung");
         builder.Entity<TaiLieu>().ToTable("TaiLieu");
         builder.Entity<ChuyenNganh>().ToTable("ChuyenNganh");
@@ -31,7 +31,7 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
         builder.Entity<LichSuTaiTaiLieu>().ToTable("LichSuTaiTaiLieu");
         builder.Entity<DanhGiaTaiLieu>().ToTable("DanhGiaTaiLieu");
 
-        // Cấu hình tên bảng Identity cho dễ hiểu
+        // Cấu hình tên bảng Identity
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().ToTable("VaiTro");
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserRole<string>>().ToTable("NguoiDung_VaiTro");
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityUserClaim<string>>().ToTable("NguoiDung_Claims");
