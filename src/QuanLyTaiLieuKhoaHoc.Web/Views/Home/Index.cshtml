@@ -88,17 +88,17 @@
                             </div>
                             <div class="mt-3 d-flex gap-2">
                                 <button class="btn btn-outline-primary btn-sm" type="button" onclick='showDocumentSummary({
-                                            tenTaiLieu: "@taiLieu.TenTaiLieu.Replace("\"", "\\\"")",
-                                            tenNguoiTaiLen: "@taiLieu.TenNguoiTaiLen.Replace("\"", "\\\"")",
-                                            ngayTaiLen: "@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")",
-                                            tenChuyenNganh: "@taiLieu.TenChuyenNganh.Replace("\"", "\\\"")",
-                                            tenLoaiTaiLieu: "@taiLieu.TenLoaiTaiLieu.Replace("\"", "\\\"")",
-                                            luotTai: "@taiLieu.LuotTai",
-                                            kichThuocFile: "@((taiLieu.KichThuocFile / 1024.0).ToString("F1")) KB",
-                                            diemDanhGiaTrungBinh: @taiLieu.DiemDanhGiaTrungBinh,
-                                            moTa: `@Html.Raw(moTaTomTat.Replace("`", "\\`").Replace("\"", "\\\""))`,
-                                            maTaiLieu: "@taiLieu.MaTaiLieu"
-                                        })'>
+                                                tenTaiLieu: "@taiLieu.TenTaiLieu.Replace("\"", "\\\"")",
+                                                tenNguoiTaiLen: "@taiLieu.TenNguoiTaiLen.Replace("\"", "\\\"")",
+                                                ngayTaiLen: "@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")",
+                                                tenChuyenNganh: "@taiLieu.TenChuyenNganh.Replace("\"", "\\\"")",
+                                                tenLoaiTaiLieu: "@taiLieu.TenLoaiTaiLieu.Replace("\"", "\\\"")",
+                                                luotTai: "@taiLieu.LuotTai",
+                                                kichThuocFile: "@((taiLieu.KichThuocFile / 1024.0).ToString("F1")) KB",
+                                                diemDanhGiaTrungBinh: @taiLieu.DiemDanhGiaTrungBinh,
+                                                moTa: `@Html.Raw(moTaTomTat.Replace("`", "\\`").Replace("\"", "\\\""))`,
+                                                maTaiLieu: "@taiLieu.MaTaiLieu"
+                                            })'>
                                     <i class="fas fa-eye me-1"></i>Xem tóm tắt
                                 </button>
                             </div>
@@ -145,22 +145,18 @@
                             </div>
                             <div class="mt-3 d-flex gap-2">
                                 <button class="btn btn-outline-primary btn-sm" type="button" onclick='showDocumentSummary({
-                                                    tenTaiLieu: "@taiLieu.TenTaiLieu.Replace("\"", "\\\"")",
-                                                    tenNguoiTaiLen: "@taiLieu.TenNguoiTaiLen.Replace("\"", "\\\"")",
-                                                    ngayTaiLen: "@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")",
-                                                    tenChuyenNganh: "@taiLieu.TenChuyenNganh.Replace("\"", "\\\"")",
-                                                    tenLoaiTaiLieu: "@taiLieu.TenLoaiTaiLieu.Replace("\"", "\\\"")",
-                                                    luotTai: "@taiLieu.LuotTai",
-                                                    kichThuocFile: "@((taiLieu.KichThuocFile / 1024.0).ToString("F1")) KB",
-                                                    diemDanhGiaTrungBinh: @taiLieu.DiemDanhGiaTrungBinh,
-                                                    moTa: `@Html.Raw(moTaTomTat.Replace("`", "\\`").Replace("\"", "\\\""))`,
-                                                    maTaiLieu: "@taiLieu.MaTaiLieu"
-                                                })'>
+                                                tenTaiLieu: "@taiLieu.TenTaiLieu.Replace("\"", "\\\"")",
+                                                tenNguoiTaiLen: "@taiLieu.TenNguoiTaiLen.Replace("\"", "\\\"")",
+                                                ngayTaiLen: "@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")",
+                                                tenChuyenNganh: "@taiLieu.TenChuyenNganh.Replace("\"", "\\\"")",
+                                                tenLoaiTaiLieu: "@taiLieu.TenLoaiTaiLieu.Replace("\"", "\\\"")",
+                                                luotTai: "@taiLieu.LuotTai",
+                                                kichThuocFile: "@((taiLieu.KichThuocFile / 1024.0).ToString("F1")) KB",
+                                                diemDanhGiaTrungBinh: @taiLieu.DiemDanhGiaTrungBinh,
+                                                moTa: `@Html.Raw(moTaTomTat.Replace("`", "\\`").Replace("\"", "\\\""))`,
+                                                maTaiLieu: "@taiLieu.MaTaiLieu"
+                                            })'>
                                     <i class="fas fa-eye me-1"></i>Xem tóm tắt
-                                </button>
-                                <button class="btn btn-outline-success btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#borrowRequestModal" data-tai-lieu-id="@taiLieu.MaTaiLieu">
-                                    <i class="fas fa-hand-paper me-1"></i>Gửi yêu cầu mượn
                                 </button>
                             </div>
                         </div>
