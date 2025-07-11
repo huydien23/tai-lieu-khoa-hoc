@@ -37,7 +37,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
                 TongSoNguoiDung = await _context.Users.CountAsync(),
-                TongSoLuotTai = await _context.TaiLieu.SumAsync(t => t.LuotTai),
+                TongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(),
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
@@ -63,6 +63,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageUsers()
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền truy cập trang này!";
+                return RedirectToAction("Index", "Home");
+            }
             var users = await _context.Users
                 .Include(u => u.ChuyenNganh)
                 .OrderBy(u => u.HoTen)
@@ -277,6 +283,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ManageDocumentTypes()
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền truy cập trang này!";
+                return RedirectToAction("Index", "Home");
+            }
             var documentTypes = await _context.LoaiTaiLieu
                 .Include(l => l.TaiLieu)
                 .OrderBy(l => l.TenLoaiTaiLieu)
@@ -285,10 +297,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             ViewData["Title"] = "Quản lý Loại tài liệu";
             return View(documentTypes);
         }
-
-        [HttpGet]
         public IActionResult CreateDocumentType()
         {
+            var currentUser = _userManager.GetUserAsync(User).Result;
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền truy cập trang này!";
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["Title"] = "Thêm loại tài liệu mới";
             return View();
         }
@@ -312,6 +328,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> EditDocumentType(int id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền truy cập trang này!";
+                return RedirectToAction("Index", "Home");
+            }
             var documentType = await _context.LoaiTaiLieu.Where(l => l.MaLoaiTaiLieu == id).FirstOrDefaultAsync();
             if (documentType == null)
             {
@@ -326,6 +348,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> EditDocumentType(LoaiTaiLieu model)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền thực hiện chức năng này!";
+                return RedirectToAction("Index", "Home");
+            }
             if (ModelState.IsValid)
             {
                 _context.LoaiTaiLieu.Update(model);
@@ -341,6 +369,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleDocumentTypeStatus(int id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền thực hiện chức năng này!";
+                return RedirectToAction("Index", "Home");
+            }
             var documentType = await _context.LoaiTaiLieu.Where(l => l.MaLoaiTaiLieu == id).FirstOrDefaultAsync();
             if (documentType != null)
             {
@@ -361,6 +395,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteDocumentType(int id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
+            }
             try
             {
                 var documentType = await _context.LoaiTaiLieu
@@ -624,6 +663,63 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             ViewData["Title"] = "Cài đặt hệ thống";
             return View();
+        }
+
+        // LẬP PHIẾU MƯỢN TÀI LIỆU
+        [HttpPost]
+        public async Task<IActionResult> LapPhieuMuon(int maTaiLieu, string maNguoiMuon, DateTime ngayMuon, DateTime ngayTraDuKien)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
+            }
+
+            // Kiểm tra thông tin đầu vào
+            if (string.IsNullOrWhiteSpace(maNguoiMuon))
+            {
+                return Json(new { success = false, message = "Vui lòng nhập mã người mượn!" });
+            }
+            var taiLieu = await _context.TaiLieu.FindAsync(maTaiLieu);
+            if (taiLieu == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
+            }
+            var nguoiMuon = await _context.Users.FindAsync(maNguoiMuon);
+            if (nguoiMuon == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy người mượn!" });
+            }
+
+            // Kiểm tra trạng thái tài liệu
+            if (taiLieu.TrangThai != TrangThaiTaiLieu.DaDuyet)
+            {
+                return Json(new { success = false, message = "Tài liệu chưa được duyệt hoặc không hợp lệ để mượn!" });
+            }
+
+            // Kiểm tra nếu đã có phiếu mượn chưa trả cho tài liệu này
+            var phieuMuonTonTai = await _context.PhieuMuonTra
+                .Where(p => p.MaTaiLieu == maTaiLieu && (p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.ChoDuyet))
+                .FirstOrDefaultAsync();
+            if (phieuMuonTonTai != null)
+            {
+                return Json(new { success = false, message = "Tài liệu này đang được mượn hoặc chờ duyệt, không thể lập phiếu mới!" });
+            }
+
+            // Tạo phiếu mượn mới
+            var phieuMuon = new PhieuMuonTra
+            {
+                MaTaiLieu = maTaiLieu,
+                MaNguoiMuon = maNguoiMuon,
+                NgayMuon = ngayMuon,
+                NgayTra = ngayTraDuKien,
+                TrangThai = TrangThaiPhieu.DaDuyet, // Thủ thư lập phiếu là đã duyệt
+                MaThuThuDuyet = currentUser.Id
+            };
+            _context.PhieuMuonTra.Add(phieuMuon);
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Lập phiếu mượn thành công!" });
         }
 
     }

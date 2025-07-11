@@ -6,6 +6,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
     [Table("TaiLieu")]
     public class TaiLieu
     {
+        [NotMapped]
+        public int LuotMuon
+        {
+            get { return PhieuMuonTras?.Count ?? 0; }
+        }
+
+        public virtual ICollection<PhieuMuonTra>? PhieuMuonTras { get; set; }
+
         [Key]
         public int MaTaiLieu { get; set; }
 
@@ -71,17 +79,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
     }
 
     public enum TrangThaiTaiLieu
-    {
-        [Display(Name = "Chờ duyệt")]
-        ChoDuyet = 0,
+{
+    [Display(Name = "Chờ duyệt")]
+    ChoDuyet = 0,
 
-        [Display(Name = "Đã duyệt")]
-        DaDuyet = 1,
+    [Display(Name = "Đã duyệt")]
+    DaDuyet = 1,
 
-        [Display(Name = "Từ chối")]
-        TuChoi = 2,
+    [Display(Name = "Từ chối")]
+    TuChoi = 2,
 
-        [Display(Name = "Ẩn")]
-        An = 3
-    }
+    [Display(Name = "Ẩn")]
+    An = 3
+}
 }

@@ -24,6 +24,30 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             _userManager = userManager;
         }
 
+        // API lấy tóm tắt tài liệu cho modal (JSON)
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDocumentSummary(int id)
+        {
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id);
+            if (taiLieu == null)
+                return NotFound();
+            var moTaTomTat = taiLieu.MoTa != null && taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa;
+            return Json(new
+            {
+                tenTaiLieu = taiLieu.TenTaiLieu,
+                tenNguoiTaiLen = taiLieu.TenNguoiTaiLen,
+                ngayTaiLen = taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm"),
+                tenChuyenNganh = taiLieu.TenChuyenNganh,
+                tenLoaiTaiLieu = taiLieu.TenLoaiTaiLieu,
+                luotTai = taiLieu.LuotTai,
+                kichThuocFile = (taiLieu.KichThuocFile / 1024.0).ToString("F1") + " KB",
+                diemDanhGiaTrungBinh = taiLieu.DiemDanhGiaTrungBinh,
+                moTa = moTaTomTat,
+                maTaiLieu = taiLieu.MaTaiLieu
+            });
+        }
+
         [AllowAnonymous]
         public async Task<IActionResult> Index(int trang = 1, string? timKiem = null, int? maChuyenNganh = null,
             int? maLoaiTaiLieu = null, string? sapXep = null)

@@ -5,6 +5,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
     public class DashboardViewModel
     {
         public int TongSoTaiLieu { get; set; }
+        public int TongSoLuotMuon { get; set; }
         // Thống kê số lượng từng nhóm tài liệu lớn
         public int SoLuongBaiBaoKhoaHoc { get; set; }
         public int SoLuongDeTaiNghienCuu { get; set; }

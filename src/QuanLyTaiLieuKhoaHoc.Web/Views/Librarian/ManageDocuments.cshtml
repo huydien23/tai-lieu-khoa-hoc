@@ -67,8 +67,8 @@
                                 Ngày tải lên
                             </th>
                             <th scope="col">
-                                <i class="fas fa-download me-1"></i>
-                                Lượt tải
+                                <i class="fas fa-book-reader me-1"></i>
+                                Lượt mượn
                             </th>
                             <th scope="col">
                                 <i class="fas fa-info-circle me-1"></i>
@@ -107,7 +107,7 @@
                                     </small>
                                 </td>
                                 <td>
-                                    <span class="badge bg-success">@item.LuotTai</span>
+                                    <span class="badge bg-success">@item.LuotMuon</span>
                                 </td>
                                 <td>
                                     @switch (item.TrangThai)
@@ -138,6 +138,11 @@
                                             onclick="viewDocumentDetails(@item.MaTaiLieu)">
                                             <i class="fas fa-eye"></i>
                                         </button>
+                                        <!-- Nút lập phiếu mượn: chỉ mở modal chung -->
+                                        <button type="button" class="btn btn-outline-warning btn-sm" title="Lập phiếu mượn"
+                                            onclick="openCreatePhieuMuonModal(@item.MaTaiLieu, '@item.TenTaiLieu')">
+                                            <i class="fas fa-file-signature"></i> Lập phiếu mượn
+                                        </button>
 
                                         @if (item.TrangThai == TrangThaiTaiLieu.ChoDuyet)
                                         {
@@ -158,10 +163,7 @@
 
                                         @if (!string.IsNullOrEmpty(item.DuongDanFile))
                                         {
-                                            <a href="@item.DuongDanFile" class="btn btn-outline-secondary btn-sm" title="Tải xuống"
-                                                target="_blank">
-                                                <i class="fas fa-download"></i>
-                                            </a>
+                                            <!-- Nút tải tài liệu đã bị loại bỏ theo yêu cầu nghiệp vụ mới -->
                                         }
 
                                         <button type="button" class="btn btn-outline-danger btn-sm" title="Xóa tài liệu"
@@ -176,6 +178,52 @@
                 </table>
             </div>
         }
+    </div>
+</div>
+
+<!-- Modal lập phiếu mượn (chỉ render 1 lần ngoài vòng lặp) -->
+<div class="modal fade" id="createPhieuMuonModal" tabindex="-1" aria-labelledby="createPhieuMuonModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPhieuMuonModalLabel">
+                    <i class="fas fa-file-signature text-warning me-2"></i>
+                    Lập phiếu mượn tài liệu
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="createPhieuMuonForm">
+                <div class="modal-body">
+                    <input type="hidden" id="phieuMaTaiLieu" name="maTaiLieu" />
+                    <div class="mb-3">
+                        <label for="phieuTenTaiLieu" class="form-label">Tên tài
+                            liệu</label>
+                        <input type="text" class="form-control" id="phieuTenTaiLieu" name="tenTaiLieu" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label for="phieuMaNguoiMuon" class="form-label">Mã số người
+                            mượn</label>
+                        <input type="text" class="form-control" id="phieuMaNguoiMuon" name="maNguoiMuon" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="phieuHoTenNguoiMuon" class="form-label">Họ tên người
+                            mượn</label>
+                        <input type="text" class="form-control" id="phieuHoTenNguoiMuon" name="hoTenNguoiMuon"
+                            required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="phieuGhiChu" class="form-label">Ghi chú</label>
+                        <textarea class="form-control" id="phieuGhiChu" name="ghiChu" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-warning">Lập phiếu
+                        mượn</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -264,6 +312,45 @@
 @section Scripts {
     <script>
         // Tìm kiếm tài liệu
+        // Hàm mở modal lập phiếu mượn (toàn cục)
+        function openCreatePhieuMuonModal(maTaiLieu, tenTaiLieu) {
+            $('#phieuMaTaiLieu').val(maTaiLieu);
+            $('#phieuTenTaiLieu').val(tenTaiLieu);
+            $('#phieuMaNguoiMuon').val("");
+            $('#phieuHoTenNguoiMuon').val("");
+            $('#phieuGhiChu').val("");
+            $('#createPhieuMuonModal').modal('show');
+        }
+        window.openCreatePhieuMuonModal = openCreatePhieuMuonModal;
+
+        // Xử lý submit lập phiếu mượn
+        $('#createPhieuMuonForm').on('submit', function (e) {
+            e.preventDefault();
+            var data = {
+                maTaiLieu: $('#phieuMaTaiLieu').val(),
+                maNguoiMuon: $('#phieuMaNguoiMuon').val(),
+                hoTenNguoiMuon: $('#phieuHoTenNguoiMuon').val(),
+                ghiChu: $('#phieuGhiChu').val()
+            };
+            $.ajax({
+                url: '/Librarian/LapPhieuMuon',
+                type: 'POST',
+                data: data,
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#createPhieuMuonModal').modal('hide');
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    toastr.error('Có lỗi xảy ra khi lập phiếu: ' + error);
+                }
+            });
+        });
+
+        // Tìm kiếm tài liệu
         document.getElementById('searchInput').addEventListener('input', function () {
             const searchTerm = this.value.toLowerCase();
             const table = document.getElementById('documentsTable');
@@ -313,24 +400,24 @@
         // Reset modals when hidden
         $('#createDocumentModal').on('hidden.bs.modal', function (e) {
             $('#createDocumentContent').html(`
-                        <div class="text-center py-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2 text-muted">Đang tải form...</p>
-                        </div>
-                    `);
+                                            <div class="text-center py-3">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="mt-2 text-muted">Đang tải form...</p>
+                                            </div>
+                                        `);
         });
 
         $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
             $('#documentDetailsContent').html(`
-                        <div class="text-center py-3">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                        </div>
-                    `);
+                                            <div class="text-center py-3">
+                                                <div class="spinner-border text-primary" role="status">
+                                                    <span class="visually-hidden">Loading...</span>
+                                                </div>
+                                                <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                                            </div>
+                                        `);
         });
 
         // Delete document function
@@ -362,3 +449,4 @@
         window.deleteDocument = deleteDocument;
     </script>
 }
+if chối
