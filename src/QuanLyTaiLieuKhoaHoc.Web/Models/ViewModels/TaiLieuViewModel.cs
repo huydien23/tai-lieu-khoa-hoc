@@ -24,7 +24,33 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 
         [Required(ErrorMessage = "Loại tài liệu không được để trống")]
         [Display(Name = "Loại tài liệu")]
+
         public int MaLoaiTaiLieu { get; set; }
+        // Phân loại tài liệu (dùng cho view phân nhóm)
+        public string? LoaiTaiLieu { get; set; }
+
+        // --- Bài báo khoa học ---
+        public string? TieuDe { get; set; }
+        public string? TapChiHoiNghi { get; set; }
+        public DateTime? NgayCongBo { get; set; }
+        public string? DOI { get; set; }
+        public string? ISSN { get; set; }
+        public string? CapDo { get; set; }
+
+        // --- Đề tài nghiên cứu khoa học ---
+        public string? TenDeTai { get; set; }
+        public string? MaSoDeTai { get; set; }
+        public string? CapDeTai { get; set; }
+        public string? ThoiGianThucHien { get; set; }
+        public string? CoQuanChuTri { get; set; }
+        public string? ChuNhiemDeTai { get; set; }
+
+        // --- Giáo trình - tài liệu giảng dạy ---
+        public string? TenGiaoTrinh { get; set; }
+        public string? MonHocLienQuan { get; set; }
+        public string? DonViPhatHanh { get; set; }
+        public int? NamXuatBan { get; set; }
+        public int? SoTinChi { get; set; }
 
         [Display(Name = "File tài liệu")]
         public IFormFile? FileTaiLieu { get; set; }
