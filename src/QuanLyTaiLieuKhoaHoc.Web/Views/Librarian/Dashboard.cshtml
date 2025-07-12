@@ -24,7 +24,7 @@
             <a href="@Url.Action("DanhSachYeuCauChoDuyet", "PhieuMuonTra")" class="btn btn-warning me-2">
                 <i class="fas fa-exchange-alt me-2"></i>Quản lý mượn/trả
             </a>
-            <a href="@Url.Action("ManageUsers")" class="btn btn-outline-primary">
+            <a href="@Url.Action("ManageUsers")" class="btn btn-outline-primary" style="color: white;">
                 <i class="fas fa-users me-2"></i>Quản lý người dùng
             </a>
         </div>
@@ -62,10 +62,10 @@
     <div class="col-xl-3 col-md-6">
         <div class="stats-card">
             <div class="stats-icon text-warning">
-                <i class="fas fa-download"></i>
+                <i class="fas fa-book-reader"></i>
             </div>
-            <div class="stats-number">@Model.TongSoLuotTai</div>
-            <div class="stats-label">Lượt tải</div>
+            <div class="stats-number">@Model.TongSoLuotMuon</div>
+            <div class="stats-label">Tổng lượt mượn</div>
             <small class="text-success">
                 <i class="fas fa-chart-line me-1"></i>Tổng cộng
             </small>
@@ -93,8 +93,7 @@
         <div class="card shadow-sm">
             <div class="card-header bg-white border-0 py-3">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold" style="color: #295BA4;" 
-                        <i class="fas fa-clock text-primary me-2"></i>
+                    <h5 class="mb-0 fw-bold" style="color: #295BA4;" <i class="fas fa-clock text-primary me-2"></i>
                         Tài liệu mới nhất
                     </h5>
                     <a href="@Url.Action("ManageDocuments")" class="btn btn-outline-primary btn-sm">
@@ -183,8 +182,7 @@
         <!-- Documents by Specialty -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-0 py-3">
-                <h5 class="mb-0 fw-bold" style="color: #295BA4" 
-                    <i class="fas fa-chart-pie text-primary me-2"></i>
+                <h5 class="mb-0 fw-bold" style="color: #295BA4" <i class="fas fa-chart-pie text-primary me-2"></i>
                     Theo chuyên ngành
                 </h5>
             </div>
@@ -525,13 +523,13 @@
         // Reset modal when hidden
         $('#createDocumentModal').on('hidden.bs.modal', function (e) {
             $('#createDocumentContent').html(`
-                                    <div class="text-center py-3">
-                                    <di     class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Loading...</span>
+                                        <div class="text-center py-3">
+                                        <di     class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                        </di    v>
+                                            <p class="mt-2 text-muted">Đang tải form...</p>
                                     </di    v>
-                                        <p class="mt-2 text-muted">Đang tải form...</p>
-                                </di    v>
-                                `);
+                                    `);
         });
     </script>
 }
