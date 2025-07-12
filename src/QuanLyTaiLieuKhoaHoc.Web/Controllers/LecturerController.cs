@@ -4,11 +4,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
     public class LecturerController : Controller
     {
+        [ActionName("Dashboard-Lecturer")]
         public IActionResult Dashboard()
         {
             ViewData["Title"] = "Dashboard Giảng viên";
             ViewData["UserRole"] = "lecturer";
-            return View();
+            var model = new QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.DashboardViewModel();
+            // TODO: Gán dữ liệu cho model nếu cần
+            return View(model);
         }
 
         public IActionResult TimKiemTaiLieu()

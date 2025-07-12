@@ -47,11 +47,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
                     // Redirect based on role
                     if (user.VaiTro == VaiTroNguoiDung.ThuThu)
-                        return RedirectToAction("Dashboard", "Librarian");
+                        return RedirectToAction("Dashboard-Librarian", "Librarian");
                     else if (user.VaiTro == VaiTroNguoiDung.GiangVien)
-                        return RedirectToAction("Dashboard", "Lecturer");
+                        return RedirectToAction("Dashboard-Lecturer", "Lecturer");
                     else if (user.VaiTro == VaiTroNguoiDung.SinhVien)
-                        return RedirectToAction("Dashboard", "Student");
+                        return RedirectToAction("Dashboard-Student", "Student");
                     else
                         return RedirectToAction("Index", "Home");
                 }

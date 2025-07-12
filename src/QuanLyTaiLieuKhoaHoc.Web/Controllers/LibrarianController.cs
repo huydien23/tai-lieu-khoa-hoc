@@ -46,6 +46,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return Json(users);
         }
 
+        [ActionName("Dashboard-Librarian")]
         public async Task<IActionResult> Dashboard()
         {
             // Kiểm tra quyền Thủ thư
