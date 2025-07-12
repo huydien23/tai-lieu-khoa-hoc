@@ -22,7 +22,7 @@
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-light">
-                <h5 class="mb-0">
+                <h5 class="mb-0" style="color: white;">
                     <i class="fas fa-list me-2"></i>
                     Danh sách loại tài liệu (@Model.Count() loại)
                 </h5>
@@ -96,7 +96,7 @@
                                         </td>
                                         <td>
                                             <span class="badge bg-info text-dark">
-                                                @item.TaiLieu?.Count ?? 0 tài liệu
+                                                @(item.TaiLieu?.Count ?? 0) tài liệu
                                             </span>
                                         </td>
                                         <td>
@@ -128,7 +128,8 @@
                                                     @if (item.TrangThaiHoatDong)
                                                     {
                                                         <button type="submit" class="btn btn-outline-warning btn-sm"
-                                                            title="Vô hiệu hóa"onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa loại tài liệu này?')">
+                                                            title="Vô hiệu hóa"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa loại tài liệu này?')">
                                                             <i class="fas fa-ban"></i>
                                                         </button>
                                                     }
@@ -161,7 +162,7 @@
     <div class="col-md-4">
         <div class="card">
             <div class="card-header bg-light">
-                <h5 class="mb-0">
+                <h5 class="mb-0" style="color: white;">
                     <i class="fas fa-chart-pie me-2"></i>
                     Thống kê nhanh
                 </h5>
@@ -203,7 +204,7 @@
 
         <div class="card mt-3">
             <div class="card-header bg-light">
-                <h5 class="mb-0">
+                <h5 class="mb-0" style="color: white;">  
                     <i class="fas fa-info-circle me-2"></i>
                     Hướng dẫn
                 </h5>
@@ -256,4 +257,3 @@
         }
     }
 </script>
-                                                                                        
