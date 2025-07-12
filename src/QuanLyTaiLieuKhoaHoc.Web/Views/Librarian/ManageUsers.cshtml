@@ -240,8 +240,26 @@
     <script>
         $('#addUserForm').on('submit', function (e) {
             e.preventDefault();
-            toastr.info('Chức năng thêm người dùng đang được phát triển...');
-            $('#addUserModal').modal('hide');
+            var formData = $(this).serialize();
+            $.ajax({
+                url: '@Url.Action("AddUser", "Librarian")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#addUserModal').modal('hide');
+                        // Xóa dữ liệu form sau khi thêm thành công
+                        $('#addUserForm')[0].reset();
+                        setTimeout(function () { location.reload(); }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function () {
+                    toastr.error('Có lỗi xảy ra khi thêm người dùng.');
+                }
+            });
         });
 
         // Sửa người dùng

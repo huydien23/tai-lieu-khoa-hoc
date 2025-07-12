@@ -762,16 +762,21 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> EditUser(string Id, string HoTen, string Email, string MaSo, string VaiTro, string ChuyenNganh)
+        public async Task<IActionResult> AddUser(string HoTen, string Email, string MaSo, string VaiTro, string ChuyenNganh)
         {
-            var user = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == Id);
-            if (user == null)
-                return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+            // Kiểm tra trùng email hoặc mã số
+            if (await _context.Users.AnyAsync(u => u.Email == Email || u.MaSo == MaSo))
+                return Json(new { success = false, message = "Email hoặc mã số đã tồn tại!" });
 
-            user.HoTen = HoTen;
-            user.Email = Email;
-            user.UserName = Email;
-            user.MaSo = MaSo;
+            var user = new NguoiDung
+            {
+                HoTen = HoTen,
+                Email = Email,
+                UserName = Email,
+                MaSo = MaSo,
+                NgayTao = DateTime.Now,
+                TrangThaiHoatDong = true
+            };
             if (Enum.TryParse<VaiTroNguoiDung>(VaiTro, out var vaitroValue))
                 user.VaiTro = vaitroValue;
             else
@@ -782,23 +787,18 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 var chuyenNganh = await _context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == ChuyenNganh);
                 if (chuyenNganh != null)
                     user.MaChuyenNganh = chuyenNganh.MaChuyenNganh;
-                else
-                    user.MaChuyenNganh = null;
+            }
+
+            // Tạo mật khẩu mặc định
+            var password = "123456";
+            var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+                return Json(new { success = true, message = "Thêm người dùng thành công!" });
             }
             else
             {
-                user.MaChuyenNganh = null;
-            }
-
-            user.NgayCapNhatCuoi = DateTime.Now;
-            try
-            {
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Cập nhật người dùng thành công!" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
             }
         }
     }
