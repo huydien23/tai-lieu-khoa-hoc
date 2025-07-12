@@ -74,7 +74,7 @@
                                 <a href="/TaiLieu/Edit/@item.MaTaiLieu" class="btn btn-outline-success btn-sm">
                                     <i class="fas fa-edit me-1"></i>Sửa
                                 </a>
-                                @if (item.TrangThai == 1) // DaDuyet
+                                @if (item.TrangThai == 1 && (User.IsInRole("GiangVien") || User.IsInRole("ThuThu")))
                                 {
                                     <a href="/TaiLieu/Download/@item.MaTaiLieu" class="btn btn-outline-info btn-sm">
                                         <i class="fas fa-download me-1"></i>Tải

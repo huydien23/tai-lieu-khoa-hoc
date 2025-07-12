@@ -175,7 +175,7 @@
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
         <i class="fas fa-times me-1"></i>Đóng
     </button>
-    @if (!string.IsNullOrEmpty(Model.DuongDanFile))
+    @if (!string.IsNullOrEmpty(Model.DuongDanFile) && (User.IsInRole("GiangVien") || User.IsInRole("ThuThu")))
     {
         <a href="@Model.DuongDanFile" class="btn btn-primary" target="_blank">
             <i class="fas fa-download me-1"></i>Tải xuống

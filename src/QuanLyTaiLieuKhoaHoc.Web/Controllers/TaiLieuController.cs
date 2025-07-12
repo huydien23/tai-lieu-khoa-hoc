@@ -193,7 +193,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [AllowAnonymous]
+        [Authorize(Roles = "GiangVien,ThuThu")]
         public async Task<IActionResult> Download(int id)
         {
             var currentUser = await _userManager.GetUserAsync(User);

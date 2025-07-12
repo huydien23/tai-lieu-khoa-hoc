@@ -18,8 +18,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             _userManager = userManager;
         }
 
-        // Sinh viên/giảng viên gửi yêu cầu mượn
+        // Chỉ thủ thư mới được thao tác mượn tài liệu
         [HttpPost]
+        [Authorize(Roles = "ThuThu")]
         public async Task<IActionResult> GuiYeuCauMuon(int maTaiLieu, string? ghiChu)
         {
             var user = await _userManager.GetUserAsync(User);

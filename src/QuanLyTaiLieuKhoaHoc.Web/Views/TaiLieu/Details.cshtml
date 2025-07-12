@@ -74,9 +74,12 @@
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="d-flex gap-2">
-                            <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
-                                <i class="fas fa-download me-2"></i>Tải xuống
-                            </a>
+                            @if (User.IsInRole("GiangVien") || User.IsInRole("ThuThu"))
+                            {
+                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
+                                    <i class="fas fa-download me-2"></i>Tải xuống
+                                </a>
+                            }
                             <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
                                 data-bs-target="#ratingModal">
                                 <i class="fas fa-star me-2"></i>Đánh giá
@@ -87,7 +90,7 @@
                     {
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <a href="/Identity/Account/Login">Đăng nhập</a> để tải xuống và đánh giá tài liệu.
+                            <a href="/Identity/Account/Login">Đăng nhập</a> để đánh giá tài liệu.
                         </div>
                     }
                 </div>
@@ -152,15 +155,18 @@
         direction: rtl;
         display: inline-block;
     }
+
     .rating input {
         display: none;
     }
+
     .rating label {
         color: #ddd;
         font-size: 1.5rem;
         cursor: pointer;
         transition: color 0.2s;
     }
+
     .rating label:hover,
     .rating label:hover~label,
     .rating input:checked~label {

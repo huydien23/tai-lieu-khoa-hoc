@@ -114,7 +114,7 @@
                                         <i class="fas fa-eye me-1"></i>Chi tiết
                                     </a>
                                     @* Chỉ thủ thư/admin mới được tải tài liệu *@
-                                    @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("ThuThu") || User.IsInRole("Admin")))
+                                    @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("ThuThu")))
                                     {
                                         <a href="/TaiLieu/Download/@item.MaTaiLieu" class="btn btn-outline-success btn-sm">
                                             <i class="fas fa-download me-1"></i>Tải về
