@@ -458,7 +458,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
                 TongSoNguoiDung = await _context.Users.CountAsync(),
-                TongSoLuotTai = await _context.TaiLieu.SumAsync(t => t.LuotTai),
+                TongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(),
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
@@ -472,13 +472,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     .ToDictionaryAsync(g => g.Key, g => g.Count())
             };
 
-            // Thống kê theo tháng (12 tháng gần nhất)
+            // Thống kê số lượt mượn theo tháng (12 tháng gần nhất)
             var monthlyStats = new Dictionary<string, int>();
             for (int i = 11; i >= 0; i--)
             {
                 var month = DateTime.Now.AddMonths(-i);
-                var count = await _context.TaiLieu
-                    .CountAsync(t => t.NgayTaiLen.Month == month.Month && t.NgayTaiLen.Year == month.Year);
+                var count = await _context.PhieuMuonTra
+                    .CountAsync(p => p.NgayMuon.Month == month.Month && p.NgayMuon.Year == month.Year);
                 monthlyStats.Add(month.ToString("MM/yyyy"), count);
             }
             ViewBag.MonthlyStats = monthlyStats;
