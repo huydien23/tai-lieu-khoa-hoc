@@ -313,6 +313,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 TenNguoiTaiLen = taiLieu.NguoiTaiLen?.HoTen,
                 NgayTaiLen = taiLieu.NgayTaiLen,
                 LuotTai = taiLieu.LuotTai,
+                LuotMuon = taiLieu.PhieuMuonTras != null ? taiLieu.PhieuMuonTras.Count : 0,
                 TrangThai = (int)taiLieu.TrangThai,
                 DuongDanFile = taiLieu.DuongDanFile,
                 LoaiFile = taiLieu.LoaiFile,

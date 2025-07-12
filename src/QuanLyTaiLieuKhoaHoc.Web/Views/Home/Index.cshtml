@@ -149,7 +149,7 @@
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-primary small">
-                                            <i class="fas fa-fire me-1"></i>@taiLieu.LuotTai lượt tải
+                                            <i class="fas fa-fire me-1"></i>@taiLieu.LuotMuon lượt mượn
                                         </span>
                                         @if (taiLieu.SoLuotDanhGia > 0)
                                         {
@@ -165,7 +165,7 @@
                                                             ngayTaiLen: "@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")",
                                                             tenChuyenNganh: "@(taiLieu.TenChuyenNganh != null ? taiLieu.TenChuyenNganh.Replace("\"", "\\\"") : "N/A")",
                                                             tenLoaiTaiLieu: "@(taiLieu.TenLoaiTaiLieu != null ? taiLieu.TenLoaiTaiLieu.Replace("\"", "\\\"") : "N/A")",
-                                                            luotTai: "@taiLieu.LuotTai",
+                                                            luotMuon: "@taiLieu.LuotMuon",
                                                             kichThuocFile: "@((taiLieu.KichThuocFile / 1024.0).ToString("F1")) KB",
                                                             diemDanhGiaTrungBinh: @taiLieu.DiemDanhGiaTrungBinh,
                                                             moTa: `@Html.Raw((moTaTomTat ?? "").Replace("`", "\\`").Replace("\"", "\\\""))`,

@@ -93,7 +93,8 @@
         <div class="card shadow-sm">
             <div class="card-header bg-white border-0 py-3">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold" style="color: #295BA4;" <i class="fas fa-clock text-primary me-2"></i>
+                    <h5 class="mb-0 fw-bold" style="color: #295BA4;">
+                        <i class="fas fa-clock text-primary me-2"></i>
                         Tài liệu mới nhất
                     </h5>
                     <a href="@Url.Action("ManageDocuments")" class="btn btn-outline-primary btn-sm">
@@ -127,6 +128,10 @@
                                                 <div>
                                                     <div class="fw-semibold">@taiLieu.TenTaiLieu</div>
                                                     <small class="text-muted">@taiLieu.TenLoaiTaiLieu</small>
+                                                    <br />
+                                                    <a href="#"
+                                                        class="text-primary text-decoration-underline fw-normal btn-view-details"
+                                                        data-id="@taiLieu.MaTaiLieu" style="font-size: 0.95em;">Xem chi tiết</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -166,7 +171,7 @@
                                 <tr>
                                     <td colspan="5" class="text-center py-4 text-muted">
                                         <i class="fas fa-folder-open fa-2x mb-3"></i>
-                                        <br>Chưa có tài liệu nào
+                                        <br />Chưa có tài liệu nào
                                     </td>
                                 </tr>
                             }
@@ -177,12 +182,37 @@
         </div>
     </div>
 
+    <!-- Modal xem chi tiết tài liệu -->
+    <div class="modal fade" id="documentDetailsModal" tabindex="-1" aria-labelledby="documentDetailsModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="documentDetailsModalLabel">
+                        <i class="fas fa-file-alt text-primary me-2"></i>
+                        Chi tiết tài liệu
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="documentDetailsContent">
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Statistics Charts -->
     <div class="col-lg-4">
         <!-- Documents by Specialty -->
         <div class="card shadow-sm mb-4">
             <div class="card-header bg-white border-0 py-3">
-                <h5 class="mb-0 fw-bold" style="color: #295BA4" <i class="fas fa-chart-pie text-primary me-2"></i>
+                <h5 class="mb-0 fw-bold" style="color: #295BA4;">
+                    <i class="fas fa-chart-pie text-primary me-2"></i>
                     Theo chuyên ngành
                 </h5>
             </div>
@@ -216,7 +246,7 @@
         <!-- Documents by Type -->
         <div class="card shadow-sm">
             <div class="card-header bg-white border-0 py-3">
-                <h5 class="mb-0 fw-bold" style="color: #295BA4">
+                <h5 class="mb-0 fw-bold" style="color: #295BA4;">
                     <i class="fas fa-chart-bar text-success me-2"></i>
                     Theo loại tài liệu
                 </h5>
@@ -245,6 +275,30 @@
                         <br>Chưa có dữ liệu
                     </div>
                 }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for creating new document -->
+<div class="modal fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createDocumentModalLabel">
+                    <i class="fas fa-plus-circle text-success me-2"></i>
+                    Thêm tài liệu mới
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="createDocumentContent">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải form...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -485,30 +539,6 @@
     }
 </style>
 
-<!-- Modal for creating new document -->
-<div class="modal fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createDocumentModalLabel">
-                    <i class="fas fa-plus-circle text-success me-2"></i>
-                    Thêm tài liệu mới
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="createDocumentContent">
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Đang tải form...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 @section Scripts {
     <script>
         // Load create document modal
@@ -523,13 +553,33 @@
         // Reset modal when hidden
         $('#createDocumentModal').on('hidden.bs.modal', function (e) {
             $('#createDocumentContent').html(`
-                                        <div class="text-center py-3">
-                                        <di     class="spinner-border text-primary" role="status">
-                                                <span class="visually-hidden">Loading...</span>
-                                        </di    v>
-                                            <p class="mt-2 text-muted">Đang tải form...</p>
-                                    </di    v>
-                                    `);
+                        <div class="text-center py-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Đang tải form...</p>
+                        </div>
+                    `);
+        });
+
+        // Xem chi tiết tài liệu
+        $(document).on('click', '.btn-view-details', function (e) {
+            e.preventDefault();
+            var id = $(this).data('id');
+            $('#documentDetailsModal').modal('show');
+            $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
+            $.get('@Url.Action("ChiTietTaiLieu", "Librarian")', { id: id }, function (data) {
+                // Replace "Lượt tải" with "Lượt mượn" in the returned HTML if present
+                var html = data.replace(/Lượt tải/g, 'Lượt mượn');
+                $('#documentDetailsContent').html(html);
+            }).fail(function () {
+                $('#documentDetailsContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải thông tin!</div>');
+            });
+        });
+
+        // Reset modal chi tiết khi đóng
+        $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
+            $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
         });
     </script>
 }

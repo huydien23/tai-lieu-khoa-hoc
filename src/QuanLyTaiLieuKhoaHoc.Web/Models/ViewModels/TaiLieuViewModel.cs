@@ -64,6 +64,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public string? TenNguoiTaiLen { get; set; }
         public DateTime NgayTaiLen { get; set; }
         public int LuotTai { get; set; }
+        // Số lượt mượn (tổng số phiếu mượn)
+        public int LuotMuon { get; set; }
         public int TrangThai { get; set; } // 0: ChoDuyet, 1: DaDuyet, 2: TuChoi, 3: An
         public string? DuongDanFile { get; set; }
         public string? LoaiFile { get; set; }
