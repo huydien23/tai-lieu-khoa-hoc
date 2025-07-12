@@ -6,8 +6,8 @@
 }
 
 <div class="content-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <h2 class="mb-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0" style="color: var(--primary-color);" 
             <i class="fas fa-file-alt me-2 text-primary"></i>
             Quản lý Tài liệu
         </h2>
@@ -27,7 +27,7 @@
 
 <div class="card">
     <div class="card-header bg-light">
-        <h5 class="mb-0">
+        <h5 class="mb-0" style=" color: #f9f9f9;">
             <i class="fas fa-list me-2"></i>
             Danh sách tài liệu (@Model.Count() tài liệu)
         </h5>
@@ -501,24 +501,24 @@
         // Reset modals when hidden
         $('#createDocumentModal').on('hidden.bs.modal', function (e) {
             $('#createDocumentContent').html(`
-                                                    <div class="text-center py-3">
-                                                        <div class="spinner-border text-primary" role="status">
-                                                            <span class="visually-hidden">Loading...</span>
-                                                        </div>
-                                                        <p class="mt-2 text-muted">Đang tải form...</p>
-                                                    </div>
-                                                `);
+                                                           <div  class="text-center py-3">
+                                                               <div  class="spinner-border text-primary" role="status">
+                                                                   <spa n class="visually-hidden">Loading...</spa>
+                                                              </di  v>
+                                                              <p c  lass="mt-2 text-muted">Đang tải form...</p>
+                                                         </di   v>
+                                                        `);
         });
 
         $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
             $('#documentDetailsContent').html(`
-                                                    <div class="text-center py-3">
-                                                        <div class="spinner-border text-primary" role="status">
-                                                            <span class="visually-hidden">Loading...</span>
-                                                        </div>
-                                                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                                                    </div>
-                                                `);
+                                                        <div     class="text-center py-3">
+                                                               <div  class="spinner-border text-primary" role="status">
+                                                                   <spa n class="visually-hidden">Loading...</spa>
+                                                              </di  v>
+                                                              <p c  lass="mt-2 text-muted">Đang tải thông tin...</p>
+                                                         </di   v>
+                                                        `);
         });
 
         // Delete document function
@@ -550,4 +550,3 @@
         window.deleteDocument = deleteDocument;
     </script>
 }
-if chối if chối
