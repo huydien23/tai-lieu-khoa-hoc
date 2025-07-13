@@ -49,13 +49,28 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [AllowAnonymous]
+        [Route("TaiLieu")]
+        [Route("TaiLieu/Index")]
+        [Route("TimKiem")]
+        [Route("TimKiem/Index")]
         public async Task<IActionResult> Index(int trang = 1, string? timKiem = null, int? maChuyenNganh = null,
-            int? maLoaiTaiLieu = null, string? sapXep = null)
+            int? maLoaiTaiLieu = null, string? sapXep = null, string? q = null)
         {
-            ViewData["Title"] = "Danh sách Tài liệu";
+            // Hỗ trợ tham số 'q' từ trang TimKiem cũ
+            if (!string.IsNullOrEmpty(q) && string.IsNullOrEmpty(timKiem))
+            {
+                timKiem = q;
+            }
+
+            ViewData["Title"] = "Danh sách / Tìm kiếm tài liệu";
 
             // Chuẩn bị data cho dropdown
             await LoadDropdownData();
+
+            // Set ViewBag cho form tìm kiếm
+            ViewBag.TimKiem = timKiem;
+            ViewBag.SearchAction = "Index";
+            ViewBag.SearchController = "TaiLieu";
 
             var model = await _taiLieuService.GetDanhSachTaiLieuAsync(trang, 12, timKiem, maChuyenNganh, maLoaiTaiLieu, sapXep);
             return View(model);
@@ -229,6 +244,27 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             ViewData["Title"] = "Tài liệu của tôi";
             var taiLieu = await _taiLieuService.GetTaiLieuCuaNguoiDungAsync(currentUser.Id, trang);
             return View(taiLieu);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("TaiLieu/Suggestions")]
+        [Route("TimKiem/Suggestions")]
+        public async Task<IActionResult> Suggestions(string term)
+        {
+            if (string.IsNullOrEmpty(term))
+            {
+                return Json(new string[0]);
+            }
+
+            var suggestions = await _context.TaiLieu
+                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet && t.TenTaiLieu.Contains(term))
+                .Select(t => t.TenTaiLieu)
+                .Distinct()
+                .Take(5)
+                .ToListAsync();
+
+            return Json(suggestions);
         }
 
         private async Task LoadDropdownData()
