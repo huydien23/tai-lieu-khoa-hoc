@@ -25,6 +25,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.NguoiTaiLen)
+                .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
             // Tìm kiếm
@@ -86,6 +87,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.NguoiTaiLen)
+                .Include(t => t.DanhGiaTaiLieu)
                 .FirstOrDefaultAsync(t => t.MaTaiLieu == maTaiLieu);
 
             return taiLieu != null ? MapToViewModel(taiLieu) : null;
@@ -247,6 +249,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.NguoiTaiLen)
+                .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Take(soLuong)
@@ -261,6 +264,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.NguoiTaiLen)
+                .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
                 .OrderByDescending(t => t.LuotTai)
                 .Take(soLuong)
@@ -277,6 +281,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
+                .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.MaNguoiTaiLen == maNguoiDung)
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Skip((trang - 1) * kichThuocTrang)
@@ -313,7 +318,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 DuongDanFile = taiLieu.DuongDanFile,
                 LoaiFile = taiLieu.LoaiFile,
                 KichThuocFile = taiLieu.KichThuocFile,
-                // DiemDanhGiaTrungBinh và SoLuotDanhGia đã loại bỏ
+                DiemDanhGiaTrungBinh = taiLieu.DanhGiaTaiLieu.Any() ?
+                    taiLieu.DanhGiaTaiLieu.Average(d => d.DiemDanhGia) : 0,
+                SoLuotDanhGia = taiLieu.DanhGiaTaiLieu.Count
             };
         }
 

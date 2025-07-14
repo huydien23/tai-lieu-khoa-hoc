@@ -31,10 +31,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Json(Array.Empty<object>());
 
             var users = await _context.Users
-                .Where(u => (u.MSSV != null && u.MSSV.Contains(q)) || (u.MaGV != null && u.MaGV.Contains(q)) || (u.HoTen != null && u.HoTen.Contains(q)) || (u.Email != null && u.Email.Contains(q)))
+                .Where(u => (u.MaSo != null && u.MaSo.Contains(q)) || (u.HoTen != null && u.HoTen.Contains(q)) || (u.Email != null && u.Email.Contains(q)))
                 .Select(u => new
                 {
-                    maSo = u.MSSV ?? u.MaGV ?? "",
+                    maSo = u.MaSo,
                     hoTen = u.HoTen,
                     email = u.Email,
                     sdt = u.PhoneNumber,
@@ -501,6 +501,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Include(t => t.NguoiTaiLen)
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
+                .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
 
@@ -655,6 +656,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 }
 
                 // Xóa các bản ghi liên quan khác nếu có
+                var userRatings = await _context.DanhGiaTaiLieu.Where(d => d.MaNguoiDung == id).ToListAsync();
+                _context.DanhGiaTaiLieu.RemoveRange(userRatings);
 
                 var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
                 _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);
@@ -753,7 +756,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 id = user.Id,
                 hoTen = user.HoTen,
                 email = user.Email,
-                maSo = user.MSSV ?? user.MaGV ?? "",
+                maSo = user.MaSo,
                 vaiTro = user.VaiTro.ToString(),
                 chuyenNganh = user.ChuyenNganh?.TenChuyenNganh
             });
@@ -763,7 +766,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> AddUser(string HoTen, string Email, string MaSo, string VaiTro, string ChuyenNganh)
         {
             // Kiểm tra trùng email hoặc mã số
-            if (await _context.Users.AnyAsync(u => u.Email == Email || u.MSSV == MaSo || u.MaGV == MaSo))
+            if (await _context.Users.AnyAsync(u => u.Email == Email || u.MaSo == MaSo))
                 return Json(new { success = false, message = "Email hoặc mã số đã tồn tại!" });
 
             var user = new NguoiDung
@@ -771,18 +774,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 HoTen = HoTen,
                 Email = Email,
                 UserName = Email,
+                MaSo = MaSo,
                 NgayTao = DateTime.Now,
                 TrangThaiHoatDong = true
             };
-            // Gán mã số cho đúng vai trò
-            if (Enum.TryParse<VaiTroNguoiDung>(VaiTro, out var vaiTroParsed))
-            {
-                user.VaiTro = vaiTroParsed;
-                if (vaiTroParsed == VaiTroNguoiDung.SinhVien)
-                    user.MSSV = MaSo;
-                else if (vaiTroParsed == VaiTroNguoiDung.GiangVien)
-                    user.MaGV = MaSo;
-            }
+            if (Enum.TryParse<VaiTroNguoiDung>(VaiTro, out var vaitroValue))
+                user.VaiTro = vaitroValue;
             else
                 return Json(new { success = false, message = "Vai trò không hợp lệ!" });
 

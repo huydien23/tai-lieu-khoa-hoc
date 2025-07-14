@@ -66,6 +66,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     HoTen = "Thủ Thư",
                     VaiTro = VaiTroNguoiDung.ThuThu,
                     MaChuyenNganh = 1,
+                    MaSo = "TT001",
                     NgayTao = DateTime.Now,
                     TrangThaiHoatDong = true
                 };
@@ -80,6 +81,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     HoTen = "PGS.TS Nguyễn Văn An",
                     VaiTro = VaiTroNguoiDung.GiangVien,
                     MaChuyenNganh = 1,
+                    MaSo = "GV001",
                     NgayTao = DateTime.Now,
                     TrangThaiHoatDong = true
                 };
@@ -94,6 +96,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     HoTen = "Trần Thị Bình",
                     VaiTro = VaiTroNguoiDung.SinhVien,
                     MaChuyenNganh = 1,
+                    MaSo = "20210001",
                     KhoaHoc = "2021",
                     NgayTao = DateTime.Now,
                     TrangThaiHoatDong = true
@@ -131,6 +134,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     MaLoaiTaiLieu = idBaiBao,
                     MaNguoiTaiLen = librarian.Id,
                     // Thông tin chuyên biệt
+                    DOI = "10.1234/ai.nlu.2025.001",
+                    ISSN = "1859-1234",
+                    CapDo = "Quốc tế",
+                    TapChiHoiNghi = "International Journal of AI",
+                    NgayCongBo = new DateTime(2025, 5, 10),
+                    TieuDe = "Ứng dụng AI trong xử lý ngôn ngữ tự nhiên"
                 },
                 // Đề tài nghiên cứu khoa học
                 new TaiLieu
@@ -148,6 +157,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     MaLoaiTaiLieu = idDeTai,
                     MaNguoiTaiLen = librarian.Id,
                     // Thông tin chuyên biệt
+                    TenDeTai = "Nghiên cứu phát triển hệ thống IoT cho nông nghiệp",
+                    MaSoDeTai = "DT2025-001",
+                    CapDeTai = "Cấp Trường",
+                    ThoiGianThucHien = "2024-2025",
+                    CoQuanChuTri = "Trường Đại học Nông nghiệp",
+                    ChuNhiemDeTai = "TS. Lê Thị Bích"
                 },
                 // Giáo trình - tài liệu giảng dạy
                 new TaiLieu
@@ -165,6 +180,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     MaLoaiTaiLieu = idGiaoTrinh,
                     MaNguoiTaiLen = librarian.Id,
                     // Thông tin chuyên biệt
+                    TenGiaoTrinh = "Giáo trình Cơ sở dữ liệu quan hệ",
+                    MonHocLienQuan = "Cơ sở dữ liệu",
+                    DonViPhatHanh = "Nhà xuất bản Giáo dục",
+                    NamXuatBan = 2024,
+                    SoTinChi = 3
                 }
             };
 
