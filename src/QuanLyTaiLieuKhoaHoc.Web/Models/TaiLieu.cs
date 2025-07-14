@@ -6,6 +6,28 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
     [Table("TaiLieu")]
     public class TaiLieu
     {
+        // --- Bài báo khoa học ---
+        public string? TieuDe { get; set; }
+        public string? TapChiHoiNghi { get; set; }
+        public DateTime? NgayCongBo { get; set; }
+        public string? DOI { get; set; }
+        public string? ISSN { get; set; }
+        public string? CapDo { get; set; }
+
+        // --- Đề tài nghiên cứu khoa học ---
+        public string? TenDeTai { get; set; }
+        public string? MaSoDeTai { get; set; }
+        public string? CapDeTai { get; set; }
+        public string? ThoiGianThucHien { get; set; }
+        public string? CoQuanChuTri { get; set; }
+        public string? ChuNhiemDeTai { get; set; }
+
+        // --- Giáo trình - tài liệu giảng dạy ---
+        public string? TenGiaoTrinh { get; set; }
+        public string? MonHocLienQuan { get; set; }
+        public string? DonViPhatHanh { get; set; }
+        public int? NamXuatBan { get; set; }
+        public int? SoTinChi { get; set; }
         [NotMapped]
         public int LuotMuon
         {
@@ -79,17 +101,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
     }
 
     public enum TrangThaiTaiLieu
-{
-    [Display(Name = "Chờ duyệt")]
-    ChoDuyet = 0,
+    {
+        [Display(Name = "Chờ duyệt")]
+        ChoDuyet = 0,
 
-    [Display(Name = "Đã duyệt")]
-    DaDuyet = 1,
+        [Display(Name = "Đã duyệt")]
+        DaDuyet = 1,
 
-    [Display(Name = "Từ chối")]
-    TuChoi = 2,
+        [Display(Name = "Từ chối")]
+        TuChoi = 2,
 
-    [Display(Name = "Ẩn")]
-    An = 3
-}
+        [Display(Name = "Ẩn")]
+        An = 3
+    }
 }

@@ -17,6 +17,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public List<TaiLieuViewModel> TaiLieuMoiNhat { get; set; } = new List<TaiLieuViewModel>();
         public List<TaiLieuViewModel> TaiLieuPhoBien { get; set; } = new List<TaiLieuViewModel>();
 
+        // Danh sách tài liệu cho từng mục trên trang chủ
+        public List<TaiLieuViewModel> BaiBaoKhoaHocList { get; set; } = new();
+        public List<TaiLieuViewModel> DeTaiNghienCuuList { get; set; } = new();
+        public List<TaiLieuViewModel> GiaoTrinhList { get; set; } = new();
+
         public Dictionary<string, int> ThongKeTheoChuyenNganh { get; set; } = new Dictionary<string, int>();
         public Dictionary<string, int> ThongKeTheoLoaiTaiLieu { get; set; } = new Dictionary<string, int>();
     }

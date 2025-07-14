@@ -74,7 +74,8 @@
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="d-flex gap-2">
-                            @if (User.IsInRole("GiangVien") || User.IsInRole("ThuThu"))
+                            @if (User.IsInRole("SinhVien") && (Model.MaLoaiTaiLieu == 10 || Model.MaLoaiTaiLieu == 20 ||
+                                                    Model.MaLoaiTaiLieu == 30))
                             {
                                 <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
                                     <i class="fas fa-download me-2"></i>Tải xuống

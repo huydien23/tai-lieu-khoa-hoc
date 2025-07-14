@@ -21,6 +21,16 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+
+            // Truy vấn đúng tên loại tài liệu đã seed
+            var loaiBaiBao = await _context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Bài báo khoa học");
+            var loaiDeTai = await _context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Đề tài nghiên cứu khoa học");
+            var loaiGiaoTrinh = await _context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Giáo trình - Tài liệu giảng dạy");
+
+            var baiBaoList = loaiBaiBao != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiBaiBao.MaLoaiTaiLieu)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
+            var deTaiList = loaiDeTai != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiDeTai.MaLoaiTaiLieu)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
+            var giaoTrinhList = loaiGiaoTrinh != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiGiaoTrinh.MaLoaiTaiLieu)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
+
             var model = new DashboardViewModel
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
@@ -41,7 +51,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 ThongKeTheoLoaiTaiLieu = await _context.TaiLieu
                     .Include(t => t.LoaiTaiLieu)
                     .GroupBy(t => t.LoaiTaiLieu!.TenLoaiTaiLieu)
-                    .ToDictionaryAsync(g => g.Key, g => g.Count())
+                    .ToDictionaryAsync(g => g.Key, g => g.Count()),
+
+                // Thêm 3 danh sách tài liệu cho từng mục
+                BaiBaoKhoaHocList = baiBaoList,
+                DeTaiNghienCuuList = deTaiList,
+                GiaoTrinhList = giaoTrinhList
             };
 
             return View(model);

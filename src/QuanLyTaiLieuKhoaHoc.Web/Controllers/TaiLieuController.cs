@@ -208,12 +208,26 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "GiangVien,ThuThu")]
+
+        [Authorize(Roles = "GiangVien,ThuThu,SinhVien")]
         public async Task<IActionResult> Download(int id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             var userId = currentUser?.Id ?? "anonymous";
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+
+            // Lấy thông tin tài liệu để kiểm tra loại
+            var taiLieu = await _context.TaiLieu.FindAsync(id);
+            if (taiLieu == null || string.IsNullOrEmpty(taiLieu.DuongDanFile))
+            {
+                return NotFound();
+            }
+
+            // Nếu là sinh viên, chỉ cho phép tải các loại đặc biệt
+            if (User.IsInRole("SinhVien") && (taiLieu.MaLoaiTaiLieu != 10 && taiLieu.MaLoaiTaiLieu != 20 && taiLieu.MaLoaiTaiLieu != 30))
+            {
+                return Forbid();
+            }
 
             var filePath = await _taiLieuService.TaiFileAsync(id, userId, ipAddress);
             if (string.IsNullOrEmpty(filePath))
