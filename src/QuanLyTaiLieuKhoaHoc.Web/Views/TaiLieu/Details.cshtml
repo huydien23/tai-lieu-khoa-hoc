@@ -45,7 +45,7 @@
                             <strong>Kích thước:</strong> @((Model.KichThuocFile / 1024).ToString("F1")) KB
                         </div>
                     </div>
-                    @if (Model.SoLuotDanhGia > 0)
+                    @* @if (Model.SoLuotDanhGia > 0)
                     {
                         <div class="row mb-3">
                             <div class="col-12">
@@ -66,7 +66,7 @@
                                 (@Model.DiemDanhGiaTrungBinh.ToString("F1")/5 - @Model.SoLuotDanhGia đánh giá)
                             </div>
                         </div>
-                    }
+                    } *@
                     <div class="mb-4">
                         <h5>Mô tả:</h5>
                         <p class="text-muted">@Model.MoTa</p>
@@ -81,17 +81,17 @@
                                     <i class="fas fa-download me-2"></i>Tải xuống
                                 </a>
                             }
-                            <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
+                            @* <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
                                 data-bs-target="#ratingModal">
                                 <i class="fas fa-star me-2"></i>Đánh giá
-                            </button>
+                            </button> *@
                         </div>
                     }
                     else
                     {
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <a href="/Identity/Account/Login">Đăng nhập</a> để đánh giá tài liệu.
+                            <a href="/Identity/Account/Login">Đăng nhập</a> để mượn tài liệu.
                         </div>
                     }
                 </div>
@@ -111,7 +111,7 @@
 </div>
 
 <!-- Rating Modal -->
-@if (User.Identity?.IsAuthenticated == true)
+@* @if (User.Identity?.IsAuthenticated == true)
 {
     <div class="modal fade" id="ratingModal" tabindex="-1">
         <div class="modal-dialog">
@@ -149,9 +149,9 @@
             </div>
         </div>
     </div>
-}
+} *@
 
-<style>
+@* <style>
     .rating {
         direction: rtl;
         display: inline-block;
@@ -173,4 +173,4 @@
     .rating input:checked~label {
         color: #ffc107;
     }
-</style>
+</style> *@
