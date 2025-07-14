@@ -84,14 +84,22 @@
                             @* <button type="button" class="btn btn-outline-warning" data-bs-toggle="modal"
                                 data-bs-target="#ratingModal">
                                 <i class="fas fa-star me-2"></i>Đánh giá
-                            </button> *@
+                                </button> *@
+                                
+                                <form asp-action="GuiYeuCauMuon" asp-controller="TaiLieu" method="post" class="d-inline">
+                                    <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                <button type="submit" class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#muonModal">
+                                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
+                                </button>
+                                </form>      
                         </div>
                     }
                     else
                     {
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle me-2"></i>
-                            <a href="/Identity/Account/Login">Đăng nhập</a> để mượn tài liệu.
+                            <a href="/Identity/Account/Login">Đăng nhập</a> để xem tài liệu.
                         </div>
                     }
                 </div>
@@ -174,3 +182,36 @@
         color: #ffc107;
     }
 </style> *@
+
+<!-- Modal Gửi Yêu Cầu Mượn -->
+<div class="modal fade" id="muonModal" tabindex="-1" aria-labelledby="muonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="GuiYeuCauMuon" asp-controller="TaiLieu" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="muonModalLabel">Gửi yêu cầu mượn tài liệu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                    <div class="mb-3">
+                        <label for="ngayMuon" class="form-label">Ngày giờ đến thư viện mượn</label>
+                        <input type="datetime-local" class="form-control" id="ngayMuon" name="ngayMuon" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lyDo" class="form-label">Lý do mượn</label>
+                        <textarea class="form-control" id="lyDo" name="lyDo" rows="2" placeholder="Nhập lý do mượn..."
+                            required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

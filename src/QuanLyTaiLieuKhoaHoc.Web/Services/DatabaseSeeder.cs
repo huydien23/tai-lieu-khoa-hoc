@@ -132,7 +132,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = idBaiBao,
-                    MaNguoiTaiLen = librarian.Id,
                     // Thông tin chuyên biệt
                     DOI = "10.1234/ai.nlu.2025.001",
                     ISSN = "1859-1234",
@@ -155,7 +154,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 2,
                     MaLoaiTaiLieu = idDeTai,
-                    MaNguoiTaiLen = librarian.Id,
                     // Thông tin chuyên biệt
                     TenDeTai = "Nghiên cứu phát triển hệ thống IoT cho nông nghiệp",
                     MaSoDeTai = "DT2025-001",
@@ -178,7 +176,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     TrangThai = TrangThaiTaiLieu.DaDuyet,
                     MaChuyenNganh = 1,
                     MaLoaiTaiLieu = idGiaoTrinh,
-                    MaNguoiTaiLen = librarian.Id,
                     // Thông tin chuyên biệt
                     TenGiaoTrinh = "Giáo trình Cơ sở dữ liệu quan hệ",
                     MonHocLienQuan = "Cơ sở dữ liệu",

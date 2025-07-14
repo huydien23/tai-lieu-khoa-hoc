@@ -41,13 +41,12 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
+               <div class="row mb-3">
                     <div class="col-sm-6">
                         <small class="text-muted d-block">
                             <i class="fas fa-user me-1"></i>
                             <strong>Người tải lên:</strong>
                         </small>
-                        <span>@(Model.NguoiTaiLen?.HoTen ?? "Không xác định")</span>
                     </div>
                     <div class="col-sm-6">
                         <small class="text-muted d-block">
@@ -89,12 +88,6 @@
                         <div class="border rounded p-2 mb-2">
                             <div class="text-primary fw-bold">@Model.LuotMuon</div>
                             <small class="text-muted">Lượt mượn</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="border rounded p-2 mb-2">
-                            <div class="text-success fw-bold">@(Model.DanhGiaTaiLieu?.Count ?? 0)</div>
-                            <small class="text-muted">Đánh giá</small>
                         </div>
                     </div>
                 </div>

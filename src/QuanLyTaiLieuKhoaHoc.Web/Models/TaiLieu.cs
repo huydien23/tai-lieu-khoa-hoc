@@ -83,8 +83,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Loại tài liệu")]
         public int MaLoaiTaiLieu { get; set; }
 
-        [Display(Name = "Người tải lên")]
-        public string MaNguoiTaiLen { get; set; } = string.Empty;
 
         // Navigation Properties
         [ForeignKey("MaChuyenNganh")]
@@ -93,8 +91,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [ForeignKey("MaLoaiTaiLieu")]
         public virtual LoaiTaiLieu? LoaiTaiLieu { get; set; }
 
-        [ForeignKey("MaNguoiTaiLen")]
-        public virtual NguoiDung? NguoiTaiLen { get; set; }
 
         public virtual ICollection<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; } = new List<LichSuTaiTaiLieu>();
         public virtual ICollection<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; } = new List<DanhGiaTaiLieu>();

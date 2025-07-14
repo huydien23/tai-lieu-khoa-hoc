@@ -52,12 +52,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
             .HasForeignKey(t => t.MaLoaiTaiLieu)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<TaiLieu>()
-            .HasOne(t => t.NguoiTaiLen)
-            .WithMany(nd => nd.TaiLieuDaTaiLen)
-            .HasForeignKey(t => t.MaNguoiTaiLen)
-            .OnDelete(DeleteBehavior.Restrict);
-
         builder.Entity<NguoiDung>()
             .HasOne(nd => nd.ChuyenNganh)
             .WithMany(cn => cn.NguoiDung)
@@ -76,25 +70,13 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
             .HasForeignKey(ls => ls.MaNguoiDung)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<DanhGiaTaiLieu>()
-            .HasOne(dg => dg.TaiLieu)
-            .WithMany(t => t.DanhGiaTaiLieu)
-            .HasForeignKey(dg => dg.MaTaiLieu)
-            .OnDelete(DeleteBehavior.Cascade);
-
-        builder.Entity<DanhGiaTaiLieu>()
-            .HasOne(dg => dg.NguoiDung)
-            .WithMany(nd => nd.DanhGiaTaiLieu)
-            .HasForeignKey(dg => dg.MaNguoiDung)
-            .OnDelete(DeleteBehavior.Cascade);
-
         // Seed data
         SeedData(builder);
     }
 
     private void SeedData(ModelBuilder builder)
     {
-        // Seed ChuyenNganh
+        // Seed ChuyenNganhx`
         builder.Entity<ChuyenNganh>().HasData(
             new ChuyenNganh { MaChuyenNganh = 1, TenChuyenNganh = "Công nghệ Thông tin", MoTa = "Chuyên ngành về tin học và công nghệ", NgayTao = DateTime.Now },
             new ChuyenNganh { MaChuyenNganh = 2, TenChuyenNganh = "Kinh tế", MoTa = "Chuyên ngành về kinh tế và quản lý", NgayTao = DateTime.Now },
@@ -106,10 +88,8 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
         builder.Entity<LoaiTaiLieu>().HasData(
             new LoaiTaiLieu { MaLoaiTaiLieu = 1, TenLoaiTaiLieu = "Giáo trình", MoTa = "Tài liệu giảng dạy chính thức", BieuTuong = "📚", NgayTao = DateTime.Now },
             new LoaiTaiLieu { MaLoaiTaiLieu = 2, TenLoaiTaiLieu = "Bài giảng", MoTa = "Slide bài giảng của giảng viên", BieuTuong = "📖", NgayTao = DateTime.Now },
-            new LoaiTaiLieu { MaLoaiTaiLieu = 3, TenLoaiTaiLieu = "Đề thi", MoTa = "Đề thi các môn học", BieuTuong = "📝", NgayTao = DateTime.Now },
-            new LoaiTaiLieu { MaLoaiTaiLieu = 4, TenLoaiTaiLieu = "Bài tập", MoTa = "Bài tập và lời giải", BieuTuong = "✏️", NgayTao = DateTime.Now },
-            new LoaiTaiLieu { MaLoaiTaiLieu = 5, TenLoaiTaiLieu = "Luận văn", MoTa = "Luận văn tốt nghiệp", BieuTuong = "🎓", NgayTao = DateTime.Now },
-            new LoaiTaiLieu { MaLoaiTaiLieu = 6, TenLoaiTaiLieu = "Tài liệu tham khảo", MoTa = "Tài liệu bổ sung", BieuTuong = "📑", NgayTao = DateTime.Now }
+            new LoaiTaiLieu { MaLoaiTaiLieu = 3, TenLoaiTaiLieu = "Luận văn", MoTa = "Luận văn tốt nghiệp", BieuTuong = "🎓", NgayTao = DateTime.Now },
+            new LoaiTaiLieu { MaLoaiTaiLieu = 4, TenLoaiTaiLieu = "Tài liệu tham khảo", MoTa = "Tài liệu bổ sung", BieuTuong = "📑", NgayTao = DateTime.Now }
         );
     }
 }

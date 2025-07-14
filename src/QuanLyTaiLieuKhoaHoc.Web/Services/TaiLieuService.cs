@@ -24,7 +24,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.NguoiTaiLen)
                 .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
@@ -86,7 +85,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.NguoiTaiLen)
                 .Include(t => t.DanhGiaTaiLieu)
                 .FirstOrDefaultAsync(t => t.MaTaiLieu == maTaiLieu);
 
@@ -113,7 +111,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     MoTa = model.MoTa,
                     MaChuyenNganh = model.MaChuyenNganh,
                     MaLoaiTaiLieu = model.MaLoaiTaiLieu,
-                    MaNguoiTaiLen = maNguoiDung,
                     NgayTaiLen = DateTime.Now,
                     TrangThai = TrangThaiTaiLieu.ChoDuyet,
                     DuongDanFile = uploadResult.FilePath,
@@ -248,7 +245,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.NguoiTaiLen)
                 .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
                 .OrderByDescending(t => t.NgayTaiLen)
@@ -263,7 +259,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.NguoiTaiLen)
                 .Include(t => t.DanhGiaTaiLieu)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
                 .OrderByDescending(t => t.LuotTai)
@@ -275,14 +270,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
 
         public async Task<TaiLieuListViewModel> GetTaiLieuCuaNguoiDungAsync(string maNguoiDung, int trang = 1, int kichThuocTrang = 10)
         {
-            var tongSoTaiLieu = await _context.TaiLieu
-                .CountAsync(t => t.MaNguoiTaiLen == maNguoiDung);
 
+            var tongSoTaiLieu = await _context.TaiLieu.CountAsync();
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
-                .Where(t => t.MaNguoiTaiLen == maNguoiDung)
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Skip((trang - 1) * kichThuocTrang)
                 .Take(kichThuocTrang)
@@ -307,10 +300,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 TacGia = taiLieu.TacGia,
                 MaChuyenNganh = taiLieu.MaChuyenNganh,
                 MaLoaiTaiLieu = taiLieu.MaLoaiTaiLieu,
-                MaNguoiTaiLen = taiLieu.MaNguoiTaiLen,
                 TenChuyenNganh = taiLieu.ChuyenNganh?.TenChuyenNganh,
                 TenLoaiTaiLieu = taiLieu.LoaiTaiLieu?.TenLoaiTaiLieu,
-                TenNguoiTaiLen = taiLieu.NguoiTaiLen?.HoTen,
                 NgayTaiLen = taiLieu.NgayTaiLen,
                 LuotTai = taiLieu.LuotTai,
                 LuotMuon = taiLieu.PhieuMuonTras != null ? taiLieu.PhieuMuonTras.Count : 0,

@@ -103,7 +103,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> ManageDocuments()
         {
             var documents = await _context.TaiLieu
-                .Include(t => t.NguoiTaiLen)
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .OrderByDescending(t => t.NgayTaiLen)
@@ -498,7 +497,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> GetDocumentDetails(int id)
         {
             var document = await _context.TaiLieu
-                .Include(t => t.NguoiTaiLen)
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
@@ -590,7 +588,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 model.DuongDanFile = "/uploads/documents/" + uniqueFileName;
                 model.LoaiFile = Path.GetExtension(taiLieuFile.FileName).TrimStart('.');
                 model.KichThuocFile = taiLieuFile.Length / 1024; // KB
-                model.MaNguoiTaiLen = currentUser.Id;
                 model.NgayTaiLen = DateTime.Now;
                 model.TrangThai = TrangThaiTaiLieu.DaDuyet; // Thủ thư tự động duyệt
 
@@ -648,8 +645,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Không tìm thấy người dùng!" });
                 }
 
-                // Kiểm tra xem người dùng có tài liệu nào không
-                var userDocuments = await _context.TaiLieu.Where(t => t.MaNguoiTaiLen == id).CountAsync();
+               
+                int userDocuments = 0; 
                 if (userDocuments > 0)
                 {
                     return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });

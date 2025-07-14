@@ -17,11 +17,39 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<NguoiDung> _userManager;
 
-        public TaiLieuController(ITaiLieuService taiLieuService, ApplicationDbContext context, UserManager<NguoiDung> userManager)
+        private readonly IPhieuMuonTraService _phieuMuonTraService;
+
+        public TaiLieuController(ITaiLieuService taiLieuService, ApplicationDbContext context, UserManager<NguoiDung> userManager, IPhieuMuonTraService phieuMuonTraService)
         {
             _taiLieuService = taiLieuService;
             _context = context;
             _userManager = userManager;
+            _phieuMuonTraService = phieuMuonTraService;
+        }
+        [HttpPost]
+        [Authorize(Roles = "SinhVien")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GuiYeuCauMuon(int maTaiLieu, DateTime ngayMuon, string lyDo)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                TempData["ErrorMessage"] = "Bạn cần đăng nhập để gửi yêu cầu mượn.";
+                return RedirectToAction("Details", new { id = maTaiLieu });
+            }
+
+            // Gửi yêu cầu mượn với ghi chú gồm ngày mượn và lý do
+            string ghiChu = $"Ngày đến mượn: {ngayMuon:dd/MM/yyyy HH:mm}\nLý do: {lyDo}";
+            var result = await _phieuMuonTraService.GuiYeuCauMuonAsync(maTaiLieu, currentUser.Id, ghiChu);
+            if (result)
+            {
+                TempData["SuccessMessage"] = "Gửi yêu cầu mượn thành công! Vui lòng chờ duyệt.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Bạn đã gửi yêu cầu mượn cho tài liệu này hoặc chưa trả tài liệu.";
+            }
+            return RedirectToAction("Details", new { id = maTaiLieu });
         }
 
         // API lấy tóm tắt tài liệu cho modal (JSON)
@@ -36,7 +64,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return Json(new
             {
                 tenTaiLieu = taiLieu.TenTaiLieu,
-                tenNguoiTaiLen = taiLieu.TenNguoiTaiLen,
                 ngayTaiLen = taiLieu.NgayTaiLen.ToString("dd/MM/yyyy HH:mm"),
                 tenChuyenNganh = taiLieu.TenChuyenNganh,
                 tenLoaiTaiLieu = taiLieu.TenLoaiTaiLieu,
@@ -139,8 +166,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.ThuThu &&
-                await _context.TaiLieu.AnyAsync(t => t.MaTaiLieu == id && t.MaNguoiTaiLen != currentUser.Id)))
+            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.ThuThu && currentUser.VaiTro != VaiTroNguoiDung.GiangVien))
             {
                 return Forbid();
             }
@@ -181,8 +207,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.ThuThu &&
-                taiLieu.MaNguoiTaiLen != currentUser.Id))
+            if (currentUser == null || (currentUser.VaiTro != VaiTroNguoiDung.ThuThu && currentUser.VaiTro != VaiTroNguoiDung.GiangVien))
             {
                 return Forbid();
             }
