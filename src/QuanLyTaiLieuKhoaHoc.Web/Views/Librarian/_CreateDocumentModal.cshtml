@@ -4,6 +4,15 @@
     <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
     <div class="row">
+        <div class="mb-3">
+            <div class="form-check">
+                <input asp-for="ChoPhepTaiFile" class="form-check-input" type="checkbox" id="ChoPhepTaiFile">
+                <label class="form-check-label" for="ChoPhepTaiFile">
+                    <i class="fas fa-download me-1"></i>
+                    Cho phép tải file này
+                </label>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="mb-3">
                 <label asp-for="TenTaiLieu" class="form-label fw-semibold">
@@ -23,7 +32,7 @@
                 </label>
                 <input type="file" class="form-control" id="taiLieuFile" name="taiLieuFile"
                     accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" />
-                <div class="form-text">Chấp nhận: PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX (Max: 50MB)</div>
+                <div class="form-text">Chấp nhận: PDF, DOC, DOCX,(Max: 50MB)</div>
             </div>
         </div>
     </div>

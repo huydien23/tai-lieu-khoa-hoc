@@ -4,6 +4,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 {
     public class TaiLieuViewModel
     {
+        [Display(Name = "Cho phép tải file")]
+        public bool ChoPhepTaiFile { get; set; } = false;
         public int MaTaiLieu { get; set; }
 
         [Required(ErrorMessage = "Tên tài liệu không được để trống")]

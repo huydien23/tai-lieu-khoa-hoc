@@ -6,6 +6,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
     [Table("TaiLieu")]
     public class TaiLieu
     {
+        [Display(Name = "Cho phép tải file")]
+        public bool ChoPhepTaiFile { get; set; } = false;
         // --- Bài báo khoa học ---
         public string? TieuDe { get; set; }
         public string? TapChiHoiNghi { get; set; }

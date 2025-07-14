@@ -1,3 +1,4 @@
+@using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 @model TaiLieuListViewModel
 
 @if (Model.DanhSachTaiLieu.Any())
@@ -38,7 +39,7 @@
                                     <i class="fas fa-eye"></i>
                                 </a>
                                 @* Chỉ thủ thư/admin mới được tải tài liệu *@
-                                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("ThuThu")))
+                                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("SinhVien")) && taiLieu.ChoPhepTaiFile)
                                 {
                                     <a asp-controller="TaiLieu" asp-action="Download" asp-route-id="@taiLieu.MaTaiLieu" 
                                        class="btn btn-outline-success" title="Tải xuống">

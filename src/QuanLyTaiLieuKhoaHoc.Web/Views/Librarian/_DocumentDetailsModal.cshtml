@@ -59,16 +59,19 @@
 
                 @if (!string.IsNullOrEmpty(Model.DuongDanFile))
                 {
-                    <div class="mb-3">
-                        <small class="text-muted d-block">
-                            <i class="fas fa-file me-1"></i>
-                            <strong>File đính kèm:</strong>
-                        </small>
-                        <a href="@Model.DuongDanFile" class="btn btn-outline-primary btn-sm" target="_blank">
-                            <i class="fas fa-download me-1"></i>
-                            Tải xuống (@(Model.LoaiFile?.ToUpper() ?? "UNKNOWN") - @(Model.KichThuocFile) KB)
-                        </a>
-                    </div>
+                    if ((User.IsInRole("SinhVien") || User.IsInRole("GiangVien")) && Model.ChoPhepTaiFile)
+                    {
+                        <div class="mb-3">
+                            <small class="text-muted d-block">
+                                <i class="fas fa-file me-1"></i>
+                                <strong>File đính kèm:</strong>
+                            </small>
+                            <a href="@Model.DuongDanFile" class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="fas fa-download me-1"></i>
+                                Tải xuống (@(Model.LoaiFile?.ToUpper() ?? "UNKNOWN") - @(Model.KichThuocFile) KB)
+                            </a>
+                        </div>
+                    }
                 }
             </div>
         </div>

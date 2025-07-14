@@ -74,8 +74,7 @@
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="d-flex gap-2">
-                            @if (User.IsInRole("SinhVien") && (Model.MaLoaiTaiLieu == 10 || Model.MaLoaiTaiLieu == 20 ||
-                                                    Model.MaLoaiTaiLieu == 30))
+                            @if ((User.IsInRole("SinhVien") || User.IsInRole("GiangVien")) && Model.ChoPhepTaiFile)
                             {
                                 <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
                                     <i class="fas fa-download me-2"></i>Tải xuống
@@ -85,14 +84,14 @@
                                 data-bs-target="#ratingModal">
                                 <i class="fas fa-star me-2"></i>Đánh giá
                                 </button> *@
-                                
-                                <form asp-action="GuiYeuCauMuon" asp-controller="TaiLieu" method="post" class="d-inline">
-                                    <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+
+                            <form asp-action="GuiYeuCauMuon" asp-controller="TaiLieu" method="post" class="d-inline">
+                                <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
                                 <button type="submit" class="btn btn-success" data-bs-toggle="modal"
                                     data-bs-target="#muonModal">
-                                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
+                                    <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
                                 </button>
-                                </form>      
+                            </form>
                         </div>
                     }
                     else
