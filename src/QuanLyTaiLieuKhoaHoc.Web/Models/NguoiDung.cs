@@ -12,9 +12,24 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Họ và tên")]
         public string HoTen { get; set; } = string.Empty;
 
-        [StringLength(20, ErrorMessage = "Mã số không được vượt quá 20 ký tự")]
-        [Display(Name = "Mã số (Sinh viên/Giảng viên)")]
-        public string? MaSo { get; set; }
+
+        // Sinh viên: MSSV, lớp
+        [StringLength(20, ErrorMessage = "MSSV không được vượt quá 20 ký tự")]
+        [Display(Name = "Mã số sinh viên")]
+        public string? MSSV { get; set; }
+
+        [StringLength(20, ErrorMessage = "Lớp không được vượt quá 20 ký tự")]
+        [Display(Name = "Lớp")]
+        public string? Lop { get; set; }
+
+        // Giảng viên: mã GV, bộ môn
+        [StringLength(20, ErrorMessage = "Mã giảng viên không được vượt quá 20 ký tự")]
+        [Display(Name = "Mã giảng viên")]
+        public string? MaGV { get; set; }
+
+        [StringLength(50, ErrorMessage = "Bộ môn không được vượt quá 50 ký tự")]
+        [Display(Name = "Bộ môn")]
+        public string? BoMon { get; set; }
 
         [Required(ErrorMessage = "Vai trò không được để trống")]
         [Display(Name = "Vai trò")]
@@ -44,7 +59,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         // Navigation Properties
         public virtual ICollection<TaiLieu> TaiLieuDaTaiLen { get; set; } = new List<TaiLieu>();
         public virtual ICollection<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; } = new List<LichSuTaiTaiLieu>();
-        public virtual ICollection<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; } = new List<DanhGiaTaiLieu>();
     }
 
     public enum VaiTroNguoiDung

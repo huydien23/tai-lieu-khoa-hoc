@@ -16,7 +16,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     public DbSet<ChuyenNganh> ChuyenNganh { get; set; }
     public DbSet<LoaiTaiLieu> LoaiTaiLieu { get; set; }
     public DbSet<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; }
-    public DbSet<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; }
     public DbSet<PhieuMuonTra> PhieuMuonTra { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -29,7 +28,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
         builder.Entity<ChuyenNganh>().ToTable("ChuyenNganh");
         builder.Entity<LoaiTaiLieu>().ToTable("LoaiTaiLieu");
         builder.Entity<LichSuTaiTaiLieu>().ToTable("LichSuTaiTaiLieu");
-        builder.Entity<DanhGiaTaiLieu>().ToTable("DanhGiaTaiLieu");
 
         // Cấu hình tên bảng Identity
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().ToTable("VaiTro");
@@ -76,17 +74,7 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
             .HasForeignKey(ls => ls.MaNguoiDung)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<DanhGiaTaiLieu>()
-            .HasOne(dg => dg.TaiLieu)
-            .WithMany(t => t.DanhGiaTaiLieu)
-            .HasForeignKey(dg => dg.MaTaiLieu)
-            .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<DanhGiaTaiLieu>()
-            .HasOne(dg => dg.NguoiDung)
-            .WithMany(nd => nd.DanhGiaTaiLieu)
-            .HasForeignKey(dg => dg.MaNguoiDung)
-            .OnDelete(DeleteBehavior.Cascade);
 
         // Seed data
         SeedData(builder);
