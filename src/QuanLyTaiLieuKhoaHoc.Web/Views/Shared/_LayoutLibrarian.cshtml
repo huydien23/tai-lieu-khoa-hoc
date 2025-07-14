@@ -166,6 +166,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="@Url.Action("ManageBorrowReturn", "Librarian")"
+                       class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageBorrowReturn" ? "active" : "")">
+                        <i class="fas fa-exchange-alt"></i> Quản lý mượn trả
+                    </a>
+                </li>
+                <li>
                     <a href="@Url.Action("ManageUsers", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageUsers" ? "active" : "")">
                         <i class="fas fa-users"></i> Quản lý Người dùng

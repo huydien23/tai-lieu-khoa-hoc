@@ -1,0 +1,95 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Quản lý mượn trả";
+}
+<div class="card shadow-sm mt-4">
+    <div class="card-header bg-white border-0 py-3">
+        <ul class="nav nav-tabs" id="borrowReturnTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
+                    type="button" role="tab" aria-controls="requests" aria-selected="true">
+                    <i class="fas fa-clipboard-list me-2"></i> Yêu cầu mượn
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
+                    role="tab" aria-controls="history" aria-selected="false">
+                    <i class="fas fa-history me-2"></i> Lịch sử mượn trả
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="borrowReturnTabsContent">
+            <div class="tab-pane fade show active" id="requests" role="tabpanel" aria-labelledby="requests-tab">
+                <div class="input-group mb-3" style="max-width: 400px;">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchRequests"
+                        placeholder="Tìm kiếm theo mã số, họ tên...">
+                    <button class="btn btn-outline-secondary" type="button" id="clearSearchRequests"><i
+                            class="fas fa-times"></i></button>
+                </div>
+                @Html.Partial("~/Views/PhieuMuonTra/DanhSachYeuCauChoDuyet.cshtml", Model.YeuCauMuonTra)
+            </div>
+            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <div class="input-group mb-3" style="max-width: 400px;">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" class="form-control" id="searchHistory"
+                        placeholder="Tìm kiếm theo mã số, họ tên...">
+                    <button class="btn btn-outline-secondary" type="button" id="clearSearchHistory"><i
+                            class="fas fa-times"></i></button>
+                </div>
+                @Html.Partial("~/Views/PhieuMuonTra/LichSuMuonTra.cshtml", Model.LichSuMuonTra)
+            </div>
+        </div>
+    </div>
+    <style>
+        .nav-tabs .nav-link {
+            color: #295BA4;
+            background: #e3eafc;
+            border: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            font-weight: 500;
+            margin-right: 2px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: #fff;
+            color: #1a237e;
+            font-weight: 700;
+            border-bottom: 2px solid #fff;
+            box-shadow: 0 -2px 8px rgba(41, 91, 164, 0.05);
+        }
+
+        .nav-tabs {
+            border-bottom: 2px solid #295BA4;
+        }
+    </style>
+</div>
+@section Scripts {
+    <script>
+        // Tìm kiếm cho tab Yêu cầu mượn
+        $(document).on('input', '#searchRequests', function () {
+            var value = $(this).val().toLowerCase();
+            $('#requests table tbody tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $('#clearSearchRequests').click(function () {
+            $('#searchRequests').val('');
+            $('#searchRequests').trigger('input');
+        });
+        // Tìm kiếm cho tab Lịch sử mượn trả
+        $(document).on('input', '#searchHistory', function () {
+            var value = $(this).val().toLowerCase();
+            $('#history table tbody tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+        $('#clearSearchHistory').click(function () {
+            $('#searchHistory').val('');
+            $('#searchHistory').trigger('input');
+        });
+    </script>
+}
