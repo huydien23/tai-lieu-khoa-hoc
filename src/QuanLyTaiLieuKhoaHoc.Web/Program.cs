@@ -24,7 +24,6 @@ builder.Services.AddDefaultIdentity<NguoiDung>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Add Session support
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {

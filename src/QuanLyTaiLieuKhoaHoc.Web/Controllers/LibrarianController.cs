@@ -23,6 +23,41 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ManageBorrowReturn()
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                TempData["ErrorMessage"] = "Bạn không có quyền truy cập trang này!";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Lấy danh sách yêu cầu mượn chờ duyệt
+            var yeuCauMuonTra = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Include(p => p.NguoiMuon)
+                .Where(p => p.TrangThai == TrangThaiPhieu.ChoDuyet)
+                .OrderByDescending(p => p.NgayMuon)
+                .ToListAsync();
+
+            // Lấy lịch sử mượn trả (tất cả phiếu đã duyệt hoặc đã trả)
+            var lichSuMuonTra = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Include(p => p.NguoiMuon)
+                .Where(p => p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.DaTra)
+                .OrderByDescending(p => p.NgayMuon)
+                .ToListAsync();
+
+            var model = new DashboardViewModel
+            {
+                YeuCauMuonTra = yeuCauMuonTra,
+                LichSuMuonTra = lichSuMuonTra
+            };
+            ViewData["Title"] = "Quản lý mượn trả";
+            return View("ManageBorrowReturn", model);
+        }
+
         // API tìm kiếm thành viên hệ thống cho autocomplete phiếu mượn
         [HttpGet]
         public async Task<IActionResult> SearchMember(string q)
@@ -645,8 +680,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Không tìm thấy người dùng!" });
                 }
 
-               
-                int userDocuments = 0; 
+
+                int userDocuments = 0;
                 if (userDocuments > 0)
                 {
                     return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });

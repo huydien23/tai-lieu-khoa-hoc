@@ -24,6 +24,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 
         public Dictionary<string, int> ThongKeTheoChuyenNganh { get; set; } = new Dictionary<string, int>();
         public Dictionary<string, int> ThongKeTheoLoaiTaiLieu { get; set; } = new Dictionary<string, int>();
+
+        // Danh sách yêu cầu mượn chờ duyệt
+        public IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra> YeuCauMuonTra { get; set; } = new List<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>();
+
+        // Lịch sử mượn trả
+        public IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra> LichSuMuonTra { get; set; } = new List<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>();
     }
 
     public class ThongKeViewModel
