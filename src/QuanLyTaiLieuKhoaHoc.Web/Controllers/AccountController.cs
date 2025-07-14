@@ -7,18 +7,26 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly RoleManager<IdentityRole> _roleManager;
+
         private readonly UserManager<NguoiDung> _userManager;
         private readonly SignInManager<NguoiDung> _signInManager;
 
-        public AccountController(UserManager<NguoiDung> userManager, SignInManager<NguoiDung> signInManager)
+        public AccountController(
+        UserManager<NguoiDung> userManager,
+        RoleManager<IdentityRole> roleManager,
+        SignInManager<NguoiDung> signInManager)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+        _userManager = userManager;
+        _roleManager = roleManager;
+        _signInManager = signInManager;
         }
+
         public IActionResult Login()
         {
             return View();
         }
+        
         [HttpPost]
         public async Task<IActionResult> Login(string Email, string Password, bool RememberMe = false)
         {
@@ -126,6 +134,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, password);
+            if (result.Succeeded)
+            {
+    // Gán role
+            var identityRole = role switch
+            {
+            "lecturer" => "GiangVien",
+            "librarian" => "ThuThu",
+            _ => "SinhVien"
+            };
+
+    // Tạo role nếu chưa tồn tại
+            if (!await _roleManager.RoleExistsAsync(identityRole))
+            {
+                await _roleManager.CreateAsync(new IdentityRole(identityRole));
+            }
+ 
+    // Gán user vào role
+            await _userManager.AddToRoleAsync(user, identityRole);
+
+                TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
+                return RedirectToAction("Login");
+            }
+
             if (result.Succeeded)
             {
                 TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
