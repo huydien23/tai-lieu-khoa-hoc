@@ -23,12 +23,6 @@
                             <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
                         </a></li>
                 }
-                else if (User.IsInRole("SinhVien"))
-                {
-                    <li><a class="dropdown-item" href="../Student/Dashboard-Student.cshtml">
-                            <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
-                        </a></li>
-                }
             
                 <li>
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
