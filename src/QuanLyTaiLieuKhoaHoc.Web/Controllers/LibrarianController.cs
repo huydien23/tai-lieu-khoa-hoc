@@ -581,30 +581,52 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Vui lòng chọn file tài liệu để tải lên!" });
                 }
 
-                // Validate form fields (excluding auto-generated fields)
+                // Validate các trường chung
                 if (string.IsNullOrWhiteSpace(model.TenTaiLieu))
                 {
                     return Json(new { success = false, message = "Tên tài liệu không được để trống!" });
                 }
-
                 if (string.IsNullOrWhiteSpace(model.MoTa))
                 {
                     return Json(new { success = false, message = "Mô tả không được để trống!" });
                 }
-
                 if (string.IsNullOrWhiteSpace(model.TacGia))
                 {
                     return Json(new { success = false, message = "Tác giả không được để trống!" });
                 }
-
                 if (model.MaChuyenNganh <= 0)
                 {
                     return Json(new { success = false, message = "Vui lòng chọn chuyên ngành!" });
                 }
-
                 if (model.MaLoaiTaiLieu <= 0)
                 {
                     return Json(new { success = false, message = "Vui lòng chọn loại tài liệu!" });
+                }
+
+                // Lấy loại tài liệu động từ form (nếu có)
+                var documentType = Request.Form["DocumentType"].ToString();
+
+                // Validate động các trường theo loại tài liệu
+                if (documentType == "baibao")
+                {
+                    if (string.IsNullOrWhiteSpace(model.TieuDe) || string.IsNullOrWhiteSpace(model.TapChiHoiNghi))
+                    {
+                        return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin bài báo khoa học!" });
+                    }
+                }
+                else if (documentType == "detai")
+                {
+                    if (string.IsNullOrWhiteSpace(model.TenDeTai) || string.IsNullOrWhiteSpace(model.MaSoDeTai))
+                    {
+                        return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin đề tài nghiên cứu khoa học!" });
+                    }
+                }
+                else if (documentType == "giaotrinh")
+                {
+                    if (string.IsNullOrWhiteSpace(model.TenGiaoTrinh) || string.IsNullOrWhiteSpace(model.MonHocLienQuan))
+                    {
+                        return Json(new { success = false, message = "Vui lòng nhập đầy đủ thông tin giáo trình/tài liệu giảng dạy!" });
+                    }
                 }
 
                 // Xử lý upload file

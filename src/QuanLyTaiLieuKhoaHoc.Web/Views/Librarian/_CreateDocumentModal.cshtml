@@ -13,6 +13,21 @@
                 </label>
             </div>
         </div>
+        <!-- Dropdown chọn dạng tài liệu -->
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="fas fa-list me-1"></i>
+                    Dạng tài liệu <span class="text-danger">*</span>
+                </label>
+                <select id="DocumentType" class="form-select">
+                    <option value="">-- Chọn dạng tài liệu --</option>
+                    <option value="baibao">Bài báo khoa học</option>
+                    <option value="detai">Đề tài nghiên cứu khoa học</option>
+                    <option value="giaotrinh">Giáo trình - tài liệu giảng dạy</option>
+                </select>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="mb-3">
                 <label asp-for="TenTaiLieu" class="form-label fw-semibold">
@@ -45,6 +60,96 @@
         <textarea asp-for="MoTa" class="form-control" rows="3"
             placeholder="Nhập mô tả chi tiết về tài liệu..."></textarea>
         <span asp-validation-for="MoTa" class="text-danger small"></span>
+    </div>
+
+    <!-- Các trường động theo dạng tài liệu -->
+    <div id="baibao-fields" style="display:none;">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="TieuDe" class="form-label">Tiêu đề</label>
+                <input asp-for="TieuDe" class="form-control" placeholder="Nhập tiêu đề bài báo..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="TapChiHoiNghi" class="form-label">Tạp chí/Hội nghị</label>
+                <input asp-for="TapChiHoiNghi" class="form-control" placeholder="Nhập tên tạp chí/hội nghị..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="NgayCongBo" class="form-label">Ngày công bố</label>
+                <input asp-for="NgayCongBo" type="date" class="form-control" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="DOI" class="form-label">DOI</label>
+                <input asp-for="DOI" class="form-control" placeholder="Nhập DOI..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="ISSN" class="form-label">ISSN</label>
+                <input asp-for="ISSN" class="form-control" placeholder="Nhập ISSN..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="CapDo" class="form-label">Cấp độ</label>
+                <input asp-for="CapDo" class="form-control" placeholder="Nhập cấp độ..." />
+            </div>
+        </div>
+    </div>
+
+    <div id="detai-fields" style="display:none;">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="TenDeTai" class="form-label">Tên đề tài</label>
+                <input asp-for="TenDeTai" class="form-control" placeholder="Nhập tên đề tài..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="MaSoDeTai" class="form-label">Mã số đề tài</label>
+                <input asp-for="MaSoDeTai" class="form-control" placeholder="Nhập mã số đề tài..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="CapDeTai" class="form-label">Cấp đề tài</label>
+                <input asp-for="CapDeTai" class="form-control" placeholder="Nhập cấp đề tài..." />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="ThoiGianThucHien" class="form-label">Thời gian thực hiện</label>
+                <input asp-for="ThoiGianThucHien" class="form-control" placeholder="Nhập thời gian thực hiện..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="CoQuanChuTri" class="form-label">Cơ quan chủ trì</label>
+                <input asp-for="CoQuanChuTri" class="form-control" placeholder="Nhập cơ quan chủ trì..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="ChuNhiemDeTai" class="form-label">Chủ nhiệm đề tài</label>
+                <input asp-for="ChuNhiemDeTai" class="form-control" placeholder="Nhập chủ nhiệm đề tài..." />
+            </div>
+        </div>
+    </div>
+
+    <div id="giaotrinh-fields" style="display:none;">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="TenGiaoTrinh" class="form-label">Tên giáo trình</label>
+                <input asp-for="TenGiaoTrinh" class="form-control" placeholder="Nhập tên giáo trình..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="MonHocLienQuan" class="form-label">Môn học liên quan</label>
+                <input asp-for="MonHocLienQuan" class="form-control" placeholder="Nhập môn học liên quan..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="DonViPhatHanh" class="form-label">Đơn vị phát hành</label>
+                <input asp-for="DonViPhatHanh" class="form-control" placeholder="Nhập đơn vị phát hành..." />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label asp-for="NamXuatBan" class="form-label">Năm xuất bản</label>
+                <input asp-for="NamXuatBan" class="form-control" placeholder="Nhập năm xuất bản..." />
+            </div>
+            <div class="col-md-4 mb-3">
+                <label asp-for="SoTinChi" class="form-label">Số tín chỉ</label>
+                <input asp-for="SoTinChi" class="form-control" placeholder="Nhập số tín chỉ..." />
+            </div>
+        </div>
     </div>
 
     <div class="mb-3">
@@ -118,6 +223,15 @@
 
 <script>
     $(document).ready(function () {
+        // Ẩn/hiện các trường động theo dạng tài liệu
+        $('#DocumentType').on('change', function () {
+            var type = $(this).val();
+            $('#baibao-fields, #detai-fields, #giaotrinh-fields').hide();
+            if (type === 'baibao') $('#baibao-fields').show();
+            if (type === 'detai') $('#detai-fields').show();
+            if (type === 'giaotrinh') $('#giaotrinh-fields').show();
+        });
+
         $('#createDocumentForm').on('submit', function (e) {
             e.preventDefault();
 
@@ -166,5 +280,8 @@
 
         // Focus on first input
         $('#TenTaiLieu').focus();
+        // Reset các trường động khi mở modal
+        $('#DocumentType').val('');
+        $('#baibao-fields, #detai-fields, #giaotrinh-fields').hide();
     });
 </script>
