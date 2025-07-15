@@ -181,13 +181,25 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         public IActionResult ChangePassword()
         {
-            ViewData["Title"] = "Đổi Mật khẩu";
-
             if (!_signInManager.IsSignedIn(User))
             {
                 return RedirectToAction("Login");
             }
-            return View();
+            // Luôn redirect về trang cài đặt phù hợp với vai trò
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+                return RedirectToAction("Login");
+            switch (user.VaiTro)
+            {
+                case VaiTroNguoiDung.ThuThu:
+                    return RedirectToAction("CaiDat", "Librarian");
+                case VaiTroNguoiDung.GiangVien:
+                    return RedirectToAction("CaiDat", "Lecturer");
+                case VaiTroNguoiDung.SinhVien:
+                    return RedirectToAction("CaiDat", "Student");
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -196,7 +208,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             if (newPassword != confirmPassword)
             {
                 TempData["ErrorMessage"] = "Mật khẩu mới và xác nhận không khớp";
-                return View();
+                return RedirectToRoleSetting();
             }
 
             var user = await _userManager.GetUserAsync(User);
@@ -210,7 +222,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
                 await _signInManager.RefreshSignInAsync(user);
-                return View();
+                return RedirectToRoleSetting();
             }
 
             foreach (var error in result.Errors)
@@ -219,7 +231,26 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 break;
             }
 
-            return View();
+            return RedirectToRoleSetting();
+        }
+
+        private IActionResult RedirectToRoleSetting()
+        {
+            var user = _userManager.GetUserAsync(User).Result;
+            if (user == null)
+                return RedirectToAction("Login");
+
+            switch (user.VaiTro)
+            {
+                case VaiTroNguoiDung.ThuThu:
+                    return RedirectToAction("CaiDat", "Librarian");
+                case VaiTroNguoiDung.GiangVien:
+                    return RedirectToAction("CaiDat", "Lecturer");
+                case VaiTroNguoiDung.SinhVien:
+                    return RedirectToAction("CaiDat", "Student");
+                default:
+                    return RedirectToAction("Index", "Home");
+            }
         }
 
         // Temporary method to force seed users

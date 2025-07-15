@@ -21,22 +21,39 @@
                                         </i> Cài đặt tài khoản</h6>
                                 </div>
                                 <div class="card-body">
-                                    <form>
+                                    @if (TempData["SuccessMessage"] != null)
+                                    {
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                            @TempData["SuccessMessage"]
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    }
+                                    @if (TempData["ErrorMessage"] != null)
+                                    {
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            @TempData["ErrorMessage"]
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                        </div>
+                                    }
+                                    <form asp-controller="Account" asp-action="ChangePassword" method="post"
+                                        autocomplete="off">
                                         <div class="mb-3">
                                             <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
                                             <input type="password" class="form-control" id="currentPassword"
-                                                placeholder="Nhập mật khẩu hiện tại">
+                                                name="currentPassword" placeholder="Nhập mật khẩu hiện tại" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="newPassword" class="form-label">Mật khẩu mới</label>
                                             <input type="password" class="form-control" id="newPassword"
-                                                placeholder="Nhập mật khẩu mới">
+                                                name="newPassword" placeholder="Nhập mật khẩu mới" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="confirmPassword" class="form-label">Xác nhận mật khẩu
                                                 mới</label>
                                             <input type="password" class="form-control" id="confirmPassword"
-                                                placeholder="Xác nhận mật khẩu mới">
+                                                name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
                                         </div>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="fas fa-save"></i> Đổi mật khẩu
@@ -130,17 +147,16 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        // Xử lý đổi mật khẩu
-        $('form').on('submit', function (e) {
-            e.preventDefault();
-            toastr.info('Chức năng đang được phát triển!');
-        });
 
-        // Xử lý các nút bảo trì
-        $('.btn-outline-primary, .btn-outline-success, .btn-outline-info').on('click', function () {
-            toastr.info('Chức năng đang được phát triển!');
-        });
+<script>
+    // Ẩn alert sau 3 giây
+    window.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+            var alerts = document.querySelectorAll('.alert-dismissible');
+            alerts.forEach(function (alert) {
+                var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
+                bsAlert.close();
+            });
+        }, 3000);
     });
 </script>
