@@ -113,28 +113,16 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-4">
-                                            <div class="d-grid">
-                                                <button type="button" class="btn btn-outline-primary">
-                                                    <i class="fas fa-broom"></i> Dọn dẹp tệp tạm
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">Xóa các tệp tạm và cache không cần thiết</small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-grid">
-                                                <button type="button" class="btn btn-outline-success">
-                                                    <i class="fas fa-download"></i> Sao lưu dữ liệu
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">Tạo bản sao lưu cơ sở dữ liệu</small>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="d-grid">
-                                                <button type="button" class="btn btn-outline-info">
-                                                    <i class="fas fa-sync-alt"></i> Cập nhật hệ thống
-                                                </button>
-                                            </div>
-                                            <small class="text-muted">Kiểm tra và cập nhật phiên bản mới</small>
+                                            <form id="formSaoLuuDuLieu" method="post" action="/Librarian/SaoLuuDuLieu">
+                                                @Html.AntiForgeryToken()
+                                                <div class="d-grid">
+                                                    <button type="button" class="btn btn-outline-primary active"
+                                                        id="btnSaoLuuDuLieu">
+                                                        <i class="fas fa-download"></i> Sao lưu dữ liệu
+                                                    </button>
+                                                </div>
+                                                <small class="text-muted">Tạo bản sao lưu cơ sở dữ liệu</small>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -147,8 +135,54 @@
     </div>
 </div>
 
-
 <script>
+    // Xử lý nút Sao lưu dữ liệu
+    document.addEventListener('DOMContentLoaded', function () {
+        var btnSaoLuu = document.getElementById('btnSaoLuuDuLieu');
+        if (btnSaoLuu) {
+            btnSaoLuu.addEventListener('click', function () {
+                var form = document.getElementById('formSaoLuuDuLieu');
+                var token = form.querySelector('input[name=__RequestVerificationToken]')?.value;
+                fetch('/Librarian/SaoLuuDuLieu', {
+                    method: 'POST',
+                    headers: {
+                        'RequestVerificationToken': token
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        var showAlert = function (type, message) {
+                            var alertDiv = document.createElement('div');
+                            alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show';
+                            alertDiv.role = 'alert';
+                            alertDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>';
+                            var container = document.querySelector('.container-fluid');
+                            container.prepend(alertDiv);
+                            setTimeout(function () {
+                                var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+                                bsAlert.close();
+                            }, 3000);
+                        };
+                        showAlert(data.success ? 'success' : 'danger', data.message);
+                    })
+                    .catch(() => {
+                        var showAlert = function (type, message) {
+                            var alertDiv = document.createElement('div');
+                            alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show';
+                            alertDiv.role = 'alert';
+                            alertDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>';
+                            var container = document.querySelector('.container-fluid');
+                            container.prepend(alertDiv);
+                            setTimeout(function () {
+                                var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+                                bsAlert.close();
+                            }, 3000);
+                        };
+                        showAlert('danger', 'Có lỗi xảy ra khi sao lưu dữ liệu!');
+                    });
+            });
+        }
+    });
     // Ẩn alert sau 3 giây
     window.addEventListener('DOMContentLoaded', function () {
         setTimeout(function () {

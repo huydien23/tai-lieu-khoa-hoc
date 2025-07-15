@@ -6,6 +6,7 @@ using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
 using QuanLyTaiLieuKhoaHoc.Web.Services;
+using System.Data.SqlClient;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
@@ -717,6 +718,68 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             ViewData["Title"] = "Cài đặt hệ thống";
             return View();
+        }
+
+        // Sao lưu dữ liệu 
+        [HttpPost]
+        public IActionResult SaoLuuDuLieu()
+        {
+            try
+            {
+                // Lấy thông tin kết nối
+                var connectionString = _context.Database.GetDbConnection().ConnectionString;
+                var builder = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+                var dbName = builder.InitialCatalog;
+                var server = builder.DataSource;
+
+                // Đường dẫn file backup
+                var backupFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "backups");
+                if (!Directory.Exists(backupFolder))
+                    Directory.CreateDirectory(backupFolder);
+                var backupFile = Path.Combine(backupFolder, $"{dbName}_{DateTime.Now:yyyyMMdd_HHmmss}.bak");
+
+                // Tạo câu lệnh backup
+                var sql = $"BACKUP DATABASE [{dbName}] TO DISK = N'{backupFile}' WITH INIT, NAME = 'Full Backup'";
+
+                // Xác định loại xác thực
+                string args;
+                if (builder.IntegratedSecurity)
+                {
+                    // Xác thực Windows
+                    args = $"-S {server} -E -Q \"{sql}\"";
+                }
+                else
+                {
+                    // Xác thực SQL Server
+                    var user = builder.UserID;
+                    var password = builder.Password;
+                    args = $"-S {server} -U {user} -P {password} -Q \"{sql}\"";
+                }
+
+                var process = new System.Diagnostics.Process();
+                process.StartInfo.FileName = "sqlcmd";
+                process.StartInfo.Arguments = args;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+                process.Start();
+                string output = process.StandardOutput.ReadToEnd();
+                string error = process.StandardError.ReadToEnd();
+                process.WaitForExit();
+
+                if (process.ExitCode == 0 && System.IO.File.Exists(backupFile))
+                {
+                    return Json(new { success = true, message = $"Đã sao lưu dữ liệu thành công! File: {backupFile}" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = $"Lỗi khi sao lưu: {error}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Lỗi khi sao lưu: " + ex.Message });
+            }
         }
 
         // LẬP PHIẾU MƯỢN TÀI LIỆU
