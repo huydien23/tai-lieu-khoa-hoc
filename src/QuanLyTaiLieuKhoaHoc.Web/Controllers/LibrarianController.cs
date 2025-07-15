@@ -6,7 +6,7 @@ using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
 using QuanLyTaiLieuKhoaHoc.Web.Services;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {

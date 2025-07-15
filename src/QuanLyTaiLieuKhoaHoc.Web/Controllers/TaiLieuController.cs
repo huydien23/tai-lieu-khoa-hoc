@@ -320,18 +320,54 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         [Authorize(Roles = "ThuThu,GiangVien")]
         [Route("TaiLieu/EditTaiLieu")]
-        public async Task<IActionResult> EditTaiLieu([FromBody] EditTaiLieuViewModel model)
+        public async Task<IActionResult> EditTaiLieu([FromForm] EditTaiLieuViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Dữ liệu không hợp lệ");
 
-            var taiLieu = await _context.TaiLieu.FindAsync(model.Id);
+            var taiLieu = await _context.TaiLieu.FindAsync(model.MaTaiLieu);
             if (taiLieu == null)
                 return NotFound();
 
             taiLieu.TenTaiLieu = model.TenTaiLieu;
             taiLieu.MoTa = model.MoTa;
             taiLieu.TacGia = model.TacGia;
+            taiLieu.MaChuyenNganh = model.MaChuyenNganh;
+            taiLieu.MaLoaiTaiLieu = model.MaLoaiTaiLieu;
+            taiLieu.ChoPhepTaiFile = model.ChoPhepTaiFile;
+            taiLieu.TieuDe = model.TieuDe;
+            taiLieu.TapChiHoiNghi = model.TapChiHoiNghi;
+            taiLieu.NgayCongBo = model.NgayCongBo;
+            taiLieu.DOI = model.DOI;
+            taiLieu.ISSN = model.ISSN;
+            taiLieu.CapDo = model.CapDo;
+            taiLieu.TenDeTai = model.TenDeTai;
+            taiLieu.MaSoDeTai = model.MaSoDeTai;
+            taiLieu.CapDeTai = model.CapDeTai;
+            taiLieu.ThoiGianThucHien = model.ThoiGianThucHien;
+            taiLieu.CoQuanChuTri = model.CoQuanChuTri;
+            taiLieu.ChuNhiemDeTai = model.ChuNhiemDeTai;
+            taiLieu.TenGiaoTrinh = model.TenGiaoTrinh;
+            taiLieu.MonHocLienQuan = model.MonHocLienQuan;
+            taiLieu.DonViPhatHanh = model.DonViPhatHanh;
+            taiLieu.NamXuatBan = model.NamXuatBan;
+            taiLieu.SoTinChi = model.SoTinChi;
+
+            // Xử lý file upload nếu có
+            if (model.FileTaiLieu != null && model.FileTaiLieu.Length > 0)
+            {
+                var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+                var fileName = $"{Guid.NewGuid()}_{model.FileTaiLieu.FileName}";
+                var filePath = Path.Combine(uploads, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.FileTaiLieu.CopyToAsync(stream);
+                }
+                taiLieu.DuongDanFile = "/uploads/" + fileName;
+                taiLieu.LoaiFile = Path.GetExtension(fileName);
+                taiLieu.KichThuocFile = model.FileTaiLieu.Length;
+            }
 
             await _context.SaveChangesAsync();
             return Ok(new { success = true });

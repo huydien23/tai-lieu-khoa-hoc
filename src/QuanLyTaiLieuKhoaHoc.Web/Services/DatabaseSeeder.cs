@@ -10,7 +10,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         public static async Task SeedSampleDataAsync(ApplicationDbContext context, UserManager<NguoiDung> userManager)
         {
             // Seed các loại tài liệu đặc biệt nếu chưa có (không gán MaLoaiTaiLieu, để tự tăng)
-            LoaiTaiLieu loaiBaiBao = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Bài báo khoa học");
+            LoaiTaiLieu? loaiBaiBao = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Bài báo khoa học");
             if (loaiBaiBao == null)
             {
                 loaiBaiBao = new LoaiTaiLieu
@@ -22,7 +22,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 };
                 context.LoaiTaiLieu.Add(loaiBaiBao);
             }
-            LoaiTaiLieu loaiDeTai = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Đề tài nghiên cứu khoa học");
+            LoaiTaiLieu? loaiDeTai = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Đề tài nghiên cứu khoa học");
             if (loaiDeTai == null)
             {
                 loaiDeTai = new LoaiTaiLieu
@@ -34,7 +34,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 };
                 context.LoaiTaiLieu.Add(loaiDeTai);
             }
-            LoaiTaiLieu loaiGiaoTrinh = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Giáo trình - Tài liệu giảng dạy");
+            LoaiTaiLieu? loaiGiaoTrinh = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Giáo trình - Tài liệu giảng dạy");
             if (loaiGiaoTrinh == null)
             {
                 loaiGiaoTrinh = new LoaiTaiLieu

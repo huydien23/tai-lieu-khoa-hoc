@@ -2,6 +2,7 @@
 @using QuanLyTaiLieuKhoaHoc.Web.Models
 
 <div class="container-fluid">
+    <form id="editTaiLieuForm" enctype="multipart/form-data">
     <div class="card shadow rounded-4 border-0 p-3" style="background: #f8fafc;">
         <div class="row g-4">
             <!-- Cột trái: Thông tin mô tả và tác giả -->
@@ -10,27 +11,61 @@
                     <div>
                         <h4 class="fw-bold text-primary mb-3">
             <span class="tai-lieu-view"><i class="fas fa-file-alt me-2"></i>@Model.TenTaiLieu</span>
-            <input type="text" class="tai-lieu-edit d-none form-control" id="TenTaiLieuInput" value="@Model.TenTaiLieu" />
+            <input type="text" class="tai-lieu-edit d-none form-control" id="TenTaiLieuInput" name="TenTaiLieu" value="@Model.TenTaiLieu" />
                         </h4>
                         <hr class="my-2">
                         <div class="mb-3">
             <span class="fw-semibold text-muted"><i class="fas fa-align-left me-1"></i>Mô tả:</span>
             <div class="tai-lieu-view text-muted small">@Model.MoTa</div>
-            <textarea class="tai-lieu-edit d-none form-control" id="MoTaInput">@Model.MoTa</textarea>
+            <textarea class="tai-lieu-edit d-none form-control" id="MoTaInput" name="MoTa">@Model.MoTa</textarea>
                         </div>
                         <div class="mb-3">
             <span class="fw-semibold text-muted"><i class="fas fa-user-edit me-1"></i>Tác giả:</span>
             <span class="tai-lieu-view text-dark ms-1">@(Model.TacGia ?? "Chưa xác định")</span>
-            <input type="text" class="tai-lieu-edit d-none form-control" id="TacGiaInput" value="@Model.TacGia" />
+            <input type="text" class="tai-lieu-edit d-none form-control" id="TacGiaInput" name="TacGia" value="@Model.TacGia" />
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-6 mb-2">
                                 <span class="fw-semibold text-muted"><i class="fas fa-layer-group me-1"></i>Chuyên ngành:</span>
-                                <span class="badge rounded-pill bg-gradient bg-secondary ms-1 px-3 py-2"><i class="fas fa-book-reader me-1"></i>@(Model.ChuyenNganh?.TenChuyenNganh ?? "Chưa phân loại")</span>
+                                <span class="tai-lieu-view badge rounded-pill bg-gradient bg-secondary ms-1 px-3 py-2"><i class="fas fa-book-reader me-1"></i>@(Model.ChuyenNganh?.TenChuyenNganh ?? "Chưa phân loại")</span>
+                                    <select class="tai-lieu-edit d-none form-select" id="MaChuyenNganhInput"
+                                        name="MaChuyenNganh">
+                                        @{
+                                            var chuyenNganhList = ViewBag.ChuyenNganh as SelectList ?? new
+                                            SelectList(Enumerable.Empty<SelectListItem>());
+                                            foreach (var cn in chuyenNganhList)
+                                            {
+                                                if (Model.MaChuyenNganh == int.Parse((string)cn.Value))
+                                                {
+                                                    <option value="@cn.Value" selected>@cn.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@cn.Value">@cn.Text</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
                             </div>
                             <div class="col-sm-6 mb-2">
                                 <span class="fw-semibold text-muted"><i class="fas fa-tag me-1"></i>Loại tài liệu:</span>
-                                <span class="badge rounded-pill bg-info text-dark ms-1 px-3 py-2"><i class="fas fa-cube me-1"></i>@(Model.LoaiTaiLieu?.TenLoaiTaiLieu ?? "Chưa phân loại")</span>
+                                <span class="tai-lieu-view badge rounded-pill bg-info text-dark ms-1 px-3 py-2"><i class="fas fa-cube me-1"></i>@(Model.LoaiTaiLieu?.TenLoaiTaiLieu ?? "Chưa phân loại")</span>
+                                <select class="tai-lieu-edit d-none form-select" id="MaLoaiTaiLieuInput" name="MaLoaiTaiLieu">
+                                    @{
+                                        var loaiTaiLieuList = ViewBag.LoaiTaiLieu as SelectList ?? new SelectList(Enumerable.Empty<SelectListItem>());
+                                        foreach (var lt in loaiTaiLieuList)
+                                        {
+                                            if (Model.MaLoaiTaiLieu == int.Parse((string)lt.Value))
+                                            {
+                                                <option value="@lt.Value" selected>@lt.Text</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@lt.Value">@lt.Text</option>
+                                            }
+                                        }
+                                    }
+                                </select>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -58,29 +93,29 @@
                             {
                                 if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase))
                                 {
-                                    <tr><td class="fw-semibold">Tiêu đề:</td><td>@Model.TieuDe</td></tr>
-                                    <tr><td class="fw-semibold">Tạp chí/Hội nghị:</td><td>@Model.TapChiHoiNghi</td></tr>
-                                    <tr><td class="fw-semibold">Ngày công bố:</td><td>@(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</td></tr>
-                                    <tr><td class="fw-semibold">DOI:</td><td>@Model.DOI</td></tr>
-                                    <tr><td class="fw-semibold">ISSN:</td><td>@Model.ISSN</td></tr>
-                                    <tr><td class="fw-semibold">Cấp độ:</td><td>@Model.CapDo</td></tr>
+                                    <tr><td class="fw-semibold">Tiêu đề:</td><td><span class="tai-lieu-view">@Model.TieuDe</span><input class="tai-lieu-edit d-none form-control" name="TieuDe" value="@Model.TieuDe" /></td></tr>
+                                    <tr><td class="fw-semibold">Tạp chí/Hội nghị:</td><td><span class="tai-lieu-view">@Model.TapChiHoiNghi</span><input class="tai-lieu-edit d-none form-control" name="TapChiHoiNghi" value="@Model.TapChiHoiNghi" /></td></tr>
+                                    <tr><td class="fw-semibold">Ngày công bố:</td><td><span class="tai-lieu-view">@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")</span><input class="tai-lieu-edit d-none form-control" type="date" name="NgayCongBo" value="@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")" /></td></tr>
+                                    <tr><td class="fw-semibold">DOI:</td><td><span class="tai-lieu-view">@Model.DOI</span><input class="tai-lieu-edit d-none form-control" name="DOI" value="@Model.DOI" /></td></tr>
+                                    <tr><td class="fw-semibold">ISSN:</td><td><span class="tai-lieu-view">@Model.ISSN</span><input class="tai-lieu-edit d-none form-control" name="ISSN" value="@Model.ISSN" /></td></tr>
+                                    <tr><td class="fw-semibold">Cấp độ:</td><td><span class="tai-lieu-view">@Model.CapDo</span><input class="tai-lieu-edit d-none form-control" name="CapDo" value="@Model.CapDo" /></td></tr>
                                 }
                                 else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase))
                                 {
-                                    <tr><td class="fw-semibold">Tên đề tài:</td><td>@Model.TenDeTai</td></tr>
-                                    <tr><td class="fw-semibold">Mã số đề tài:</td><td>@Model.MaSoDeTai</td></tr>
-                                    <tr><td class="fw-semibold">Cấp đề tài:</td><td>@Model.CapDeTai</td></tr>
-                                    <tr><td class="fw-semibold">Thời gian thực hiện:</td><td>@Model.ThoiGianThucHien</td></tr>
-                                    <tr><td class="fw-semibold">Cơ quan chủ trì:</td><td>@Model.CoQuanChuTri</td></tr>
-                                    <tr><td class="fw-semibold">Chủ nhiệm đề tài:</td><td>@Model.ChuNhiemDeTai</td></tr>
+                                    <tr><td class="fw-semibold">Tên đề tài:</td><td><span class="tai-lieu-view">@Model.TenDeTai</span><input class="tai-lieu-edit d-none form-control" name="TenDeTai" value="@Model.TenDeTai" /></td></tr>
+                                    <tr><td class="fw-semibold">Mã số đề tài:</td><td><span class="tai-lieu-view">@Model.MaSoDeTai</span><input class="tai-lieu-edit d-none form-control" name="MaSoDeTai" value="@Model.MaSoDeTai" /></td></tr>
+                                    <tr><td class="fw-semibold">Cấp đề tài:</td><td><span class="tai-lieu-view">@Model.CapDeTai</span><input class="tai-lieu-edit d-none form-control" name="CapDeTai" value="@Model.CapDeTai" /></td></tr>
+                                    <tr><td class="fw-semibold">Thời gian thực hiện:</td><td><span class="tai-lieu-view">@Model.ThoiGianThucHien</span><input class="tai-lieu-edit d-none form-control" name="ThoiGianThucHien" value="@Model.ThoiGianThucHien" /></td></tr>
+                                    <tr><td class="fw-semibold">Cơ quan chủ trì:</td><td><span class="tai-lieu-view">@Model.CoQuanChuTri</span><input class="tai-lieu-edit d-none form-control" name="CoQuanChuTri" value="@Model.CoQuanChuTri" /></td></tr>
+                                    <tr><td class="fw-semibold">Chủ nhiệm đề tài:</td><td><span class="tai-lieu-view">@Model.ChuNhiemDeTai</span><input class="tai-lieu-edit d-none form-control" name="ChuNhiemDeTai" value="@Model.ChuNhiemDeTai" /></td></tr>
                                 }
                                 else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))
                                 {
-                                    <tr><td class="fw-semibold">Tên giáo trình:</td><td>@Model.TenGiaoTrinh</td></tr>
-                                    <tr><td class="fw-semibold">Môn học liên quan:</td><td>@Model.MonHocLienQuan</td></tr>
-                                    <tr><td class="fw-semibold">Đơn vị phát hành:</td><td>@Model.DonViPhatHanh</td></tr>
-                                    <tr><td class="fw-semibold">Năm xuất bản:</td><td>@(Model.NamXuatBan?.ToString() ?? "")</td></tr>
-                                    <tr><td class="fw-semibold">Số tín chỉ:</td><td>@(Model.SoTinChi?.ToString() ?? "")</td></tr>
+                                    <tr><td class="fw-semibold">Tên giáo trình:</td><td><span class="tai-lieu-view">@Model.TenGiaoTrinh</span><input class="tai-lieu-edit d-none form-control" name="TenGiaoTrinh" value="@Model.TenGiaoTrinh" /></td></tr>
+                                    <tr><td class="fw-semibold">Môn học liên quan:</td><td><span class="tai-lieu-view">@Model.MonHocLienQuan</span><input class="tai-lieu-edit d-none form-control" name="MonHocLienQuan" value="@Model.MonHocLienQuan" /></td></tr>
+                                    <tr><td class="fw-semibold">Đơn vị phát hành:</td><td><span class="tai-lieu-view">@Model.DonViPhatHanh</span><input class="tai-lieu-edit d-none form-control" name="DonViPhatHanh" value="@Model.DonViPhatHanh" /></td></tr>
+                                    <tr><td class="fw-semibold">Năm xuất bản:</td><td><span class="tai-lieu-view">@(Model.NamXuatBan?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="NamXuatBan" value="@(Model.NamXuatBan?.ToString() ?? "")" /></td></tr>
+                                    <tr><td class="fw-semibold">Số tín chỉ:</td><td><span class="tai-lieu-view">@(Model.SoTinChi?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="SoTinChi" value="@(Model.SoTinChi?.ToString() ?? "")" /></td></tr>
                                 }
                             }
                         </tbody>
@@ -90,7 +125,11 @@
         </div>
 
         <div class="modal-footer border-0 bg-transparent px-0 mt-3 justify-content-end">
-            <input type="hidden" id="TaiLieuId" value="@Model.MaTaiLieu" />
+            <input type="hidden" id="TaiLieuId" name="MaTaiLieu" value="@Model.MaTaiLieu" />
+            <div class="mb-2 tai-lieu-edit d-none">
+                <label class="form-label">File tài liệu mới (nếu muốn thay):</label>
+                <input type="file" class="form-control" id="FileTaiLieuInput" name="FileTaiLieu" />
+            </div>
             <button id="btnEditTaiLieu" type="button" class="btn btn-warning px-4 py-2 rounded-pill me-2" onclick="showEditTaiLieuForm()">
                 <i class="fas fa-edit me-1"></i>Sửa
             </button>
@@ -119,25 +158,16 @@
         document.querySelectorAll('.tai-lieu-edit').forEach(e => e.classList.add('d-none'));
     }
     function submitEditTaiLieuForm() {
-        var data = {
-            id: document.getElementById('TaiLieuId').value,
-            tenTaiLieu: document.getElementById('TenTaiLieuInput').value,
-            moTa: document.getElementById('MoTaInput').value,
-            tacGia: document.getElementById('TacGiaInput').value
-        };
+        var form = document.getElementById('editTaiLieuForm');
+        var formData = new FormData(form);
         fetch('/TaiLieu/EditTaiLieu', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: formData
         })
         .then(res => res.json())
         .then(result => {
             if (result.success) {
-                // Cập nhật lại giao diện, ẩn form sửa, hiện thông tin mới
-                document.getElementById('TenTaiLieuInput').value && (document.querySelector('.tai-lieu-view').innerHTML = '<i class="fas fa-file-alt me-2"></i>' + document.getElementById('TenTaiLieuInput').value);
-                document.querySelector('.tai-lieu-view.text-muted.small').innerHTML = document.getElementById('MoTaInput').value;
-                document.querySelector('.tai-lieu-view.text-dark.ms-1').innerHTML = document.getElementById('TacGiaInput').value;
-                cancelEditTaiLieuForm();
+                location.reload();
             } else {
                 alert('Cập nhật thất bại!');
             }
@@ -147,4 +177,5 @@
 </script>
         </div>
     </div>
-</div>
+    </form>
+ </div>
