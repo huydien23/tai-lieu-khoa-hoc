@@ -9,16 +9,19 @@
                 <div class="h-100 d-flex flex-column justify-content-between">
                     <div>
                         <h4 class="fw-bold text-primary mb-3">
-                            <i class="fas fa-file-alt me-2"></i>@Model.TenTaiLieu
+            <span class="tai-lieu-view"><i class="fas fa-file-alt me-2"></i>@Model.TenTaiLieu</span>
+            <input type="text" class="tai-lieu-edit d-none form-control" id="TenTaiLieuInput" value="@Model.TenTaiLieu" />
                         </h4>
                         <hr class="my-2">
                         <div class="mb-3">
-                            <span class="fw-semibold text-muted"><i class="fas fa-align-left me-1"></i>Mô tả:</span>
-                            <div class="text-muted small">@Model.MoTa</div>
+            <span class="fw-semibold text-muted"><i class="fas fa-align-left me-1"></i>Mô tả:</span>
+            <div class="tai-lieu-view text-muted small">@Model.MoTa</div>
+            <textarea class="tai-lieu-edit d-none form-control" id="MoTaInput">@Model.MoTa</textarea>
                         </div>
                         <div class="mb-3">
-                            <span class="fw-semibold text-muted"><i class="fas fa-user-edit me-1"></i>Tác giả:</span>
-                            <span class="text-dark ms-1">@(Model.TacGia ?? "Chưa xác định")</span>
+            <span class="fw-semibold text-muted"><i class="fas fa-user-edit me-1"></i>Tác giả:</span>
+            <span class="tai-lieu-view text-dark ms-1">@(Model.TacGia ?? "Chưa xác định")</span>
+            <input type="text" class="tai-lieu-edit d-none form-control" id="TacGiaInput" value="@Model.TacGia" />
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-6 mb-2">
@@ -85,10 +88,63 @@
                 </div>
             </div>
         </div>
+
         <div class="modal-footer border-0 bg-transparent px-0 mt-3 justify-content-end">
+            <input type="hidden" id="TaiLieuId" value="@Model.MaTaiLieu" />
+            <button id="btnEditTaiLieu" type="button" class="btn btn-warning px-4 py-2 rounded-pill me-2" onclick="showEditTaiLieuForm()">
+                <i class="fas fa-edit me-1"></i>Sửa
+            </button>
+            <button id="btnSaveTaiLieu" type="button" class="btn btn-success px-4 py-2 rounded-pill me-2 d-none" onclick="submitEditTaiLieuForm()">
+                <i class="fas fa-save me-1"></i>Lưu
+            </button>
+            <button id="btnCancelEditTaiLieu" type="button" class="btn btn-secondary px-4 py-2 rounded-pill me-2 d-none" onclick="cancelEditTaiLieuForm()">
+                <i class="fas fa-times me-1"></i>Hủy
+            </button>
             <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-bs-dismiss="modal">
                 <i class="fas fa-times me-1"></i>Đóng
             </button>
+<script>
+    function showEditTaiLieuForm() {
+        document.getElementById('btnEditTaiLieu').classList.add('d-none');
+        document.getElementById('btnSaveTaiLieu').classList.remove('d-none');
+        document.getElementById('btnCancelEditTaiLieu').classList.remove('d-none');
+        document.querySelectorAll('.tai-lieu-view').forEach(e => e.classList.add('d-none'));
+        document.querySelectorAll('.tai-lieu-edit').forEach(e => e.classList.remove('d-none'));
+    }
+    function cancelEditTaiLieuForm() {
+        document.getElementById('btnEditTaiLieu').classList.remove('d-none');
+        document.getElementById('btnSaveTaiLieu').classList.add('d-none');
+        document.getElementById('btnCancelEditTaiLieu').classList.add('d-none');
+        document.querySelectorAll('.tai-lieu-view').forEach(e => e.classList.remove('d-none'));
+        document.querySelectorAll('.tai-lieu-edit').forEach(e => e.classList.add('d-none'));
+    }
+    function submitEditTaiLieuForm() {
+        var data = {
+            id: document.getElementById('TaiLieuId').value,
+            tenTaiLieu: document.getElementById('TenTaiLieuInput').value,
+            moTa: document.getElementById('MoTaInput').value,
+            tacGia: document.getElementById('TacGiaInput').value
+        };
+        fetch('/TaiLieu/EditTaiLieu', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                // Cập nhật lại giao diện, ẩn form sửa, hiện thông tin mới
+                document.getElementById('TenTaiLieuInput').value && (document.querySelector('.tai-lieu-view').innerHTML = '<i class="fas fa-file-alt me-2"></i>' + document.getElementById('TenTaiLieuInput').value);
+                document.querySelector('.tai-lieu-view.text-muted.small').innerHTML = document.getElementById('MoTaInput').value;
+                document.querySelector('.tai-lieu-view.text-dark.ms-1').innerHTML = document.getElementById('TacGiaInput').value;
+                cancelEditTaiLieuForm();
+            } else {
+                alert('Cập nhật thất bại!');
+            }
+        })
+        .catch(() => alert('Có lỗi xảy ra khi cập nhật!'));
+    }
+</script>
         </div>
     </div>
 </div>

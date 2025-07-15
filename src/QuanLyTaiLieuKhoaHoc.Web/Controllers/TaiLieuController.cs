@@ -316,5 +316,25 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 await _context.LoaiTaiLieu.Where(lt => lt.TrangThaiHoatDong).ToListAsync(),
                 "MaLoaiTaiLieu", "TenLoaiTaiLieu");
         }
+        // API cập nhật tài liệu từ modal (AJAX)
+        [HttpPost]
+        [Authorize(Roles = "ThuThu,GiangVien")]
+        [Route("TaiLieu/EditTaiLieu")]
+        public async Task<IActionResult> EditTaiLieu([FromBody] EditTaiLieuViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest("Dữ liệu không hợp lệ");
+
+            var taiLieu = await _context.TaiLieu.FindAsync(model.Id);
+            if (taiLieu == null)
+                return NotFound();
+
+            taiLieu.TenTaiLieu = model.TenTaiLieu;
+            taiLieu.MoTa = model.MoTa;
+            taiLieu.TacGia = model.TacGia;
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true });
+        }
     }
 }
