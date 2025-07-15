@@ -536,6 +536,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
 
