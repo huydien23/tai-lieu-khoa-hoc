@@ -1,180 +1,94 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.TaiLieu
 @using QuanLyTaiLieuKhoaHoc.Web.Models
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title text-primary mb-3">
-                    <i class="fas fa-file-alt me-2"></i>
-                    @Model.TenTaiLieu
-                </h5>
-
-                <div class="mb-3">
-                    <h6 class="fw-semibold text-muted mb-2">
-                        <i class="fas fa-align-left me-1"></i>Mô tả:
-                    </h6>
-                    <p class="text-muted">@Model.MoTa</p>
-                </div>
-
-                <div class="mb-3">
-                    <h6 class="fw-semibold text-muted mb-2">
-                        <i class="fas fa-user-edit me-1"></i>Tác giả:
-                    </h6>
-                    <p class="text-muted">@(Model.TacGia ?? "Chưa xác định")</p>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-sm-6">
-                        <small class="text-muted d-block">
-                            <i class="fas fa-layer-group me-1"></i>
-                            <strong>Chuyên ngành:</strong>
-                        </small>
-                        <span class="badge bg-secondary">@(Model.ChuyenNganh?.TenChuyenNganh ?? "Chưa phân loại")</span>
-                    </div>
-                    <div class="col-sm-6">
-                        <small class="text-muted d-block">
-                            <i class="fas fa-tag me-1"></i>
-                            <strong>Loại tài liệu:</strong>
-                        </small>
-                        <span class="badge bg-info text-dark">@(Model.LoaiTaiLieu?.TenLoaiTaiLieu ?? "Chưa phân loại")</span>
-                    </div>
-                </div>
-
-               <div class="row mb-3">
-                    <div class="col-sm-6">
-                        <small class="text-muted d-block">
-                            <i class="fas fa-user me-1"></i>
-                            <strong>Người tải lên:</strong>
-                        </small>
-                    </div>
-                    <div class="col-sm-6">
-                        <small class="text-muted d-block">
-                            <i class="fas fa-calendar me-1"></i>
-                            <strong>Ngày tải lên:</strong>
-                        </small>
-                        <span>@Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")</span>
-                    </div>
-                </div>
-
-                @if (!string.IsNullOrEmpty(Model.DuongDanFile))
-                {
-                    if ((User.IsInRole("SinhVien") || User.IsInRole("GiangVien")) && Model.ChoPhepTaiFile)
-                    {
+<div class="container-fluid">
+    <div class="card shadow rounded-4 border-0 p-3" style="background: #f8fafc;">
+        <div class="row g-4">
+            <!-- Cột trái: Thông tin mô tả và tác giả -->
+            <div class="col-md-6">
+                <div class="h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <h4 class="fw-bold text-primary mb-3">
+                            <i class="fas fa-file-alt me-2"></i>@Model.TenTaiLieu
+                        </h4>
+                        <hr class="my-2">
                         <div class="mb-3">
-                            <small class="text-muted d-block">
-                                <i class="fas fa-file me-1"></i>
-                                <strong>File đính kèm:</strong>
-                            </small>
-                            <a href="@Model.DuongDanFile" class="btn btn-outline-primary btn-sm" target="_blank">
-                                <i class="fas fa-download me-1"></i>
-                                Tải xuống (@(Model.LoaiFile?.ToUpper() ?? "UNKNOWN") - @(Model.KichThuocFile) KB)
-                            </a>
+                            <span class="fw-semibold text-muted"><i class="fas fa-align-left me-1"></i>Mô tả:</span>
+                            <div class="text-muted small">@Model.MoTa</div>
                         </div>
-                    }
-                }
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header bg-light">
-                <h6 class="mb-0">
-                    <i class="fas fa-chart-bar me-2"></i>
-                    Thống kê
-                </h6>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <div class="border rounded p-2 mb-2">
-                            <div class="text-primary fw-bold">@Model.LuotMuon</div>
-                            <small class="text-muted">Lượt mượn</small>
+                        <div class="mb-3">
+                            <span class="fw-semibold text-muted"><i class="fas fa-user-edit me-1"></i>Tác giả:</span>
+                            <span class="text-dark ms-1">@(Model.TacGia ?? "Chưa xác định")</span>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6 mb-2">
+                                <span class="fw-semibold text-muted"><i class="fas fa-layer-group me-1"></i>Chuyên ngành:</span>
+                                <span class="badge rounded-pill bg-gradient bg-secondary ms-1 px-3 py-2"><i class="fas fa-book-reader me-1"></i>@(Model.ChuyenNganh?.TenChuyenNganh ?? "Chưa phân loại")</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <span class="fw-semibold text-muted"><i class="fas fa-tag me-1"></i>Loại tài liệu:</span>
+                                <span class="badge rounded-pill bg-info text-dark ms-1 px-3 py-2"><i class="fas fa-cube me-1"></i>@(Model.LoaiTaiLieu?.TenLoaiTaiLieu ?? "Chưa phân loại")</span>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6 mb-2">
+                                <span class="fw-semibold text-muted"><i class="fas fa-user me-1"></i>Tác giả:</span>
+                                <span class="ms-1">@(Model.TacGia ?? "Không rõ")</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
+                                <span class="fw-semibold text-muted"><i class="fas fa-calendar me-1"></i>Ngày tải lên:</span>
+                                <span class="ms-1">@Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="mb-3">
-                    <small class="text-muted d-block mb-1">
-                        <i class="fas fa-info-circle me-1"></i>
-                        <strong>Trạng thái:</strong>
-                    </small>
-                    @switch (Model.TrangThai)
-                    {
-                        case TrangThaiTaiLieu.DaDuyet:
-                            <span class="badge bg-success">
-                                <i class="fas fa-check-circle me-1"></i>Đã duyệt
-                            </span>
-                            break;
-                        case TrangThaiTaiLieu.ChoDuyet:
-                            <span class="badge bg-warning text-dark">
-                                <i class="fas fa-clock me-1"></i>Chờ duyệt
-                            </span>
-                            break;
-                        case TrangThaiTaiLieu.TuChoi:
-                            <span class="badge bg-danger">
-                                <i class="fas fa-times-circle me-1"></i>Từ chối
-                            </span>
-                            break;
-                    }
-                </div>
-
-                <div class="mb-3">
-                    <small class="text-muted d-block mb-1">
-                        <i class="fas fa-hdd me-1"></i>
-                        <strong>Kích thước file:</strong>
-                    </small>
-                    <span>@(Model.KichThuocFile) KB</span>
+            </div>
+            <!-- Cột phải: Thông tin chi tiết đặc thù -->
+            <div class="col-md-6">
+                <div class="h-100 bg-white rounded-4 border p-3 shadow-sm">
+                    <h6 class="fw-semibold text-primary mb-3">
+                        <i class="fas fa-info-circle me-1"></i>Thông tin @Model.LoaiTaiLieu?.TenLoaiTaiLieu
+                    </h6>
+                    <table class="table table-sm table-striped table-bordered rounded mb-0">
+                        <tbody>
+                            @if (Model.LoaiTaiLieu?.TenLoaiTaiLieu != null)
+                            {
+                                if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <tr><td class="fw-semibold">Tiêu đề:</td><td>@Model.TieuDe</td></tr>
+                                    <tr><td class="fw-semibold">Tạp chí/Hội nghị:</td><td>@Model.TapChiHoiNghi</td></tr>
+                                    <tr><td class="fw-semibold">Ngày công bố:</td><td>@(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</td></tr>
+                                    <tr><td class="fw-semibold">DOI:</td><td>@Model.DOI</td></tr>
+                                    <tr><td class="fw-semibold">ISSN:</td><td>@Model.ISSN</td></tr>
+                                    <tr><td class="fw-semibold">Cấp độ:</td><td>@Model.CapDo</td></tr>
+                                }
+                                else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <tr><td class="fw-semibold">Tên đề tài:</td><td>@Model.TenDeTai</td></tr>
+                                    <tr><td class="fw-semibold">Mã số đề tài:</td><td>@Model.MaSoDeTai</td></tr>
+                                    <tr><td class="fw-semibold">Cấp đề tài:</td><td>@Model.CapDeTai</td></tr>
+                                    <tr><td class="fw-semibold">Thời gian thực hiện:</td><td>@Model.ThoiGianThucHien</td></tr>
+                                    <tr><td class="fw-semibold">Cơ quan chủ trì:</td><td>@Model.CoQuanChuTri</td></tr>
+                                    <tr><td class="fw-semibold">Chủ nhiệm đề tài:</td><td>@Model.ChuNhiemDeTai</td></tr>
+                                }
+                                else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <tr><td class="fw-semibold">Tên giáo trình:</td><td>@Model.TenGiaoTrinh</td></tr>
+                                    <tr><td class="fw-semibold">Môn học liên quan:</td><td>@Model.MonHocLienQuan</td></tr>
+                                    <tr><td class="fw-semibold">Đơn vị phát hành:</td><td>@Model.DonViPhatHanh</td></tr>
+                                    <tr><td class="fw-semibold">Năm xuất bản:</td><td>@(Model.NamXuatBan?.ToString() ?? "")</td></tr>
+                                    <tr><td class="fw-semibold">Số tín chỉ:</td><td>@(Model.SoTinChi?.ToString() ?? "")</td></tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-
-        @if (Model.DanhGiaTaiLieu?.Any() == true)
-        {
-            <div class="card mt-3">
-                <div class="card-header bg-light">
-                    <h6 class="mb-0">
-                        <i class="fas fa-star me-2"></i>
-                        Đánh giá gần đây
-                    </h6>
-                </div>
-                <div class="card-body">
-                    @if (Model.DanhGiaTaiLieu?.Any() == true)
-                    {
-                        @foreach (var danhGia in Model.DanhGiaTaiLieu.Take(3))
-                        {
-                            <div class="mb-2 pb-2 border-bottom">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <small class="fw-semibold">@(danhGia.NguoiDung?.HoTen ?? "Ẩn danh")</small>
-                                    <div class="text-warning">
-                                        @for (int i = 1; i <= 5; i++)
-                                        {
-                                            <i class="fas fa-star@(i <= danhGia.DiemDanhGia ? "" : "-o")"></i>
-                                        }
-                                    </div>
-                                </div>
-                                @if (!string.IsNullOrEmpty(danhGia.NhanXet))
-                                {
-                                    <small class="text-muted d-block mt-1">@danhGia.NhanXet</small>
-                                }
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-        }
+        <div class="modal-footer border-0 bg-transparent px-0 mt-3 justify-content-end">
+            <button type="button" class="btn btn-secondary px-4 py-2 rounded-pill" data-bs-dismiss="modal">
+                <i class="fas fa-times me-1"></i>Đóng
+            </button>
+        </div>
     </div>
-</div>
-
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-        <i class="fas fa-times me-1"></i>Đóng
-    </button>
-    @if (!string.IsNullOrEmpty(Model.DuongDanFile) && (User.IsInRole("GiangVien") || User.IsInRole("ThuThu")))
-    {
-        <a href="@Model.DuongDanFile" class="btn btn-primary" target="_blank">
-            <i class="fas fa-download me-1"></i>Tải xuống
-        </a>
-    }
 </div>
