@@ -12,23 +12,18 @@
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 @if (User.IsInRole("SinhVien"))
-                {
-                    <li><a class="dropdown-item" asp-area="" asp-controller="SinhVien" asp-action="Dashboard-Student">
-                            <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
-                        </a></li>
-                }
-                else if (User.IsInRole("GiangVien"))
-                {
-                    <li><a class="dropdown-item" asp-area="" asp-controller="GiangVien" asp-action="Dashboard">
-                            <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
-                        </a></li>
-                }
-                else if (User.IsInRole("SinhVien"))
-                {
-                    <li><a class="dropdown-item" href="../Student/Dashboard-Student.cshtml">
-                            <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
-                        </a></li>
-                }
+            {
+            <li><a class="dropdown-item" asp-controller="Student" asp-action="Dashboard-Student">
+            <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
+            </a></li>
+            }
+            else if (User.IsInRole("GiangVien"))
+            {
+            <li><a class="dropdown-item" asp-controller="Lecturer" asp-action="Dashboard-Lecturer">
+            <i class="fas fa-user-cog me-2"></i>Thông tin cá nhân
+            </a></li>
+            }
+
             
                 <li>
                     <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
