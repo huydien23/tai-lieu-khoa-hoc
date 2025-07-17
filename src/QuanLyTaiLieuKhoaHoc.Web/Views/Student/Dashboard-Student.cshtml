@@ -1,3 +1,7 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.DashboardViewModel
+
+
+
 @{
     ViewData["Title"] = "Dashboard Sinh viên";
     Layout = "_Layout";
@@ -18,7 +22,6 @@
 
 <!-- Key Statistics (chỉ giữ lại các thống kê phù hợp) -->
 <div class="row g-4 mb-4">
-    <!-- Đã loại bỏ thống kê tải xuống vì sinh viên không được tải file gốc -->
     <div class="col-xl-3 col-md-6">
         <div class="stats-card">
             <div class="stats-icon text-info">
@@ -28,18 +31,6 @@
             <div class="stats-label">Yêu thích</div>
             <small class="text-muted">
                 <i class="fas fa-heart me-1"></i>Đã lưu
-            </small>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-warning">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stats-number">32</div>
-            <div class="stats-label">Giờ đọc</div>
-            <small class="text-muted">
-                <i class="fas fa-calendar-week me-1"></i>Tuần này
             </small>
         </div>
     </div>
@@ -171,13 +162,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var item in Model.ThongKeTheoChuyenNganh)
-                                                {
-                                                    <tr>
-                                                        <td>@item.Key</td>
-                                                        <td>@item.Value</td>
-                                                    </tr>
-                                                }
+                                          
                                             </tbody>
                                         </table>
                                     </div>
@@ -192,13 +177,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
-                                                {
-                                                    <tr>
-                                                        <td>@item.Key</td>
-                                                        <td>@item.Value</td>
-                                                    </tr>
-                                                }
+                                            
                                             </tbody>
                                         </table>
                                     </div>
@@ -223,7 +202,7 @@
                                         </a>
                                     </div>
                                     <div class="col-md-4">
-                                        <a href="#" class="btn btn-outline-info w-100">
+                                        <a href="#yeuthich" class="btn btn-outline-info w-100">
                                             <i class="fas fa-star me-2"></i>Xem yêu thích
                                         </a>
                                     </div>
@@ -240,41 +219,65 @@
             </div>
             <!-- Favorites Tab -->
             <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel">
-                <div class="card-custom">
-                    <div class="card-header-custom">
-                        <h6 class="mb-0">
-                            <i class="fas fa-star me-2"></i>
-                            Tài liệu yêu thích
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="document-card">
-                                    <div class="document-icon">
-                                        <i class="fas fa-file-pdf text-danger"></i>
-                                    </div>
-                                    <div class="document-info">
-                                        <h6 class="document-title">Thuật toán và cấu trúc dữ liệu</h6>
-                                        <p class="document-meta">PDF • 4.1 MB • TS. Lê Văn C</p>
-                                        <div class="document-actions">
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye me-1"></i>Xem
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-download me-1"></i>Tải
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-heart-broken me-1"></i>Bỏ thích
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h6 id="yeuthich" class="mb-0">
+                <i class="fas fa-star me-2"></i>
+                Tài liệu yêu thích
+            </h6>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                @if (Model.TaiLieuYeuThich != null && Model.TaiLieuYeuThich.Any())
+        {
+            foreach (var item in Model.TaiLieuYeuThich)
+            {
+                <div class="col-md-6">
+                    <div class="document-card">
+                        <div class="document-icon">
+                            <i class="fas fa-file-pdf text-danger"></i>
+                        </div>
+                        <div class="document-info">
+                            @if (item.TaiLieu != null)
+{
+    <h6 class="document-title">@item.TaiLieu.TenTaiLieu</h6>
+}
+else
+{
+    <h6 class="document-title">Không rõ tên tài liệu</h6>
+}
+                            <p class="document-meta">
+                                @(item.TaiLieu?.LoaiFile?.ToUpper() ?? "FILE") • 
+                                @(Math.Round((item.TaiLieu?.KichThuocFile ?? 0) / 1024.0, 1)) MB • 
+                                @item.TaiLieu?.TacGia 
+                            </p>
+                            <div class="document-actions">
+                                <a href="/TaiLieu/Details/@item.MaTaiLieu" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i>Xem
+                                </a>
+                             <form asp-action="BoYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@item.Id" />
+    <button type="submit" class="btn btn-sm btn-outline-danger">
+        <i class="fas fa-heart-broken me-1"></i>Bỏ thích
+    </button>
+</form>
+
                             </div>
                         </div>
                     </div>
                 </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted ms-2 mt-2">Bạn chưa có tài liệu yêu thích nào.</p>
+        }
             </div>
+        </div>
+    </div>
+</div>
+
             <!-- Recommendations Tab -->
             <div class="tab-pane fade" id="v-pills-recommendations" role="tabpanel">
                 <div class="card-custom">

@@ -7,6 +7,8 @@ using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
 using QuanLyTaiLieuKhoaHoc.Web.Services;
+using System.Security.Claims;
+
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
@@ -372,5 +374,101 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { success = true });
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ThemYeuThich(int maTaiLieu)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Forbid();
+            }
+
+            var daTonTai = await _context.YeuThichTaiLieu
+                .AnyAsync(y => y.MaTaiLieu == maTaiLieu && y.UserId == userId);
+
+            if (!daTonTai)
+            {
+                var yeuThich = new YeuThichTaiLieu
+                {
+                    MaTaiLieu = maTaiLieu,
+                    UserId = userId
+                };
+
+                _context.YeuThichTaiLieu.Add(yeuThich);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", new { id = maTaiLieu });
+        }
+
+        [Authorize]
+        public async Task<IActionResult> YeuThich()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Forbid();
+            }
+
+            var nguoiDung = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            var danhSachYeuThich = await _context.YeuThichTaiLieu
+                .Include(y => y.TaiLieu)
+                .Where(y => y.UserId == userId && y.TaiLieu != null)
+                .Select(y => new YeuThichTaiLieuItem
+                {
+                    Id = y.Id,
+                    MaTaiLieu = y.MaTaiLieu,
+                    TenTaiLieu = y.TaiLieu!.TenTaiLieu,
+                    TacGia = y.TaiLieu.TacGia,
+                    LoaiFile = y.TaiLieu.LoaiFile,
+                    KichThuocMB = Math.Round(y.TaiLieu.KichThuocFile / 1024.0, 1),
+                    ChoPhepTaiFile = y.TaiLieu.ChoPhepTaiFile,
+                    NgayYeuThich = y.NgayYeuThich
+                })
+                .ToListAsync();
+
+            var viewModel = new TaiLieuYeuThichViewModel
+            {
+                HoTenNguoiDung = nguoiDung?.HoTen ?? "Người dùng",
+                MaSoNguoiDung = nguoiDung?.MaSo,
+                VaiTroNguoiDung = nguoiDung?.VaiTro.ToString() ?? "",
+                DanhSachYeuThich = danhSachYeuThich
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BoYeuThich(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Forbid();
+            }
+
+            var yeuThich = await _context.YeuThichTaiLieu
+                .FirstOrDefaultAsync(y => y.Id == id && y.UserId == userId);
+
+            if (yeuThich != null)
+            {
+                _context.YeuThichTaiLieu.Remove(yeuThich);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Dashboard-Student", "Student");
+        }
+
+
     }
-}
+
+
+    }
+

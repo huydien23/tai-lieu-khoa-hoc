@@ -18,6 +18,8 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     public DbSet<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; }
     public DbSet<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; }
     public DbSet<PhieuMuonTra> PhieuMuonTra { get; set; }
+    public DbSet<YeuThichTaiLieu> YeuThichTaiLieu { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
