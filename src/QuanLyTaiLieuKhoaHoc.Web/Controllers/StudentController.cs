@@ -25,15 +25,26 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             ViewData["UserRole"] = "student";
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+// Yêu thích
             var danhSachYeuThich = await _context.YeuThichTaiLieu
                 .Include(y => y.TaiLieu)
                 .Where(y => y.UserId == userId && y.TaiLieu != null)
                 .ToListAsync();
 
+// Mượn trả
+            var danhSachPhieu = await _context.PhieuMuonTra
+                .Where(p => p.MaNguoiMuon == userId)
+                .ToListAsync();
+
             var model = new DashboardViewModel
             {
-                TaiLieuYeuThich = danhSachYeuThich
-            };
+                TaiLieuYeuThich = danhSachYeuThich,
+                SoPhieuDangMuon = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null),
+                SoPhieuChoDuyet = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.ChoDuyet),
+                SoPhieuDaTra = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaTra),
+                SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi)
+    };
 
             return View(model);
         }
