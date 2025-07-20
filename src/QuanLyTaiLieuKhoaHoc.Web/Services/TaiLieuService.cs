@@ -300,6 +300,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 TacGia = taiLieu.TacGia,
                 MaChuyenNganh = taiLieu.MaChuyenNganh,
                 MaLoaiTaiLieu = taiLieu.MaLoaiTaiLieu,
+                ChoPhepTaiFile = taiLieu.ChoPhepTaiFile,
                 TenChuyenNganh = taiLieu.ChuyenNganh?.TenChuyenNganh,
                 TenLoaiTaiLieu = taiLieu.LoaiTaiLieu?.TenLoaiTaiLieu,
                 NgayTaiLen = taiLieu.NgayTaiLen,
