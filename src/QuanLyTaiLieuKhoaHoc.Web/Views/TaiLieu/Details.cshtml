@@ -49,6 +49,43 @@
                         <h5>Mô tả:</h5>
                         <p class="text-muted">@Model.MoTa</p>
                     </div>
+                    @* Hiển thị thông tin chuyên biệt theo loại tài liệu *@
+                    @if (Model.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase)) { <!-- Bài báo khoa học -->
+                        <div class="mb-4">
+                            <h5>Thông tin Bài báo khoa học</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Tiêu đề:</strong> @Model.TieuDe</li>
+                                <li><strong>Tạp chí/Hội nghị:</strong> @Model.TapChiHoiNghi</li>
+                                <li><strong>Ngày công bố:</strong> @(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</li>
+                                <li><strong>DOI:</strong> @Model.DOI</li>
+                                <li><strong>ISSN:</strong> @Model.ISSN</li>
+                                <li><strong>Cấp độ:</strong> @Model.CapDo</li>
+                            </ul>
+                        </div>
+                    } else if (Model.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase)) { <!-- Đề tài nghiên cứu khoa học -->
+                        <div class="mb-4">
+                            <h5>Thông tin Đề tài nghiên cứu khoa học</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Tên đề tài:</strong> @Model.TenDeTai</li>
+                                <li><strong>Mã số đề tài:</strong> @Model.MaSoDeTai</li>
+                                <li><strong>Cấp đề tài:</strong> @Model.CapDeTai</li>
+                                <li><strong>Thời gian thực hiện:</strong> @Model.ThoiGianThucHien</li>
+                                <li><strong>Cơ quan chủ trì:</strong> @Model.CoQuanChuTri</li>
+                                <li><strong>Chủ nhiệm đề tài:</strong> @Model.ChuNhiemDeTai</li>
+                            </ul>
+                        </div>
+                    } else if (Model.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase)) { <!-- Giáo trình - tài liệu giảng dạy -->
+                        <div class="mb-4">
+                            <h5>Thông tin Giáo trình - Tài liệu giảng dạy</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Tên giáo trình:</strong> @Model.TenGiaoTrinh</li>
+                                <li><strong>Môn học liên quan:</strong> @Model.MonHocLienQuan</li>
+                                <li><strong>Đơn vị phát hành:</strong> @Model.DonViPhatHanh</li>
+                                <li><strong>Năm xuất bản:</strong> @Model.NamXuatBan</li>
+                                <li><strong>Số tín chỉ:</strong> @Model.SoTinChi</li>
+                            </ul>
+                        </div>
+                    }
                     @if (User.Identity?.IsAuthenticated == true)
                     {
                         <div class="d-flex gap-2">
@@ -75,6 +112,15 @@
                                     <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
                                         <i class="fas fa-download me-2"></i>Tải xuống
                                     </a>
+
+                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                        
+                                    </form>
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                        <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fas fa-heart me-2"></i>Yêu thích
+                                        </button>
                                 }
                                 else
                                 {
@@ -82,13 +128,6 @@
                                         data-bs-target="#muonModal">
                                         <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
                                     </button>
-                                        <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                        </form>
                                 }
                             }
                         </div>

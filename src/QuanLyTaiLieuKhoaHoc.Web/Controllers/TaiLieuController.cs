@@ -243,15 +243,15 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var userId = currentUser?.Id ?? "anonymous";
             var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            // Lấy thông tin tài liệu để kiểm tra loại
+            // Lấy thông tin tài liệu để kiểm tra quyền tải
             var taiLieu = await _context.TaiLieu.FindAsync(id);
             if (taiLieu == null || string.IsNullOrEmpty(taiLieu.DuongDanFile))
             {
                 return NotFound();
             }
 
-            // Nếu là sinh viên, chỉ cho phép tải các loại đặc biệt
-            if (User.IsInRole("SinhVien") && (taiLieu.MaLoaiTaiLieu != 10 && taiLieu.MaLoaiTaiLieu != 20 && taiLieu.MaLoaiTaiLieu != 30))
+            // Kiểm tra quyền tải dựa trên ChoPhepTaiFile
+            if (User.IsInRole("SinhVien") && !taiLieu.ChoPhepTaiFile)
             {
                 return Forbid();
             }

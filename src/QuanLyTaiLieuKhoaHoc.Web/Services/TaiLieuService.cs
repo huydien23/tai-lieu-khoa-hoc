@@ -312,7 +312,28 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 KichThuocFile = taiLieu.KichThuocFile,
                 DiemDanhGiaTrungBinh = taiLieu.DanhGiaTaiLieu.Any() ?
                     taiLieu.DanhGiaTaiLieu.Average(d => d.DiemDanhGia) : 0,
-                SoLuotDanhGia = taiLieu.DanhGiaTaiLieu.Count
+                SoLuotDanhGia = taiLieu.DanhGiaTaiLieu.Count,
+                // Bổ sung các trường chuyên biệt
+                // --- Bài báo khoa học ---
+                TieuDe = taiLieu.TieuDe,
+                TapChiHoiNghi = taiLieu.TapChiHoiNghi,
+                NgayCongBo = taiLieu.NgayCongBo,
+                DOI = taiLieu.DOI,
+                ISSN = taiLieu.ISSN,
+                CapDo = taiLieu.CapDo,
+                // --- Đề tài nghiên cứu khoa học ---
+                TenDeTai = taiLieu.TenDeTai,
+                MaSoDeTai = taiLieu.MaSoDeTai,
+                CapDeTai = taiLieu.CapDeTai,
+                ThoiGianThucHien = taiLieu.ThoiGianThucHien,
+                CoQuanChuTri = taiLieu.CoQuanChuTri,
+                ChuNhiemDeTai = taiLieu.ChuNhiemDeTai,
+                // --- Giáo trình - tài liệu giảng dạy ---
+                TenGiaoTrinh = taiLieu.TenGiaoTrinh,
+                MonHocLienQuan = taiLieu.MonHocLienQuan,
+                DonViPhatHanh = taiLieu.DonViPhatHanh,
+                NamXuatBan = taiLieu.NamXuatBan,
+                SoTinChi = taiLieu.SoTinChi
             };
         }
 
