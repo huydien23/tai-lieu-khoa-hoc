@@ -32,7 +32,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public int SoPhieuDaTra { get; set; }
         public int SoPhieuTuChoi { get; set; }
 
-        
+        public int SoLuotXemGanDay { get; set; }
+        public int LuotTaiTrongTuan { get; set; }
+        public int LuotTaiTuanTruoc { get; set; }
+
+        public List<TaiLieuViewModel> TaiLieuXemGanDay { get; set; } = new();
+      
 
         // Danh sách yêu cầu mượn chờ duyệt
         public IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra> YeuCauMuonTra { get; set; } = new List<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>();
@@ -52,6 +57,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public List<ThongKeTheoNgay> BieuDoLuotTai { get; set; } = new List<ThongKeTheoNgay>();
         public List<ThongKeTheoChuyenNganh> BieuDoChuyenNganh { get; set; } = new List<ThongKeTheoChuyenNganh>();
         public List<ThongKeTheoLoaiTaiLieu> BieuDoLoaiTaiLieu { get; set; } = new List<ThongKeTheoLoaiTaiLieu>();
+        
     }
 
     public class ThongKeTheoNgay

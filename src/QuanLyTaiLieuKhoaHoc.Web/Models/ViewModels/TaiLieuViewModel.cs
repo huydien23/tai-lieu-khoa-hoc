@@ -72,6 +72,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public string? DuongDanFile { get; set; }
         public string? LoaiFile { get; set; }
         public long KichThuocFile { get; set; }
+        public double KichThuocMB => Math.Round(KichThuocFile / 1024.0, 1);
+
         public double DiemDanhGiaTrungBinh { get; set; }
         public int SoLuotDanhGia { get; set; }
     }

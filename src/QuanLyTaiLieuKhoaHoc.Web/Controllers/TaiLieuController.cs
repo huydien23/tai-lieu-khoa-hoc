@@ -454,6 +454,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Forbid();
             }
 
+    // Tìm tài liệu yêu thích của người dùng
             var yeuThich = await _context.YeuThichTaiLieu
                 .FirstOrDefaultAsync(y => y.Id == id && y.UserId == userId);
 
@@ -463,8 +464,20 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction("Dashboard-Student", "Student");
-        }
+    //  Xác định vai trò để chuyển hướng
+            if (User.IsInRole("GiangVien"))
+            {
+                return RedirectToAction("Dashboard-Lecturer", "Lecturer");
+            }
+            else if (User.IsInRole("SinhVien"))
+            {
+                return RedirectToAction("Dashboard-Student", "Student");
+            }
+
+    // Nếu không có vai trò cụ thể, chuyển về trang chủ
+            return RedirectToAction("Index", "Home");
+}
+
 
     }
 
