@@ -32,6 +32,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public int SoPhieuDaTra { get; set; }
         public int SoPhieuTuChoi { get; set; }
 
+        
+
         // Danh sách yêu cầu mượn chờ duyệt
         public IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra> YeuCauMuonTra { get; set; } = new List<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>();
 
@@ -72,4 +74,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public int SoLuongTaiLieu { get; set; }
         public int SoLuotTai { get; set; }
     }
+
+    
 }

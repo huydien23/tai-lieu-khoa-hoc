@@ -26,17 +26,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-// Yêu thích
+            // Yêu thích
             var danhSachYeuThich = await _context.YeuThichTaiLieu
                 .Include(y => y.TaiLieu)
                 .Where(y => y.UserId == userId && y.TaiLieu != null)
                 .ToListAsync();
 
-// Mượn trả
+            // Mượn trả
             var danhSachPhieu = await _context.PhieuMuonTra
                 .Where(p => p.MaNguoiMuon == userId)
                 .ToListAsync();
-
+            
             var model = new DashboardViewModel
             {
                 TaiLieuYeuThich = danhSachYeuThich,
@@ -44,7 +44,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 SoPhieuChoDuyet = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.ChoDuyet),
                 SoPhieuDaTra = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaTra),
                 SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi)
-    };
+            };
 
             return View(model);
         }
