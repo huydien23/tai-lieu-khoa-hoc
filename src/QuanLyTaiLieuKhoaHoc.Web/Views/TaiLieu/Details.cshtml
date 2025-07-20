@@ -49,41 +49,49 @@
                         <h5>Mô tả:</h5>
                         <p class="text-muted">@Model.MoTa</p>
                     </div>
-                    @* Hiển thị thông tin chuyên biệt theo loại tài liệu *@
-                    @if (Model.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase)) { <!-- Bài báo khoa học -->
-                        <div class="mb-4">
-                            <h5>Thông tin Bài báo khoa học</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Tiêu đề:</strong> @Model.TieuDe</li>
-                                <li><strong>Tạp chí/Hội nghị:</strong> @Model.TapChiHoiNghi</li>
-                                <li><strong>Ngày công bố:</strong> @(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</li>
-                                <li><strong>DOI:</strong> @Model.DOI</li>
-                                <li><strong>ISSN:</strong> @Model.ISSN</li>
-                                <li><strong>Cấp độ:</strong> @Model.CapDo</li>
-                            </ul>
+                    @* Hiển thị thông tin chuyên biệt theo loại tài liệu (đẹp hơn) *@
+                    @if (Model.TenLoaiTaiLieu != null && Model.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase)) {
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <h5 class="mb-3 text-primary">
+                                <i class="fas fa-newspaper me-2"></i>Thông tin Bài báo khoa học
+                            </h5>
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr><th>Tiêu đề:</th><td>@Model.TieuDe</td></tr>
+                                <tr><th>Tạp chí/Hội nghị:</th><td>@Model.TapChiHoiNghi</td></tr>
+                                <tr><th>Ngày công bố:</th><td>@(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</td></tr>
+                                <tr><th>DOI:</th><td>@Model.DOI</td></tr>
+                                <tr><th>ISSN:</th><td>@Model.ISSN</td></tr>
+                                <tr><th>Cấp độ:</th><td>@Model.CapDo</td></tr>
+                            </table>
                         </div>
-                    } else if (Model.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase)) { <!-- Đề tài nghiên cứu khoa học -->
-                        <div class="mb-4">
-                            <h5>Thông tin Đề tài nghiên cứu khoa học</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Tên đề tài:</strong> @Model.TenDeTai</li>
-                                <li><strong>Mã số đề tài:</strong> @Model.MaSoDeTai</li>
-                                <li><strong>Cấp đề tài:</strong> @Model.CapDeTai</li>
-                                <li><strong>Thời gian thực hiện:</strong> @Model.ThoiGianThucHien</li>
-                                <li><strong>Cơ quan chủ trì:</strong> @Model.CoQuanChuTri</li>
-                                <li><strong>Chủ nhiệm đề tài:</strong> @Model.ChuNhiemDeTai</li>
-                            </ul>
+                    }
+                    else if (Model.TenLoaiTaiLieu != null && Model.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase)) {
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <h5 class="mb-3 text-success">
+                                <i class="fas fa-project-diagram me-2"></i>Thông tin Đề tài nghiên cứu khoa học
+                            </h5>
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr><th>Tên đề tài:</th><td>@Model.TenDeTai</td></tr>
+                                <tr><th>Mã số đề tài:</th><td>@Model.MaSoDeTai</td></tr>
+                                <tr><th>Cấp đề tài:</th><td>@Model.CapDeTai</td></tr>
+                                <tr><th>Thời gian thực hiện:</th><td>@Model.ThoiGianThucHien</td></tr>
+                                <tr><th>Cơ quan chủ trì:</th><td>@Model.CoQuanChuTri</td></tr>
+                                <tr><th>Chủ nhiệm đề tài:</th><td>@Model.ChuNhiemDeTai</td></tr>
+                            </table>
                         </div>
-                    } else if (Model.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase)) { <!-- Giáo trình - tài liệu giảng dạy -->
-                        <div class="mb-4">
-                            <h5>Thông tin Giáo trình - Tài liệu giảng dạy</h5>
-                            <ul class="list-unstyled">
-                                <li><strong>Tên giáo trình:</strong> @Model.TenGiaoTrinh</li>
-                                <li><strong>Môn học liên quan:</strong> @Model.MonHocLienQuan</li>
-                                <li><strong>Đơn vị phát hành:</strong> @Model.DonViPhatHanh</li>
-                                <li><strong>Năm xuất bản:</strong> @Model.NamXuatBan</li>
-                                <li><strong>Số tín chỉ:</strong> @Model.SoTinChi</li>
-                            </ul>
+                    }
+                    else if (Model.TenLoaiTaiLieu != null && (Model.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))) {
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <h5 class="mb-3 text-warning">
+                                <i class="fas fa-book me-2"></i>Thông tin Giáo trình - Tài liệu giảng dạy
+                            </h5>
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr><th>Tên giáo trình:</th><td>@Model.TenGiaoTrinh</td></tr>
+                                <tr><th>Môn học liên quan:</th><td>@Model.MonHocLienQuan</td></tr>
+                                <tr><th>Đơn vị phát hành:</th><td>@Model.DonViPhatHanh</td></tr>
+                                <tr><th>Năm xuất bản:</th><td>@Model.NamXuatBan</td></tr>
+                                <tr><th>Số tín chỉ:</th><td>@Model.SoTinChi</td></tr>
+                            </table>
                         </div>
                     }
                     @if (User.Identity?.IsAuthenticated == true)
