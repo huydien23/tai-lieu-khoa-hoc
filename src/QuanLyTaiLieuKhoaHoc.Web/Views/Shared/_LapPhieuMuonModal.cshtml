@@ -1,0 +1,31 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Lập phiếu mượn tài liệu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form id="lapPhieuMuonForm" asp-action="LapPhieuMuon" method="post">
+    <div class="modal-body">
+        <input type="hidden" name="maPhieu" value="@Model.MaPhieu" />
+        <div><b>Họ tên:</b> @Model.HoTen</div>
+        <div><b>MSSV:</b> @Model.MSSV</div>
+        <div><b>Email:</b> @Model.Email</div>
+        <div><b>Chuyên ngành:</b> @Model.ChuyenNganh</div>
+        <div><b>Tài liệu:</b> @Model.TenTaiLieu</div>
+        <div><b>Tác giả:</b> @Model.TacGia</div>
+        <div><b>Lý do:</b> @Model.LyDo</div>
+        <div class="mb-2">
+            <label>Ngày mượn thực tế:</label>
+            <input type="datetime-local" name="ngayMuon" class="form-control"
+                value="@(Model.NgayMuon != DateTime.MinValue ? Model.NgayMuon.ToString("yyyy-MM-ddTHH:mm") : "")" required />
+        </div>
+        <div class="mb-2">
+            <label>Ngày trả dự kiến:</label>
+            <input type="date" name="ngayTra" class="form-control" value="@(Model.NgayTra.HasValue ? Model.NgayTra.Value.ToString("yyyy-MM-dd") : "")" required />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="submit" class="btn btn-success">Xác nhận lập phiếu mượn</button>
+    </div>
+</form> 

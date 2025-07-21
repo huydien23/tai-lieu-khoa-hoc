@@ -751,7 +751,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 // Lấy thông tin kết nối
                 var connectionString = _context.Database.GetDbConnection().ConnectionString;
-                var builder = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+                var builder = new Microsoft.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
                 var dbName = builder.InitialCatalog;
                 var server = builder.DataSource;
 

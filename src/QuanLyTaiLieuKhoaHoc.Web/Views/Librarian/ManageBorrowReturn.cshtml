@@ -61,6 +61,14 @@
             </div>
         </div>
     </div>
+    <!-- Modal lập phiếu mượn -->
+    <div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Nội dung sẽ được load động bằng AJAX -->
+            </div>
+        </div>
+    </div>
     <style>
         .nav-tabs .nav-link {
             color: #295BA4;
@@ -194,5 +202,35 @@
                 });
             }
         });
+
+        window.openLapPhieuMuonModal = function(maPhieu) {
+            $.get('/PhieuMuonTra/LapPhieuMuon', { maPhieu: maPhieu }, function(html) {
+                $('#lapPhieuMuonModal .modal-content').html(html);
+                $('#lapPhieuMuonModal').modal('show');
+                // Gắn lại submit cho form trong partial
+                $('#lapPhieuMuonForm').off('submit').on('submit', function(e) {
+                    e.preventDefault();
+                    var formData = $(this).serialize();
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success(response.message);
+                                $('#lapPhieuMuonModal').modal('hide');
+                                // Nếu muốn reload trang sau khi lập phiếu thành công, bỏ comment dòng dưới:
+                                // location.reload();
+                            } else {
+                                toastr.error(response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            toastr.error('Có lỗi xảy ra khi lập phiếu mượn!');
+                        }
+                    });
+                });
+            });
+        };
     </script>
 }

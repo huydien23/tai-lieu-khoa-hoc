@@ -86,5 +86,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var list = await _phieuService.LayLichSuMuonTraCuaNguoiDungAsync(user.Id);
             return View(list);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> LapPhieuMuon(int maPhieu)
+        {
+            var phieu = await _phieuService.LayPhieuMuonTraByIdAsync(maPhieu);
+            if (phieu == null) return NotFound();
+            var sinhVien = phieu.NguoiMuon;
+            var taiLieu = phieu.TaiLieu;
+            var vm = new QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
+            {
+                MaPhieu = phieu.MaPhieu,
+                HoTen = sinhVien?.HoTen ?? "",
+                MSSV = sinhVien?.MaSo ?? "",
+                Email = sinhVien?.Email ?? "",
+                ChuyenNganh = sinhVien?.ChuyenNganh?.TenChuyenNganh ?? "",
+                TenTaiLieu = taiLieu?.TenTaiLieu ?? "",
+                TacGia = taiLieu?.TacGia ?? "",
+                NgayMuon = phieu.NgayMuon,
+                LyDo = phieu.GhiChu ?? "",
+                NgayTra = phieu.NgayTra,
+                IsFromRequest = true
+            };
+            return PartialView("~/Views/Shared/_LapPhieuMuonModal.cshtml", vm);
+        }
     }
 }

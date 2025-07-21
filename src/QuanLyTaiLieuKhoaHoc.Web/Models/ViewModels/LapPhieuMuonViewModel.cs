@@ -18,5 +18,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public string LyDo { get; set; } = string.Empty;
         // Ngày trả thực tế (thủ thư nhập)
         public DateTime? NgayTra { get; set; }
+        public bool IsFromRequest { get; set; }
     }
 } 
