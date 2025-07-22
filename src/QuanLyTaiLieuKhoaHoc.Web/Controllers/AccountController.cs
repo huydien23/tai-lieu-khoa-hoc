@@ -86,7 +86,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string email, string password, string confirmPassword, string role = "student")
+        public async Task<IActionResult> Register(string username, string email, string password, string confirmPassword, string maSo, string soDienThoai, string role = "student")
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -122,6 +122,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 UserName = username,
                 Email = email,
                 HoTen = username, // Tạm thời dùng username làm họ tên
+                MaSo = maSo,
+                SoDienThoai = soDienThoai,
                 VaiTro = role switch
                 {
                     "lecturer" => VaiTroNguoiDung.GiangVien,

@@ -1,3 +1,4 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.RegisterViewModel
 @{
     ViewData["Title"] = "Đăng ký Tài khoản";
     Layout = null; // Use separate layout for auth pages
@@ -221,6 +222,23 @@
                                     <input type="email" class="form-control" id="email" name="email" placeholder="Email"
                                         required>
                                     <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="maSo" name="maSo" placeholder="Mã số"
+                                        required>
+                                    <label for="maSo"><i class="fas fa-id-card me-2"></i>MSSV/GV</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="soDienThoai" name="soDienThoai"
+                                        placeholder="Số điện thoại" required>
+                                    <label for="soDienThoai"><i class="fas fa-phone me-2"></i>Số điện thoại</label>
                                 </div>
                             </div>
                         </div>

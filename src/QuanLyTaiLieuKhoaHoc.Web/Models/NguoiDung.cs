@@ -16,6 +16,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Mã số (Sinh viên/Giảng viên)")]
         public string? MaSo { get; set; }
 
+        [StringLength(10, ErrorMessage = "Số điện thoại không được vượt quá 10 ký tự")]
+        [Display(Name = "Số điện thoại")]
+        public string? SoDienThoai { get; set; }
+
         [Required(ErrorMessage = "Vai trò không được để trống")]
         [Display(Name = "Vai trò")]
         public VaiTroNguoiDung VaiTro { get; set; }
