@@ -73,35 +73,35 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 await userManager.CreateAsync(librarianUser, "ThuThu@2024");
 
                 // Tạo giảng viên
-                var lecturerUser = new NguoiDung
-                {
-                    UserName = "giangvien@university.edu.vn",
-                    Email = "giangvien@university.edu.vn",
-                    EmailConfirmed = true,
-                    HoTen = "PGS.TS Nguyễn Văn An",
-                    VaiTro = VaiTroNguoiDung.GiangVien,
-                    MaChuyenNganh = 1,
-                    MaSo = "GV001",
-                    NgayTao = DateTime.Now,
-                    TrangThaiHoatDong = true
-                };
-                await userManager.CreateAsync(lecturerUser, "GiangVien@2024");
+                // var lecturerUser = new NguoiDung
+                // {
+                //     UserName = "giangvien@university.edu.vn",
+                //     Email = "giangvien@university.edu.vn",
+                //     EmailConfirmed = true,
+                //     HoTen = "PGS.TS Nguyễn Văn An",
+                //     VaiTro = VaiTroNguoiDung.GiangVien,
+                //     MaChuyenNganh = 1,
+                //     MaSo = "GV001",
+                //     NgayTao = DateTime.Now,
+                //     TrangThaiHoatDong = true
+                // };
+                // await userManager.CreateAsync(lecturerUser, "GiangVien@2024");
 
-                // Tạo sinh viên
-                var studentUser = new NguoiDung
-                {
-                    UserName = "sinhvien@student.edu.vn",
-                    Email = "sinhvien@student.edu.vn",
-                    EmailConfirmed = true,
-                    HoTen = "Trần Thị Bình",
-                    VaiTro = VaiTroNguoiDung.SinhVien,
-                    MaChuyenNganh = 1,
-                    MaSo = "20210001",
-                    KhoaHoc = "2021",
-                    NgayTao = DateTime.Now,
-                    TrangThaiHoatDong = true
-                };
-                await userManager.CreateAsync(studentUser, "SinhVien@2024");
+                // // Tạo sinh viên
+                // var studentUser = new NguoiDung
+                // {
+                //     UserName = "sinhvien@student.edu.vn",
+                //     Email = "sinhvien@student.edu.vn",
+                //     EmailConfirmed = true,
+                //     HoTen = "Trần Thị Bình",
+                //     VaiTro = VaiTroNguoiDung.SinhVien,
+                //     MaChuyenNganh = 1,
+                //     MaSo = "20210001",
+                //     KhoaHoc = "2021",
+                //     NgayTao = DateTime.Now,
+                //     TrangThaiHoatDong = true
+                // };
+                // await userManager.CreateAsync(studentUser, "SinhVien@2024");
                 await context.SaveChangesAsync();
 
                 // Xóa toàn bộ dữ liệu cũ bảng TaiLieu

@@ -28,7 +28,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             if (string.IsNullOrEmpty(userId)) return Forbid();
 
             // Lấy thông tin người dùng
-            var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var currentUser = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == userId);
             ViewBag.CurrentUser = currentUser;
 
             var ngayHienTai = DateTime.Today;
@@ -112,7 +112,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> Profile()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
             {
                 return RedirectToAction("Login", "Account");

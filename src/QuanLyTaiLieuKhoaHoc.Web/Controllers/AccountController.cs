@@ -86,7 +86,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string email, string password, string confirmPassword, string maSo, string soDienThoai, string role = "student")
+        public async Task<IActionResult> Register(string username, string email, string password, string confirmPassword, string maSo, string soDienThoai, string chuyenNganh, string role = "student")
         {
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -116,6 +116,21 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return View();
             }
 
+            // Lấy MaChuyenNganh từ tên chuyên ngành
+            int? maChuyenNganh = null;
+            if (!string.IsNullOrEmpty(chuyenNganh))
+            {
+                using (var scope = HttpContext.RequestServices.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<QuanLyTaiLieuKhoaHoc.Web.Data.ApplicationDbContext>();
+                    var chuyenNganhEntity = await context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == chuyenNganh);
+                    if (chuyenNganhEntity != null)
+                    {
+                        maChuyenNganh = chuyenNganhEntity.MaChuyenNganh;
+                    }
+                }
+            }
+
             // Tạo user mới
             var user = new NguoiDung
             {
@@ -132,7 +147,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 },
                 EmailConfirmed = true,
                 TrangThaiHoatDong = true,
-                NgayTao = DateTime.Now
+                NgayTao = DateTime.Now,
+                MaChuyenNganh = maChuyenNganh
             };
 
             var result = await _userManager.CreateAsync(user, password);

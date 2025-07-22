@@ -19,6 +19,8 @@
                 <dd class="col-sm-9">@Model.VaiTro.ToString()</dd>
                 <dt class="col-sm-3">Ngày tạo</dt>
                 <dd class="col-sm-9">@Model.NgayTao.ToString("dd/MM/yyyy")</dd>
+                <dt class="col-sm-3">Chuyên ngành</dt>
+                <dd class="col-sm-9">@Model.ChuyenNganh?.TenChuyenNganh</dd>
             </dl>
         </div>
     </div>
