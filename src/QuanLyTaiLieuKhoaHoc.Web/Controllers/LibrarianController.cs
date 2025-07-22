@@ -50,10 +50,19 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .OrderByDescending(p => p.NgayMuon)
                 .ToListAsync();
 
+            // Lấy danh sách tài liệu đang mượn (phiếu DaDuyet và chưa trả)
+            var taiLieuDangMuon = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Include(p => p.NguoiMuon)
+                .Where(p => p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null)
+                .OrderByDescending(p => p.NgayMuon)
+                .ToListAsync();
+
             var model = new DashboardViewModel
             {
                 YeuCauMuonTra = yeuCauMuonTra,
-                LichSuMuonTra = lichSuMuonTra
+                LichSuMuonTra = lichSuMuonTra,
+                TaiLieuDangMuon = taiLieuDangMuon
             };
             ViewData["Title"] = "Quản lý mượn trả";
             return View("ManageBorrowReturn", model);
@@ -825,7 +834,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
             }
-            var nguoiMuon = await _context.Users.FindAsync(maNguoiMuon);
+            // Sửa: tìm người mượn theo MaSo (MSSV) thay vì Id
+            var nguoiMuon = await _context.Users.FirstOrDefaultAsync(u => u.MaSo == maNguoiMuon);
             if (nguoiMuon == null)
             {
                 return Json(new { success = false, message = "Không tìm thấy người mượn!" });
@@ -850,7 +860,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var phieuMuon = new PhieuMuonTra
             {
                 MaTaiLieu = maTaiLieu,
-                MaNguoiMuon = maNguoiMuon,
+                MaNguoiMuon = nguoiMuon.Id,
                 NgayMuon = ngayMuon,
                 NgayTra = ngayTraDuKien,
                 TrangThai = TrangThaiPhieu.DaDuyet, // Thủ thư lập phiếu là đã duyệt

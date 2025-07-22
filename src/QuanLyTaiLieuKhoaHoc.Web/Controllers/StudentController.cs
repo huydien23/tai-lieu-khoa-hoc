@@ -41,13 +41,21 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Where(p => p.MaNguoiMuon == userId)
                 .ToListAsync();
             
+            // Lấy danh sách tài liệu đang mượn (phiếu DaDuyet và chưa trả của sinh viên)
+            var taiLieuDangMuon = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Where(p => p.MaNguoiMuon == userId && p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null)
+                .OrderByDescending(p => p.NgayMuon)
+                .ToListAsync();
+
             var model = new DashboardViewModel
             {
                 TaiLieuYeuThich = danhSachYeuThich,
                 SoPhieuDangMuon = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null),
                 SoPhieuChoDuyet = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.ChoDuyet),
                 SoPhieuDaTra = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaTra),
-                SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi)
+                SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi),
+                TaiLieuDangMuon = taiLieuDangMuon
             };
 
             return View(model);

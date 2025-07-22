@@ -37,6 +37,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public int LuotTaiTuanTruoc { get; set; }
 
         public List<TaiLieuViewModel> TaiLieuXemGanDay { get; set; } = new();
+        public List<PhieuMuonTra> TaiLieuDangMuon { get; set; } = new List<PhieuMuonTra>();
       
 
         // Danh sách yêu cầu mượn chờ duyệt

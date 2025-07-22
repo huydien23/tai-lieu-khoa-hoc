@@ -173,6 +173,37 @@
                         </div>
                     </div>
                 </div>
+                <h5 class="mt-4 mb-3">Tài liệu đang mượn</h5>
+                @if (Model.TaiLieuDangMuon != null && Model.TaiLieuDangMuon.Any())
+                {
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>Mã phiếu</th>
+                                <th>Tên tài liệu</th>
+                                <th>Ngày mượn</th>
+                                <th>Ngày trả dự kiến</th>
+                                <th>Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var phieu in Model.TaiLieuDangMuon)
+                        {
+                            <tr>
+                                <td>@phieu.MaPhieu</td>
+                                <td>@phieu.TaiLieu?.TenTaiLieu</td>
+                                <td>@phieu.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@phieu.NgayTra?.ToString("dd/MM/yyyy")</td>
+                                <td><span class="badge bg-success">Đang mượn</span></td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-muted">Chưa có tài liệu đang mượn.</div>
+                }
             </div>
             <!-- Favorites Tab -->
             <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel">

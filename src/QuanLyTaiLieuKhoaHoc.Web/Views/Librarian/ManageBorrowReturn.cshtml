@@ -61,6 +61,39 @@
             </div>
         </div>
     </div>
+    <h5 class="mt-4 mb-3">Tài liệu đang mượn</h5>
+    @if (Model.TaiLieuDangMuon != null && Model.TaiLieuDangMuon.Any())
+    {
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Mã phiếu</th>
+                    <th>Tên tài liệu</th>
+                    <th>Người mượn</th>
+                    <th>Ngày mượn</th>
+                    <th>Ngày trả dự kiến</th>
+                    <th>Trạng thái</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var phieu in Model.TaiLieuDangMuon)
+            {
+                <tr>
+                    <td>@phieu.MaPhieu</td>
+                    <td>@phieu.TaiLieu?.TenTaiLieu</td>
+                    <td>@phieu.NguoiMuon?.HoTen</td>
+                    <td>@phieu.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@phieu.NgayTra?.ToString("dd/MM/yyyy")</td>
+                    <td><span class="badge bg-success">Đang mượn</span></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="text-muted">Chưa có tài liệu đang mượn.</div>
+    }
     <!-- Modal lập phiếu mượn -->
     <div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -215,27 +248,28 @@
             });
         };
 
-        // Chỉ gán submit khi modal được mở
-        $('#lapPhieuMuonModal').on('shown.bs.modal', function () {
-            $('#lapPhieuMuonForm').off('submit').on('submit', function(e) {
-                e.preventDefault();
-                var formData = $(this).serialize();
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            $('#lapPhieuMuonModal').modal('hide');
-                        } else {
-                            toastr.error(response.message);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        toastr.error('Có lỗi xảy ra khi lập phiếu mượn!');
+        // Đảm bảo luôn submit qua AJAX kể cả khi modal được tạo lại động
+        $(document).on('submit', '#lapPhieuMuonForm', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#lapPhieuMuonModal').modal('hide');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message);
                     }
-                });
+                },
+                error: function() {
+                    toastr.error('Có lỗi xảy ra khi lập phiếu mượn!');
+                }
             });
         });
 
