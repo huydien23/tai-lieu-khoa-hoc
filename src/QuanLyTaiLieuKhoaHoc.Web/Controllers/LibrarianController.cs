@@ -816,7 +816,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         // LẬP PHIẾU MƯỢN TÀI LIỆU
         [HttpPost]
-        public async Task<IActionResult> LapPhieuMuon(int maTaiLieu, string maNguoiMuon, DateTime ngayMuon, DateTime ngayTraDuKien)
+        public async Task<IActionResult> LapPhieuMuon(int maPhieu, DateTime ngayMuon, DateTime ngayTraDuKien)
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
@@ -824,49 +824,33 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
             }
 
-            // Kiểm tra thông tin đầu vào
-            if (string.IsNullOrWhiteSpace(maNguoiMuon))
+            var phieuYeuCau = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Include(p => p.NguoiMuon)
+                .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
+
+            if (phieuYeuCau == null || phieuYeuCau.TrangThai != TrangThaiPhieu.ChoDuyet)
             {
-                return Json(new { success = false, message = "Vui lòng nhập mã người mượn!" });
-            }
-            var taiLieu = await _context.TaiLieu.FindAsync(maTaiLieu);
-            if (taiLieu == null)
-            {
-                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
-            }
-            // Sửa: tìm người mượn theo MaSo (MSSV) thay vì Id
-            var nguoiMuon = await _context.Users.FirstOrDefaultAsync(u => u.MaSo == maNguoiMuon);
-            if (nguoiMuon == null)
-            {
-                return Json(new { success = false, message = "Không tìm thấy người mượn!" });
+                return Json(new { success = false, message = "Yêu cầu không hợp lệ hoặc đã được xử lý!" });
             }
 
-            // Kiểm tra trạng thái tài liệu
-            if (taiLieu.TrangThai != TrangThaiTaiLieu.DaDuyet)
-            {
-                return Json(new { success = false, message = "Tài liệu chưa được duyệt hoặc không hợp lệ để mượn!" });
-            }
+            var maTaiLieu = phieuYeuCau.MaTaiLieu;
 
-            // Kiểm tra nếu đã có phiếu mượn chưa trả cho tài liệu này
-            var phieuMuonTonTai = await _context.PhieuMuonTra
-                .Where(p => p.MaTaiLieu == maTaiLieu && (p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.ChoDuyet))
+            // Kiểm tra nếu đã có phiếu mượn ĐANG HOẠT ĐỘNG cho tài liệu này
+            var phieuDangMuon = await _context.PhieuMuonTra
+                .Where(p => p.MaTaiLieu == maTaiLieu && p.TrangThai == TrangThaiPhieu.DaDuyet)
                 .FirstOrDefaultAsync();
-            if (phieuMuonTonTai != null)
+            if (phieuDangMuon != null)
             {
-                return Json(new { success = false, message = "Tài liệu này đang được mượn hoặc chờ duyệt, không thể lập phiếu mới!" });
+                return Json(new { success = false, message = "Tài liệu này đang được mượn, không thể lập phiếu mới!" });
             }
 
-            // Tạo phiếu mượn mới
-            var phieuMuon = new PhieuMuonTra
-            {
-                MaTaiLieu = maTaiLieu,
-                MaNguoiMuon = nguoiMuon.Id,
-                NgayMuon = ngayMuon,
-                NgayTra = ngayTraDuKien,
-                TrangThai = TrangThaiPhieu.DaDuyet, // Thủ thư lập phiếu là đã duyệt
-                MaThuThuDuyet = currentUser.Id
-            };
-            _context.PhieuMuonTra.Add(phieuMuon);
+            // Cập nhật phiếu thành phiếu mượn
+            phieuYeuCau.TrangThai = TrangThaiPhieu.DaDuyet;
+            phieuYeuCau.NgayMuon = ngayMuon;
+            phieuYeuCau.NgayTra = ngayTraDuKien;
+            phieuYeuCau.MaThuThuDuyet = currentUser.Id;
+
             await _context.SaveChangesAsync();
 
             return Json(new { success = true, message = "Lập phiếu mượn thành công!" });
