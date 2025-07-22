@@ -52,6 +52,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .OrderByDescending(p => p.NgayMuon)
                 .ToListAsync();
 
+            // Lịch sử tải xuống
+            var lichSuTaiXuong = await _context.LichSuTaiTaiLieu
+                .Include(l => l.TaiLieu)
+                .Where(l => l.MaNguoiDung == userId)
+                .OrderByDescending(l => l.ThoiGianTai)
+                .ToListAsync();
+
             var model = new DashboardViewModel
             {
                 TaiLieuYeuThich = danhSachYeuThich,
@@ -60,7 +67,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 SoPhieuDaTra = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaTra),
                 SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi),
                 TaiLieuDangMuon = taiLieuDangMuon,
-                PhieuMuonTra = danhSachPhieu // Truyền danh sách phiếu mượn cho tab động
+                PhieuMuonTra = danhSachPhieu, // Truyền danh sách phiếu mượn cho tab động
+                SoLuotTaiXuong = lichSuTaiXuong.Count,
+                LichSuTaiXuong = lichSuTaiXuong
             };
 
             return View(model);

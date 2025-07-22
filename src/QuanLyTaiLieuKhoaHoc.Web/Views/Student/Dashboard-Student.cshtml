@@ -20,35 +20,39 @@
 
 <!-- Key Statistics (chỉ giữ lại các thống kê phù hợp) -->
 <div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-2 col-md-4">
         <div class="stats-card">
             <div class="stats-icon text-info"><i class="fas fa-heart"></i></div>
             <div class="stats-number">@Model.SoLuongYeuThich</div>
             <div class="stats-label">Yêu thích</div>
         </div>
     </div>
-
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-2 col-md-4">
         <div class="stats-card">
             <div class="stats-icon text-warning"><i class="fas fa-hourglass-half"></i></div>
             <div class="stats-number">@Model.SoPhieuChoDuyet</div>
             <div class="stats-label">Chờ duyệt</div>
         </div>
     </div>
-
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-2 col-md-4">
         <div class="stats-card">
             <div class="stats-icon text-primary"><i class="fas fa-book"></i></div>
             <div class="stats-number">@Model.SoPhieuDangMuon</div>
             <div class="stats-label">Đang mượn</div>
         </div>
     </div>
-
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-2 col-md-4">
         <div class="stats-card">
             <div class="stats-icon text-danger"><i class="fas fa-times-circle"></i></div>
             <div class="stats-number">@Model.SoPhieuTuChoi</div>
             <div class="stats-label">Từ chối</div>
+        </div>
+    </div>
+    <div class="col-xl-2 col-md-4">
+        <div class="stats-card">
+            <div class="stats-icon text-success"><i class="fas fa-download"></i></div>
+            <div class="stats-number">@Model.SoLuotTaiXuong</div>
+            <div class="stats-label">Lượt tải xuống</div>
         </div>
     </div>
 </div>
@@ -85,6 +89,10 @@
                     <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-settings" type="button" role="tab">
                         <i class="fas fa-cog me-2"></i>Cài đặt tài khoản
+                    </button>
+                    <button class="nav-link" id="v-pills-downloads-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-downloads" type="button" role="tab">
+                        <i class="fas fa-download me-2"></i>Tài liệu đã tải
                     </button>
                 </div>
             </div>
@@ -273,6 +281,31 @@
             <!-- Mượn/Trả tài liệu Tab -->
             <div class="tab-pane fade" id="v-pills-borrowreturn" role="tabpanel">
                 @await Html.PartialAsync("_ManageBorrowReturnPartial", Model.PhieuMuonTra)
+            </div>
+            <!-- Tài liệu đã tải Tab -->
+            <div class="tab-pane fade" id="v-pills-downloads" role="tabpanel">
+                <h2>Tài liệu đã tải</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tên tài liệu</th>
+                            <th>Thời gian tải</th>
+                            <th>Địa chỉ IP</th>
+                            <th>Trình duyệt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.LichSuTaiXuong)
+                        {
+                            <tr>
+                                <td>@item.TaiLieu?.TenTaiLieu</td>
+                                <td>@item.ThoiGianTai.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@item.DiaChiIP</td>
+                                <td>@item.UserAgent</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
