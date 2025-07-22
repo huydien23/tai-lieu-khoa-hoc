@@ -5,16 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
 using QuanLyTaiLieuKhoaHoc.Web.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
     public class StudentController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<NguoiDung> _userManager;
 
-        public StudentController(ApplicationDbContext context)
+        public StudentController(ApplicationDbContext context, UserManager<NguoiDung> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [Authorize]
@@ -83,6 +86,35 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             ViewData["Title"] = "Xem Tài liệu";
             return View();
+        }
+
+        [Authorize(Roles = "SinhVien")]
+        public async Task<IActionResult> ManageBorrowReturn()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            var list = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Where(p => p.MaNguoiMuon == user.Id)
+                .OrderByDescending(p => p.NgayMuon)
+                .ToListAsync();
+            return View(list);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "SinhVien")]
+        public async Task<IActionResult> CancelRequest(int maPhieu)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            var phieu = await _context.PhieuMuonTra.FirstOrDefaultAsync(p => p.MaPhieu == maPhieu && p.MaNguoiMuon == user.Id);
+            if (phieu == null || phieu.TrangThai != TrangThaiPhieu.ChoDuyet)
+            {
+                return Json(new { success = false, message = "Không thể hủy yêu cầu này!" });
+            }
+            phieu.TrangThai = TrangThaiPhieu.TuChoi;
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Đã hủy yêu cầu mượn!" });
         }
     }
 }
