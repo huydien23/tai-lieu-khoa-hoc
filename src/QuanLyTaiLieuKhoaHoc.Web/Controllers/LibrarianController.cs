@@ -829,9 +829,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Include(p => p.NguoiMuon)
                 .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
 
-            if (phieuYeuCau == null || phieuYeuCau.TrangThai != TrangThaiPhieu.ChoDuyet)
+            if (phieuYeuCau == null)
             {
-                return Json(new { success = false, message = "Yêu cầu không hợp lệ hoặc đã được xử lý!" });
+                return Json(new { success = false, message = $"Không tìm thấy phiếu! Mã phiếu: {maPhieu}" });
+            }
+            if (phieuYeuCau.TrangThai != TrangThaiPhieu.ChoDuyet)
+            {
+                return Json(new { success = false, message = $"Không thể lập phiếu! Trạng thái hiện tại: {phieuYeuCau.TrangThai} (0=Chờ duyệt, 1=Đã duyệt, 2=Đã trả, 3=Từ chối). Mã phiếu: {maPhieu}, Mã tài liệu: {phieuYeuCau.MaTaiLieu}, Người mượn: {phieuYeuCau.MaNguoiMuon}" });
             }
 
             var maTaiLieu = phieuYeuCau.MaTaiLieu;
