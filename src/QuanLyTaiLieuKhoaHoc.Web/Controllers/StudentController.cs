@@ -112,16 +112,33 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return View(list);
         }
 
+    public class CancelRequestModel
+    {
+        public int MaPhieu { get; set; }
+    }
+
         [HttpPost]
         [Authorize(Roles = "SinhVien")]
-        public async Task<IActionResult> CancelRequest(int maPhieu)
+        public async Task<IActionResult> CancelRequest([FromBody] CancelRequestModel model)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
-            var phieu = await _context.PhieuMuonTra.FirstOrDefaultAsync(p => p.MaPhieu == maPhieu && p.MaNguoiMuon == user.Id);
-            if (phieu == null || phieu.TrangThai != TrangThaiPhieu.ChoDuyet)
+            var phieu = await _context.PhieuMuonTra.FirstOrDefaultAsync(p => p.MaPhieu == model.MaPhieu);
+            if (phieu == null)
             {
-                return Json(new { success = false, message = "Không thể hủy yêu cầu này!" });
+                return Json(new { success = false, message = "Không tìm thấy phiếu!" });
+            }
+            // Log userId và MaNguoiMuon để debug
+            var currentUserId = user.Id;
+            var phieuUserId = phieu.MaNguoiMuon;
+            Console.WriteLine($"DEBUG: CurrentUserId={currentUserId}, PhieuUserId={phieuUserId}, MaPhieu={model.MaPhieu}, TrangThai={phieu.TrangThai}");
+            if (phieu.MaNguoiMuon != currentUserId)
+            {
+                return Json(new { success = false, message = $"Không thể hủy phiếu này! Phiếu thuộc user khác. (CurrentUserId={currentUserId}, PhieuUserId={phieuUserId})" });
+            }
+            if (phieu.TrangThai != TrangThaiPhieu.ChoDuyet)
+            {
+                return Json(new { success = false, message = $"Không thể hủy yêu cầu này! Trạng thái hiện tại: {phieu.TrangThai}" });
             }
             phieu.TrangThai = TrangThaiPhieu.TuChoi;
             await _context.SaveChangesAsync();
