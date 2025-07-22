@@ -1,0 +1,69 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>
+<h2>Quản lý mượn/trả tài liệu</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Mã phiếu</th>
+            <th>Tài liệu</th>
+            <th>Ngày gửi</th>
+            <th>Ngày mượn</th>
+            <th>Ngày trả dự kiến</th>
+            <th>Trạng thái</th>
+            <th>Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.MaPhieu</td>
+                <td>@item.TaiLieu?.TenTaiLieu</td>
+                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet ? item.NgayMuon.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                <td>@(item.NgayTra != null ? item.NgayTra.Value.ToString("dd/MM/yyyy") : "-")</td>
+                <td>
+                    @switch(item.TrangThai)
+                    {
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
+                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
+                            <span class="badge bg-primary">Đang mượn</span>
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
+                            <span class="badge bg-success">Đã trả</span>
+                            break;
+                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
+                            <span class="badge bg-danger">Từ chối/Hủy</span>
+                            break;
+                    }
+                </td>
+                <td>
+                    @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet)
+                    {
+                        <button class="btn btn-sm btn-danger" onclick="cancelRequest(@item.MaPhieu)">Hủy</button>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    function cancelRequest(maPhieu) {
+        if (confirm('Bạn chắc chắn muốn hủy yêu cầu này?')) {
+            fetch('/Student/CancelRequest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify({ maPhieu })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                if (data.success) location.reload();
+            });
+        }
+    }
+</script> 

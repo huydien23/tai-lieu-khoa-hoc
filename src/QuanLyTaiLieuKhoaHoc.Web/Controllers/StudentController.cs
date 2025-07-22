@@ -41,6 +41,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             // Mượn trả
             var danhSachPhieu = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
                 .Where(p => p.MaNguoiMuon == userId)
                 .ToListAsync();
             
@@ -58,7 +59,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 SoPhieuChoDuyet = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.ChoDuyet),
                 SoPhieuDaTra = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaTra),
                 SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi),
-                TaiLieuDangMuon = taiLieuDangMuon
+                TaiLieuDangMuon = taiLieuDangMuon,
+                PhieuMuonTra = danhSachPhieu // Truyền danh sách phiếu mượn cho tab động
             };
 
             return View(model);

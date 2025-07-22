@@ -45,6 +45,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 
         // Lịch sử mượn trả
         public IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra> LichSuMuonTra { get; set; } = new List<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>();
+        public IEnumerable<PhieuMuonTra> PhieuMuonTra { get; set; } = new List<PhieuMuonTra>();
     }
 
     public class ThongKeViewModel
