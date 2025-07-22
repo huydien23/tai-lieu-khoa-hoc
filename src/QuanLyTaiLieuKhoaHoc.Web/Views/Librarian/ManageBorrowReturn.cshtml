@@ -204,33 +204,44 @@
         });
 
         window.openLapPhieuMuonModal = function(maPhieu) {
+            // Xóa modal cũ nếu có
+            $('#lapPhieuMuonModal').remove();
+            // Thêm modal mới vào body
+            $('body').append('<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
             $.get('/PhieuMuonTra/LapPhieuMuon', { maPhieu: maPhieu }, function(html) {
                 $('#lapPhieuMuonModal .modal-content').html(html);
+                $('#lapPhieuMuonModal').modal({ backdrop: 'static', keyboard: false });
                 $('#lapPhieuMuonModal').modal('show');
-                // Gắn lại submit cho form trong partial
-                $('#lapPhieuMuonForm').off('submit').on('submit', function(e) {
-                    e.preventDefault();
-                    var formData = $(this).serialize();
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        type: 'POST',
-                        data: formData,
-                        success: function(response) {
-                            if (response.success) {
-                                toastr.success(response.message);
-                                $('#lapPhieuMuonModal').modal('hide');
-                                // Nếu muốn reload trang sau khi lập phiếu thành công, bỏ comment dòng dưới:
-                                // location.reload();
-                            } else {
-                                toastr.error(response.message);
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            toastr.error('Có lỗi xảy ra khi lập phiếu mượn!');
-                        }
-                    });
-                });
             });
         };
+
+        // Chỉ gán submit khi modal được mở
+        $('#lapPhieuMuonModal').on('shown.bs.modal', function () {
+            $('#lapPhieuMuonForm').off('submit').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            $('#lapPhieuMuonModal').modal('hide');
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        toastr.error('Có lỗi xảy ra khi lập phiếu mượn!');
+                    }
+                });
+            });
+        });
+
+        // Reset nội dung modal khi đóng để tránh form cũ còn tồn tại
+        $('#lapPhieuMuonModal').on('hidden.bs.modal', function () {
+            $(this).find('.modal-content').html('');
+        });
     </script>
 }
