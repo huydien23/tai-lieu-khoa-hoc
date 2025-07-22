@@ -1,0 +1,25 @@
+ @model QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+<div class="container mt-4">
+    <h2 class="mb-4">Thông tin cá nhân</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Họ tên</dt>
+                <dd class="col-sm-9">@Model.HoTen</dd>
+                <dt class="col-sm-3">Email</dt>
+                <dd class="col-sm-9">@Model.Email</dd>
+                <dt class="col-sm-3">Mã số</dt>
+                <dd class="col-sm-9">@Model.MaSo</dd>
+                <dt class="col-sm-3">Số điện thoại</dt>
+                <dd class="col-sm-9">@Model.SoDienThoai</dd>
+                <dt class="col-sm-3">Vai trò</dt>
+                <dd class="col-sm-9">@Model.VaiTro.ToString()</dd>
+                <dt class="col-sm-3">Ngày tạo</dt>
+                <dd class="col-sm-9">@Model.NgayTao.ToString("dd/MM/yyyy")</dd>
+            </dl>
+        </div>
+    </div>
+</div> 

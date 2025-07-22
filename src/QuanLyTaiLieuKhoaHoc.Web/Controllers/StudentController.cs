@@ -26,6 +26,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // Lấy thông tin người dùng
+            var currentUser = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            ViewBag.CurrentUser = currentUser;
+
             // Yêu thích
             var danhSachYeuThich = await _context.YeuThichTaiLieu
                 .Include(y => y.TaiLieu)
@@ -47,6 +51,18 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             };
 
             return View(model);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            return View(user);
         }
 
         public IActionResult TimKiemTaiLieu()

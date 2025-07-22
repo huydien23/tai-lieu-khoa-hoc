@@ -114,6 +114,10 @@
                         data-bs-target="#v-pills-shared" type="button" role="tab">
                         <i class="fas fa-share-alt me-2"></i>Đã tải
                     </button>
+                    <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-profile" type="button" role="tab">
+                        <i class="fas fa-id-card me-2"></i>Thông tin tài khoản
+                    </button>
                 </div>
             </div>
         </div>
@@ -309,6 +313,21 @@
                     <p class="text-muted">Bạn chưa tải tài liệu nào gần đây.</p>
                 }
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Thêm tab content cho Thông tin tài khoản -->
+<div class="tab-pane fade" id="v-pills-profile" role="tabpanel">
+    <div class="card-custom">
+        <div class="card-header-custom">
+            <h6 class="mb-0">
+                <i class="fas fa-id-card me-2"></i>
+                Thông tin tài khoản
+            </h6>
+        </div>
+        <div class="card-body">
+            @await Html.PartialAsync("~/Views/Lecturer/Profile.cshtml", ViewBag.CurrentUser as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung)
         </div>
     </div>
 </div>
