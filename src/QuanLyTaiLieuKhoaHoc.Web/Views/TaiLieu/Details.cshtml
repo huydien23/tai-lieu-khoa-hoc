@@ -123,12 +123,13 @@
 
                                     <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
                                         
-                                    </form>
+                                    
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
                                         <button type="submit" class="btn btn-outline-danger">
                                         <i class="fas fa-heart me-2"></i>Yêu thích
                                         </button>
+                                    </form>
                                 }
                                 else
                                 {
@@ -136,6 +137,14 @@
                                         data-bs-target="#muonModal">
                                         <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
                                     </button>
+
+                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                        <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fas fa-heart me-2"></i>Yêu thích
+                                        </button>
+                                    </form>
                                 }
                             }
                         </div>
