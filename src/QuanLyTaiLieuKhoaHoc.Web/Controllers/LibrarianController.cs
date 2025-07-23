@@ -499,11 +499,23 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Statistics()
         {
+            var tongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.DaTra);
+            var tongSoLuotTra = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaTra);
+            var tongSoLuotTai = await _context.LichSuTaiTaiLieu.CountAsync();
+            var lichSuTaiTaiLieu = await _context.LichSuTaiTaiLieu
+                .Include(l => l.NguoiDung)
+                .Include(l => l.TaiLieu)
+                .OrderByDescending(l => l.ThoiGianTai)
+                .Take(200)
+                .ToListAsync();
+            ViewBag.LichSuTaiTaiLieu = lichSuTaiTaiLieu;
             var model = new DashboardViewModel
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
                 TongSoNguoiDung = await _context.Users.CountAsync(),
-                TongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(),
+                TongSoLuotMuon = tongSoLuotMuon,
+                SoPhieuDaTra = tongSoLuotTra,
+                TongSoLuotTai = tongSoLuotTai,
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
@@ -523,7 +535,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 var month = DateTime.Now.AddMonths(-i);
                 var count = await _context.PhieuMuonTra
-                    .CountAsync(p => p.NgayMuon.Month == month.Month && p.NgayMuon.Year == month.Year);
+                    .CountAsync(p => (p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.DaTra) && p.NgayMuon.Month == month.Month && p.NgayMuon.Year == month.Year);
                 monthlyStats.Add(month.ToString("MM/yyyy"), count);
             }
             ViewBag.MonthlyStats = monthlyStats;
@@ -917,6 +929,18 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> LichSuTaiTaiLieu()
+        {
+            var list = await _context.LichSuTaiTaiLieu
+                .Include(l => l.NguoiDung)
+                .Include(l => l.TaiLieu)
+                .OrderByDescending(l => l.ThoiGianTai)
+                .Take(200)
+                .ToListAsync();
+            return View(list);
         }
     }
 }
