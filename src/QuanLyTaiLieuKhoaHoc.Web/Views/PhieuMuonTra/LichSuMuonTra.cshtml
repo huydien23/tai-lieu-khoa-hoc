@@ -3,6 +3,7 @@
     ViewData["Title"] = "Lịch sử mượn/trả tài liệu";
 }
 <h2>@ViewData["Title"]</h2>
+
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -21,26 +22,22 @@
             <tr>
                 <td>@item.MaPhieu</td>
                 <td>@item.TaiLieu?.TenTaiLieu</td>
-                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@(item.NgayTra.HasValue? item.NgayTra.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                <td>@item.NgayMuon:dd/MM/yyyy HH:mm</td>
+                <td>@(item.NgayTra.HasValue ? item.NgayTra.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
                 <td>
                     @switch (item.TrangThai)
                     {
                         case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
                             <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                            ;
                             break;
                         case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
                             <span class="badge bg-primary">Đã duyệt</span>
-                            ;
                             break;
                         case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
                             <span class="badge bg-success">Đã trả</span>
-                            ;
                             break;
                         case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
                             <span class="badge bg-danger">Từ chối</span>
-                            ;
                             break;
                     }
                 </td>
@@ -50,7 +47,7 @@
                     {
                         <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#traTaiLieuModal" data-maphieu="@item.MaPhieu" data-tentailieu="@item.TaiLieu?.TenTaiLieu">Trả tài liệu</button>
                     }
-                    <button class="btn btn-sm btn-info ms-1" data-bs-toggle="modal" data-bs-target="#xemPhieuModal" data-maphieu="@item.MaPhieu">Xem chi tiết</button>
+                    <button class="btn btn-sm btn-info btn-xem-phieu" data-maphieu="@item.MaPhieu">Xem chi tiết</button>
                 </td>
             </tr>
         }
@@ -64,7 +61,7 @@
       <form id="traTaiLieuForm">
         <div class="modal-header">
           <h5 class="modal-title" id="traTaiLieuModalLabel">Xác nhận trả tài liệu</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
         </div>
         <div class="modal-body">
           <input type="hidden" id="traMaPhieu" name="MaPhieu" />
@@ -74,7 +71,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Ngày trả</label>
-            <input type="datetime-local" class="form-control" id="traNgayTra" name="NgayTra" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+            <input type="datetime-local" class="form-control" id="traNgayTra" name="NgayTra" required />
           </div>
           <div class="mb-3">
             <label class="form-label">Ghi chú</label>
@@ -89,58 +86,62 @@
     </div>
   </div>
 </div>
-<!-- Modal xem phiếu sẽ được render động bằng JS, không để sẵn trong DOM -->
+
 <style>
   .modal-backdrop.show { z-index: 1050; }
   .modal { z-index: 1060; }
   .modal-lg { max-width: 900px; }
   .modal-content { max-height: 80vh; overflow-y: auto; }
 </style>
-<script>
-  var traTaiLieuModal = document.getElementById('traTaiLieuModal');
-  traTaiLieuModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget;
-    var maPhieu = button.getAttribute('data-maphieu');
-    var tenTaiLieu = button.getAttribute('data-tentailieu');
-    document.getElementById('traMaPhieu').value = maPhieu;
-    document.getElementById('traTenTaiLieu').value = tenTaiLieu;
-    document.getElementById('traNgayTra').value = new Date().toISOString().slice(0,16);
-    document.getElementById('traGhiChu').value = '';
-  });
 
-  document.getElementById('traTaiLieuForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var formData = $(this).serialize();
-    $.ajax({
-      url: '/PhieuMuonTra/TraTaiLieu',
-      type: 'POST',
-      data: formData,
-      success: function(response) {
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var traTaiLieuModal = document.getElementById('traTaiLieuModal');
+    traTaiLieuModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var maPhieu = button.getAttribute('data-maphieu');
+      var tenTaiLieu = button.getAttribute('data-tentailieu');
+      document.getElementById('traMaPhieu').value = maPhieu;
+      document.getElementById('traTenTaiLieu').value = tenTaiLieu;
+      document.getElementById('traNgayTra').value = new Date().toISOString().slice(0, 16);
+      document.getElementById('traGhiChu').value = '';
+    });
+
+    document.getElementById('traTaiLieuForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var formData = $(this).serialize();
+      $.post('/PhieuMuonTra/TraTaiLieu', formData, function (response) {
         if (response.success) {
           location.reload();
         } else {
-          alert(response.message || 'Có lỗi xảy ra!');
+          alert(response.message || 'Có lỗi xảy ra khi trả tài liệu!');
         }
-      },
-      error: function() {
-        alert('Có lỗi xảy ra khi trả tài liệu!');
-      }
+      }).fail(function () {
+        alert('Lỗi kết nối khi trả tài liệu!');
+      });
     });
-  });
 
-  // Sửa luồng mở modal xem phiếu mượn
-  $(document).on('click', '[data-bs-target="#xemPhieuModal"]', function (event) {
-    event.preventDefault();
-    var maPhieu = $(this).data('maphieu');
-    // Xóa modal cũ nếu có
-    $('#xemPhieuModal').remove();
-    // Thêm modal mới vào cuối body
-    $('body').append('<div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>');
-    // Load nội dung
-    $.get('/PhieuMuonTra/XemPhieu?maPhieu=' + maPhieu, function(html) {
-      $('#xemPhieuModal .modal-content').html(html);
-      var modal = new bootstrap.Modal(document.getElementById('xemPhieuModal'));
-      modal.show();
+    $(document).on('click', '.btn-xem-phieu', function () {
+      var maPhieu = $(this).data('maphieu');
+      $('#xemPhieuModal').remove(); // Xóa modal cũ
+
+      $('body').append(`
+        <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content"></div>
+          </div>
+        </div>
+      `);
+
+      $.get('/PhieuMuonTra/XemPhieu?maPhieu=' + maPhieu)
+        .done(function (html) {
+          $('#xemPhieuModal .modal-content').html(html);
+          var modal = new bootstrap.Modal(document.getElementById('xemPhieuModal'));
+          modal.show();
+        })
+        .fail(function (xhr) {
+          alert('Không thể tải nội dung phiếu: ' + xhr.status);
+        });
     });
   });
 </script>
