@@ -562,6 +562,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
 
+            ViewBag.ChuyenNganh = new SelectList(
+                await _context.ChuyenNganh.Where(c => c.TrangThaiHoatDong).OrderBy(c => c.TenChuyenNganh).ToListAsync(),
+                "MaChuyenNganh", "TenChuyenNganh");
+            ViewBag.LoaiTaiLieu = new SelectList(
+                await _context.LoaiTaiLieu.Where(l => l.TrangThaiHoatDong).OrderBy(l => l.TenLoaiTaiLieu).ToListAsync(),
+                "MaLoaiTaiLieu", "TenLoaiTaiLieu");
+
             if (document == null)
             {
                 return NotFound();

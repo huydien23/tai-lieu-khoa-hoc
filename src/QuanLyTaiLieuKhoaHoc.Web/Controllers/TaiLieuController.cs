@@ -325,7 +325,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> EditTaiLieu([FromForm] EditTaiLieuViewModel model)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Dữ liệu không hợp lệ");
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { success = false, message = "Dữ liệu không hợp lệ", errors });
+            }
 
             var taiLieu = await _context.TaiLieu.FindAsync(model.MaTaiLieu);
             if (taiLieu == null)
