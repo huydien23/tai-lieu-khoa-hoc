@@ -106,7 +106,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
                 TongSoNguoiDung = await _context.Users.CountAsync(),
-                TongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(),
+                TongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.DaTra),
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
