@@ -26,7 +26,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public Dictionary<string, int> ThongKeTheoLoaiTaiLieu { get; set; } = new Dictionary<string, int>();
 
         public List<YeuThichTaiLieu> TaiLieuYeuThich { get; set; } = new();
-        public int SoLuongYeuThich => TaiLieuYeuThich?.Count ?? 0;
+        public int SoLuongYeuThich { get; set; }
         public int SoPhieuDangMuon { get; set; }
         public int SoPhieuChoDuyet { get; set; }
         public int SoPhieuDaTra { get; set; }

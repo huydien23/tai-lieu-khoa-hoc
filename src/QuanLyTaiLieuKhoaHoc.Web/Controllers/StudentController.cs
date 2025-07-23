@@ -62,7 +62,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var model = new DashboardViewModel
             {
                 TaiLieuYeuThich = danhSachYeuThich,
-                SoPhieuDangMuon = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null),
+                SoLuongYeuThich = danhSachYeuThich.Count,
+                SoPhieuDangMuon = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaDuyet),
                 SoPhieuChoDuyet = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.ChoDuyet),
                 SoPhieuDaTra = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.DaTra),
                 SoPhieuTuChoi = danhSachPhieu.Count(p => p.TrangThai == TrangThaiPhieu.TuChoi),
