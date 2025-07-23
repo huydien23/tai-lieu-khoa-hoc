@@ -126,9 +126,16 @@
 
         <div class="modal-footer border-0 bg-transparent px-0 mt-3 justify-content-end">
             <input type="hidden" id="TaiLieuId" name="MaTaiLieu" value="@Model.MaTaiLieu" />
+            <input type="hidden" name="ChoPhepTaiFile" value="@(Model.ChoPhepTaiFile ? "true" : "false")" />
             <div class="mb-2 tai-lieu-edit d-none">
                 <label class="form-label">File tài liệu mới (nếu muốn thay):</label>
                 <input type="file" class="form-control" id="FileTaiLieuInput" name="FileTaiLieu" />
+            </div>
+            <div class="mb-3 tai-lieu-edit d-none">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="ChoPhepTaiFile" id="ChoPhepTaiFileInput" value="true" @(Model.ChoPhepTaiFile ? "checked" : "") />
+                    <label class="form-check-label" for="ChoPhepTaiFileInput">Cho phép tải file tài liệu</label>
+                </div>
             </div>
             <button id="btnEditTaiLieu" type="button" class="btn btn-warning px-4 py-2 rounded-pill me-2" onclick="showEditTaiLieuForm()">
                 <i class="fas fa-edit me-1"></i>Sửa
