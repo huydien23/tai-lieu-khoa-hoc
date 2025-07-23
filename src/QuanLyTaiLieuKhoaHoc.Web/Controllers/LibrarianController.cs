@@ -7,6 +7,7 @@ using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
 using QuanLyTaiLieuKhoaHoc.Web.Services;
 using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
@@ -564,6 +565,32 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             if (document == null)
             {
                 return NotFound();
+            }
+
+            return PartialView("_DocumentDetailsModal", document);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ChiTietTaiLieu(int id)
+        {
+            var document = await _context.TaiLieu
+                .Include(t => t.ChuyenNganh)
+                .Include(t => t.LoaiTaiLieu)
+                .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
+                .Where(t => t.MaTaiLieu == id)
+                .FirstOrDefaultAsync();
+
+            ViewBag.ChuyenNganh = new SelectList(
+                await _context.ChuyenNganh.Where(c => c.TrangThaiHoatDong).OrderBy(c => c.TenChuyenNganh).ToListAsync(),
+                "MaChuyenNganh", "TenChuyenNganh");
+            ViewBag.LoaiTaiLieu = new SelectList(
+                await _context.LoaiTaiLieu.Where(l => l.TrangThaiHoatDong).OrderBy(l => l.TenLoaiTaiLieu).ToListAsync(),
+                "MaLoaiTaiLieu", "TenLoaiTaiLieu");
+
+            if (document == null)
+            {
+                return PartialView("_DocumentDetailsModal", new QuanLyTaiLieuKhoaHoc.Web.Models.TaiLieu());
             }
 
             return PartialView("_DocumentDetailsModal", document);
