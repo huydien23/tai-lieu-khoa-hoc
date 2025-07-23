@@ -139,6 +139,9 @@
 </head>
 
 <body>
+    @using QuanLyTaiLieuKhoaHoc.Web.Models
+    @using Microsoft.AspNetCore.Identity
+    @inject UserManager<NguoiDung> UserManager
     <div class="dashboard-container">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -147,7 +150,8 @@
                 <div class="user-info">
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        @User.Identity.Name
+                        var currentUser = await UserManager.GetUserAsync(User);
+                        @(currentUser?.HoTen ?? currentUser?.UserName)
                     }
                 </div>
             </div>

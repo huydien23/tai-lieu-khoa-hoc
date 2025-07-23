@@ -4,6 +4,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
 {
     public class RegisterViewModel
     {
+        [Required(ErrorMessage = "Họ tên không được để trống")]
+        [StringLength(100, ErrorMessage = "Họ tên không được vượt quá 100 ký tự")]
+        [Display(Name = "Họ và tên")]
+        public string HoTen { get; set; } = string.Empty;
+
         [Required]
         [Display(Name = "Tên đăng nhập")]
         public string Username { get; set; } = string.Empty;

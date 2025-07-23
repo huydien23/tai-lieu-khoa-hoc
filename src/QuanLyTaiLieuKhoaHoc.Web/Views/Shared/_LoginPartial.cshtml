@@ -6,9 +6,10 @@
 <ul class="navbar-nav">
     @if (SignInManager.IsSignedIn(User))
     {
+        var currentUser = await UserManager.GetUserAsync(User);
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="fas fa-user me-2"></i>@User.Identity?.Name
+                <i class="fas fa-user me-2"></i>@(currentUser?.HoTen ?? currentUser?.UserName)
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
                 @if (User.IsInRole("SinhVien"))
@@ -24,7 +25,6 @@
             </a></li>
             }
 
-            
                 <li>
                     <form asp-controller="Account" asp-action="Login" method="post" class="d-inline">
                         <button type="submit" class="dropdown-item">

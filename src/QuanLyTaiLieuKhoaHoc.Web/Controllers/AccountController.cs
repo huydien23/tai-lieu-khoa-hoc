@@ -86,9 +86,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(string username, string email, string password, string confirmPassword, string maSo, string soDienThoai, string chuyenNganh, string role = "student")
+        public async Task<IActionResult> Register(string HoTen, string username, string email, string password, string confirmPassword, string maSo, string soDienThoai, string chuyenNganh, string role = "student")
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrEmpty(HoTen) || string.IsNullOrEmpty(username) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
                 TempData["ErrorMessage"] = "Vui lòng điền đầy đủ thông tin";
                 return View();
@@ -136,7 +136,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 UserName = username,
                 Email = email,
-                HoTen = username, // Tạm thời dùng username làm họ tên
+                HoTen = HoTen, // Sử dụng đúng họ tên từ form
                 MaSo = maSo,
                 SoDienThoai = soDienThoai,
                 VaiTro = role switch
