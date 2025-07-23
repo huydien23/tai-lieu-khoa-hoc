@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
+using System;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Services
 {
@@ -11,6 +12,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         Task<bool> DuyetYeuCauMuonAsync(int maPhieu, string maThuThu);
         Task<bool> TuChoiYeuCauMuonAsync(int maPhieu, string maThuThu, string? lyDo);
         Task<bool> XacNhanTraTaiLieuAsync(int maPhieu, string maThuThu);
+        Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu);
         Task<List<PhieuMuonTra>> LayLichSuMuonTraCuaNguoiDungAsync(string maNguoiDung);
         Task<PhieuMuonTra?> LayPhieuMuonTraByIdAsync(int maPhieu);
     }

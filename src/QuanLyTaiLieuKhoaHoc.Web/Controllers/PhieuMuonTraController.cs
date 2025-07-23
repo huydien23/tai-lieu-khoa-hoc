@@ -78,6 +78,19 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return BadRequest(new { success = false, message = "Xác nhận trả tài liệu thất bại!" });
         }
 
+        // Thủ thư xác nhận trả tài liệu với ngày trả và ghi chú
+        [Authorize(Roles = "ThuThu")]
+        [HttpPost]
+        public async Task<IActionResult> TraTaiLieu(int MaPhieu, DateTime NgayTra, string? GhiChu)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            var result = await _phieuService.TraTaiLieuAsync(MaPhieu, user.Id, NgayTra, GhiChu);
+            if (result)
+                return Json(new { success = true, message = "Trả tài liệu thành công!" });
+            return Json(new { success = false, message = "Trả tài liệu thất bại!" });
+        }
+
         // Lịch sử mượn/trả của người dùng
         public async Task<IActionResult> LichSuMuonTra()
         {
@@ -109,6 +122,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 IsFromRequest = true
             };
             return PartialView("~/Views/Shared/_LapPhieuMuonModal.cshtml", vm);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> XemPhieu(int maPhieu)
+        {
+            var phieu = await _phieuService.LayPhieuMuonTraByIdAsync(maPhieu);
+            if (phieu == null) return NotFound();
+            return PartialView("~/Views/PhieuMuonTra/_ChiTietPhieuModal.cshtml", phieu);
         }
     }
 }

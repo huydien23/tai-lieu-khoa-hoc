@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
+using System;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Services
 {
@@ -70,6 +71,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             if (phieu == null || phieu.TrangThai != TrangThaiPhieu.DaDuyet) return false;
             phieu.TrangThai = TrangThaiPhieu.DaTra;
             phieu.NgayTra = System.DateTime.Now;
+            phieu.MaThuThuDuyet = maThuThu;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu)
+        {
+            var phieu = await _context.PhieuMuonTra.FindAsync(maPhieu);
+            if (phieu == null || phieu.TrangThai != TrangThaiPhieu.DaDuyet) return false;
+            phieu.TrangThai = TrangThaiPhieu.DaTra;
+            phieu.NgayTra = ngayTra;
+            phieu.GhiChu = ghiChu;
             phieu.MaThuThuDuyet = maThuThu;
             return await _context.SaveChangesAsync() > 0;
         }

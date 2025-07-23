@@ -1,0 +1,28 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra
+<div class="modal-header">
+    <h5 class="modal-title">Chi tiết phiếu mượn/trả</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <dl class="row" style="word-break: break-word;">
+        <dt class="col-sm-4">Mã phiếu</dt>
+        <dd class="col-sm-8">@Model.MaPhieu</dd>
+        <dt class="col-sm-4">Tên tài liệu</dt>
+        <dd class="col-sm-8">@Model.TaiLieu?.TenTaiLieu</dd>
+        <dt class="col-sm-4">Người mượn</dt>
+        <dd class="col-sm-8">@Model.NguoiMuon?.HoTen (@Model.NguoiMuon?.MaSo)</dd>
+        <dt class="col-sm-4">Ngày mượn</dt>
+        <dd class="col-sm-8">@Model.NgayMuon.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-4">Ngày trả dự kiến</dt>
+        <dd class="col-sm-8">@((Model.NgayTra.HasValue) ? Model.NgayTra.Value.ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+        <dt class="col-sm-4">Trạng thái</dt>
+        <dd class="col-sm-8">@Model.TrangThai.ToString()</dd>
+        <dt class="col-sm-4">Ghi chú</dt>
+        <dd class="col-sm-8">@Model.GhiChu</dd>
+        <dt class="col-sm-4">Thủ thư duyệt/trả</dt>
+        <dd class="col-sm-8">@Model.MaThuThuDuyet</dd>
+    </dl>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+</div> 
