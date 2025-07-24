@@ -167,7 +167,7 @@
     function submitEditTaiLieuForm() {
         var form = document.getElementById('editTaiLieuForm');
         var formData = new FormData(form);
-        fetch('/TaiLieu/EditTaiLieu', {
+        fetch('/Librarian/EditDocument', {
             method: 'POST',
             body: formData
         })

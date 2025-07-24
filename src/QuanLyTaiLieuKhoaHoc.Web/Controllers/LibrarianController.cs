@@ -717,6 +717,73 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> EditDocument(Models.ViewModels.EditTaiLieuViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return Json(new { success = false, message = "Dữ liệu không hợp lệ", errors });
+            }
+
+            var taiLieu = await _context.TaiLieu.FindAsync(model.MaTaiLieu);
+            if (taiLieu == null)
+                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
+
+            taiLieu.TenTaiLieu = model.TenTaiLieu;
+            taiLieu.MoTa = model.MoTa;
+            taiLieu.TacGia = model.TacGia;
+            taiLieu.MaChuyenNganh = model.MaChuyenNganh;
+            taiLieu.MaLoaiTaiLieu = model.MaLoaiTaiLieu;
+            taiLieu.ChoPhepTaiFile = model.ChoPhepTaiFile;
+            taiLieu.TieuDe = model.TieuDe;
+            taiLieu.TapChiHoiNghi = model.TapChiHoiNghi;
+            taiLieu.NgayCongBo = model.NgayCongBo;
+            taiLieu.DOI = model.DOI;
+            taiLieu.ISSN = model.ISSN;
+            taiLieu.CapDo = model.CapDo;
+            taiLieu.TenDeTai = model.TenDeTai;
+            taiLieu.MaSoDeTai = model.MaSoDeTai;
+            taiLieu.CapDeTai = model.CapDeTai;
+            taiLieu.ThoiGianThucHien = model.ThoiGianThucHien;
+            taiLieu.CoQuanChuTri = model.CoQuanChuTri;
+            taiLieu.ChuNhiemDeTai = model.ChuNhiemDeTai;
+            taiLieu.TenGiaoTrinh = model.TenGiaoTrinh;
+            taiLieu.MonHocLienQuan = model.MonHocLienQuan;
+            taiLieu.DonViPhatHanh = model.DonViPhatHanh;
+            taiLieu.NamXuatBan = model.NamXuatBan;
+            taiLieu.SoTinChi = model.SoTinChi;
+
+            if (model.FileTaiLieu != null && model.FileTaiLieu.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(taiLieu.DuongDanFile))
+                {
+                    var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", taiLieu.DuongDanFile.TrimStart('/'));
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                }
+                // Upload file mới
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "documents");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + model.FileTaiLieu.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.FileTaiLieu.CopyToAsync(fileStream);
+                }
+                taiLieu.DuongDanFile = "/uploads/documents/" + uniqueFileName;
+                taiLieu.LoaiFile = Path.GetExtension(model.FileTaiLieu.FileName).TrimStart('.');
+                taiLieu.KichThuocFile = model.FileTaiLieu.Length / 1024; // KB
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Cập nhật tài liệu thành công!" });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> DeleteDocument(int id)
         {
             try
