@@ -658,7 +658,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Vui lòng chọn loại tài liệu!" });
                 }
 
-                // Lấy loại tài liệu động từ form (nếu có)
                 var documentType = Request.Form["DocumentType"].ToString();
 
                 // Validate động các trường theo loại tài liệu
@@ -832,7 +831,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });
                 }
 
-                // Xóa các bản ghi liên quan khác nếu có
                 var userRatings = await _context.DanhGiaTaiLieu.Where(d => d.MaNguoiDung == id).ToListAsync();
                 _context.DanhGiaTaiLieu.RemoveRange(userRatings);
 

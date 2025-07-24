@@ -142,7 +142,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 taiLieu.MaChuyenNganh = model.MaChuyenNganh;
                 taiLieu.MaLoaiTaiLieu = model.MaLoaiTaiLieu;
 
-                // Xử lý upload file mới nếu có
                 if (model.FileTaiLieu != null)
                 {
                     // Xóa file cũ

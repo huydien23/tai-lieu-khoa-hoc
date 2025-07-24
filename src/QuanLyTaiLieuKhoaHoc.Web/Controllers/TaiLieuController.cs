@@ -358,7 +358,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             taiLieu.NamXuatBan = model.NamXuatBan;
             taiLieu.SoTinChi = model.SoTinChi;
 
-            // Xử lý file upload nếu có
             if (model.FileTaiLieu != null && model.FileTaiLieu.Length > 0)
             {
                 var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
