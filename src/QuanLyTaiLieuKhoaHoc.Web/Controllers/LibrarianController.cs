@@ -970,6 +970,24 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return Json(new { success = true, message = "Lập phiếu mượn thành công!" });
         }
 
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> XacNhanTraTaiLieu(int maPhieu, DateTime? ngayTra, string? ghiChu)
+        {
+            var phieu = await _context.PhieuMuonTra.FindAsync(maPhieu);
+            if (phieu == null || phieu.TrangThai != TrangThaiPhieu.DaDuyet)
+                return Json(new { success = false, message = "Không tìm thấy phiếu hoặc phiếu không hợp lệ!" });
+
+            phieu.TrangThai = TrangThaiPhieu.DaTra;
+            phieu.NgayTra = ngayTra ?? DateTime.Now;
+            phieu.MaThuThuDuyet = (await _userManager.GetUserAsync(User))?.Id;
+            if (!string.IsNullOrWhiteSpace(ghiChu))
+                phieu.GhiChu = ghiChu;
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Xác nhận trả tài liệu thành công!" });
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetUserById(string id)
         {

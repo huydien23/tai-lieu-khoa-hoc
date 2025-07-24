@@ -109,8 +109,10 @@
 
     document.getElementById('traTaiLieuForm').addEventListener('submit', function (e) {
       e.preventDefault();
-      var formData = $(this).serialize();
-      $.post('/PhieuMuonTra/TraTaiLieu', formData, function (response) {
+      var maPhieu = document.getElementById('traMaPhieu').value;
+      var ngayTra = document.getElementById('traNgayTra').value;
+      var ghiChu = document.getElementById('traGhiChu').value;
+      $.post('/Librarian/XacNhanTraTaiLieu', { maPhieu: maPhieu, ngayTra: ngayTra, ghiChu: ghiChu }, function (response) {
         if (response.success) {
           location.reload();
         } else {
