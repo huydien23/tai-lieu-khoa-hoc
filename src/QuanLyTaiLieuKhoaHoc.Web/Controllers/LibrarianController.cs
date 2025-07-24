@@ -794,7 +794,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
                 }
 
-                // Xóa file vật lý nếu tồn tại
                 if (!string.IsNullOrEmpty(taiLieu.DuongDanFile))
                 {
                     var fullPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", taiLieu.DuongDanFile.TrimStart('/'));

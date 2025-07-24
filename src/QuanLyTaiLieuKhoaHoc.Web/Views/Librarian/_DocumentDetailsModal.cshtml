@@ -174,7 +174,13 @@
         .then(res => res.json())
         .then(result => {
             if (result.success) {
-                location.reload();
+                // Hiển thị thông báo thành công
+                if (window.toastr) {
+                    toastr.success(result.message || 'Cập nhật thành công!');
+                } else {
+                    alert(result.message || 'Cập nhật thành công!');
+                }
+                setTimeout(function() { location.reload(); }, 1000);
             } else {
                 alert('Cập nhật thất bại!');
             }
