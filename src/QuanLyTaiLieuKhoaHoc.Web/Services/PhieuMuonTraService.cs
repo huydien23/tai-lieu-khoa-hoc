@@ -86,6 +86,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<bool> LapPhieuMuonAsync(int maPhieu, string maThuThu, DateTime ngayMuon, DateTime ngayTraDuKien)
+        {
+            var phieu = await _context.PhieuMuonTra.FindAsync(maPhieu);
+            if (phieu == null || phieu.TrangThai != TrangThaiPhieu.ChoDuyet) return false;
+            phieu.TrangThai = TrangThaiPhieu.DaDuyet;
+            phieu.MaThuThuDuyet = maThuThu;
+            phieu.NgayMuon = ngayMuon;
+            phieu.NgayTraDuKien = ngayTraDuKien;
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<List<PhieuMuonTra>> LayLichSuMuonTraCuaNguoiDungAsync(string maNguoiDung)
         {
             return await _context.PhieuMuonTra

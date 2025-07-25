@@ -15,5 +15,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu);
         Task<List<PhieuMuonTra>> LayLichSuMuonTraCuaNguoiDungAsync(string maNguoiDung);
         Task<PhieuMuonTra?> LayPhieuMuonTraByIdAsync(int maPhieu);
+        Task<bool> LapPhieuMuonAsync(int maPhieu, string maThuThu, DateTime ngayMuon, DateTime ngayTraDuKien);
     }
 }

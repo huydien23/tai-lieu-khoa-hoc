@@ -962,7 +962,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             // Cập nhật phiếu thành phiếu mượn
             phieuYeuCau.TrangThai = TrangThaiPhieu.DaDuyet;
             phieuYeuCau.NgayMuon = ngayMuon;
-            phieuYeuCau.NgayTra = ngayTraDuKien;
+            phieuYeuCau.NgayTraDuKien = ngayTraDuKien;
             phieuYeuCau.MaThuThuDuyet = currentUser.Id;
 
             await _context.SaveChangesAsync();
@@ -972,20 +972,56 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ThuThu")]
-        public async Task<IActionResult> XacNhanTraTaiLieu(int maPhieu, DateTime? ngayTra, string? ghiChu)
+        public async Task<IActionResult> XacNhanTraTaiLieu(int maPhieu, DateTime? ngayTra, string? tinhTrang, string? ghiChu)
         {
-            var phieu = await _context.PhieuMuonTra.FindAsync(maPhieu);
-            if (phieu == null || phieu.TrangThai != TrangThaiPhieu.DaDuyet)
-                return Json(new { success = false, message = "Không tìm thấy phiếu hoặc phiếu không hợp lệ!" });
+            try
+            {
+                var phieu = await _context.PhieuMuonTra
+                    .Include(p => p.TaiLieu)
+                    .Include(p => p.NguoiMuon)
+                    .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
+                
+                if (phieu == null)
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn!" });
+                
+                if (phieu.TrangThai != TrangThaiPhieu.DaDuyet)
+                    return Json(new { success = false, message = "Phiếu này không ở trạng thái có thể trả!" });
 
-            phieu.TrangThai = TrangThaiPhieu.DaTra;
-            phieu.NgayTra = ngayTra ?? DateTime.Now;
-            phieu.MaThuThuDuyet = (await _userManager.GetUserAsync(User))?.Id;
-            if (!string.IsNullOrWhiteSpace(ghiChu))
-                phieu.GhiChu = ghiChu;
-            await _context.SaveChangesAsync();
+                // Cập nhật thông tin phiếu
+                phieu.TrangThai = TrangThaiPhieu.DaTra;
+                phieu.NgayTra = ngayTra ?? DateTime.Now;
+                phieu.MaThuThuDuyet = (await _userManager.GetUserAsync(User))?.Id;
+                
+                // Cập nhật ghi chú với thông tin tình trạng
+                var ghiChuMoi = "";
+                if (!string.IsNullOrWhiteSpace(tinhTrang))
+                {
+                    ghiChuMoi += $"Tình trạng tài liệu: {tinhTrang}. ";
+                }
+                if (!string.IsNullOrWhiteSpace(ghiChu))
+                {
+                    ghiChuMoi += ghiChu;
+                }
+                if (!string.IsNullOrWhiteSpace(ghiChuMoi))
+                {
+                    phieu.GhiChu = ghiChuMoi;
+                }
 
-            return Json(new { success = true, message = "Xác nhận trả tài liệu thành công!" });
+                await _context.SaveChangesAsync();
+
+                // Tạo thông báo thành công chi tiết
+                var message = $"Đã xác nhận trả tài liệu '{phieu.TaiLieu?.TenTaiLieu}' cho {phieu.NguoiMuon?.HoTen}' thành công!";
+                if (!string.IsNullOrWhiteSpace(tinhTrang))
+                {
+                    message += $" Tình trạng: {tinhTrang}.";
+                }
+
+                return Json(new { success = true, message = message });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xác nhận trả tài liệu: " + ex.Message });
+            }
         }
 
         [HttpGet]

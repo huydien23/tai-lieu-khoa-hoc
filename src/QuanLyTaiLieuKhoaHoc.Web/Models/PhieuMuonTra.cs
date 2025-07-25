@@ -22,6 +22,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Ngày mượn")]
         public DateTime NgayMuon { get; set; } = DateTime.Now;
 
+        [Display(Name = "Ngày trả dự kiến")]
+        public DateTime? NgayTraDuKien { get; set; }
+
         [Display(Name = "Ngày trả")]
         public DateTime? NgayTra { get; set; }
 

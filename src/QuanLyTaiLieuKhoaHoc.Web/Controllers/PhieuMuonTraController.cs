@@ -119,9 +119,22 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 NgayMuon = phieu.NgayMuon,
                 LyDo = phieu.GhiChu ?? "",
                 NgayTra = phieu.NgayTra,
+                NgayTraDuKien = phieu.NgayTraDuKien,
                 IsFromRequest = true
             };
             return PartialView("~/Views/Shared/_LapPhieuMuonModal.cshtml", vm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> LapPhieuMuon(int maPhieu, DateTime ngayMuon, DateTime ngayTraDuKien)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            var result = await _phieuService.LapPhieuMuonAsync(maPhieu, user.Id, ngayMuon, ngayTraDuKien);
+            if (result)
+                return Json(new { success = true, message = "Lập phiếu mượn thành công!" });
+            return Json(new { success = false, message = "Lập phiếu mượn thất bại!" });
         }
 
         [HttpGet]

@@ -9,10 +9,11 @@
         <tr>
             <th>Mã phiếu</th>
             <th>Tài liệu</th>
+            <th>Người mượn</th>
             <th>Ngày mượn</th>
-            <th>Ngày trả</th>
+            <th>Ngày trả dự kiến</th>
+            <th>Ngày trả thực tế</th>
             <th>Trạng thái</th>
-            <th>Ghi chú</th>
             <th>Thao tác</th>
         </tr>
     </thead>
@@ -22,8 +23,10 @@
             <tr>
                 <td>@item.MaPhieu</td>
                 <td>@item.TaiLieu?.TenTaiLieu</td>
-                <td>@item.NgayMuon:dd/MM/yyyy HH:mm</td>
-                <td>@(item.NgayTra.HasValue ? item.NgayTra.Value.ToString("dd/MM/yyyy HH:mm") : "-")</td>
+                <td>@item.NguoiMuon?.HoTen</td>
+                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(item.NgayTraDuKien?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
+                <td>@(item.NgayTra?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
                 <td>
                     @switch (item.TrangThai)
                     {
@@ -41,13 +44,23 @@
                             break;
                     }
                 </td>
-                <td>@item.GhiChu</td>
                 <td>
                     @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet && !item.NgayTra.HasValue)
                     {
-                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#traTaiLieuModal" data-maphieu="@item.MaPhieu" data-tentailieu="@item.TaiLieu?.TenTaiLieu">Trả tài liệu</button>
+                        <button class="btn btn-sm btn-success" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#traTaiLieuModal" 
+                                data-maphieu="@item.MaPhieu" 
+                                data-tentailieu="@item.TaiLieu?.TenTaiLieu"
+                                data-nguoimuon="@item.NguoiMuon?.HoTen"
+                                data-ngaymuon="@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")"
+                                data-ngaytradukien="@(item.NgayTraDuKien?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa có")">
+                            <i class="fas fa-undo-alt"></i> Trả tài liệu
+                        </button>
                     }
-                    <button class="btn btn-sm btn-info btn-xem-phieu" data-maphieu="@item.MaPhieu">Xem chi tiết</button>
+                    <button class="btn btn-sm btn-info btn-xem-phieu" data-maphieu="@item.MaPhieu">
+                        <i class="fas fa-eye"></i> Xem chi tiết
+                    </button>
                 </td>
             </tr>
         }
@@ -56,31 +69,78 @@
 
 <!-- Modal trả tài liệu -->
 <div class="modal fade" id="traTaiLieuModal" tabindex="-1" aria-labelledby="traTaiLieuModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <form id="traTaiLieuForm">
-        <div class="modal-header">
-          <h5 class="modal-title" id="traTaiLieuModalLabel">Xác nhận trả tài liệu</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="traTaiLieuModalLabel">
+            <i class="fas fa-undo-alt me-2"></i>Xác nhận trả tài liệu
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
         </div>
         <div class="modal-body">
           <input type="hidden" id="traMaPhieu" name="MaPhieu" />
-          <div class="mb-3">
-            <label class="form-label">Tên tài liệu</label>
-            <input type="text" class="form-control" id="traTenTaiLieu" readonly />
+          
+          <!-- Thông tin tài liệu -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Tên tài liệu</label>
+              <input type="text" class="form-control" id="traTenTaiLieu" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Người mượn</label>
+              <input type="text" class="form-control" id="traNguoiMuon" readonly />
+            </div>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Ngày trả</label>
-            <input type="datetime-local" class="form-control" id="traNgayTra" name="NgayTra" required />
+          
+          <!-- Thông tin thời gian -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Ngày mượn</label>
+              <input type="text" class="form-control" id="traNgayMuon" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Ngày trả dự kiến</label>
+              <input type="text" class="form-control" id="traNgayTraDuKien" readonly />
+            </div>
           </div>
+          
+          <!-- Thông tin trả -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Ngày trả thực tế <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" id="traNgayTra" name="NgayTra" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Tình trạng tài liệu</label>
+              <select class="form-select" id="traTinhTrang" name="TinhTrang">
+                <option value="Tốt">Tốt</option>
+                <option value="Hơi mòn">Hơi mòn</option>
+                <option value="Hư hỏng nhẹ">Hư hỏng nhẹ</option>
+                <option value="Hư hỏng nặng">Hư hỏng nặng</option>
+              </select>
+            </div>
+          </div>
+          
           <div class="mb-3">
-            <label class="form-label">Ghi chú</label>
-            <textarea class="form-control" id="traGhiChu" name="GhiChu" rows="2"></textarea>
+            <label class="form-label fw-bold">Ghi chú</label>
+            <textarea class="form-control" id="traGhiChu" name="GhiChu" rows="3" 
+                      placeholder="Ghi chú về việc trả tài liệu (nếu có)"></textarea>
+          </div>
+          
+          <!-- Thông báo xác nhận -->
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Lưu ý:</strong> Việc xác nhận trả tài liệu sẽ cập nhật trạng thái phiếu thành "Đã trả" và giải phóng tài liệu để có thể mượn lại.
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-          <button type="submit" class="btn btn-primary">Xác nhận trả</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i>Hủy
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-check me-1"></i>Xác nhận trả
+          </button>
         </div>
       </form>
     </div>
@@ -92,6 +152,22 @@
   .modal { z-index: 1060; }
   .modal-lg { max-width: 900px; }
   .modal-content { max-height: 80vh; overflow-y: auto; }
+  
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+  
+  .alert-info {
+    background-color: #d1ecf1;
+    border-color: #bee5eb;
+    color: #0c5460;
+  }
 </style>
 
 <script>
@@ -101,25 +177,87 @@
       var button = event.relatedTarget;
       var maPhieu = button.getAttribute('data-maphieu');
       var tenTaiLieu = button.getAttribute('data-tentailieu');
+      var nguoiMuon = button.getAttribute('data-nguoimuon');
+      var ngayMuon = button.getAttribute('data-ngaymuon');
+      var ngayTraDuKien = button.getAttribute('data-ngaytradukien');
+      
+      // Cập nhật thông tin modal
       document.getElementById('traMaPhieu').value = maPhieu;
       document.getElementById('traTenTaiLieu').value = tenTaiLieu;
-      document.getElementById('traNgayTra').value = new Date().toISOString().slice(0, 16);
+      document.getElementById('traNguoiMuon').value = nguoiMuon;
+      document.getElementById('traNgayMuon').value = ngayMuon;
+      document.getElementById('traNgayTraDuKien').value = ngayTraDuKien;
+      
+      // Đặt ngày trả mặc định là hiện tại
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = String(now.getMonth() + 1).padStart(2, '0');
+      var day = String(now.getDate()).padStart(2, '0');
+      var hours = String(now.getHours()).padStart(2, '0');
+      var minutes = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('traNgayTra').value = `${year}-${month}-${day}T${hours}:${minutes}`;
+      
+      // Reset các trường khác
+      document.getElementById('traTinhTrang').value = 'Tốt';
       document.getElementById('traGhiChu').value = '';
     });
 
     document.getElementById('traTaiLieuForm').addEventListener('submit', function (e) {
       e.preventDefault();
+      
       var maPhieu = document.getElementById('traMaPhieu').value;
       var ngayTra = document.getElementById('traNgayTra').value;
+      var tinhTrang = document.getElementById('traTinhTrang').value;
       var ghiChu = document.getElementById('traGhiChu').value;
-      $.post('/Librarian/XacNhanTraTaiLieu', { maPhieu: maPhieu, ngayTra: ngayTra, ghiChu: ghiChu }, function (response) {
+      
+      // Validation
+      if (!ngayTra) {
+        alert('Vui lòng chọn ngày trả!');
+        return;
+      }
+      
+      // Hiển thị loading
+      var submitBtn = this.querySelector('button[type="submit"]');
+      var originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...';
+      submitBtn.disabled = true;
+      
+      $.post('/Librarian/XacNhanTraTaiLieu', { 
+        maPhieu: maPhieu, 
+        ngayTra: ngayTra, 
+        tinhTrang: tinhTrang,
+        ghiChu: ghiChu 
+      }, function (response) {
         if (response.success) {
-          location.reload();
+          // Hiển thị thông báo thành công
+          Swal.fire({
+            icon: 'success',
+            title: 'Thành công!',
+            text: response.message || 'Đã xác nhận trả tài liệu thành công!',
+            confirmButtonText: 'OK'
+          }).then((result) => {
+            location.reload();
+          });
         } else {
-          alert(response.message || 'Có lỗi xảy ra khi trả tài liệu!');
+          // Hiển thị thông báo lỗi
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi!',
+            text: response.message || 'Có lỗi xảy ra khi trả tài liệu!',
+            confirmButtonText: 'OK'
+          });
         }
       }).fail(function () {
-        alert('Lỗi kết nối khi trả tài liệu!');
+        Swal.fire({
+          icon: 'error',
+          title: 'Lỗi kết nối!',
+          text: 'Không thể kết nối đến máy chủ. Vui lòng thử lại!',
+          confirmButtonText: 'OK'
+        });
+      }).always(function() {
+        // Khôi phục nút submit
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
       });
     });
 

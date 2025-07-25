@@ -19,5 +19,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         // Ngày trả thực tế (thủ thư nhập)
         public DateTime? NgayTra { get; set; }
         public bool IsFromRequest { get; set; }
+        // Ngày trả dự kiến
+        public DateTime? NgayTraDuKien { get; set; }
     }
 } 
