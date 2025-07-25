@@ -25,6 +25,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
             // Tìm kiếm
@@ -245,6 +246,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Take(soLuong)
@@ -259,6 +261,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
                 .OrderByDescending(t => t.LuotTai)
                 .Take(soLuong)
@@ -275,6 +278,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Skip((trang - 1) * kichThuocTrang)
                 .Take(kichThuocTrang)
