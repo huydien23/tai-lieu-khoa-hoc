@@ -102,68 +102,48 @@
                             </table>
                         </div>
                     }
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <div class="d-flex gap-2">
-                            @if (User.IsInRole("GiangVien"))
-                            {
-                                if (Model.ChoPhepTaiFile)
-                                {
-                                    <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
-                                        <i class="fas fa-download me-2"></i>Tải xuống
-                                    </a>
-                                }
-                                <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                        </form>
-                            }
-                            else if (User.IsInRole("SinhVien"))
-                            {
-                                if (Model.ChoPhepTaiFile)
-                                {
-                                    <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
-                                        <i class="fas fa-download me-2"></i>Tải xuống
-                                    </a>
+                   @if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="d-flex gap-2">
+        @if (User.IsInRole("GiangVien") || User.IsInRole("SinhVien"))
+        {
+            if (Model.DaDuocDuyet) 
+            {
+                <button type="button" class="btn btn-secondary" disabled>
+                    <i class="fas fa-book me-2"></i> Đã mượn tài liệu
+                </button>
+            }
+            else if (Model.ChoPhepTaiFile)
+            {
+                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
+                    <i class="fas fa-download me-2"></i> Tải xuống
+                </a>
+            }
+            else
+            {
+                <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                        data-bs-target="#muonModal">
+                    <i class="fas fa-paper-plane me-2"></i> Gửi yêu cầu mượn
+                </button>
+            }
 
-                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        
-                                    
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#muonModal">
-                                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
-                                    </button>
-
-                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                    </form>
-                                }
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <a asp-controller="Account" asp-action="Login">Đăng nhập</a> để xem tài liệu.
-                        </div>
-                    }
+            <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                <button type="submit" class="btn btn-outline-danger">
+                    <i class="fas fa-heart me-2"></i> Yêu thích
+                </button>
+            </form>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        <a asp-controller="Account" asp-action="Login">Đăng nhập</a> để xem tài liệu.
+    </div>
+}
                 </div>
             </div>
         </div>

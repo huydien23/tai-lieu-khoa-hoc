@@ -26,6 +26,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 
         [Required(ErrorMessage = "Loại tài liệu không được để trống")]
         [Display(Name = "Loại tài liệu")]
+        public bool DaDuocDuyet { get; set; }
 
         public int MaLoaiTaiLieu { get; set; }
         // Phân loại tài liệu (dùng cho view phân nhóm)

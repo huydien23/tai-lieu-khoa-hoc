@@ -67,52 +67,55 @@
     </tbody>
 </table>
 
-<!-- Modal trả tài liệu -->
+<!-- Modal xác nhận trả tài liệu -->
 <div class="modal fade" id="traTaiLieuModal" tabindex="-1" aria-labelledby="traTaiLieuModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
       <form id="traTaiLieuForm">
+        <!-- Header -->
         <div class="modal-header bg-success text-white">
           <h5 class="modal-title" id="traTaiLieuModalLabel">
-            <i class="fas fa-undo-alt me-2"></i>Xác nhận trả tài liệu
+            <i class="fas fa-undo-alt me-2"></i> Xác nhận trả tài liệu
           </h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
         </div>
+
+        <!-- Body -->
         <div class="modal-body">
           <input type="hidden" id="traMaPhieu" name="MaPhieu" />
-          
+
           <!-- Thông tin tài liệu -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label fw-bold">Tên tài liệu</label>
+              <label class="form-label">Tên tài liệu</label>
               <input type="text" class="form-control" id="traTenTaiLieu" readonly />
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-bold">Người mượn</label>
+              <label class="form-label">Người mượn</label>
               <input type="text" class="form-control" id="traNguoiMuon" readonly />
             </div>
           </div>
-          
-          <!-- Thông tin thời gian -->
+
+          <!-- Thông tin mượn & dự kiến -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label fw-bold">Ngày mượn</label>
+              <label class="form-label">Ngày mượn</label>
               <input type="text" class="form-control" id="traNgayMuon" readonly />
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-bold">Ngày trả dự kiến</label>
+              <label class="form-label">Ngày trả dự kiến</label>
               <input type="text" class="form-control" id="traNgayTraDuKien" readonly />
             </div>
           </div>
-          
+
           <!-- Thông tin trả -->
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label fw-bold">Ngày trả thực tế <span class="text-danger">*</span></label>
+              <label class="form-label">Ngày trả thực tế <span class="text-danger">*</span></label>
               <input type="datetime-local" class="form-control" id="traNgayTra" name="NgayTra" required />
             </div>
             <div class="col-md-6">
-              <label class="form-label fw-bold">Tình trạng tài liệu</label>
+              <label class="form-label">Tình trạng tài liệu</label>
               <select class="form-select" id="traTinhTrang" name="TinhTrang">
                 <option value="Tốt">Tốt</option>
                 <option value="Hơi mòn">Hơi mòn</option>
@@ -121,31 +124,36 @@
               </select>
             </div>
           </div>
-          
+
+          <!-- Ghi chú -->
           <div class="mb-3">
-            <label class="form-label fw-bold">Ghi chú</label>
-            <textarea class="form-control" id="traGhiChu" name="GhiChu" rows="3" 
-                      placeholder="Ghi chú về việc trả tài liệu (nếu có)"></textarea>
+            <label class="form-label">Ghi chú</label>
+            <textarea class="form-control" id="traGhiChu" name="GhiChu" rows="3" placeholder="Ghi chú thêm nếu có"></textarea>
           </div>
-          
-          <!-- Thông báo xác nhận -->
-          <div class="alert alert-info">
+
+          <!-- Cảnh báo -->
+          <div class="alert alert-info d-flex align-items-center" role="alert">
             <i class="fas fa-info-circle me-2"></i>
-            <strong>Lưu ý:</strong> Việc xác nhận trả tài liệu sẽ cập nhật trạng thái phiếu thành "Đã trả" và giải phóng tài liệu để có thể mượn lại.
+            <div>
+              <strong>Lưu ý:</strong> Xác nhận trả sẽ cập nhật trạng thái phiếu thành "Đã trả" và tài liệu sẽ có thể mượn lại.
+            </div>
           </div>
         </div>
+
+        <!-- Footer -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-times me-1"></i>Hủy
+            <i class="fas fa-times me-1"></i> Hủy
           </button>
           <button type="submit" class="btn btn-success">
-            <i class="fas fa-check me-1"></i>Xác nhận trả
+            <i class="fas fa-check me-1"></i> Xác nhận trả
           </button>
         </div>
       </form>
     </div>
   </div>
 </div>
+
 
 <style>
   .modal-backdrop.show { z-index: 1050; }
@@ -172,98 +180,94 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var traTaiLieuModal = document.getElementById('traTaiLieuModal');
-    traTaiLieuModal.addEventListener('show.bs.modal', function (event) {
-      var button = event.relatedTarget;
-      var maPhieu = button.getAttribute('data-maphieu');
-      var tenTaiLieu = button.getAttribute('data-tentailieu');
-      var nguoiMuon = button.getAttribute('data-nguoimuon');
-      var ngayMuon = button.getAttribute('data-ngaymuon');
-      var ngayTraDuKien = button.getAttribute('data-ngaytradukien');
-      
-      // Cập nhật thông tin modal
-      document.getElementById('traMaPhieu').value = maPhieu;
-      document.getElementById('traTenTaiLieu').value = tenTaiLieu;
-      document.getElementById('traNguoiMuon').value = nguoiMuon;
-      document.getElementById('traNgayMuon').value = ngayMuon;
-      document.getElementById('traNgayTraDuKien').value = ngayTraDuKien;
-      
-      // Đặt ngày trả mặc định là hiện tại
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = String(now.getMonth() + 1).padStart(2, '0');
-      var day = String(now.getDate()).padStart(2, '0');
-      var hours = String(now.getHours()).padStart(2, '0');
-      var minutes = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById('traNgayTra').value = `${year}-${month}-${day}T${hours}:${minutes}`;
-      
-      // Reset các trường khác
-      document.getElementById('traTinhTrang').value = 'Tốt';
-      document.getElementById('traGhiChu').value = '';
+    const traModalEl = document.getElementById('traTaiLieuModal');
+    const traModal = new bootstrap.Modal(traModalEl);
+
+    // Gắn sự kiện cho nút "Trả tài liệu"
+    document.querySelectorAll('.btn.btn-success[data-maphieu]').forEach(btn => {
+      btn.addEventListener('click', function () {
+        const maPhieu = this.getAttribute('data-maphieu');
+        const tenTaiLieu = this.getAttribute('data-tentailieu');
+        const nguoiMuon = this.getAttribute('data-nguoimuon');
+        const ngayMuon = this.getAttribute('data-ngaymuon');
+        const ngayTraDuKien = this.getAttribute('data-ngaytradukien');
+
+        // Gán giá trị vào form
+        document.getElementById('traMaPhieu').value = maPhieu;
+        document.getElementById('traTenTaiLieu').value = tenTaiLieu;
+        document.getElementById('traNguoiMuon').value = nguoiMuon;
+        document.getElementById('traNgayMuon').value = ngayMuon;
+        document.getElementById('traNgayTraDuKien').value = ngayTraDuKien;
+
+        // Đặt ngày trả mặc định là thời điểm hiện tại
+        const now = new Date();
+        document.getElementById('traNgayTra').value = now.toISOString().slice(0, 16); // yyyy-MM-ddTHH:mm
+
+        // Reset lại các trường khác
+        document.getElementById('traTinhTrang').value = 'Tốt';
+        document.getElementById('traGhiChu').value = '';
+
+        // Hiển thị modal
+        traModal.show();
+      });
     });
 
-    document.getElementById('traTaiLieuForm').addEventListener('submit', function (e) {
+    // Xử lý submit form
+    const traForm = document.getElementById('traTaiLieuForm');
+    traForm.addEventListener('submit', function (e) {
       e.preventDefault();
-      
-      var maPhieu = document.getElementById('traMaPhieu').value;
-      var ngayTra = document.getElementById('traNgayTra').value;
-      var tinhTrang = document.getElementById('traTinhTrang').value;
-      var ghiChu = document.getElementById('traGhiChu').value;
-      
-      // Validation
+
+      const maPhieu = document.getElementById('traMaPhieu').value;
+      const ngayTra = document.getElementById('traNgayTra').value;
+      const tinhTrang = document.getElementById('traTinhTrang').value;
+      const ghiChu = document.getElementById('traGhiChu').value;
+
       if (!ngayTra) {
         alert('Vui lòng chọn ngày trả!');
         return;
       }
-      
-      // Hiển thị loading
-      var submitBtn = this.querySelector('button[type="submit"]');
-      var originalText = submitBtn.innerHTML;
+
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...';
       submitBtn.disabled = true;
-      
-      $.post('/Librarian/XacNhanTraTaiLieu', { 
-        maPhieu: maPhieu, 
-        ngayTra: ngayTra, 
-        tinhTrang: tinhTrang,
-        ghiChu: ghiChu 
+
+      $.post('/Librarian/XacNhanTraTaiLieu', {
+        maPhieu, ngayTra, tinhTrang, ghiChu
       }, function (response) {
-        if (response.success) {
-          // Hiển thị thông báo thành công
-          Swal.fire({
-            icon: 'success',
-            title: 'Thành công!',
-            text: response.message || 'Đã xác nhận trả tài liệu thành công!',
-            confirmButtonText: 'OK'
-          }).then((result) => {
-            location.reload();
-          });
-        } else {
-          // Hiển thị thông báo lỗi
-          Swal.fire({
-            icon: 'error',
-            title: 'Lỗi!',
-            text: response.message || 'Có lỗi xảy ra khi trả tài liệu!',
-            confirmButtonText: 'OK'
-          });
-        }
-      }).fail(function () {
+        const icon = response.success ? 'success' : 'error';
+        const title = response.success ? 'Thành công!' : 'Lỗi!';
+        const message = response.message || (
+          response.success
+            ? 'Đã xác nhận trả tài liệu thành công!'
+            : 'Có lỗi xảy ra khi trả tài liệu!'
+        );
+
+        Swal.fire({
+          icon,
+          title,
+          text: message,
+          confirmButtonText: 'OK'
+        }).then(() => {
+          if (response.success) location.reload();
+        });
+      }).fail(() => {
         Swal.fire({
           icon: 'error',
           title: 'Lỗi kết nối!',
           text: 'Không thể kết nối đến máy chủ. Vui lòng thử lại!',
           confirmButtonText: 'OK'
         });
-      }).always(function() {
-        // Khôi phục nút submit
+      }).always(() => {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
       });
     });
 
+    // Mở modal xem phiếu
     $(document).on('click', '.btn-xem-phieu', function () {
-      var maPhieu = $(this).data('maphieu');
-      $('#xemPhieuModal').remove(); // Xóa modal cũ
+      const maPhieu = $(this).data('maphieu');
+      $('#xemPhieuModal').remove();
 
       $('body').append(`
         <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
@@ -276,8 +280,7 @@
       $.get('/PhieuMuonTra/XemPhieu?maPhieu=' + maPhieu)
         .done(function (html) {
           $('#xemPhieuModal .modal-content').html(html);
-          var modal = new bootstrap.Modal(document.getElementById('xemPhieuModal'));
-          modal.show();
+          new bootstrap.Modal(document.getElementById('xemPhieuModal')).show();
         })
         .fail(function (xhr) {
           alert('Không thể tải nội dung phiếu: ' + xhr.status);
