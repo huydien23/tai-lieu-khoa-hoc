@@ -87,6 +87,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
+                .Include(t => t.PhieuMuonTras)
                 .FirstOrDefaultAsync(t => t.MaTaiLieu == maTaiLieu);
 
             return taiLieu != null ? MapToViewModel(taiLieu) : null;
