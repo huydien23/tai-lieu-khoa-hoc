@@ -178,6 +178,10 @@
                         <label for="addUserChuyenNganh" class="form-label">Chuyên ngành</label>
                         <input type="text" class="form-control" id="addUserChuyenNganh" name="ChuyenNganh" />
                     </div>
+                    <div class="mb-3">
+                        <label for="addUserSoDienThoai" class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" id="addUserSoDienThoai" name="SoDienThoai" />
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -225,6 +229,10 @@
                     <div class="mb-3">
                         <label for="editUserChuyenNganh" class="form-label">Chuyên ngành</label>
                         <input type="text" class="form-control" id="editUserChuyenNganh" name="ChuyenNganh" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="editUserSoDienThoai" class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" id="editUserSoDienThoai" name="SoDienThoai" />
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -277,6 +285,7 @@
                         $('#editUserMaSo').val(user.maSo);
                         $('#editUserVaiTro').val(user.vaiTro);
                         $('#editUserChuyenNganh').val(user.chuyenNganh || '');
+                        $('#editUserSoDienThoai').val(user.soDienThoai || ''); // Thêm dòng này
                         $('#editUserModal').modal('show');
                     } else {
                         toastr.error('Không tìm thấy thông tin người dùng.');

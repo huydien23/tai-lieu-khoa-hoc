@@ -855,6 +855,27 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EditUser(string Id, string HoTen, string Email, string MaSo, string SoDienThoai, string VaiTro, string ChuyenNganh)
+        {
+            var user = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == Id);
+            if (user == null)
+                return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+            if (!string.IsNullOrWhiteSpace(HoTen)) user.HoTen = HoTen;
+            if (!string.IsNullOrWhiteSpace(Email)) user.Email = Email;
+            if (!string.IsNullOrWhiteSpace(MaSo)) user.MaSo = MaSo;
+            if (!string.IsNullOrWhiteSpace(SoDienThoai)) user.SoDienThoai = SoDienThoai;
+            if (!string.IsNullOrWhiteSpace(VaiTro) && Enum.TryParse<VaiTroNguoiDung>(VaiTro, out var vaitroValue)) user.VaiTro = vaitroValue;
+            if (!string.IsNullOrWhiteSpace(ChuyenNganh))
+            {
+                var chuyenNganh = await _context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == ChuyenNganh);
+                if (chuyenNganh != null)
+                    user.MaChuyenNganh = chuyenNganh.MaChuyenNganh;
+            }
+            await _context.SaveChangesAsync();
+            return Json(new { success = true, message = "Cập nhật người dùng thành công!" });
+        }
+
         [HttpGet]
         public IActionResult CaiDat()
         {
@@ -1037,6 +1058,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 hoTen = user.HoTen,
                 email = user.Email,
                 maSo = user.MaSo,
+                soDienThoai = user.SoDienThoai,
                 vaiTro = user.VaiTro.ToString(),
                 chuyenNganh = user.ChuyenNganh?.TenChuyenNganh
             });
