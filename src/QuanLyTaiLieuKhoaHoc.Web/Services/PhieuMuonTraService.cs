@@ -112,6 +112,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return await _context.PhieuMuonTra
                 .Include(p => p.TaiLieu)
                 .Include(p => p.NguoiMuon)
+                .Include(p => p.ThuThuDuyet)
                 .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
         }
     }

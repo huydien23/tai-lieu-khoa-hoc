@@ -13,14 +13,29 @@
         <dd class="col-sm-8">@Model.NguoiMuon?.HoTen (@Model.NguoiMuon?.MaSo)</dd>
         <dt class="col-sm-4">Ngày mượn</dt>
         <dd class="col-sm-8">@Model.NgayMuon.ToString("dd/MM/yyyy HH:mm")</dd>
-        <dt class="col-sm-4">Ngày trả dự kiến</dt>
-        <dd class="col-sm-8">@((Model.NgayTra.HasValue) ? Model.NgayTra.Value.ToString("dd/MM/yyyy HH:mm") : "-")</dd>
+        <dt class="col-sm-4">Ngày trả</dt>
+        <dd class="col-sm-8">
+            @if (Model.NgayTra.HasValue)
+            {
+                @Model.NgayTra.Value.ToString("dd/MM/yyyy HH:mm")
+            }
+            else if (Model.NgayTraDuKien.HasValue)
+            {
+                @Model.NgayTraDuKien.Value.ToString("dd/MM/yyyy HH:mm")
+            }
+            else
+            {
+                @:"-"
+            }
+        </dd>
         <dt class="col-sm-4">Trạng thái</dt>
         <dd class="col-sm-8">@Model.TrangThai.ToString()</dd>
+        <dt class="col-sm-4">Tình trạng sau trả</dt>
+        <dd class="col-sm-8">@Model.TinhTrangSauTra</dd>
         <dt class="col-sm-4">Ghi chú</dt>
         <dd class="col-sm-8">@Model.GhiChu</dd>
         <dt class="col-sm-4">Thủ thư duyệt/trả</dt>
-        <dd class="col-sm-8">@Model.MaThuThuDuyet</dd>
+        <dd class="col-sm-8">@(Model.ThuThuDuyet?.HoTen ?? Model.ThuThuDuyet?.UserName ?? Model.MaThuThuDuyet)</dd>
     </dl>
 </div>
 <div class="modal-footer">
