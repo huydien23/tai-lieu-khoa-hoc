@@ -127,22 +127,31 @@
                         </h6>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form asp-action="UpdateUser" asp-controller="Student" method="post">
+                            @Html.AntiForgeryToken()
                             <div class="mb-3">
                                 <label class="form-label">Họ tên</label>
-                                <input type="text" class="form-control" placeholder="Nhập họ tên mới">
+                                <input type="text" class="form-control" name="HoTen" placeholder="Nhập họ tên mới" value="@((ViewBag.CurrentUser as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung)?.HoTen)">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Mật khẩu hiện tại</label>
-                                <input type="password" class="form-control" placeholder="Nhập mật khẩu hiện tại">
+                                <input type="password" class="form-control" name="MatKhauHienTai" placeholder="Nhập mật khẩu hiện tại">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Mật khẩu mới</label>
-                                <input type="password" class="form-control" placeholder="Nhập mật khẩu mới">
+                                <input type="password" class="form-control" name="MatKhauMoi" placeholder="Nhập mật khẩu mới">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Nhập lại mật khẩu mới</label>
-                                <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới">
+                                <input type="password" class="form-control" name="NhapLaiMatKhauMoi" placeholder="Nhập lại mật khẩu mới">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Mã số</label>
+                                <input type="text" class="form-control" name="MaSo" placeholder="Nhập mã số mới" value="@((ViewBag.CurrentUser as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung)?.MaSo)">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Số điện thoại</label>
+                                <input type="text" class="form-control" name="SoDienThoai" placeholder="Nhập số điện thoại mới" value="@((ViewBag.CurrentUser as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung)?.SoDienThoai)">
                             </div>
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-2"></i>Lưu thay đổi

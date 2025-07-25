@@ -145,5 +145,51 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Đã hủy yêu cầu mượn!" });
         }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUser(string HoTen, string MaSo, string SoDienThoai, string MatKhauHienTai, string MatKhauMoi, string NhapLaiMatKhauMoi)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy người dùng!";
+                return RedirectToAction("Dashboard-Student");
+            }
+            bool changed = false;
+            if (!string.IsNullOrWhiteSpace(HoTen) && HoTen != user.HoTen)
+            {
+                user.HoTen = HoTen;
+                changed = true;
+            }
+            if (!string.IsNullOrWhiteSpace(MaSo) && MaSo != user.MaSo)
+            {
+                user.MaSo = MaSo;
+                changed = true;
+            }
+            if (!string.IsNullOrWhiteSpace(SoDienThoai) && SoDienThoai != user.SoDienThoai)
+            {
+                user.SoDienThoai = SoDienThoai;
+                changed = true;
+            }
+            if (changed)
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            // Đổi mật khẩu nếu có nhập
+            if (!string.IsNullOrWhiteSpace(MatKhauHienTai) && !string.IsNullOrWhiteSpace(MatKhauMoi) && MatKhauMoi == NhapLaiMatKhauMoi)
+            {
+                var result = await _userManager.ChangePasswordAsync(user, MatKhauHienTai, MatKhauMoi);
+                if (!result.Succeeded)
+                {
+                    TempData["ErrorMessage"] = string.Join("; ", result.Errors.Select(e => e.Description));
+                    return RedirectToAction("Dashboard-Student");
+                }
+            }
+            TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+            return RedirectToAction("Dashboard-Student");
+        }
     }
 }
