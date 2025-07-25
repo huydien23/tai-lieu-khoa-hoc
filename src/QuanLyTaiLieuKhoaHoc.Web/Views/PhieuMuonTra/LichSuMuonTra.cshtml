@@ -47,14 +47,7 @@
                 <td>
                     @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet && !item.NgayTra.HasValue)
                     {
-                        <button class="btn btn-sm btn-success" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#traTaiLieuModal" 
-                                data-maphieu="@item.MaPhieu" 
-                                data-tentailieu="@item.TaiLieu?.TenTaiLieu"
-                                data-nguoimuon="@item.NguoiMuon?.HoTen"
-                                data-ngaymuon="@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")"
-                                data-ngaytradukien="@(item.NgayTraDuKien?.ToString("dd/MM/yyyy HH:mm") ?? "Chưa có")">
+                        <button class="btn btn-sm btn-success" onclick="openTraPhieuModal('@item.MaPhieu')">
                             <i class="fas fa-undo-alt"></i> Trả tài liệu
                         </button>
                     }
@@ -67,85 +60,51 @@
     </tbody>
 </table>
 
-<!-- Modal trả tài liệu -->
-<div class="modal fade" id="traTaiLieuModal" tabindex="-1" aria-labelledby="traTaiLieuModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <form id="traTaiLieuForm">
-        <div class="modal-header bg-success text-white">
-          <h5 class="modal-title" id="traTaiLieuModalLabel">
-            <i class="fas fa-undo-alt me-2"></i>Xác nhận trả tài liệu
-          </h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
-        </div>
-        <div class="modal-body">
-          <input type="hidden" id="traMaPhieu" name="MaPhieu" />
-          
-          <!-- Thông tin tài liệu -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Tên tài liệu</label>
-              <input type="text" class="form-control" id="traTenTaiLieu" readonly />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Người mượn</label>
-              <input type="text" class="form-control" id="traNguoiMuon" readonly />
-            </div>
-          </div>
-          
-          <!-- Thông tin thời gian -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Ngày mượn</label>
-              <input type="text" class="form-control" id="traNgayMuon" readonly />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Ngày trả dự kiến</label>
-              <input type="text" class="form-control" id="traNgayTraDuKien" readonly />
-            </div>
-          </div>
-          
-          <!-- Thông tin trả -->
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Ngày trả thực tế <span class="text-danger">*</span></label>
-              <input type="datetime-local" class="form-control" id="traNgayTra" name="NgayTra" required />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-bold">Tình trạng tài liệu</label>
-              <select class="form-select" id="traTinhTrang" name="TinhTrang">
-                <option value="Tốt">Tốt</option>
-                <option value="Hơi mòn">Hơi mòn</option>
-                <option value="Hư hỏng nhẹ">Hư hỏng nhẹ</option>
-                <option value="Hư hỏng nặng">Hư hỏng nặng</option>
-              </select>
-            </div>
-          </div>
-          
-          <div class="mb-3">
-            <label class="form-label fw-bold">Ghi chú</label>
-            <textarea class="form-control" id="traGhiChu" name="GhiChu" rows="3" 
-                      placeholder="Ghi chú về việc trả tài liệu (nếu có)"></textarea>
-          </div>
-          
-          <!-- Thông báo xác nhận -->
-          <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            <strong>Lưu ý:</strong> Việc xác nhận trả tài liệu sẽ cập nhật trạng thái phiếu thành "Đã trả" và giải phóng tài liệu để có thể mượn lại.
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            <i class="fas fa-times me-1"></i>Hủy
-          </button>
-          <button type="submit" class="btn btn-success">
-            <i class="fas fa-check me-1"></i>Xác nhận trả
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<!-- XÓA modal trả tài liệu tĩnh và JS khởi tạo modal tĩnh ở đây -->
+
+@section Scripts {
+<script>
+    window.openTraPhieuModal = function(maPhieu) {
+        $('#traPhieuModal').remove();
+        $('body').append('<div class="modal fade" id="traPhieuModal" tabindex="-1" aria-labelledby="traPhieuModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
+        $.get('/PhieuMuonTra/LapPhieuTra', { maPhieu: maPhieu }, function(html) {
+            $('#traPhieuModal .modal-content').html(html);
+            $('#traPhieuModal').modal('show');
+        });
+    };
+
+    // Submit form trả tài liệu qua AJAX
+    $(document).on('submit', '#lapPhieuTraForm', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        var formData = form.serialize();
+        var submitBtn = form.find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        submitBtn.html('<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...');
+        submitBtn.prop('disabled', true);
+        $.post('/PhieuMuonTra/LapPhieuTra', formData, function(response) {
+            if (response.success) {
+                toastr.success(response.message);
+                $('#traPhieuModal').modal('hide');
+                setTimeout(function() { location.reload(); }, 1000);
+            } else {
+                toastr.error(response.message);
+            }
+        }).fail(function() {
+            toastr.error('Có lỗi xảy ra khi trả tài liệu!');
+        }).always(function() {
+            submitBtn.html(originalText);
+            submitBtn.prop('disabled', false);
+        });
+    });
+
+    // Reset nội dung modal khi đóng để tránh form cũ còn tồn tại
+    $(document).on('hidden.bs.modal', '#traPhieuModal', function () {
+        $(this).find('.modal-content').html('');
+    });
+}
+</script>
+}
 
 <style>
   .modal-backdrop.show { z-index: 1050; }
@@ -172,95 +131,6 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var traTaiLieuModal = document.getElementById('traTaiLieuModal');
-    traTaiLieuModal.addEventListener('show.bs.modal', function (event) {
-      var button = event.relatedTarget;
-      var maPhieu = button.getAttribute('data-maphieu');
-      var tenTaiLieu = button.getAttribute('data-tentailieu');
-      var nguoiMuon = button.getAttribute('data-nguoimuon');
-      var ngayMuon = button.getAttribute('data-ngaymuon');
-      var ngayTraDuKien = button.getAttribute('data-ngaytradukien');
-      
-      // Cập nhật thông tin modal
-      document.getElementById('traMaPhieu').value = maPhieu;
-      document.getElementById('traTenTaiLieu').value = tenTaiLieu;
-      document.getElementById('traNguoiMuon').value = nguoiMuon;
-      document.getElementById('traNgayMuon').value = ngayMuon;
-      document.getElementById('traNgayTraDuKien').value = ngayTraDuKien;
-      
-      // Đặt ngày trả mặc định là hiện tại
-      var now = new Date();
-      var year = now.getFullYear();
-      var month = String(now.getMonth() + 1).padStart(2, '0');
-      var day = String(now.getDate()).padStart(2, '0');
-      var hours = String(now.getHours()).padStart(2, '0');
-      var minutes = String(now.getMinutes()).padStart(2, '0');
-      document.getElementById('traNgayTra').value = `${year}-${month}-${day}T${hours}:${minutes}`;
-      
-      // Reset các trường khác
-      document.getElementById('traTinhTrang').value = 'Tốt';
-      document.getElementById('traGhiChu').value = '';
-    });
-
-    document.getElementById('traTaiLieuForm').addEventListener('submit', function (e) {
-      e.preventDefault();
-      
-      var maPhieu = document.getElementById('traMaPhieu').value;
-      var ngayTra = document.getElementById('traNgayTra').value;
-      var tinhTrang = document.getElementById('traTinhTrang').value;
-      var ghiChu = document.getElementById('traGhiChu').value;
-      
-      // Validation
-      if (!ngayTra) {
-        alert('Vui lòng chọn ngày trả!');
-        return;
-      }
-      
-      // Hiển thị loading
-      var submitBtn = this.querySelector('button[type="submit"]');
-      var originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Đang xử lý...';
-      submitBtn.disabled = true;
-      
-      $.post('/Librarian/XacNhanTraTaiLieu', { 
-        maPhieu: maPhieu, 
-        ngayTra: ngayTra, 
-        tinhTrang: tinhTrang,
-        ghiChu: ghiChu 
-      }, function (response) {
-        if (response.success) {
-          // Hiển thị thông báo thành công
-          Swal.fire({
-            icon: 'success',
-            title: 'Thành công!',
-            text: response.message || 'Đã xác nhận trả tài liệu thành công!',
-            confirmButtonText: 'OK'
-          }).then((result) => {
-            location.reload();
-          });
-        } else {
-          // Hiển thị thông báo lỗi
-          Swal.fire({
-            icon: 'error',
-            title: 'Lỗi!',
-            text: response.message || 'Có lỗi xảy ra khi trả tài liệu!',
-            confirmButtonText: 'OK'
-          });
-        }
-      }).fail(function () {
-        Swal.fire({
-          icon: 'error',
-          title: 'Lỗi kết nối!',
-          text: 'Không thể kết nối đến máy chủ. Vui lòng thử lại!',
-          confirmButtonText: 'OK'
-        });
-      }).always(function() {
-        // Khôi phục nút submit
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      });
-    });
-
     $(document).on('click', '.btn-xem-phieu', function () {
       var maPhieu = $(this).data('maphieu');
       $('#xemPhieuModal').remove(); // Xóa modal cũ

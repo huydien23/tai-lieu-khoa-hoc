@@ -81,11 +81,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         // Thủ thư xác nhận trả tài liệu với ngày trả và ghi chú
         [Authorize(Roles = "ThuThu")]
         [HttpPost]
-        public async Task<IActionResult> TraTaiLieu(int MaPhieu, DateTime NgayTra, string? GhiChu)
+        public async Task<IActionResult> TraTaiLieu(int MaPhieu, DateTime NgayTra, string? GhiChu, string tinhTrang)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return Unauthorized();
-            var result = await _phieuService.TraTaiLieuAsync(MaPhieu, user.Id, NgayTra, GhiChu);
+            var result = await _phieuService.TraTaiLieuAsync(MaPhieu, user.Id, NgayTra, GhiChu, tinhTrang);
             if (result)
                 return Json(new { success = true, message = "Trả tài liệu thành công!" });
             return Json(new { success = false, message = "Trả tài liệu thất bại!" });
@@ -143,6 +143,40 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var phieu = await _phieuService.LayPhieuMuonTraByIdAsync(maPhieu);
             if (phieu == null) return NotFound();
             return PartialView("~/Views/PhieuMuonTra/_ChiTietPhieuModal.cshtml", phieu);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> LapPhieuTra(int maPhieu)
+        {
+            var phieu = await _phieuService.LayPhieuMuonTraByIdAsync(maPhieu);
+            if (phieu == null) return NotFound();
+            var sinhVien = phieu.NguoiMuon;
+            var taiLieu = phieu.TaiLieu;
+            var vm = new QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
+            {
+                MaPhieu = phieu.MaPhieu,
+                HoTen = sinhVien?.HoTen ?? "",
+                MSSV = sinhVien?.MaSo ?? "",
+                Email = sinhVien?.Email ?? "",
+                ChuyenNganh = sinhVien?.ChuyenNganh?.TenChuyenNganh ?? "",
+                TenTaiLieu = taiLieu?.TenTaiLieu ?? "",
+                TacGia = taiLieu?.TacGia ?? "",
+                NgayMuon = phieu.NgayMuon
+            };
+            return PartialView("~/Views/PhieuMuonTra/_LapPhieuTraModal.cshtml", vm);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> LapPhieuTra(int maPhieu, DateTime ngayTra, string tinhTrang, string? ghiChu)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            var result = await _phieuService.TraTaiLieuAsync(maPhieu, user.Id, ngayTra, ghiChu, tinhTrang);
+            if (result)
+                return Json(new { success = true, message = "Trả tài liệu thành công!" });
+            return Json(new { success = false, message = "Trả tài liệu thất bại!" });
         }
     }
 }

@@ -1,0 +1,42 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Xác nhận trả tài liệu</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form id="lapPhieuTraForm" method="post" action="/PhieuMuonTra/LapPhieuTra">
+    <div class="modal-body">
+        <input type="hidden" name="maPhieu" value="@Model.MaPhieu" />
+        <div><b>Họ tên:</b> @Model.HoTen</div>
+        <div><b>MSSV:</b> @Model.MSSV</div>
+        <div><b>Email:</b> @Model.Email</div>
+        <div><b>Chuyên ngành:</b> @Model.ChuyenNganh</div>
+        <div><b>Tài liệu:</b> @Model.TenTaiLieu</div>
+        <div><b>Tác giả:</b> @Model.TacGia</div>
+        <div class="mb-2">
+            <label>Ngày mượn:</label>
+            <input type="text" class="form-control" value="@(Model.NgayMuon != DateTime.MinValue ? Model.NgayMuon.ToString("dd/MM/yyyy HH:mm") : "")" readonly />
+        </div>
+        <div class="mb-2">
+            <label>Ngày trả thực tế:</label>
+            <input type="datetime-local" name="ngayTra" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+        </div>
+        <div class="mb-2">
+            <label>Tình trạng tài liệu:</label>
+            <select name="tinhTrang" class="form-control">
+                <option value="Tốt">Tốt</option>
+                <option value="Hơi mòn">Hơi mòn</option>
+                <option value="Hư hỏng nhẹ">Hư hỏng nhẹ</option>
+                <option value="Hư hỏng nặng">Hư hỏng nặng</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label>Ghi chú:</label>
+            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ghi chú về việc trả tài liệu (nếu có)"></textarea>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <button type="submit" class="btn btn-success">Xác nhận trả</button>
+    </div>
+</form> 

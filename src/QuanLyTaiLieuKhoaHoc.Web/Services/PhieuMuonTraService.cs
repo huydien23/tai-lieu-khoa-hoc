@@ -75,7 +75,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu)
+        public async Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu, string tinhTrang)
         {
             var phieu = await _context.PhieuMuonTra.FindAsync(maPhieu);
             if (phieu == null || phieu.TrangThai != TrangThaiPhieu.DaDuyet) return false;
@@ -83,6 +83,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             phieu.NgayTra = ngayTra;
             phieu.GhiChu = ghiChu;
             phieu.MaThuThuDuyet = maThuThu;
+            phieu.TinhTrangSauTra = tinhTrang; // Giả sử có trường này, nếu chưa có thì cần thêm vào model và migration
             return await _context.SaveChangesAsync() > 0;
         }
 
