@@ -30,7 +30,7 @@
         </div>
         <div class="col-md-6">
             <div class="mb-3">
-                <label asp-for="TenTaiLieu" class="form-label fw-semibold">
+                <label id="labelTenTaiLieu" asp-for="TenTaiLieu" class="form-label fw-semibold">
                     <i class="fas fa-file-alt me-1"></i>
                     Tên tài liệu <span class="text-danger">*</span>
                 </label>
@@ -62,13 +62,9 @@
         <span asp-validation-for="MoTa" class="text-danger small"></span>
     </div>
 
-    <!-- Các trường động theo dạng tài liệu -->
+    <!-- Các trường đặc thù động theo dạng tài liệu, KHÔNG lặp lại tên, tác giả, mô tả -->
     <div id="baibao-fields" style="display:none;">
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <label asp-for="TieuDe" class="form-label">Tiêu đề</label>
-                <input asp-for="TieuDe" class="form-control" placeholder="Nhập tiêu đề bài báo..." />
-            </div>
             <div class="col-md-4 mb-3">
                 <label asp-for="TapChiHoiNghi" class="form-label">Tạp chí/Hội nghị</label>
                 <input asp-for="TapChiHoiNghi" class="form-control" placeholder="Nhập tên tạp chí/hội nghị..." />
@@ -93,13 +89,8 @@
             </div>
         </div>
     </div>
-
     <div id="detai-fields" style="display:none;">
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <label asp-for="TenDeTai" class="form-label">Tên đề tài</label>
-                <input asp-for="TenDeTai" class="form-control" placeholder="Nhập tên đề tài..." />
-            </div>
             <div class="col-md-4 mb-3">
                 <label asp-for="MaSoDeTai" class="form-label">Mã số đề tài</label>
                 <input asp-for="MaSoDeTai" class="form-control" placeholder="Nhập mã số đề tài..." />
@@ -124,13 +115,8 @@
             </div>
         </div>
     </div>
-
     <div id="giaotrinh-fields" style="display:none;">
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <label asp-for="TenGiaoTrinh" class="form-label">Tên giáo trình</label>
-                <input asp-for="TenGiaoTrinh" class="form-control" placeholder="Nhập tên giáo trình..." />
-            </div>
             <div class="col-md-4 mb-3">
                 <label asp-for="MonHocLienQuan" class="form-label">Môn học liên quan</label>
                 <input asp-for="MonHocLienQuan" class="form-control" placeholder="Nhập môn học liên quan..." />
@@ -227,9 +213,18 @@
         $('#DocumentType').on('change', function () {
             var type = $(this).val();
             $('#baibao-fields, #detai-fields, #giaotrinh-fields').hide();
-            if (type === 'baibao') $('#baibao-fields').show();
-            if (type === 'detai') $('#detai-fields').show();
-            if (type === 'giaotrinh') $('#giaotrinh-fields').show();
+            if (type === 'baibao') {
+                $('#baibao-fields').show();
+                $('#labelTenTaiLieu').text('Tiêu đề *');
+            }
+            if (type === 'detai') {
+                $('#detai-fields').show();
+                $('#labelTenTaiLieu').text('Tên đề tài *');
+            }
+            if (type === 'giaotrinh') {
+                $('#giaotrinh-fields').show();
+                $('#labelTenTaiLieu').text('Tên giáo trình *');
+            }
         });
 
         $('#createDocumentForm').on('submit', function (e) {
