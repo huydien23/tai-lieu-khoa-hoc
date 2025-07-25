@@ -72,6 +72,12 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
             .HasForeignKey(ls => ls.MaNguoiDung)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.Entity<PhieuMuonTra>()
+            .HasOne(p => p.TaiLieu)
+            .WithMany()
+            .HasForeignKey(p => p.MaTaiLieu)
+            .OnDelete(DeleteBehavior.Restrict);
+
         // Seed data
         SeedData(builder);
     }

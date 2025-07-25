@@ -48,7 +48,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             }
             await context.SaveChangesAsync();
 
-            // Tạo thủ thư nếu chưa có
+            // Tạo thủ thư 
             var librarianUser = await userManager.FindByEmailAsync("thuthu@library.edu.vn");
             if (librarianUser == null)
             {
@@ -71,10 +71,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             int idBaiBao = loaiBaiBao.MaLoaiTaiLieu;
             int idDeTai = loaiDeTai.MaLoaiTaiLieu;
             int idGiaoTrinh = loaiGiaoTrinh.MaLoaiTaiLieu;
-            context.TaiLieu.RemoveRange(context.TaiLieu);
-            await context.SaveChangesAsync();
 
-            // Seed 5 bài báo khoa học 
+            // Seed 15 tài liệu mẫu 
             var sampleDocuments = new List<TaiLieu>
             {
                 // 1. Deep Learning
@@ -383,7 +381,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 }
             };
 
-            context.TaiLieu.AddRange(sampleDocuments);
+            foreach (var doc in sampleDocuments)
+            {
+                if (!context.TaiLieu.Any(t => t.TenTaiLieu == doc.TenTaiLieu))
+                {
+                    context.TaiLieu.Add(doc);
+                }
+            }
             await context.SaveChangesAsync();
         }
     }
