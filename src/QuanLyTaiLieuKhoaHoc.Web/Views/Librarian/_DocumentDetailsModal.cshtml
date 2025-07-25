@@ -70,6 +70,10 @@
                         </div>
                         <div class="row mb-3">
                             <div class="col-sm-6 mb-2">
+                                <span class="fw-semibold text-muted"><i class="fas fa-user me-1"></i>Tác giả:</span>
+                                <span class="ms-1">@(Model.TacGia ?? "Không rõ")</span>
+                            </div>
+                            <div class="col-sm-6 mb-2">
                                 <span class="fw-semibold text-muted"><i class="fas fa-calendar me-1"></i>Ngày tải lên:</span>
                                 <span class="ms-1">@Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")</span>
                             </div>
@@ -77,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Cột phải: Thông tin chi tiết đặc thù, KHÔNG lặp lại tên, tác giả, mô tả... -->
+            <!-- Cột phải: Thông tin chi tiết đặc thù -->
             <div class="col-md-6">
                 <div class="h-100 bg-white rounded-4 border p-3 shadow-sm">
                     <h6 class="fw-semibold text-primary mb-3">
@@ -89,6 +93,7 @@
                             {
                                 if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase))
                                 {
+                                    <tr><td class="fw-semibold">Tiêu đề:</td><td><span class="tai-lieu-view">@Model.TieuDe</span><input class="tai-lieu-edit d-none form-control" name="TieuDe" value="@Model.TieuDe" /></td></tr>
                                     <tr><td class="fw-semibold">Tạp chí/Hội nghị:</td><td><span class="tai-lieu-view">@Model.TapChiHoiNghi</span><input class="tai-lieu-edit d-none form-control" name="TapChiHoiNghi" value="@Model.TapChiHoiNghi" /></td></tr>
                                     <tr><td class="fw-semibold">Ngày công bố:</td><td><span class="tai-lieu-view">@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")</span><input class="tai-lieu-edit d-none form-control" type="date" name="NgayCongBo" value="@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")" /></td></tr>
                                     <tr><td class="fw-semibold">DOI:</td><td><span class="tai-lieu-view">@Model.DOI</span><input class="tai-lieu-edit d-none form-control" name="DOI" value="@Model.DOI" /></td></tr>
@@ -97,6 +102,7 @@
                                 }
                                 else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase))
                                 {
+                                    <tr><td class="fw-semibold">Tên đề tài:</td><td><span class="tai-lieu-view">@Model.TenDeTai</span><input class="tai-lieu-edit d-none form-control" name="TenDeTai" value="@Model.TenDeTai" /></td></tr>
                                     <tr><td class="fw-semibold">Mã số đề tài:</td><td><span class="tai-lieu-view">@Model.MaSoDeTai</span><input class="tai-lieu-edit d-none form-control" name="MaSoDeTai" value="@Model.MaSoDeTai" /></td></tr>
                                     <tr><td class="fw-semibold">Cấp đề tài:</td><td><span class="tai-lieu-view">@Model.CapDeTai</span><input class="tai-lieu-edit d-none form-control" name="CapDeTai" value="@Model.CapDeTai" /></td></tr>
                                     <tr><td class="fw-semibold">Thời gian thực hiện:</td><td><span class="tai-lieu-view">@Model.ThoiGianThucHien</span><input class="tai-lieu-edit d-none form-control" name="ThoiGianThucHien" value="@Model.ThoiGianThucHien" /></td></tr>
@@ -105,6 +111,7 @@
                                 }
                                 else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))
                                 {
+                                    <tr><td class="fw-semibold">Tên giáo trình:</td><td><span class="tai-lieu-view">@Model.TenGiaoTrinh</span><input class="tai-lieu-edit d-none form-control" name="TenGiaoTrinh" value="@Model.TenGiaoTrinh" /></td></tr>
                                     <tr><td class="fw-semibold">Môn học liên quan:</td><td><span class="tai-lieu-view">@Model.MonHocLienQuan</span><input class="tai-lieu-edit d-none form-control" name="MonHocLienQuan" value="@Model.MonHocLienQuan" /></td></tr>
                                     <tr><td class="fw-semibold">Đơn vị phát hành:</td><td><span class="tai-lieu-view">@Model.DonViPhatHanh</span><input class="tai-lieu-edit d-none form-control" name="DonViPhatHanh" value="@Model.DonViPhatHanh" /></td></tr>
                                     <tr><td class="fw-semibold">Năm xuất bản:</td><td><span class="tai-lieu-view">@(Model.NamXuatBan?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="NamXuatBan" value="@(Model.NamXuatBan?.ToString() ?? "")" /></td></tr>
