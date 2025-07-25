@@ -1075,6 +1075,23 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
+                // Gán role cho Identity
+                string identityRole = user.VaiTro switch
+                {
+                    VaiTroNguoiDung.GiangVien => "GiangVien",
+                    VaiTroNguoiDung.ThuThu => "ThuThu",
+                    _ => "SinhVien"
+                };
+                if (!await _userManager.IsInRoleAsync(user, identityRole))
+                {
+                    // Tạo role nếu chưa có
+                    var roleManager = (RoleManager<IdentityRole>)HttpContext.RequestServices.GetService(typeof(RoleManager<IdentityRole>));
+                    if (roleManager != null && !await roleManager.RoleExistsAsync(identityRole))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(identityRole));
+                    }
+                    await _userManager.AddToRoleAsync(user, identityRole);
+                }
                 return Json(new { success = true, message = "Thêm người dùng thành công!" });
             }
             else
