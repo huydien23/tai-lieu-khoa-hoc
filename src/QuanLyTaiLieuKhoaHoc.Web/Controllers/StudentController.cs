@@ -118,6 +118,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public int MaPhieu { get; set; }
     }
 
+    public class DeleteReturnedDocumentModel
+    {
+        public int MaPhieu { get; set; }
+    }
+
         [HttpPost]
         [Authorize(Roles = "SinhVien")]
         public async Task<IActionResult> CancelRequest([FromBody] CancelRequestModel model)
@@ -144,6 +149,39 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             phieu.TrangThai = TrangThaiPhieu.TuChoi;
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Đã hủy yêu cầu mượn!" });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "SinhVien")]
+        public async Task<IActionResult> DeleteReturnedDocument([FromBody] DeleteReturnedDocumentModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
+
+                var phieu = await _context.PhieuMuonTra
+                    .FirstOrDefaultAsync(p => p.MaPhieu == model.MaPhieu && p.MaNguoiMuon == user.Id);
+
+                if (phieu == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn." });
+                }
+
+                if (phieu.TrangThai != TrangThaiPhieu.DaTra)
+                {
+                    return Json(new { success = false, message = "Chỉ có thể xóa phiếu đã trả." });
+                }
+
+                _context.PhieuMuonTra.Remove(phieu);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Xóa tài liệu đã trả thành công." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
         }
 
         [HttpPost]

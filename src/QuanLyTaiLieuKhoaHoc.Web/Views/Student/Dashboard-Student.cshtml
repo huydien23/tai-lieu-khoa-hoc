@@ -194,37 +194,84 @@
                         </div>
                     </div>
                 </div>
-                <h5 class="mt-4 mb-3">Tài liệu đang mượn</h5>
-                @if (Model.TaiLieuDangMuon != null && Model.TaiLieuDangMuon.Any())
-                {
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>Mã phiếu</th>
-                                <th>Tên tài liệu</th>
-                                <th>Ngày mượn</th>
-                                <th>Ngày trả dự kiến</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var phieu in Model.TaiLieuDangMuon)
-                        {
-                            <tr>
-                                <td>@phieu.MaPhieu</td>
-                                <td>@phieu.TaiLieu?.TenTaiLieu</td>
-                                <td>@phieu.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@phieu.NgayTra?.ToString("dd/MM/yyyy")</td>
-                                <td><span class="badge bg-success">Đang mượn</span></td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <div class="text-muted">Chưa có tài liệu đang mượn.</div>
-                }
+                <!-- Tài liệu đang mượn -->
+                <div class="col-12">
+                    <div class="card-custom">
+                        <div class="card-header-custom">
+                            <h6 class="mb-0">
+                                <i class="fas fa-book me-2"></i>
+                                Tài liệu đang mượn
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            @if (Model.TaiLieuDangMuon != null && Model.TaiLieuDangMuon.Any())
+                            {
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Mã phiếu</th>
+                                                <th>Tài liệu</th>
+                                                <th>Ngày mượn</th>
+                                                <th>Ngày trả dự kiến</th>
+                                                <th>Thao tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach (var phieu in Model.TaiLieuDangMuon)
+                                        {
+                                            <tr>
+                                                <td><span class="badge bg-secondary">#@phieu.MaPhieu</span></td>
+                                                <td>
+                                                    <div>
+                                                        <strong>@phieu.TaiLieu?.TenTaiLieu</strong>
+                                                        @if (!string.IsNullOrEmpty(phieu.TaiLieu?.TacGia))
+                                                        {
+                                                            <br><small class="text-muted">Tác giả: @phieu.TaiLieu.TacGia</small>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>@phieu.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>
+                                                    @if (phieu.NgayTraDuKien.HasValue)
+                                                    {
+                                                        <span class="text-info">@phieu.NgayTraDuKien.Value.ToString("dd/MM/yyyy")</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">-</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (phieu.TaiLieu != null)
+                                                    {
+                                                        <a href="/TaiLieu/Details/@phieu.TaiLieu.MaTaiLieu" 
+                                                           class="btn btn-sm btn-outline-primary" 
+                                                           title="Xem chi tiết tài liệu">
+                                                            <i class="fas fa-eye"></i> Xem
+                                                        </a>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="text-center py-4">
+                                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">Chưa có tài liệu đang mượn</h5>
+                                    <p class="text-muted">Bạn chưa mượn tài liệu nào hoặc đã trả hết.</p>
+                                    <a href="/TaiLieu" class="btn btn-primary">
+                                        <i class="fas fa-search me-2"></i>Tìm tài liệu để mượn
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- Favorites Tab -->
             <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel">

@@ -1,56 +1,158 @@
 @model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>
-<h2>Quản lý mượn/trả tài liệu</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Mã phiếu</th>
-            <th>Tài liệu</th>
-            <th>Ngày gửi</th>
-            <th>Ngày mượn</th>
-            <th>Ngày trả dự kiến</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+
+<div class="card-custom">
+    <div class="card-header-custom">
+        <h6 class="mb-0">
+            <i class="fas fa-book-reader me-2"></i>
+            Quản lý mượn/trả tài liệu
+        </h6>
+    </div>
+    <div class="card-body">
+        @if (Model != null && Model.Any())
         {
-            <tr>
-                <td>@item.MaPhieu</td>
-                <td>@item.TaiLieu?.TenTaiLieu</td>
-                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@(item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet ? item.NgayMuon.ToString("dd/MM/yyyy HH:mm") : "-")</td>
-                <td>@(item.NgayTra != null ? item.NgayTra.Value.ToString("dd/MM/yyyy") : "-")</td>
-                <td>
-                    @switch(item.TrangThai)
-                    {
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
-                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                            break;
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
-                            <span class="badge bg-primary">Đang mượn</span>
-                            break;
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
-                            <span class="badge bg-success">Đã trả</span>
-                            break;
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
-                            <span class="badge bg-danger">Từ chối/Hủy</span>
-                            break;
-                    }
-                </td>
-                <td>
-                    @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet)
-                    {
-                        <button class="btn btn-sm btn-danger" onclick="cancelRequest(@item.MaPhieu)">Hủy</button>
-                    }
-                </td>
-            </tr>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã phiếu</th>
+                            <th>Tài liệu</th>
+                            <th>Ngày gửi</th>
+                            <th>Ngày mượn</th>
+                            <th>Ngày trả dự kiến</th>
+                            <th>Ngày trả thực tế</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><span class="badge bg-secondary">#@item.MaPhieu</span></td>
+                                <td>
+                                    <div>
+                                        <strong>@item.TaiLieu?.TenTaiLieu</strong>
+                                        @if (!string.IsNullOrEmpty(item.TaiLieu?.TacGia))
+                                        {
+                                            <br><small class="text-muted">Tác giả: @item.TaiLieu.TacGia</small>
+                                        }
+                                    </div>
+                                </td>
+                                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>
+                                    @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet)
+                                    {
+                                        <span class="text-success fw-medium">@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</span>
+                                    }
+                                    else if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra)
+                                    {
+                                        <span class="text-success fw-medium">@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</span>
+                                    }
+                                    else if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet)
+                                    {
+                                        <span class="text-warning fw-medium">@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.NgayTraDuKien.HasValue)
+                                    {
+                                        <span class="text-info">@item.NgayTraDuKien.Value.ToString("dd/MM/yyyy")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.NgayTra.HasValue)
+                                    {
+                                        <span class="text-success">@item.NgayTra.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @switch(item.TrangThai)
+                                    {
+                                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-clock me-1"></i>Chờ duyệt
+                                            </span>
+                                            break;
+                                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
+                                            <span class="badge bg-primary">
+                                                <i class="fas fa-book me-1"></i>Đang mượn
+                                            </span>
+                                            break;
+                                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Đã trả
+                                            </span>
+                                            break;
+                                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times me-1"></i>Từ chối/Hủy
+                                            </span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1 flex-wrap">
+                                        @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet)
+                                        {
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    onclick="cancelRequest(@item.MaPhieu)" 
+                                                    title="Hủy yêu cầu">
+                                                <i class="fas fa-times me-1"></i>Hủy
+                                            </button>
+                                        }
+                                        @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra)
+                                        {
+                                            <button class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="deleteReturnedDocument(@item.MaPhieu)" 
+                                                    title="Xóa khỏi lịch sử">
+                                                <i class="fas fa-trash me-1"></i>Xóa
+                                            </button>
+                                        }
+                                        @if (item.TaiLieu != null)
+                                        {
+                                            <a href="/TaiLieu/Details/@item.TaiLieu.MaTaiLieu" 
+                                               class="btn btn-sm btn-outline-primary" 
+                                               title="Xem chi tiết tài liệu">
+                                                <i class="fas fa-eye me-1"></i>Xem
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Chưa có lịch sử mượn/trả</h5>
+                <p class="text-muted">Bạn chưa có hoạt động mượn trả tài liệu nào.</p>
+                <a href="/TaiLieu" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i>Tìm tài liệu để mượn
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
 <script>
     function cancelRequest(maPhieu) {
-        if (confirm('Bạn chắc chắn muốn hủy yêu cầu này?')) {
+        if (confirm('Bạn chắc chắn muốn hủy yêu cầu mượn tài liệu này?')) {
             fetch('/Student/CancelRequest', {
                 method: 'POST',
                 headers: {
@@ -61,9 +163,66 @@
             })
             .then(res => res.json())
             .then(data => {
-                alert(data.message);
-                if (data.success) location.reload();
+                if (data.success) {
+                    showAlert('success', 'Hủy yêu cầu thành công!');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert('error', data.message || 'Có lỗi xảy ra khi hủy yêu cầu.');
+                }
+            })
+            .catch(error => {
+                showAlert('error', 'Có lỗi xảy ra khi kết nối với máy chủ.');
             });
+        }
+    }
+
+    function deleteReturnedDocument(maPhieu) {
+        if (confirm('Bạn chắc chắn muốn xóa tài liệu đã trả khỏi lịch sử?\n\nLưu ý: Hành động này không thể hoàn tác.')) {
+            fetch('/Student/DeleteReturnedDocument', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify({ maPhieu })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('success', 'Xóa tài liệu đã trả thành công!');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showAlert('error', data.message || 'Có lỗi xảy ra khi xóa tài liệu.');
+                }
+            })
+            .catch(error => {
+                showAlert('error', 'Có lỗi xảy ra khi kết nối với máy chủ.');
+            });
+        }
+    }
+
+    function showAlert(type, message) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const alertHtml = `
+            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        // Tìm container để hiển thị alert
+        const container = document.querySelector('.card-body');
+        if (container) {
+            container.insertAdjacentHTML('afterbegin', alertHtml);
+            
+            // Tự động ẩn sau 5 giây
+            setTimeout(() => {
+                const alert = container.querySelector('.alert');
+                if (alert) {
+                    alert.remove();
+                }
+            }, 5000);
         }
     }
 </script> 
