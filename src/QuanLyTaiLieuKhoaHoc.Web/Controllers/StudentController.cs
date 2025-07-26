@@ -118,6 +118,16 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public int MaPhieu { get; set; }
     }
 
+    public class DeleteReturnedDocumentModel
+    {
+        public int MaPhieu { get; set; }
+    }
+
+    public class DeleteDownloadHistoryModel
+    {
+        public int MaLichSu { get; set; }
+    }
+
         [HttpPost]
         [Authorize(Roles = "SinhVien")]
         public async Task<IActionResult> CancelRequest([FromBody] CancelRequestModel model)
@@ -144,6 +154,113 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             phieu.TrangThai = TrangThaiPhieu.TuChoi;
             await _context.SaveChangesAsync();
             return Json(new { success = true, message = "Đã hủy yêu cầu mượn!" });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "SinhVien")]
+        public async Task<IActionResult> DeleteReturnedDocument([FromBody] DeleteReturnedDocumentModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
+
+                var phieu = await _context.PhieuMuonTra
+                    .FirstOrDefaultAsync(p => p.MaPhieu == model.MaPhieu && p.MaNguoiMuon == user.Id);
+
+                if (phieu == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn." });
+                }
+
+                if (phieu.TrangThai != TrangThaiPhieu.DaTra)
+                {
+                    return Json(new { success = false, message = "Chỉ có thể xóa phiếu đã trả." });
+                }
+
+                _context.PhieuMuonTra.Remove(phieu);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Xóa tài liệu đã trả thành công." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "SinhVien")]
+        public async Task<IActionResult> DeleteDownloadHistory([FromBody] DeleteDownloadHistoryModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
+
+                var downloadHistory = await _context.LichSuTaiTaiLieu
+                    .FirstOrDefaultAsync(l => l.MaLichSu == model.MaLichSu && l.MaNguoiDung == user.Id);
+
+                if (downloadHistory == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy lịch sử tải." });
+                }
+
+                _context.LichSuTaiTaiLieu.Remove(downloadHistory);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Xóa lịch sử tải thành công." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUser(string HoTen, string MaSo, string SoDienThoai, string MatKhauHienTai, string MatKhauMoi, string NhapLaiMatKhauMoi)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy người dùng!";
+                return RedirectToAction("Dashboard-Student");
+            }
+            bool changed = false;
+            if (!string.IsNullOrWhiteSpace(HoTen) && HoTen != user.HoTen)
+            {
+                user.HoTen = HoTen;
+                changed = true;
+            }
+            if (!string.IsNullOrWhiteSpace(MaSo) && MaSo != user.MaSo)
+            {
+                user.MaSo = MaSo;
+                changed = true;
+            }
+            if (!string.IsNullOrWhiteSpace(SoDienThoai) && SoDienThoai != user.SoDienThoai)
+            {
+                user.SoDienThoai = SoDienThoai;
+                changed = true;
+            }
+            if (changed)
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            // Đổi mật khẩu nếu có nhập
+            if (!string.IsNullOrWhiteSpace(MatKhauHienTai) && !string.IsNullOrWhiteSpace(MatKhauMoi) && MatKhauMoi == NhapLaiMatKhauMoi)
+            {
+                var result = await _userManager.ChangePasswordAsync(user, MatKhauHienTai, MatKhauMoi);
+                if (!result.Succeeded)
+                {
+                    TempData["ErrorMessage"] = string.Join("; ", result.Errors.Select(e => e.Description));
+                    return RedirectToAction("Dashboard-Student");
+                }
+            }
+            TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+            return RedirectToAction("Dashboard-Student");
         }
     }
 }

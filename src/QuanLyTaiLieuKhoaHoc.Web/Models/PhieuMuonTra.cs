@@ -28,6 +28,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Ngày trả")]
         public DateTime? NgayTra { get; set; }
 
+        [Display(Name = "Tình trạng sau trả")]
+        public string? TinhTrangSauTra { get; set; }
+
         [Required]
         [Display(Name = "Trạng thái")]
         public TrangThaiPhieu TrangThai { get; set; } = TrangThaiPhieu.ChoDuyet;

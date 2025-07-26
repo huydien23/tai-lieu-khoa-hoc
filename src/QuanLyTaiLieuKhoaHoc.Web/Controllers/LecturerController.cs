@@ -5,6 +5,8 @@ using System.Security.Claims;
 using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
@@ -12,10 +14,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
     public class LecturerController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<NguoiDung> _userManager;
 
-        public LecturerController(ApplicationDbContext context)
+        public LecturerController(ApplicationDbContext context, UserManager<NguoiDung> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [ActionName("Dashboard-Lecturer")]
@@ -30,6 +34,15 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             // Lấy thông tin người dùng
             var currentUser = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == userId);
             ViewBag.CurrentUser = currentUser;
+
+            // Load dropdown data cho form tìm kiếm
+            ViewBag.ChuyenNganh = new SelectList(
+                await _context.ChuyenNganh.Where(cn => cn.TrangThaiHoatDong).ToListAsync(),
+                "MaChuyenNganh", "TenChuyenNganh");
+
+            ViewBag.LoaiTaiLieu = new SelectList(
+                await _context.LoaiTaiLieu.Where(lt => lt.TrangThaiHoatDong).ToListAsync(),
+                "MaLoaiTaiLieu", "TenLoaiTaiLieu");
 
             var ngayHienTai = DateTime.Today;
             var dauTuanNay = ngayHienTai.AddDays(-(int)ngayHienTai.DayOfWeek + 1);
@@ -118,6 +131,52 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return RedirectToAction("Login", "Account");
             }
             return View(user);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateUser(string HoTen, string MaSo, string SoDienThoai, string MatKhauHienTai, string MatKhauMoi, string NhapLaiMatKhauMoi)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy người dùng!";
+                return RedirectToAction("Dashboard-Lecturer");
+            }
+            bool changed = false;
+            if (!string.IsNullOrWhiteSpace(HoTen) && HoTen != user.HoTen)
+            {
+                user.HoTen = HoTen;
+                changed = true;
+            }
+            if (!string.IsNullOrWhiteSpace(MaSo) && MaSo != user.MaSo)
+            {
+                user.MaSo = MaSo;
+                changed = true;
+            }
+            if (!string.IsNullOrWhiteSpace(SoDienThoai) && SoDienThoai != user.SoDienThoai)
+            {
+                user.SoDienThoai = SoDienThoai;
+                changed = true;
+            }
+            if (changed)
+            {
+                await _userManager.UpdateAsync(user);
+            }
+            // Đổi mật khẩu nếu có nhập
+            if (!string.IsNullOrWhiteSpace(MatKhauHienTai) && !string.IsNullOrWhiteSpace(MatKhauMoi) && MatKhauMoi == NhapLaiMatKhauMoi)
+            {
+                var result = await _userManager.ChangePasswordAsync(user, MatKhauHienTai, MatKhauMoi);
+                if (!result.Succeeded)
+                {
+                    TempData["ErrorMessage"] = string.Join("; ", result.Errors.Select(e => e.Description));
+                    return RedirectToAction("Dashboard-Lecturer");
+                }
+            }
+            TempData["SuccessMessage"] = "Cập nhật thông tin thành công!";
+            return RedirectToAction("Dashboard-Lecturer");
         }
 
         public IActionResult TimKiemTaiLieu()

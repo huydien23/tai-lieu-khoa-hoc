@@ -12,7 +12,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         Task<bool> DuyetYeuCauMuonAsync(int maPhieu, string maThuThu);
         Task<bool> TuChoiYeuCauMuonAsync(int maPhieu, string maThuThu, string? lyDo);
         Task<bool> XacNhanTraTaiLieuAsync(int maPhieu, string maThuThu);
-        Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu);
+        Task<bool> TraTaiLieuAsync(int maPhieu, string maThuThu, DateTime ngayTra, string? ghiChu, string tinhTrang);
         Task<List<PhieuMuonTra>> LayLichSuMuonTraCuaNguoiDungAsync(string maNguoiDung);
         Task<PhieuMuonTra?> LayPhieuMuonTraByIdAsync(int maPhieu);
         Task<bool> LapPhieuMuonAsync(int maPhieu, string maThuThu, DateTime ngayMuon, DateTime ngayTraDuKien);

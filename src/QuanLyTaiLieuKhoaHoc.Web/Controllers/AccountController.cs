@@ -308,6 +308,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             try
             {
+                // Đảm bảo role 'ThuThu' đã tồn tại
+                if (!await _roleManager.RoleExistsAsync("ThuThu"))
+                {
+                    await _roleManager.CreateAsync(new IdentityRole("ThuThu"));
+                }
+
                 var existingUser = await _userManager.FindByEmailAsync("thuthu@library.edu.vn");
                 if (existingUser == null)
                 {
@@ -328,7 +334,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
                     if (result.Succeeded)
                     {
-                        return Json(new { success = true, message = "Tài khoản thủ thư đã được tạo thành công!" });
+                        // Gán role Identity 'ThuThu' cho user
+                        await _userManager.AddToRoleAsync(librarianUser, "ThuThu");
+                        return Json(new { success = true, message = "Tài khoản thủ thư đã được tạo và gán role thành công!" });
                     }
                     else
                     {
@@ -337,7 +345,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 }
                 else
                 {
-                    return Json(new { success = false, message = "Tài khoản thủ thư đã tồn tại!" });
+                    if (!await _userManager.IsInRoleAsync(existingUser, "ThuThu"))
+                    {
+                        await _userManager.AddToRoleAsync(existingUser, "ThuThu");
+                        return Json(new { success = true, message = "Đã gán role 'ThuThu' cho tài khoản thủ thư!" });
+                    }
+                    return Json(new { success = false, message = "Tài khoản thủ thư đã tồn tại và đã có role!" });
                 }
             }
             catch (Exception ex)
