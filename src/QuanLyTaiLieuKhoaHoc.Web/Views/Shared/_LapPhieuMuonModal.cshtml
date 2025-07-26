@@ -18,9 +18,9 @@
         <div class="mb-3">
             <label class="form-label fw-semibold">Tình trạng tài liệu:</label>
             <div class="d-flex gap-2">
-                <span class="badge bg-primary" id="soLuongTotal">Tổng: 0</span>
-                <span class="badge bg-warning" id="soLuongDaMuon">Đã mượn: 0</span>
-                <span class="badge bg-success" id="soLuongConLai">Còn lại: 0</span>
+                <span class="badge bg-primary" id="soLuongTotal">Tổng: @Model.SoLuong</span>
+                <span class="badge bg-warning" id="soLuongDaMuon">Đã mượn: @Model.SoLuongDaMuon</span>
+                <span class="badge bg-success" id="soLuongConLai">Còn lại: @Model.SoLuongConLai</span>
             </div>
         </div>
         <div class="mb-2">

@@ -120,7 +120,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 LyDo = phieu.GhiChu ?? "",
                 NgayTra = phieu.NgayTra,
                 NgayTraDuKien = phieu.NgayTraDuKien,
-                IsFromRequest = true
+                IsFromRequest = true,
+                // Thông tin số lượng tài liệu
+                SoLuong = taiLieu?.SoLuong ?? 0,
+                SoLuongDaMuon = taiLieu?.SoLuongDaMuon ?? 0,
+                SoLuongConLai = taiLieu?.SoLuongConLai ?? 0
             };
             return PartialView("~/Views/Shared/_LapPhieuMuonModal.cshtml", vm);
         }
@@ -182,7 +186,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 ChuyenNganh = chuyenNganh,
                 TenTaiLieu = taiLieu?.TenTaiLieu ?? "",
                 TacGia = taiLieu?.TacGia ?? "",
-                NgayMuon = phieu.NgayMuon
+                NgayMuon = phieu.NgayMuon,
+                // Thông tin số lượng tài liệu
+                SoLuong = taiLieu?.SoLuong ?? 0,
+                SoLuongDaMuon = taiLieu?.SoLuongDaMuon ?? 0,
+                SoLuongConLai = taiLieu?.SoLuongConLai ?? 0
             };
             return PartialView("~/Views/PhieuMuonTra/_LapPhieuTraModal.cshtml", vm);
         }
