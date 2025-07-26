@@ -408,7 +408,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 TenLoaiTaiLieu = taiLieu.LoaiTaiLieu?.TenLoaiTaiLieu,
                 NgayTaiLen = taiLieu.NgayTaiLen,
                 LuotTai = taiLieu.LuotTai,
-                LuotMuon = taiLieu.PhieuMuonTras != null ? taiLieu.PhieuMuonTras.Count : 0,
+                LuotMuon = taiLieu.PhieuMuonTras?.Count ?? 0, // Giống như entity TaiLieu
+                SoLuongDaMuon = taiLieu.SoLuongDaMuon, // Lấy trực tiếp từ entity
+                SoLuong = taiLieu.SoLuong, // Lấy trực tiếp từ entity
                 TrangThai = (int)taiLieu.TrangThai,
                 DuongDanFile = taiLieu.DuongDanFile,
                 LoaiFile = taiLieu.LoaiFile,

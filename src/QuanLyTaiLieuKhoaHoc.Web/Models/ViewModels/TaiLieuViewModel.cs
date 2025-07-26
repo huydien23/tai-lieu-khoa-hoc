@@ -68,6 +68,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public int LuotTai { get; set; }
         // Số lượt mượn (tổng số phiếu mượn)
         public int LuotMuon { get; set; }
+        // Số lượng đã mượn (tổng số lượng từ các phiếu đang mượn)
+        public int SoLuongDaMuon { get; set; }
+        // Số lượng tổng cộng
+        public int SoLuong { get; set; }
+        // Số lượng còn lại (SoLuong - SoLuongDaMuon)
+        public int SoLuongConLai => SoLuong - SoLuongDaMuon;
         public int TrangThai { get; set; } // 0: ChoDuyet, 1: DaDuyet, 2: TuChoi, 3: An
         public string? DuongDanFile { get; set; }
         public string? LoaiFile { get; set; }
