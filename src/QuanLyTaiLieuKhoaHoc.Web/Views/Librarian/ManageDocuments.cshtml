@@ -71,6 +71,10 @@
                                 Lượt mượn
                             </th>
                             <th scope="col">
+                                <i class="fas fa-copy me-1"></i>
+                                Số lượng
+                            </th>
+                            <th scope="col">
                                 <i class="fas fa-info-circle me-1"></i>
                                 Trạng thái
                             </th>
@@ -108,6 +112,20 @@
                                 </td>
                                 <td>
                                     <span class="badge bg-success">@item.LuotMuon</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-column gap-1">
+                                        <span class="badge bg-primary">Tổng: @item.SoLuong</span>
+                                        <span class="badge bg-warning">Đã mượn: @item.SoLuongDaMuon</span>
+                                        @if (item.SoLuongConLai > 0)
+                                        {
+                                            <span class="badge bg-success">Còn lại: @item.SoLuongConLai</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Hết</span>
+                                        }
+                                    </div>
                                 </td>
                                 <td>
                                     @switch (item.TrangThai)
@@ -374,6 +392,10 @@
             $('#memberSearchGroup').addClass('d-none');
             $('#memberSearch').val("");
             $('#memberSearchResults').empty();
+            
+            // Load thông tin số lượng tài liệu
+            loadTaiLieuInfo(maTaiLieu);
+            
             $('#createPhieuMuonModal').modal('show');
         }
         window.openCreatePhieuMuonModal = openCreatePhieuMuonModal;
@@ -487,6 +509,34 @@
             }).fail(function () {
                 $('#documentDetailsContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải thông tin!</div>');
             });
+        }
+
+        // Load thông tin số lượng tài liệu
+        function loadTaiLieuInfo(maTaiLieu) {
+            fetch(`/Librarian/GetTaiLieuSoLuong?maTaiLieu=${maTaiLieu}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('soLuongTotal').textContent = `Tổng: ${data.soLuong}`;
+                        document.getElementById('soLuongDaMuon').textContent = `Đã mượn: ${data.soLuongDaMuon}`;
+                        document.getElementById('soLuongConLai').textContent = `Còn lại: ${data.soLuongConLai}`;
+                        
+                        // Disable nút lập phiếu nếu hết sách
+                        const submitBtn = document.querySelector('#lapPhieuMuonForm button[type="submit"]');
+                        if (data.soLuongConLai <= 0) {
+                            submitBtn.disabled = true;
+                            submitBtn.textContent = 'Hết sách';
+                            submitBtn.className = 'btn btn-danger';
+                        } else {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Xác nhận lập phiếu mượn';
+                            submitBtn.className = 'btn btn-success';
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải thông tin số lượng:', error);
+                });
         }
 
         // Load create document modal

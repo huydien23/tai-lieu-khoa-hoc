@@ -657,6 +657,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 {
                     return Json(new { success = false, message = "Vui lòng chọn loại tài liệu!" });
                 }
+                
+                // Validation số lượng
+                if (model.SoLuong <= 0)
+                {
+                    return Json(new { success = false, message = "Số lượng phải lớn hơn 0!" });
+                }
 
                 var documentType = Request.Form["DocumentType"].ToString();
 
@@ -751,6 +757,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             taiLieu.DonViPhatHanh = model.DonViPhatHanh;
             taiLieu.NamXuatBan = model.NamXuatBan;
             taiLieu.SoTinChi = model.SoTinChi;
+
+            // Validation số lượng
+            if (model.SoLuong < model.SoLuongDaMuon)
+            {
+                return Json(new { success = false, message = "Số lượng mới không được nhỏ hơn số lượng đang mượn!" });
+            }
+            taiLieu.SoLuong = model.SoLuong;
 
             if (model.FileTaiLieu != null && model.FileTaiLieu.Length > 0)
             {
@@ -971,6 +984,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             var maTaiLieu = phieuYeuCau.MaTaiLieu;
 
+            // Kiểm tra số lượng còn lại
+            if (phieuYeuCau.TaiLieu?.SoLuongConLai <= 0)
+            {
+                return Json(new { success = false, message = "Tài liệu đã hết, không thể mượn!" });
+            }
+
             // Kiểm tra nếu đã có phiếu mượn ĐANG HOẠT ĐỘNG cho tài liệu này
             var phieuDangMuon = await _context.PhieuMuonTra
                 .Where(p => p.MaTaiLieu == maTaiLieu && p.TrangThai == TrangThaiPhieu.DaDuyet)
@@ -985,6 +1004,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             phieuYeuCau.NgayMuon = ngayMuon;
             phieuYeuCau.NgayTraDuKien = ngayTraDuKien;
             phieuYeuCau.MaThuThuDuyet = currentUser.Id;
+
+            // Cập nhật số lượng đã mượn
+            if (phieuYeuCau.TaiLieu != null)
+            {
+                phieuYeuCau.TaiLieu.SoLuongDaMuon++;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -1026,6 +1051,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 if (!string.IsNullOrWhiteSpace(ghiChuMoi))
                 {
                     phieu.GhiChu = ghiChuMoi;
+                }
+
+                // Giảm số lượng đã mượn
+                if (phieu.TaiLieu != null)
+                {
+                    phieu.TaiLieu.SoLuongDaMuon--;
                 }
 
                 await _context.SaveChangesAsync();
@@ -1108,7 +1139,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 if (!await _userManager.IsInRoleAsync(user, identityRole))
                 {
                     // Tạo role nếu chưa có
-                    var roleManager = (RoleManager<IdentityRole>)HttpContext.RequestServices.GetService(typeof(RoleManager<IdentityRole>));
+                    var roleManager = (RoleManager<IdentityRole>?)HttpContext.RequestServices.GetService(typeof(RoleManager<IdentityRole>));
                     if (roleManager != null && !await roleManager.RoleExistsAsync(identityRole))
                     {
                         await roleManager.CreateAsync(new IdentityRole(identityRole));
@@ -1133,6 +1164,21 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Take(200)
                 .ToListAsync();
             return View(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTaiLieuSoLuong(int maTaiLieu)
+        {
+            var taiLieu = await _context.TaiLieu.FindAsync(maTaiLieu);
+            if (taiLieu == null)
+                return Json(new { success = false });
+                
+            return Json(new { 
+                success = true, 
+                soLuong = taiLieu.SoLuong,
+                soLuongDaMuon = taiLieu.SoLuongDaMuon,
+                soLuongConLai = taiLieu.SoLuongConLai
+            });
         }
     }
 }

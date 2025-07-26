@@ -78,6 +78,27 @@
                                 <span class="ms-1">@Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")</span>
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6 mb-2">
+                                <span class="fw-semibold text-muted"><i class="fas fa-copy me-1"></i>Số lượng:</span>
+                                <span class="tai-lieu-view ms-1">
+                                    <span class="badge bg-primary">Tổng: @Model.SoLuong</span>
+                                    <span class="badge bg-warning">Đã mượn: @Model.SoLuongDaMuon</span>
+                                    @if (Model.SoLuongConLai > 0)
+                                    {
+                                        <span class="badge bg-success">Còn lại: @Model.SoLuongConLai</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Hết</span>
+                                    }
+                                </span>
+                                <div class="tai-lieu-edit d-none">
+                                    <input type="number" class="form-control" name="SoLuong" value="@Model.SoLuong" min="1" />
+                                    <small class="text-muted">Đang mượn: @Model.SoLuongDaMuon</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -91,31 +112,67 @@
                         <tbody>
                             @if (Model.LoaiTaiLieu?.TenLoaiTaiLieu != null)
                             {
-                                if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase))
+                                @switch (Model.LoaiTaiLieu.TenLoaiTaiLieu.ToLower())
                                 {
-                                    <tr><td class="fw-semibold">Tiêu đề:</td><td><span class="tai-lieu-view">@Model.TieuDe</span><input class="tai-lieu-edit d-none form-control" name="TieuDe" value="@Model.TieuDe" /></td></tr>
-                                    <tr><td class="fw-semibold">Tạp chí/Hội nghị:</td><td><span class="tai-lieu-view">@Model.TapChiHoiNghi</span><input class="tai-lieu-edit d-none form-control" name="TapChiHoiNghi" value="@Model.TapChiHoiNghi" /></td></tr>
-                                    <tr><td class="fw-semibold">Ngày công bố:</td><td><span class="tai-lieu-view">@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")</span><input class="tai-lieu-edit d-none form-control" type="date" name="NgayCongBo" value="@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")" /></td></tr>
-                                    <tr><td class="fw-semibold">DOI:</td><td><span class="tai-lieu-view">@Model.DOI</span><input class="tai-lieu-edit d-none form-control" name="DOI" value="@Model.DOI" /></td></tr>
-                                    <tr><td class="fw-semibold">ISSN:</td><td><span class="tai-lieu-view">@Model.ISSN</span><input class="tai-lieu-edit d-none form-control" name="ISSN" value="@Model.ISSN" /></td></tr>
-                                    <tr><td class="fw-semibold">Cấp độ:</td><td><span class="tai-lieu-view">@Model.CapDo</span><input class="tai-lieu-edit d-none form-control" name="CapDo" value="@Model.CapDo" /></td></tr>
-                                }
-                                else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase))
-                                {
-                                    <tr><td class="fw-semibold">Tên đề tài:</td><td><span class="tai-lieu-view">@Model.TenDeTai</span><input class="tai-lieu-edit d-none form-control" name="TenDeTai" value="@Model.TenDeTai" /></td></tr>
-                                    <tr><td class="fw-semibold">Mã số đề tài:</td><td><span class="tai-lieu-view">@Model.MaSoDeTai</span><input class="tai-lieu-edit d-none form-control" name="MaSoDeTai" value="@Model.MaSoDeTai" /></td></tr>
-                                    <tr><td class="fw-semibold">Cấp đề tài:</td><td><span class="tai-lieu-view">@Model.CapDeTai</span><input class="tai-lieu-edit d-none form-control" name="CapDeTai" value="@Model.CapDeTai" /></td></tr>
-                                    <tr><td class="fw-semibold">Thời gian thực hiện:</td><td><span class="tai-lieu-view">@Model.ThoiGianThucHien</span><input class="tai-lieu-edit d-none form-control" name="ThoiGianThucHien" value="@Model.ThoiGianThucHien" /></td></tr>
-                                    <tr><td class="fw-semibold">Cơ quan chủ trì:</td><td><span class="tai-lieu-view">@Model.CoQuanChuTri</span><input class="tai-lieu-edit d-none form-control" name="CoQuanChuTri" value="@Model.CoQuanChuTri" /></td></tr>
-                                    <tr><td class="fw-semibold">Chủ nhiệm đề tài:</td><td><span class="tai-lieu-view">@Model.ChuNhiemDeTai</span><input class="tai-lieu-edit d-none form-control" name="ChuNhiemDeTai" value="@Model.ChuNhiemDeTai" /></td></tr>
-                                }
-                                else if (Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.LoaiTaiLieu.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))
-                                {
-                                    <tr><td class="fw-semibold">Tên giáo trình:</td><td><span class="tai-lieu-view">@Model.TenGiaoTrinh</span><input class="tai-lieu-edit d-none form-control" name="TenGiaoTrinh" value="@Model.TenGiaoTrinh" /></td></tr>
-                                    <tr><td class="fw-semibold">Môn học liên quan:</td><td><span class="tai-lieu-view">@Model.MonHocLienQuan</span><input class="tai-lieu-edit d-none form-control" name="MonHocLienQuan" value="@Model.MonHocLienQuan" /></td></tr>
-                                    <tr><td class="fw-semibold">Đơn vị phát hành:</td><td><span class="tai-lieu-view">@Model.DonViPhatHanh</span><input class="tai-lieu-edit d-none form-control" name="DonViPhatHanh" value="@Model.DonViPhatHanh" /></td></tr>
-                                    <tr><td class="fw-semibold">Năm xuất bản:</td><td><span class="tai-lieu-view">@(Model.NamXuatBan?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="NamXuatBan" value="@(Model.NamXuatBan?.ToString() ?? "")" /></td></tr>
-                                    <tr><td class="fw-semibold">Số tín chỉ:</td><td><span class="tai-lieu-view">@(Model.SoTinChi?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="SoTinChi" value="@(Model.SoTinChi?.ToString() ?? "")" /></td></tr>
+                                    case "bài báo khoa học":
+                                        <tr><td class="fw-semibold">Tiêu đề:</td><td><span class="tai-lieu-view">@Model.TieuDe</span><input class="tai-lieu-edit d-none form-control" name="TieuDe" value="@Model.TieuDe" /></td></tr>
+                                        <tr><td class="fw-semibold">Tạp chí/Hội nghị:</td><td><span class="tai-lieu-view">@Model.TapChiHoiNghi</span><input class="tai-lieu-edit d-none form-control" name="TapChiHoiNghi" value="@Model.TapChiHoiNghi" /></td></tr>
+                                        <tr><td class="fw-semibold">Ngày công bố:</td><td><span class="tai-lieu-view">@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")</span><input class="tai-lieu-edit d-none form-control" type="date" name="NgayCongBo" value="@(Model.NgayCongBo?.ToString("yyyy-MM-dd") ?? "")" /></td></tr>
+                                        <tr><td class="fw-semibold">DOI:</td><td><span class="tai-lieu-view">@Model.DOI</span><input class="tai-lieu-edit d-none form-control" name="DOI" value="@Model.DOI" /></td></tr>
+                                        <tr><td class="fw-semibold">ISSN:</td><td><span class="tai-lieu-view">@Model.ISSN</span><input class="tai-lieu-edit d-none form-control" name="ISSN" value="@Model.ISSN" /></td></tr>
+                                        <tr><td class="fw-semibold">Cấp độ:</td><td><span class="tai-lieu-view">@Model.CapDo</span><input class="tai-lieu-edit d-none form-control" name="CapDo" value="@Model.CapDo" /></td></tr>
+                                        break;
+
+                                    case "đề tài nghiên cứu khoa học":
+                                        <tr><td class="fw-semibold">Tên đề tài:</td><td><span class="tai-lieu-view">@Model.TenDeTai</span><input class="tai-lieu-edit d-none form-control" name="TenDeTai" value="@Model.TenDeTai" /></td></tr>
+                                        <tr><td class="fw-semibold">Mã số đề tài:</td><td><span class="tai-lieu-view">@Model.MaSoDeTai</span><input class="tai-lieu-edit d-none form-control" name="MaSoDeTai" value="@Model.MaSoDeTai" /></td></tr>
+                                        <tr><td class="fw-semibold">Cấp đề tài:</td><td><span class="tai-lieu-view">@Model.CapDeTai</span><input class="tai-lieu-edit d-none form-control" name="CapDeTai" value="@Model.CapDeTai" /></td></tr>
+                                        <tr><td class="fw-semibold">Thời gian thực hiện:</td><td><span class="tai-lieu-view">@Model.ThoiGianThucHien</span><input class="tai-lieu-edit d-none form-control" name="ThoiGianThucHien" value="@Model.ThoiGianThucHien" /></td></tr>
+                                        <tr><td class="fw-semibold">Cơ quan chủ trì:</td><td><span class="tai-lieu-view">@Model.CoQuanChuTri</span><input class="tai-lieu-edit d-none form-control" name="CoQuanChuTri" value="@Model.CoQuanChuTri" /></td></tr>
+                                        <tr><td class="fw-semibold">Chủ nhiệm đề tài:</td><td><span class="tai-lieu-view">@Model.ChuNhiemDeTai</span><input class="tai-lieu-edit d-none form-control" name="ChuNhiemDeTai" value="@Model.ChuNhiemDeTai" /></td></tr>
+                                        break;
+
+                                    case "giáo trình":
+                                    case "giáo trình - tài liệu giảng dạy":
+                                        <tr><td class="fw-semibold">Tên giáo trình:</td><td><span class="tai-lieu-view">@Model.TenGiaoTrinh</span><input class="tai-lieu-edit d-none form-control" name="TenGiaoTrinh" value="@Model.TenGiaoTrinh" /></td></tr>
+                                        <tr><td class="fw-semibold">Môn học liên quan:</td><td><span class="tai-lieu-view">@Model.MonHocLienQuan</span><input class="tai-lieu-edit d-none form-control" name="MonHocLienQuan" value="@Model.MonHocLienQuan" /></td></tr>
+                                        <tr><td class="fw-semibold">Đơn vị phát hành:</td><td><span class="tai-lieu-view">@Model.DonViPhatHanh</span><input class="tai-lieu-edit d-none form-control" name="DonViPhatHanh" value="@Model.DonViPhatHanh" /></td></tr>
+                                        <tr><td class="fw-semibold">Năm xuất bản:</td><td><span class="tai-lieu-view">@(Model.NamXuatBan?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="NamXuatBan" value="@(Model.NamXuatBan?.ToString() ?? "")" /></td></tr>
+                                        <tr><td class="fw-semibold">Số tín chỉ:</td><td><span class="tai-lieu-view">@(Model.SoTinChi?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="SoTinChi" value="@(Model.SoTinChi?.ToString() ?? "")" /></td></tr>
+                                        break;
+
+                                    case "bài giảng":
+                                        <tr><td class="fw-semibold">Môn học:</td><td><span class="tai-lieu-view">@Model.MonHocLienQuan</span><input class="tai-lieu-edit d-none form-control" name="MonHocLienQuan" value="@Model.MonHocLienQuan" /></td></tr>
+                                        <tr><td class="fw-semibold">Giảng viên:</td><td><span class="tai-lieu-view">@Model.TacGia</span></td></tr>
+                                        <tr><td class="fw-semibold">Học kỳ:</td><td><span class="tai-lieu-view">@Model.ThoiGianThucHien</span><input class="tai-lieu-edit d-none form-control" name="ThoiGianThucHien" value="@Model.ThoiGianThucHien" /></td></tr>
+                                        <tr><td class="fw-semibold">Năm học:</td><td><span class="tai-lieu-view">@(Model.NamXuatBan?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="NamXuatBan" value="@(Model.NamXuatBan?.ToString() ?? "")" /></td></tr>
+                                        <tr><td class="fw-semibold">Số tín chỉ:</td><td><span class="tai-lieu-view">@(Model.SoTinChi?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="SoTinChi" value="@(Model.SoTinChi?.ToString() ?? "")" /></td></tr>
+                                        break;
+
+                                    case "luận văn":
+                                        <tr><td class="fw-semibold">Tên luận văn:</td><td><span class="tai-lieu-view">@Model.TenDeTai</span><input class="tai-lieu-edit d-none form-control" name="TenDeTai" value="@Model.TenDeTai" /></td></tr>
+                                        <tr><td class="fw-semibold">Mã số:</td><td><span class="tai-lieu-view">@Model.MaSoDeTai</span><input class="tai-lieu-edit d-none form-control" name="MaSoDeTai" value="@Model.MaSoDeTai" /></td></tr>
+                                        <tr><td class="fw-semibold">Sinh viên thực hiện:</td><td><span class="tai-lieu-view">@Model.TacGia</span></td></tr>
+                                        <tr><td class="fw-semibold">Giảng viên hướng dẫn:</td><td><span class="tai-lieu-view">@Model.ChuNhiemDeTai</span><input class="tai-lieu-edit d-none form-control" name="ChuNhiemDeTai" value="@Model.ChuNhiemDeTai" /></td></tr>
+                                        <tr><td class="fw-semibold">Năm thực hiện:</td><td><span class="tai-lieu-view">@(Model.NamXuatBan?.ToString() ?? "")</span><input class="tai-lieu-edit d-none form-control" type="number" name="NamXuatBan" value="@(Model.NamXuatBan?.ToString() ?? "")" /></td></tr>
+                                        <tr><td class="fw-semibold">Chuyên ngành:</td><td><span class="tai-lieu-view">@Model.CapDeTai</span><input class="tai-lieu-edit d-none form-control" name="CapDeTai" value="@Model.CapDeTai" /></td></tr>
+                                        break;
+
+                                    case "tài liệu tham khảo":
+                                        <tr><td class="fw-semibold">Thông tin bổ sung:</td><td><span class="tai-lieu-view">@(string.IsNullOrEmpty(Model.MoTa) ? "Không có thông tin bổ sung" : Model.MoTa)</span></td></tr>
+                                        <tr><td class="fw-semibold">Loại file:</td><td><span class="tai-lieu-view">@Model.LoaiFile</span></td></tr>
+                                        <tr><td class="fw-semibold">Kích thước:</td><td><span class="tai-lieu-view">@(Math.Round(Model.KichThuocFile / 1024.0, 1)) MB</span></td></tr>
+                                        <tr><td class="fw-semibold">Lượt tải:</td><td><span class="tai-lieu-view">@Model.LuotTai</span></td></tr>
+                                        <tr><td class="fw-semibold">Lượt mượn:</td><td><span class="tai-lieu-view">@Model.LuotMuon</span></td></tr>
+                                        break;
+
+                                    default:
+                                        <tr><td class="fw-semibold">Thông tin bổ sung:</td><td><span class="tai-lieu-view">@(string.IsNullOrEmpty(Model.MoTa) ? "Không có thông tin bổ sung" : Model.MoTa)</span></td></tr>
+                                        <tr><td class="fw-semibold">Loại file:</td><td><span class="tai-lieu-view">@Model.LoaiFile</span></td></tr>
+                                        <tr><td class="fw-semibold">Kích thước:</td><td><span class="tai-lieu-view">@(Math.Round(Model.KichThuocFile / 1024.0, 1)) MB</span></td></tr>
+                                        <tr><td class="fw-semibold">Lượt tải:</td><td><span class="tai-lieu-view">@Model.LuotTai</span></td></tr>
+                                        <tr><td class="fw-semibold">Lượt mượn:</td><td><span class="tai-lieu-view">@Model.LuotMuon</span></td></tr>
+                                        break;
                                 }
                             }
                         </tbody>

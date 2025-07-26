@@ -15,6 +15,14 @@
         <div><b>Tài liệu:</b> @Model.TenTaiLieu</div>
         <div><b>Tác giả:</b> @Model.TacGia</div>
         <div><b>Lý do:</b> @Model.LyDo</div>
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Tình trạng tài liệu:</label>
+            <div class="d-flex gap-2">
+                <span class="badge bg-primary" id="soLuongTotal">Tổng: 0</span>
+                <span class="badge bg-warning" id="soLuongDaMuon">Đã mượn: 0</span>
+                <span class="badge bg-success" id="soLuongConLai">Còn lại: 0</span>
+            </div>
+        </div>
         <div class="mb-2">
             <label>Ngày mượn thực tế:</label>
             <input type="datetime-local" name="ngayMuon" class="form-control"
