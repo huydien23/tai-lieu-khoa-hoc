@@ -1281,5 +1281,54 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
             }
         }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> ChangeUserPassword(string userId, string newPassword)
+        {
+            try
+            {
+                // Kiểm tra quyền thủ thư
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+                {
+                    return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
+                }
+
+                // Tìm người dùng cần đổi mật khẩu
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+                }
+
+                // Kiểm tra mật khẩu mới
+                if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                {
+                    return Json(new { success = false, message = "Mật khẩu phải có ít nhất 6 ký tự!" });
+                }
+
+                // Đổi mật khẩu
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+                if (result.Succeeded)
+                {
+                    return Json(new { 
+                        success = true, 
+                        message = $"Đã đổi mật khẩu thành công cho người dùng {user.HoTen}. Vui lòng thông báo mật khẩu mới cho người dùng." 
+                    });
+                }
+                else
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return Json(new { success = false, message = $"Không thể đổi mật khẩu: {errors}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi đổi mật khẩu: " + ex.Message });
+            }
+        }
     }
 }

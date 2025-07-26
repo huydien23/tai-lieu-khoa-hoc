@@ -102,6 +102,10 @@
                                                     onclick="editUser('@user.Id', '@user.HoTen')">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
+                                                <button type="button" class="btn btn-outline-info" title="Đổi mật khẩu"
+                                                    onclick="changePassword('@user.Id', '@user.HoTen', '@user.Email')">
+                                                    <i class="fas fa-key"></i>
+                                                </button>
                                                 @if (user.TrangThaiHoatDong)
                                                 {
                                                     <button type="button" class="btn btn-outline-warning" title="Vô hiệu hóa"
@@ -186,6 +190,59 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal đổi mật khẩu người dùng -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">
+                    <i class="fas fa-key text-info me-2"></i>Đổi mật khẩu người dùng
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="changePasswordForm">
+                <div class="modal-body">
+                    <input type="hidden" id="changePasswordUserId" />
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Người dùng:</strong> <span id="changePasswordUserName"></span><br>
+                        <strong>Email:</strong> <span id="changePasswordUserEmail"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required minlength="6" />
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('newPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6" />
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Lưu ý:</strong> Sau khi đổi mật khẩu, hãy thông báo cho người dùng biết mật khẩu mới và khuyến khích họ đổi lại mật khẩu sau khi đăng nhập.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-info">
+                        <i class="fas fa-save me-2"></i>Đổi mật khẩu
+                    </button>
                 </div>
             </form>
         </div>
@@ -362,6 +419,72 @@
                         toastr.error('Có lỗi xảy ra: ' + error);
                     }
                 });
+            }
+        }
+
+        // Đổi mật khẩu người dùng
+        function changePassword(userId, userName, userEmail) {
+            $('#changePasswordUserId').val(userId);
+            $('#changePasswordUserName').text(userName);
+            $('#changePasswordUserEmail').text(userEmail);
+            $('#changePasswordModal').modal('show');
+        }
+
+        // Xử lý submit form đổi mật khẩu
+        $('#changePasswordForm').on('submit', function (e) {
+            e.preventDefault();
+            
+            var newPassword = $('#newPassword').val();
+            var confirmPassword = $('#confirmPassword').val();
+            
+            if (newPassword !== confirmPassword) {
+                toastr.error('Mật khẩu xác nhận không khớp!');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                toastr.error('Mật khẩu phải có ít nhất 6 ký tự!');
+                return;
+            }
+            
+            var formData = {
+                userId: $('#changePasswordUserId').val(),
+                newPassword: newPassword
+            };
+            
+            $.ajax({
+                url: '@Url.Action("ChangeUserPassword", "Librarian")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#changePasswordModal').modal('hide');
+                        $('#changePasswordForm')[0].reset();
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function () {
+                    toastr.error('Có lỗi xảy ra khi đổi mật khẩu.');
+                }
+            });
+        });
+
+        // Toggle hiển thị mật khẩu
+        function togglePasswordVisibility(inputId) {
+            var input = document.getElementById(inputId);
+            var button = input.nextElementSibling;
+            var icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         }
     </script>
