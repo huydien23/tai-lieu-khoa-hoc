@@ -19,7 +19,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         }
 
         public async Task<TaiLieuListViewModel> GetDanhSachTaiLieuAsync(int trang = 1, int kichThuocTrang = 10,
-            string? timKiem = null, int? maChuyenNganh = null, int? maLoaiTaiLieu = null, string? sapXep = null)
+            string? timKiem = null, int? maChuyenNganh = null, int? maLoaiTaiLieu = null, string? sapXep = null, string? vaiTro = null)
         {
             var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
@@ -27,6 +27,19 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
+
+            // Filter theo vai trò người dùng
+            if (!string.IsNullOrEmpty(vaiTro))
+            {
+                // Sinh viên chỉ được xem bài báo và đề tài (không xem giáo trình)
+                if (vaiTro.Equals("SinhVien", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(t => t.LoaiTaiLieu != null && 
+                        (t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Bài báo") || 
+                         t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Đề tài")));
+                }
+                // Giảng viên và Thủ thư xem được tất cả
+            }
 
             // Tìm kiếm
             if (!string.IsNullOrEmpty(timKiem))
@@ -81,7 +94,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return result;
         }
 
-        public async Task<TaiLieuViewModel?> GetTaiLieuByIdAsync(int maTaiLieu)
+        public async Task<TaiLieuViewModel?> GetTaiLieuByIdAsync(int maTaiLieu, string? vaiTro = null)
         {
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
@@ -90,7 +103,25 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(t => t.PhieuMuonTras)
                 .FirstOrDefaultAsync(t => t.MaTaiLieu == maTaiLieu);
 
-            return taiLieu != null ? MapToViewModel(taiLieu) : null;
+            if (taiLieu == null)
+                return null;
+
+            // Kiểm tra quyền truy cập theo vai trò
+            if (!string.IsNullOrEmpty(vaiTro))
+            {
+                // Sinh viên không được xem giáo trình
+                if (vaiTro.Equals("SinhVien", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (taiLieu.LoaiTaiLieu != null && 
+                        taiLieu.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Giáo trình"))
+                    {
+                        return null; // Không có quyền truy cập
+                    }
+                }
+                // Giảng viên và Thủ thư xem được tất cả
+            }
+
+            return MapToViewModel(taiLieu);
         }
 
         public async Task<bool> TaoTaiLieuAsync(TaiLieuViewModel model, string maNguoiDung)
@@ -241,14 +272,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             }
         }
 
-        public async Task<List<TaiLieuViewModel>> GetTaiLieuMoiNhatAsync(int soLuong = 10)
+        public async Task<List<TaiLieuViewModel>> GetTaiLieuMoiNhatAsync(int soLuong = 10, string? vaiTro = null)
         {
-            var taiLieu = await _context.TaiLieu
+            var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
-                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
+                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
+
+            // Filter theo vai trò người dùng
+            if (!string.IsNullOrEmpty(vaiTro))
+            {
+                // Sinh viên chỉ được xem bài báo và đề tài (không xem giáo trình)
+                if (vaiTro.Equals("SinhVien", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(t => t.LoaiTaiLieu != null && 
+                        (t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Bài báo") || 
+                         t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Đề tài")));
+                }
+                // Giảng viên và Thủ thư xem được tất cả
+            }
+
+            var taiLieu = await query
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Take(soLuong)
                 .ToListAsync();
@@ -256,14 +302,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return taiLieu.Select(MapToViewModel).ToList();
         }
 
-        public async Task<List<TaiLieuViewModel>> GetTaiLieuPhoBienAsync(int soLuong = 10)
+        public async Task<List<TaiLieuViewModel>> GetTaiLieuPhoBienAsync(int soLuong = 10, string? vaiTro = null)
         {
-            var taiLieu = await _context.TaiLieu
+            var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
-                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)
+                .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
+
+            // Filter theo vai trò người dùng
+            if (!string.IsNullOrEmpty(vaiTro))
+            {
+                // Sinh viên chỉ được xem bài báo và đề tài (không xem giáo trình)
+                if (vaiTro.Equals("SinhVien", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(t => t.LoaiTaiLieu != null && 
+                        (t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Bài báo") || 
+                         t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Đề tài")));
+                }
+                // Giảng viên và Thủ thư xem được tất cả
+            }
+
+            var taiLieu = await query
                 .OrderByDescending(t => t.LuotTai)
                 .Take(soLuong)
                 .ToListAsync();
@@ -294,7 +355,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             };
         }
 
-        public async Task<List<TaiLieuViewModel>> GetTaiLieuLienQuanAsync(int maTaiLieu, int soLuong = 2)
+        public async Task<List<TaiLieuViewModel>> GetTaiLieuLienQuanAsync(int maTaiLieu, int soLuong = 2, string? vaiTro = null)
         {
             // Lấy thông tin tài liệu hiện tại để biết chuyên ngành
             var taiLieuHienTai = await _context.TaiLieu
@@ -304,12 +365,27 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 return new List<TaiLieuViewModel>();
 
             // Lấy các tài liệu cùng chuyên ngành, loại trừ tài liệu hiện tại
-            var taiLieuLienQuan = await _context.TaiLieu
+            var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
                 .Where(t => t.MaTaiLieu != maTaiLieu && 
                            t.MaChuyenNganh == taiLieuHienTai.MaChuyenNganh && 
-                           t.TrangThai == TrangThaiTaiLieu.DaDuyet)
+                           t.TrangThai == TrangThaiTaiLieu.DaDuyet);
+
+            // Filter theo vai trò người dùng
+            if (!string.IsNullOrEmpty(vaiTro))
+            {
+                // Sinh viên chỉ được xem bài báo và đề tài (không xem giáo trình)
+                if (vaiTro.Equals("SinhVien", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(t => t.LoaiTaiLieu != null && 
+                        (t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Bài báo") || 
+                         t.LoaiTaiLieu.TenLoaiTaiLieu.Contains("Đề tài")));
+                }
+                // Giảng viên và Thủ thư xem được tất cả
+            }
+
+            var taiLieuLienQuan = await query
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Take(soLuong)
                 .ToListAsync();

@@ -43,6 +43,11 @@
                         {
                             @foreach (var item in ViewBag.LoaiTaiLieu as SelectList ?? new SelectList(new List<object>()))
                             {
+                                // Ẩn option "Giáo trình" nếu là Sinh viên
+                                if (User.IsInRole("SinhVien") && item.Text.Contains("Giáo trình"))
+                                {
+                                    continue;
+                                }
                                 <option value="@item.Value" selected="@(item.Selected)">
                                     @item.Text
                                 </option>

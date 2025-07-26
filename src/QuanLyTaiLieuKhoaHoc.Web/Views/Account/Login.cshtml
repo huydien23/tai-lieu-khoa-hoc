@@ -313,7 +313,7 @@
                         </div>
                     }
 
-                    <!-- Tài khoản test (chỉ hiển thị trong development) -->
+                    <!-- Tài khoản test
                     @if (ViewContext.HttpContext.Request.Host.Host == "localhost")
                     {
                         <div class="alert alert-info"
@@ -321,11 +321,11 @@
                             <strong><i class="fas fa-info-circle me-2"></i>Tài khoản test:</strong><br>
                             <small>
                                 <strong>Thủ thư:</strong> thuthu@library.edu.vn / ThuThu@2024<br>
-                                <strong>Giảng viên:</strong> giangvien@university.edu.vn / GiangVien@2024<br>
-                                <strong>Sinh viên:</strong> sinhvien@student.edu.vn / SinhVien@2024
+                                <strong>Giảng viên:</strong> giangvien@university.edu.vn / abc123<br>
+                                <strong>Sinh viên:</strong> sinhvien@student.edu.vn / abc123
                             </small>
                         </div>
-                    }
+                    } -->
 
                     <form method="post">
                         <div class="form-floating-custom">
@@ -464,7 +464,6 @@
                 }, 10000);
             });
 
-            // Auto-dismiss alerts after 5 seconds
             setTimeout(function () {
                 $('.alert').fadeOut('slow');
             }, 5000);

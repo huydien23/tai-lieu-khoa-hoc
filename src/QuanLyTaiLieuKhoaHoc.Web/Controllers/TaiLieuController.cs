@@ -85,7 +85,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public async Task<IActionResult> Index(int trang = 1, string? timKiem = null, int? maChuyenNganh = null,
             int? maLoaiTaiLieu = null, string? sapXep = null, string? q = null)
         {
-            // Hỗ trợ tham số 'q' từ trang TimKiem cũ
             if (!string.IsNullOrEmpty(q) && string.IsNullOrEmpty(timKiem))
             {
                 timKiem = q;
@@ -101,16 +100,46 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             ViewBag.SearchAction = "Index";
             ViewBag.SearchController = "TaiLieu";
 
-            var model = await _taiLieuService.GetDanhSachTaiLieuAsync(trang, 12, timKiem, maChuyenNganh, maLoaiTaiLieu, sapXep);
+            // Lấy vai trò người dùng hiện tại
+            string? vaiTro = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("SinhVien"))
+                    vaiTro = "SinhVien";
+                else if (User.IsInRole("GiangVien"))
+                    vaiTro = "GiangVien";
+                else if (User.IsInRole("ThuThu"))
+                    vaiTro = "ThuThu";
+            }
+
+            var model = await _taiLieuService.GetDanhSachTaiLieuAsync(trang, 12, timKiem, maChuyenNganh, maLoaiTaiLieu, sapXep, vaiTro);
             return View(model);
         }
 
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id);
+            // Lấy vai trò người dùng hiện tại
+            string? vaiTro = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("SinhVien"))
+                    vaiTro = "SinhVien";
+                else if (User.IsInRole("GiangVien"))
+                    vaiTro = "GiangVien";
+                else if (User.IsInRole("ThuThu"))
+                    vaiTro = "ThuThu";
+            }
+
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id, vaiTro);
             if (taiLieu == null)
             {
+                // Kiểm tra nếu không có quyền truy cập
+                if (User.Identity?.IsAuthenticated == true && vaiTro == "SinhVien")
+                {
+                    TempData["ErrorMessage"] = "Bạn không có quyền truy cập tài liệu này.";
+                    return RedirectToAction("Index");
+                }
                 return NotFound();
             }
 
@@ -487,7 +516,19 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             try
             {
-                var taiLieuLienQuan = await _taiLieuService.GetTaiLieuLienQuanAsync(id, 2);
+                // Lấy vai trò người dùng hiện tại
+                string? vaiTro = null;
+                if (User.Identity?.IsAuthenticated == true)
+                {
+                    if (User.IsInRole("SinhVien"))
+                        vaiTro = "SinhVien";
+                    else if (User.IsInRole("GiangVien"))
+                        vaiTro = "GiangVien";
+                    else if (User.IsInRole("ThuThu"))
+                        vaiTro = "ThuThu";
+                }
+
+                var taiLieuLienQuan = await _taiLieuService.GetTaiLieuLienQuanAsync(id, 2, vaiTro);
                 return Json(new { success = true, data = taiLieuLienQuan });
             }
             catch (Exception ex)
