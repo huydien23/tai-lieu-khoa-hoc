@@ -1105,42 +1105,123 @@ p {
 
 /* Stats Cards - Better spacing and no overflow */
 .stats-card {
-    background: var(--bg-primary);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
+    background: var(--bg-white);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
     border: 1px solid var(--border-light);
-    transition: var(--transition);
+    transition: all 0.3s ease;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    min-height: 140px;
+    justify-content: center;
+    align-items: center;
+    min-height: 160px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--primary-color);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .stats-card:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    border-color: var(--primary-color);
+    background: var(--bg-light);
+}
+
+.stats-card:hover::before {
+    opacity: 1;
 }
 
 .stats-card .stats-icon {
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 1rem;
-    opacity: 0.8;
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+.stats-card:hover .stats-icon {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 .stats-card .stats-number {
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
     color: var(--text-dark);
+    line-height: 1;
 }
 
 .stats-card .stats-label {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    margin-bottom: 0.5rem;
-    font-weight: 500;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Specific colors for each stats card type */
+.stats-card .stats-icon.text-info {
+    color: var(--info-color) !important;
+}
+
+.stats-card .stats-icon.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.stats-card .stats-icon.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.stats-card .stats-icon.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.stats-card .stats-icon.text-success {
+    color: var(--success-color) !important;
+}
+
+.stats-card .stats-icon.text-secondary {
+    color: var(--secondary-color) !important;
+}
+
+/* Hover effects for specific card types */
+.stats-card:hover .stats-icon.text-info {
+    color: var(--info-color-dark) !important;
+}
+
+.stats-card:hover .stats-icon.text-warning {
+    color: var(--warning-color-dark) !important;
+}
+
+.stats-card:hover .stats-icon.text-primary {
+    color: var(--primary-color-dark) !important;
+}
+
+.stats-card:hover .stats-icon.text-danger {
+    color: var(--danger-color-dark) !important;
+}
+
+.stats-card:hover .stats-icon.text-success {
+    color: var(--success-color-dark) !important;
+}
+
+.stats-card:hover .stats-icon.text-secondary {
+    color: var(--secondary-color-dark) !important;
 }
 
 /* Card Headers */
@@ -1263,6 +1344,73 @@ p {
     white-space: nowrap;
     font-weight: 600;
     font-size: 0.85rem;
+}
+
+/* Stats Cards Responsive */
+@media (max-width: 768px) {
+    .stats-card {
+        min-height: 140px;
+        padding: 1.5rem 1rem;
+    }
+
+    .stats-card .stats-icon {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .stats-card .stats-number {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-card .stats-label {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .stats-card {
+        min-height: 120px;
+        padding: 1.25rem 0.75rem;
+    }
+
+    .stats-card .stats-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-card .stats-number {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-card .stats-label {
+        font-size: 0.75rem;
+    }
+}
+
+/* Enhanced stats card animations */
+@keyframes statsCardPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.02);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.stats-card:hover .stats-number {
+    animation: statsCardPulse 0.6s ease-in-out;
+}
+
+/* Stats card glow effect */
+.stats-card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 0 0 1px var(--primary-color-light);
 }
 
 /* Borrowed Item Styles */

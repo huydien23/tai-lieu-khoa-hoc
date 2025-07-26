@@ -18,41 +18,48 @@
     </div>
 </div>
 
-<!-- Key Statistics (chỉ giữ lại các thống kê phù hợp) -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-2 col-md-4">
+<!-- Key Statistics -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="stats-icon text-info"><i class="fas fa-heart"></i></div>
             <div class="stats-number">@Model.SoLuongYeuThich</div>
             <div class="stats-label">Yêu thích</div>
         </div>
     </div>
-    <div class="col-xl-2 col-md-4">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="stats-icon text-warning"><i class="fas fa-hourglass-half"></i></div>
             <div class="stats-number">@Model.SoPhieuChoDuyet</div>
             <div class="stats-label">Chờ duyệt</div>
         </div>
     </div>
-    <div class="col-xl-2 col-md-4">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="stats-icon text-primary"><i class="fas fa-book"></i></div>
             <div class="stats-number">@Model.SoPhieuDangMuon</div>
             <div class="stats-label">Đang mượn</div>
         </div>
     </div>
-    <div class="col-xl-2 col-md-4">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="stats-icon text-danger"><i class="fas fa-times-circle"></i></div>
             <div class="stats-number">@Model.SoPhieuTuChoi</div>
             <div class="stats-label">Từ chối</div>
         </div>
     </div>
-    <div class="col-xl-2 col-md-4">
+    <div class="col-lg-2 col-md-4 col-sm-6">
         <div class="stats-card">
             <div class="stats-icon text-success"><i class="fas fa-download"></i></div>
             <div class="stats-number">@Model.SoLuotTaiXuong</div>
             <div class="stats-label">Lượt tải xuống</div>
+        </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stats-card">
+            <div class="stats-icon text-secondary"><i class="fas fa-check-circle"></i></div>
+            <div class="stats-number">@Model.SoPhieuDaTra</div>
+            <div class="stats-label">Đã trả</div>
         </div>
     </div>
 </div>
@@ -340,29 +347,194 @@
             </div>
             <!-- Tài liệu đã tải Tab -->
             <div class="tab-pane fade" id="v-pills-downloads" role="tabpanel">
-                <h2>Tài liệu đã tải</h2>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Tên tài liệu</th>
-                            <th>Thời gian tải</th>
-                            <th>Địa chỉ IP</th>
-                            <th>Trình duyệt</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.LichSuTaiXuong)
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-download me-2"></i>
+                            Lịch sử tải tài liệu
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.LichSuTaiXuong != null && Model.LichSuTaiXuong.Any())
                         {
-                            <tr>
-                                <td>@item.TaiLieu?.TenTaiLieu</td>
-                                <td>@item.ThoiGianTai.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@item.DiaChiIP</td>
-                                <td>@item.UserAgent</td>
-                            </tr>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Tài liệu</th>
+                                            <th>Thời gian tải</th>
+                                            <th>Thông tin hệ thống</th>
+                                            <th>Thao tác</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.LichSuTaiXuong)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="me-3">
+                                                            <i class="fas fa-file-pdf text-danger fa-lg"></i>
+                                                        </div>
+                                                        <div>
+                                                            <strong>@item.TaiLieu?.TenTaiLieu</strong>
+                                                            @if (!string.IsNullOrEmpty(item.TaiLieu?.TacGia))
+                                                            {
+                                                                <br><small class="text-muted">Tác giả: @item.TaiLieu.TacGia</small>
+                                                            }
+                                                            @if (item.TaiLieu != null)
+                                                            {
+                                                                <br><small class="text-muted">
+                                                                    @(item.TaiLieu.LoaiFile?.ToUpper() ?? "FILE") • 
+                                                                    @(Math.Round(item.TaiLieu.KichThuocFile / 1024.0, 1)) MB
+                                                                </small>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <span class="text-primary fw-medium">@item.ThoiGianTai.ToString("dd/MM/yyyy")</span>
+                                                        <br><small class="text-muted">@item.ThoiGianTai.ToString("HH:mm:ss")</small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-globe me-1"></i>@item.DiaChiIP
+                                                        </small>
+                                                        @if (!string.IsNullOrEmpty(item.UserAgent))
+                                                        {
+                                                            <br><small class="text-muted">
+                                                                <i class="fas fa-desktop me-1"></i>
+                                                                @(item.UserAgent.Length > 50 ? item.UserAgent.Substring(0, 50) + "..." : item.UserAgent)
+                                                            </small>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        @if (item.TaiLieu != null)
+                                                        {
+                                                            <a href="/TaiLieu/Details/@item.TaiLieu.MaTaiLieu" 
+                                                               class="btn btn-sm btn-outline-primary" 
+                                                               title="Xem chi tiết tài liệu">
+                                                                <i class="fas fa-eye me-1"></i>Xem
+                                                            </a>
+                                                        }
+                                                        <button class="btn btn-sm btn-outline-secondary" 
+                                                                onclick="deleteDownloadHistory(@item.MaLichSu)" 
+                                                                title="Xóa khỏi lịch sử">
+                                                            <i class="fas fa-trash me-1"></i>Xóa
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
                         }
-                    </tbody>
-                </table>
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="fas fa-download fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">Chưa có lịch sử tải tài liệu</h5>
+                                <p class="text-muted">Bạn chưa tải xuống tài liệu nào.</p>
+                                <a href="/TaiLieu" class="btn btn-primary">
+                                    <i class="fas fa-search me-2"></i>Tìm tài liệu để tải
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function deleteDownloadHistory(maLichSu) {
+        if (confirm('Bạn chắc chắn muốn xóa lịch sử tải này khỏi danh sách?\n\nLưu ý: Hành động này không thể hoàn tác.')) {
+            fetch('/Student/DeleteDownloadHistory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify({ maLichSu })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Tạo alert thành công
+                    const alertHtml = `
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Xóa lịch sử tải thành công!
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    
+                    // Tìm container để hiển thị alert
+                    const container = document.querySelector('.card-body');
+                    if (container) {
+                        container.insertAdjacentHTML('afterbegin', alertHtml);
+                        
+                        // Tự động ẩn sau 3 giây
+                        setTimeout(() => {
+                            const alert = container.querySelector('.alert');
+                            if (alert) {
+                                alert.remove();
+                            }
+                        }, 3000);
+                    }
+                    
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    // Tạo alert lỗi
+                    const alertHtml = `
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            ${data.message || 'Có lỗi xảy ra khi xóa lịch sử tải.'}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    `;
+                    
+                    const container = document.querySelector('.card-body');
+                    if (container) {
+                        container.insertAdjacentHTML('afterbegin', alertHtml);
+                        
+                        setTimeout(() => {
+                            const alert = container.querySelector('.alert');
+                            if (alert) {
+                                alert.remove();
+                            }
+                        }, 5000);
+                    }
+                }
+            })
+            .catch(error => {
+                const alertHtml = `
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Có lỗi xảy ra khi kết nối với máy chủ.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `;
+                
+                const container = document.querySelector('.card-body');
+                if (container) {
+                    container.insertAdjacentHTML('afterbegin', alertHtml);
+                    
+                    setTimeout(() => {
+                        const alert = container.querySelector('.alert');
+                        if (alert) {
+                            alert.remove();
+                        }
+                    }, 5000);
+                }
+            });
+        }
+    }
+</script>

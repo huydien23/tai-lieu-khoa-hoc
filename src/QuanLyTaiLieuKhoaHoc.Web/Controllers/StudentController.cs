@@ -123,6 +123,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         public int MaPhieu { get; set; }
     }
 
+    public class DeleteDownloadHistoryModel
+    {
+        public int MaLichSu { get; set; }
+    }
+
         [HttpPost]
         [Authorize(Roles = "SinhVien")]
         public async Task<IActionResult> CancelRequest([FromBody] CancelRequestModel model)
@@ -177,6 +182,34 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 await _context.SaveChangesAsync();
 
                 return Json(new { success = true, message = "Xóa tài liệu đã trả thành công." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "SinhVien")]
+        public async Task<IActionResult> DeleteDownloadHistory([FromBody] DeleteDownloadHistoryModel model)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Unauthorized();
+
+                var downloadHistory = await _context.LichSuTaiTaiLieu
+                    .FirstOrDefaultAsync(l => l.MaLichSu == model.MaLichSu && l.MaNguoiDung == user.Id);
+
+                if (downloadHistory == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy lịch sử tải." });
+                }
+
+                _context.LichSuTaiTaiLieu.Remove(downloadHistory);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Xóa lịch sử tải thành công." });
             }
             catch (Exception ex)
             {
