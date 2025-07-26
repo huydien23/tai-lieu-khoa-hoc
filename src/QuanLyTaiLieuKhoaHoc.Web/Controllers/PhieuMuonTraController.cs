@@ -151,15 +151,35 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             var phieu = await _phieuService.LayPhieuMuonTraByIdAsync(maPhieu);
             if (phieu == null) return NotFound();
-            var sinhVien = phieu.NguoiMuon;
             var taiLieu = phieu.TaiLieu;
+            
+            // Xử lý thông tin người mượn (hệ thống hoặc ngoài hệ thống)
+            string hoTen, mssv, email, chuyenNganh;
+            
+            if (phieu.NguoiMuon != null)
+            {
+                // Người mượn là thành viên hệ thống
+                hoTen = phieu.NguoiMuon.HoTen ?? "";
+                mssv = phieu.NguoiMuon.MaSo ?? "";
+                email = phieu.NguoiMuon.Email ?? "";
+                chuyenNganh = phieu.NguoiMuon.ChuyenNganh?.TenChuyenNganh ?? "";
+            }
+            else
+            {
+                // Người mượn ngoài hệ thống
+                hoTen = phieu.HoTenNguoiMuon ?? "";
+                mssv = phieu.MaSoNguoiMuon ?? "";
+                email = phieu.EmailNguoiMuon ?? "";
+                chuyenNganh = phieu.LoaiNguoiMuon ?? "";
+            }
+            
             var vm = new QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
             {
                 MaPhieu = phieu.MaPhieu,
-                HoTen = sinhVien?.HoTen ?? "",
-                MSSV = sinhVien?.MaSo ?? "",
-                Email = sinhVien?.Email ?? "",
-                ChuyenNganh = sinhVien?.ChuyenNganh?.TenChuyenNganh ?? "",
+                HoTen = hoTen,
+                MSSV = mssv,
+                Email = email,
+                ChuyenNganh = chuyenNganh,
                 TenTaiLieu = taiLieu?.TenTaiLieu ?? "",
                 TacGia = taiLieu?.TacGia ?? "",
                 NgayMuon = phieu.NgayMuon

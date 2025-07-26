@@ -473,7 +473,8 @@
                 var results = data || [];
                 var html = '';
                 results.forEach(function (m) {
-                    html += `<button type="button" class="list-group-item list-group-item-action" data-maso="${m.maSo}" data-hoten="${m.hoTen}" data-email="${m.email}" data-sdt="${m.sdt}" data-loai="${m.loai}">${m.maSo} - ${m.hoTen} (${m.loai})</button>`;
+                    var sdt = m.sdt || 'Chưa có';
+                    html += `<button type="button" class="list-group-item list-group-item-action" data-maso="${m.maSo}" data-hoten="${m.hoTen}" data-email="${m.email}" data-sdt="${sdt}" data-loai="${m.loai}">${m.maSo} - ${m.hoTen} (${m.loai}) - ${sdt}</button>`;
                 });
                 $('#memberSearchResults').html(html);
             });
@@ -481,10 +482,11 @@
 
         // Chọn thành viên từ autocomplete
         $('#memberSearchResults').on('click', 'button', function () {
+            var sdt = $(this).data('sdt');
             $('#phieuMaNguoiMuon').val($(this).data('maso'));
             $('#phieuHoTenNguoiMuon').val($(this).data('hoten'));
             $('#phieuEmailNguoiMuon').val($(this).data('email'));
-            $('#phieuSDTNguoiMuon').val($(this).data('sdt'));
+            $('#phieuSDTNguoiMuon').val(sdt === 'Chưa có' ? '' : sdt);
             $('#phieuLoaiNguoiMuon').val($(this).data('loai'));
             $('#memberSearchResults').empty();
         });

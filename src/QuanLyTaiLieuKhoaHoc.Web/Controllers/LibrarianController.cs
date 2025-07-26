@@ -83,8 +83,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     maSo = u.MaSo,
                     hoTen = u.HoTen,
                     email = u.Email,
-                    sdt = u.PhoneNumber,
-                    loai = u.VaiTro // Ví dụ: "SinhVien", "GiangVien", "ThuThu"
+                    sdt = u.SoDienThoai,
+                    loai = u.VaiTro.ToString() // Ví dụ: "SinhVien", "GiangVien", "ThuThu"
                 })
                 .Take(10)
                 .ToListAsync();
