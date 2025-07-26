@@ -960,6 +960,59 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         // LẬP PHIẾU MƯỢN TÀI LIỆU
         [HttpPost]
+        public async Task<IActionResult> LapPhieuMuonTrucTiep(int maTaiLieu, string hoTenNguoiMuon, string maSoNguoiMuon, 
+            string emailNguoiMuon, string soDienThoaiNguoiMuon, string loaiNguoiMuon, 
+            DateTime ngayMuon, DateTime ngayTraDuKien, int soLuongMuon, string ghiChu)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
+            }
+
+            // Kiểm tra tài liệu
+            var taiLieu = await _context.TaiLieu.FindAsync(maTaiLieu);
+            if (taiLieu == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
+            }
+
+            // Kiểm tra số lượng còn lại
+            if (taiLieu.SoLuongConLai < soLuongMuon)
+            {
+                return Json(new { success = false, message = $"Tài liệu chỉ còn {taiLieu.SoLuongConLai} bản, không đủ để mượn {soLuongMuon} bản!" });
+            }
+
+            // Tạo phiếu mượn mới
+            var phieuMuon = new PhieuMuonTra
+            {
+                MaTaiLieu = maTaiLieu,
+                MaNguoiMuon = null, // Không phải thành viên hệ thống
+                HoTenNguoiMuon = hoTenNguoiMuon,
+                MaSoNguoiMuon = maSoNguoiMuon,
+                EmailNguoiMuon = emailNguoiMuon,
+                SoDienThoaiNguoiMuon = soDienThoaiNguoiMuon,
+                LoaiNguoiMuon = loaiNguoiMuon,
+                NgayMuon = ngayMuon,
+                NgayTraDuKien = ngayTraDuKien,
+                SoLuongMuon = soLuongMuon,
+                TrangThai = TrangThaiPhieu.DaDuyet, // Trực tiếp duyệt
+                MaThuThuDuyet = currentUser.Id,
+                NgayTao = DateTime.Now,
+                GhiChu = ghiChu
+            };
+
+            _context.PhieuMuonTra.Add(phieuMuon);
+
+            // Cập nhật số lượng đã mượn
+            taiLieu.SoLuongDaMuon += soLuongMuon;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Lập phiếu mượn trực tiếp thành công!" });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> LapPhieuMuon(int maPhieu, DateTime ngayMuon, DateTime ngayTraDuKien)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -1056,13 +1109,22 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 // Giảm số lượng đã mượn
                 if (phieu.TaiLieu != null)
                 {
-                    phieu.TaiLieu.SoLuongDaMuon--;
+                    // Đảm bảo SoLuongMuon có giá trị hợp lệ (mặc định là 1 nếu null hoặc 0)
+                    var soLuongMuon = phieu.SoLuongMuon > 0 ? phieu.SoLuongMuon : 1;
+                    phieu.TaiLieu.SoLuongDaMuon -= soLuongMuon;
+                    
+                    // Đảm bảo không âm
+                    if (phieu.TaiLieu.SoLuongDaMuon < 0)
+                    {
+                        phieu.TaiLieu.SoLuongDaMuon = 0;
+                    }
                 }
 
                 await _context.SaveChangesAsync();
 
                 // Tạo thông báo thành công chi tiết
-                var message = $"Đã xác nhận trả tài liệu '{phieu.TaiLieu?.TenTaiLieu}' cho {phieu.NguoiMuon?.HoTen}' thành công!";
+                var tenNguoiMuon = phieu.NguoiMuon?.HoTen ?? phieu.HoTenNguoiMuon ?? "Không rõ";
+                var message = $"Đã xác nhận trả tài liệu '{phieu.TaiLieu?.TenTaiLieu}' cho {tenNguoiMuon} thành công!";
                 if (!string.IsNullOrWhiteSpace(tinhTrang))
                 {
                     message += $" Tình trạng: {tinhTrang}.";
@@ -1179,6 +1241,45 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 soLuongDaMuon = taiLieu.SoLuongDaMuon,
                 soLuongConLai = taiLieu.SoLuongConLai
             });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> FixSoLuongMuonData()
+        {
+            try
+            {
+                // Cập nhật tất cả phiếu mượn có SoLuongMuon = 0 hoặc null thành 1
+                var phieuMuonWithZeroSoLuong = await _context.PhieuMuonTra
+                    .Where(p => p.SoLuongMuon <= 0)
+                    .ToListAsync();
+
+                foreach (var phieu in phieuMuonWithZeroSoLuong)
+                {
+                    phieu.SoLuongMuon = 1;
+                }
+
+                // Tính lại số lượng đã mượn cho tất cả tài liệu
+                var allTaiLieu = await _context.TaiLieu.ToListAsync();
+                foreach (var taiLieu in allTaiLieu)
+                {
+                    var soLuongDaMuon = await _context.PhieuMuonTra
+                        .Where(p => p.MaTaiLieu == taiLieu.MaTaiLieu && 
+                                   p.TrangThai == TrangThaiPhieu.DaDuyet && 
+                                   !p.NgayTra.HasValue)
+                        .SumAsync(p => p.SoLuongMuon);
+                    
+                    taiLieu.SoLuongDaMuon = soLuongDaMuon;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã cập nhật lại {phieuMuonWithZeroSoLuong.Count} phiếu mượn và đồng bộ số lượng cho {allTaiLieu.Count} tài liệu!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
         }
     }
 }

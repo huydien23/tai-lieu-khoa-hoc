@@ -14,9 +14,30 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Mã tài liệu")]
         public int MaTaiLieu { get; set; }
 
-        [Required]
         [Display(Name = "Mã người mượn")]
-        public string MaNguoiMuon { get; set; } = string.Empty;
+        public string? MaNguoiMuon { get; set; }
+
+        // Thông tin người mượn không phải thành viên hệ thống
+        [Display(Name = "Họ tên người mượn")]
+        public string? HoTenNguoiMuon { get; set; }
+
+        [Display(Name = "Mã số người mượn")]
+        public string? MaSoNguoiMuon { get; set; }
+
+        [Display(Name = "Email người mượn")]
+        public string? EmailNguoiMuon { get; set; }
+
+        [Display(Name = "Số điện thoại người mượn")]
+        public string? SoDienThoaiNguoiMuon { get; set; }
+
+        [Display(Name = "Loại người mượn")]
+        public string? LoaiNguoiMuon { get; set; }
+
+        [Display(Name = "Số lượng mượn")]
+        public int SoLuongMuon { get; set; } = 1;
+
+        [Display(Name = "Ngày tạo")]
+        public DateTime NgayTao { get; set; } = DateTime.Now;
 
         [Required]
         [Display(Name = "Ngày mượn")]

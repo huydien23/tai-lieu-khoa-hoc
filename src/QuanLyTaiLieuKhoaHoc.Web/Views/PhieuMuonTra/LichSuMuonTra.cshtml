@@ -23,7 +23,24 @@
             <tr>
                 <td>@item.MaPhieu</td>
                 <td>@item.TaiLieu?.TenTaiLieu</td>
-                <td>@item.NguoiMuon?.HoTen</td>
+                <td>
+                    @if (item.NguoiMuon != null)
+                    {
+                        @item.NguoiMuon.HoTen
+                    }
+                    else if (!string.IsNullOrEmpty(item.HoTenNguoiMuon))
+                    {
+                        @item.HoTenNguoiMuon
+                        @if (!string.IsNullOrEmpty(item.MaSoNguoiMuon))
+                        {
+                            @($" ({item.MaSoNguoiMuon})")
+                        }
+                    }
+                    else
+                    {
+                        @:"-"
+                    }
+                </td>
                 <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>@(item.NgayTraDuKien?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
                 <td>@(item.NgayTra?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>

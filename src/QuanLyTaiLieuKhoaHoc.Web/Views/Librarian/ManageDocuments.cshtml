@@ -12,6 +12,9 @@
             Quản lý Tài liệu
         </h2>
         <div class="d-flex gap-2">
+            <button type="button" class="btn btn-warning" onclick="fixSoLuongMuonData()">
+                <i class="fas fa-sync-alt me-1"></i>Cập nhật lại dữ liệu
+            </button>
             <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDocumentModal">
                 <i class="fas fa-plus me-1"></i>Thêm tài liệu
             </button>
@@ -255,8 +258,15 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="phieuLoaiNguoiMuon" class="form-label">Loại người mượn</label>
-                            <input type="text" class="form-control" id="phieuLoaiNguoiMuon" name="loaiNguoiMuon"
-                                readonly />
+                            <select class="form-control" id="phieuLoaiNguoiMuon" name="loaiNguoiMuon" required>
+                                <option value="">-- Chọn loại người mượn --</option>
+                                <option value="Sinh viên">Sinh viên</option>
+                                <option value="Giảng viên">Giảng viên</option>
+                                <option value="Cán bộ">Cán bộ</option>
+                                <option value="Nghiên cứu sinh">Nghiên cứu sinh</option>
+                                <option value="Khách">Khách</option>
+                                <option value="Khác">Khác</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row g-2">
@@ -405,24 +415,28 @@
             e.preventDefault();
             var data = {
                 maTaiLieu: $('#phieuMaTaiLieu').val(),
-                maNguoiMuon: $('#phieuMaNguoiMuon').val(),
+                maSoNguoiMuon: $('#phieuMaNguoiMuon').val(),
                 hoTenNguoiMuon: $('#phieuHoTenNguoiMuon').val(),
                 emailNguoiMuon: $('#phieuEmailNguoiMuon').val(),
-                sdtNguoiMuon: $('#phieuSDTNguoiMuon').val(),
+                soDienThoaiNguoiMuon: $('#phieuSDTNguoiMuon').val(),
                 loaiNguoiMuon: $('#phieuLoaiNguoiMuon').val(),
                 ngayMuon: $('#phieuNgayMuon').val(),
                 ngayTraDuKien: $('#phieuNgayTraDuKien').val(),
-                soLuong: $('#phieuSoLuong').val(),
+                soLuongMuon: $('#phieuSoLuong').val(),
                 ghiChu: $('#phieuGhiChu').val()
             };
             $.ajax({
-                url: '/Librarian/LapPhieuMuon',
+                url: '/Librarian/LapPhieuMuonTrucTiep',
                 type: 'POST',
                 data: data,
                 success: function (response) {
                     if (response.success) {
                         toastr.success(response.message);
                         $('#createPhieuMuonModal').modal('hide');
+                        // Refresh page sau 1 giây
+                        setTimeout(function () {
+                            location.reload();
+                        }, 1000);
                     } else {
                         toastr.error(response.message);
                     }
@@ -437,10 +451,12 @@
         $('#isMemberCheckbox').on('change', function () {
             if ($(this).is(':checked')) {
                 $('#memberSearchGroup').removeClass('d-none');
-                $('#phieuMaNguoiMuon, #phieuHoTenNguoiMuon, #phieuEmailNguoiMuon, #phieuSDTNguoiMuon, #phieuLoaiNguoiMuon').prop('readonly', true);
+                $('#phieuMaNguoiMuon, #phieuHoTenNguoiMuon, #phieuEmailNguoiMuon, #phieuSDTNguoiMuon').prop('readonly', true);
+                $('#phieuLoaiNguoiMuon').prop('disabled', true);
             } else {
                 $('#memberSearchGroup').addClass('d-none');
-                $('#phieuMaNguoiMuon, #phieuHoTenNguoiMuon, #phieuEmailNguoiMuon, #phieuSDTNguoiMuon, #phieuLoaiNguoiMuon').prop('readonly', false);
+                $('#phieuMaNguoiMuon, #phieuHoTenNguoiMuon, #phieuEmailNguoiMuon, #phieuSDTNguoiMuon').prop('readonly', false);
+                $('#phieuLoaiNguoiMuon').prop('disabled', false);
                 $('#memberSearch').val("");
                 $('#memberSearchResults').empty();
             }
@@ -592,6 +608,31 @@
                     error: function (xhr, status, error) {
                         toastr.error('Có lỗi xảy ra khi xóa tài liệu: ' + error);
                     }
+                });
+            }
+        }
+
+        // Cập nhật lại dữ liệu số lượng mượn
+        function fixSoLuongMuonData() {
+            if (confirm('Bạn có chắc chắn muốn cập nhật lại dữ liệu số lượng mượn? Hành động này sẽ đồng bộ lại tất cả phiếu mượn cũ và tính lại số lượng tài liệu.')) {
+                fetch('/Librarian/FixSoLuongMuonData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        toastr.success(data.message);
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        toastr.error(data.message);
+                    }
+                })
+                .catch(error => {
+                    toastr.error('Có lỗi xảy ra: ' + error);
                 });
             }
         }
