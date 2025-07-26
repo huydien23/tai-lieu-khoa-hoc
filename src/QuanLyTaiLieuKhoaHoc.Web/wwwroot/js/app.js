@@ -1,7 +1,7 @@
 // ===================================
 // HỆ THỐNG QUẢN LÝ TÀI LIỆU KHOA HỌC
 // Custom JavaScript
-// ===================================
+// ===================================  
 
 $(document).ready(function () {
   // Initialize tooltips

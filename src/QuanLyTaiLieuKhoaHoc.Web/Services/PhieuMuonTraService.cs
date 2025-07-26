@@ -83,7 +83,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             phieu.NgayTra = ngayTra;
             phieu.GhiChu = ghiChu;
             phieu.MaThuThuDuyet = maThuThu;
-            phieu.TinhTrangSauTra = tinhTrang; // Giả sử có trường này, nếu chưa có thì cần thêm vào model và migration
+            phieu.TinhTrangSauTra = tinhTrang;
             return await _context.SaveChangesAsync() > 0;
         }
 

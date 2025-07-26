@@ -1584,7 +1584,6 @@ p {
 /* Layout chính */
 .main-content {
     padding-top: 80px;
-    /* Để tránh bị navbar che */
     min-height: calc(100vh - 140px);
 }
 

@@ -317,7 +317,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 DiemDanhGiaTrungBinh = taiLieu.DanhGiaTaiLieu.Any() ?
                     taiLieu.DanhGiaTaiLieu.Average(d => d.DiemDanhGia) : 0,
                 SoLuotDanhGia = taiLieu.DanhGiaTaiLieu.Count,
-                // Bổ sung các trường chuyên biệt
                 // --- Bài báo khoa học ---
                 TieuDe = taiLieu.TieuDe,
                 TapChiHoiNghi = taiLieu.TapChiHoiNghi,

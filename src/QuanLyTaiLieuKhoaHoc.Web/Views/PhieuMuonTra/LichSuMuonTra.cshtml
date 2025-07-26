@@ -115,7 +115,7 @@
         });
     });
 
-    // Reset nội dung modal khi đóng để tránh form cũ còn tồn tại
+    // Reset nội dung modal
     $(document).on('hidden.bs.modal', '#traPhieuModal', function () {
         $(this).find('.modal-content').html('');
     });
