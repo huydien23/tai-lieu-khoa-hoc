@@ -45,6 +45,23 @@
                             <strong>Kích thước:</strong> @(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>Tình trạng tài liệu:</strong>
+                            <div class="d-flex gap-2 mt-1">
+                                <span class="badge bg-primary">Tổng: @Model.SoLuong</span>
+                                <span class="badge bg-warning">Đã mượn: @Model.SoLuongDaMuon</span>
+                                @if (Model.SoLuongConLai > 0)
+                                {
+                                    <span class="badge bg-success">Còn lại: @Model.SoLuongConLai</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Hết tài liệu</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
                     @if (Model.ChoPhepTaiFile)
                     {
                         <div class="row mb-3">
@@ -141,10 +158,19 @@
                                 }
                                 else
                                 {
-                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#muonModal">
-                                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
-                                    </button>
+                                    @if (Model.SoLuongConLai > 0)
+                                    {
+                                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                            data-bs-target="#muonModal">
+                                            <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn btn-danger" disabled>
+                                            <i class="fas fa-times-circle me-2"></i>Hết tài liệu
+                                        </button>
+                                    }
 
                                     <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
                                         @Html.AntiForgeryToken()
