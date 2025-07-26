@@ -1050,17 +1050,18 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             var user = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
-                return Json(null);
+                return Json(new { success = false, message = "Không tìm thấy người dùng" });
 
             return Json(new
             {
+                success = true,
                 id = user.Id,
                 hoTen = user.HoTen,
-                email = user.Email,
-                maSo = user.MaSo,
-                soDienThoai = user.SoDienThoai,
+                email = user.Email ?? "",
+                maSo = user.MaSo ?? "",
+                soDienThoai = user.SoDienThoai ?? "",
                 vaiTro = user.VaiTro.ToString(),
-                chuyenNganh = user.ChuyenNganh?.TenChuyenNganh
+                chuyenNganh = user.ChuyenNganh?.TenChuyenNganh ?? ""
             });
         }
 

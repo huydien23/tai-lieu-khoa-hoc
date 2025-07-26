@@ -6,6 +6,7 @@ using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
@@ -33,6 +34,15 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             // Lấy thông tin người dùng
             var currentUser = await _context.Users.Include(u => u.ChuyenNganh).FirstOrDefaultAsync(u => u.Id == userId);
             ViewBag.CurrentUser = currentUser;
+
+            // Load dropdown data cho form tìm kiếm
+            ViewBag.ChuyenNganh = new SelectList(
+                await _context.ChuyenNganh.Where(cn => cn.TrangThaiHoatDong).ToListAsync(),
+                "MaChuyenNganh", "TenChuyenNganh");
+
+            ViewBag.LoaiTaiLieu = new SelectList(
+                await _context.LoaiTaiLieu.Where(lt => lt.TrangThaiHoatDong).ToListAsync(),
+                "MaLoaiTaiLieu", "TenLoaiTaiLieu");
 
             var ngayHienTai = DateTime.Today;
             var dauTuanNay = ngayHienTai.AddDays(-(int)ngayHienTai.DayOfWeek + 1);

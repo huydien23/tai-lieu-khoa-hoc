@@ -12,7 +12,63 @@
                 <i class="fas fa-chalkboard-teacher me-3 text-primary"></i>
                 Dashboard Giảng viên
             </h1>
-            <p class="text-muted mb-0">Truy cập tài liệu nghiên cứu và giảng dạy</p>
+            <p class="text-muted mb-0">Tra cứu và khám phá tài liệu nghiên cứu, giảng dạy</p>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Search Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card-custom">
+            <div class="card-body p-4">
+                <h5 class="mb-3">
+                    <i class="fas fa-search me-2 text-primary"></i>
+                    Tìm kiếm nhanh
+                </h5>
+                <form action="/TaiLieu" method="get" class="search-form">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="input-group input-group-lg">
+                                <input type="text" name="timKiem" class="form-control" 
+                                       placeholder="Nhập từ khóa tìm kiếm tài liệu..." 
+                                       value="@(ViewBag.TimKiem ?? "")">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search me-2"></i>Tìm kiếm
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="maChuyenNganh" class="form-select">
+                                <option value="">-- Tất cả chuyên ngành --</option>
+                                @if (ViewBag.ChuyenNganh != null)
+                                {
+                                    @foreach (var item in ViewBag.ChuyenNganh as SelectList ?? new SelectList(new List<object>()))
+                                    {
+                                        <option value="@item.Value" selected="@(item.Selected)">
+                                            @item.Text
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select name="maLoaiTaiLieu" class="form-select">
+                                <option value="">-- Tất cả loại --</option>
+                                @if (ViewBag.LoaiTaiLieu != null)
+                                {
+                                    @foreach (var item in ViewBag.LoaiTaiLieu as SelectList ?? new SelectList(new List<object>()))
+                                    {
+                                        <option value="@item.Value" selected="@(item.Selected)">
+                                            @item.Text
+                                        </option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -25,7 +81,7 @@
             <div class="stats-number">@Model.TaiLieuMoiTrongThang</div>
             <div class="stats-label">Tài liệu mới</div>
             <small class="text-muted">
-                <i class="fas fa-laptop-code me-1"></i>Số tài liệu đã thêm trong tháng
+                <i class="fas fa-calendar me-1"></i>Đã thêm trong tháng này
             </small>
         </div>
     </div>
@@ -51,17 +107,17 @@
             <div class="stats-number">@Model.SoLuongYeuThich</div>
             <div class="stats-label">Đã đánh dấu</div>
             <small class="text-muted">
-                <i class="fas fa-star me-1"></i>Yêu thích
+                <i class="fas fa-star me-1"></i>Tài liệu yêu thích
             </small>
         </div>
     </div>
     <div class="col-xl-3 col-md-6">
         <div class="stats-card">
-            <div class="stats-icon text-warning"><i class="fas fa-share-alt"></i></div>
+            <div class="stats-icon text-warning"><i class="fas fa-eye"></i></div>
             <div class="stats-number">@Model.SoLuotXemGanDay</div>
             <div class="stats-label">Đã xem</div>
             <small class="text-muted">
-                <i class="fas fa-users me-1"></i>Số tài liệu xem gần đây
+                <i class="fas fa-history me-1"></i>Xem gần đây
             </small>
         </div>
     </div>
@@ -88,9 +144,13 @@
                         data-bs-target="#v-pills-favorites" type="button" role="tab">
                         <i class="fas fa-star me-2"></i>Yêu thích
                     </button>
-                    <button class="nav-link" id="v-pills-shared-tab" data-bs-toggle="pill"
-                        data-bs-target="#v-pills-shared" type="button" role="tab">
-                        <i class="fas fa-share-alt me-2"></i>Đã tải
+                    <button class="nav-link" id="v-pills-recent-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-recent" type="button" role="tab">
+                        <i class="fas fa-history me-2"></i>Xem gần đây
+                    </button>
+                    <button class="nav-link" id="v-pills-downloaded-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-downloaded" type="button" role="tab">
+                        <i class="fas fa-download me-2"></i>Đã tải
                     </button>
                     <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-profile" type="button" role="tab">
@@ -110,80 +170,111 @@
             <!-- Overview Tab -->
             <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
                 <div class="row g-4">
+                    <!-- Tài liệu mới nhất -->
+                    <div class="col-12">
+                        <div class="card-custom">
+                            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-clock me-2"></i>
+                                    Tài liệu mới nhất
+                                </h6>
+                                <a href="/TaiLieu" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-external-link-alt me-1"></i>Xem tất cả
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    @if (Model.TaiLieuXemGanDay != null && Model.TaiLieuXemGanDay.Any())
+                                    {
+                                        foreach (var item in Model.TaiLieuXemGanDay.Take(3))
+                                        {
+                                            <div class="col-md-4">
+                                                <div class="document-card">
+                                                    <div class="document-icon">
+                                                        <i class="fas fa-file-pdf text-danger"></i>
+                                                    </div>
+                                                    <div class="document-info">
+                                                        <h6 class="document-title">@item.TenTaiLieu</h6>
+                                                        <p class="document-meta">
+                                                            @item.LoaiFile?.ToUpper() • 
+                                                            @(Math.Round(item.KichThuocFile / 1024.0, 1)) MB • 
+                                                            @item.TacGia 
+                                                        </p>
+                                                        <div class="document-actions">
+                                                            <a href="/TaiLieu/Details/@item.MaTaiLieu" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-eye me-1"></i>Xem
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="col-12">
+                                            <p class="text-muted text-center">Chưa có tài liệu nào được xem gần đây.</p>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thống kê -->
                     <div class="col-12">
                         <div class="card-custom">
                             <div class="card-header-custom">
                                 <h6 class="mb-0">
-                                    <i class="fas fa-history me-2"></i>
-                                    Tài liệu truy cập gần đây
+                                    <i class="fas fa-chart-bar me-2"></i>
+                                    Thống kê hoạt động
                                 </h6>
                             </div>
                             <div class="card-body">
-                                <hr />
                                 <div class="row">
                                     <!-- Thống kê theo chuyên ngành -->
                                     <div class="col-md-6">
-                                        <h6 class="fw-bold mb-2">
+                                        <h6 class="fw-bold mb-3">
                                             <i class="fas fa-layer-group me-2"></i>Thống kê theo chuyên ngành
                                         </h6>
-                                        <table class="table table-bordered table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Chuyên ngành</th>
-                                                    <th>Số lượng</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (Model.ThongKeTheoChuyenNganh != null && Model.ThongKeTheoChuyenNganh.Any())
+                                        @if (Model.ThongKeTheoChuyenNganh != null && Model.ThongKeTheoChuyenNganh.Any())
+                                        {
+                                            <div class="list-group list-group-flush">
+                                                @foreach (var item in Model.ThongKeTheoChuyenNganh)
                                                 {
-                                                    foreach (var item in Model.ThongKeTheoChuyenNganh)
-                                                    {
-                                                        <tr>
-                                                            <td>@item.Key</td>
-                                                            <td>@item.Value</td>
-                                                        </tr>
-                                                    }
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span>@item.Key</span>
+                                                        <span class="badge bg-primary rounded-pill">@item.Value</span>
+                                                    </div>
                                                 }
-                                                else
-                                                {
-                                                    <tr>
-                                                        <td colspan="2" class="text-muted text-center">Không có dữ liệu thống kê chuyên ngành</td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">Chưa có dữ liệu thống kê chuyên ngành</p>
+                                        }
                                     </div>
                                     <!-- Thống kê theo loại tài liệu -->
                                     <div class="col-md-6">
-                                        <h6 class="fw-bold mb-2">
+                                        <h6 class="fw-bold mb-3">
                                             <i class="fas fa-book me-2"></i>Thống kê theo loại tài liệu
                                         </h6>
-                                        <table class="table table-bordered table-sm">
-                                            <thead>
-                                                <tr>
-                                                    <th>Loại tài liệu</th>
-                                                    <th>Số lượng</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (Model.ThongKeTheoLoaiTaiLieu != null && Model.ThongKeTheoLoaiTaiLieu.Any())
+                                        @if (Model.ThongKeTheoLoaiTaiLieu != null && Model.ThongKeTheoLoaiTaiLieu.Any())
+                                        {
+                                            <div class="list-group list-group-flush">
+                                                @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
                                                 {
-                                                    foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
-                                                    {
-                                                        <tr>
-                                                            <td>@item.Key</td>
-                                                            <td>@item.Value</td>
-                                                        </tr>
-                                                    }
+                                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                                        <span>@item.Key</span>
+                                                        <span class="badge bg-success rounded-pill">@item.Value</span>
+                                                    </div>
                                                 }
-                                                else
-                                                {
-                                                    <tr>
-                                                        <td colspan="2" class="text-muted text-center">Không có dữ liệu thống kê loại tài liệu</td>
-                                                    </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">Chưa có dữ liệu thống kê loại tài liệu</p>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -191,11 +282,12 @@
                     </div>
                 </div>
             </div>
+
             <!-- Favorites Tab -->
             <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel">
                 <div class="card-custom">
                     <div class="card-header-custom">
-                        <h6 id="yeuthich" class="mb-0">
+                        <h6 class="mb-0">
                             <i class="fas fa-star me-2"></i>
                             Tài liệu yêu thích
                         </h6>
@@ -222,7 +314,7 @@
                                                 }
                                                 <p class="document-meta">
                                                     @(item.TaiLieu?.LoaiFile?.ToUpper() ?? "FILE") • 
-                                                    @(Math.Round((item.TaiLieu?.KichThuocFile ?? 0) / 1024.0, 1)) MB • 
+                                                    @(Math.Round((item.TaiLieu?.KichThuocFile ?? 0L) / 1024.0, 1)) MB • 
                                                     @item.TaiLieu?.TacGia 
                                                 </p>
                                                 <div class="document-actions">
@@ -244,18 +336,61 @@
                             }
                             else
                             {
-                                <p class="text-muted ms-2 mt-2">Bạn chưa có tài liệu yêu thích nào.</p>
+                                <div class="col-12">
+                                    <p class="text-muted text-center">Bạn chưa có tài liệu yêu thích nào.</p>
+                                </div>
                             }
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- View Tab -->
-            <div class="tab-pane fade" id="v-pills-shared" role="tabpanel">
+
+            <!-- Recent View Tab -->
+            <div class="tab-pane fade" id="v-pills-recent" role="tabpanel">
                 <div class="card-custom">
                     <div class="card-header-custom">
                         <h6 class="mb-0">
-                            <i class="fas fa-share-alt me-2"></i>
+                            <i class="fas fa-history me-2"></i>
+                            Tài liệu xem gần đây
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        @if (Model.TaiLieuXemGanDay != null && Model.TaiLieuXemGanDay.Any())
+                        {
+                            <div class="list-group list-group-flush">
+                                @foreach (var item in Model.TaiLieuXemGanDay)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h6 class="mb-1">@item.TenTaiLieu</h6>
+                                                <small class="text-muted">
+                                                    @item.TacGia • @item.LoaiFile?.ToUpper() • 
+                                                    @(item.KichThuocFile > 0 ? Math.Round(item.KichThuocFile / 1024.0, 1) : 0) MB
+                                                </small>
+                                            </div>
+                                            <a href="/TaiLieu/Details/@item.MaTaiLieu" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye me-1"></i>Xem lại
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted text-center">Bạn chưa xem tài liệu nào gần đây.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Downloaded Tab -->
+            <div class="tab-pane fade" id="v-pills-downloaded" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-download me-2"></i>
                             Tài liệu đã tải
                         </h6>
                     </div>
@@ -291,6 +426,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Thông tin tài khoản Tab -->
             <div class="tab-pane fade" id="v-pills-profile" role="tabpanel">
                 <div class="card-custom">
@@ -305,6 +441,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Cài đặt tài khoản Tab -->
             <div class="tab-pane fade" id="v-pills-settings" role="tabpanel">
                 <div class="card-custom">
