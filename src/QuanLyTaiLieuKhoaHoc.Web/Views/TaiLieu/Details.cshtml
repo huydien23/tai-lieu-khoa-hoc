@@ -42,7 +42,7 @@
                             <strong>Lượt mượn:</strong> @Model.LuotMuon
                         </div>
                         <div class="col-md-6">
-                            <strong>Kích thước:</strong> @((Model.KichThuocFile / 1024).ToString("F1")) KB
+                            <strong>Kích thước:</strong> @(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")
                         </div>
                     </div>
                     @if (Model.ChoPhepTaiFile)

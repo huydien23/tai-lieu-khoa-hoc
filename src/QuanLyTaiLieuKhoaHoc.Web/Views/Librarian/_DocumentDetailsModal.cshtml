@@ -161,7 +161,7 @@
                                     case "tài liệu tham khảo":
                                         <tr><td class="fw-semibold">Thông tin bổ sung:</td><td><span class="tai-lieu-view">@(string.IsNullOrEmpty(Model.MoTa) ? "Không có thông tin bổ sung" : Model.MoTa)</span></td></tr>
                                         <tr><td class="fw-semibold">Loại file:</td><td><span class="tai-lieu-view">@Model.LoaiFile</span></td></tr>
-                                        <tr><td class="fw-semibold">Kích thước:</td><td><span class="tai-lieu-view">@(Math.Round(Model.KichThuocFile / 1024.0, 1)) MB</span></td></tr>
+                                        <tr><td class="fw-semibold">Kích thước:</td><td><span class="tai-lieu-view">@(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")</span></td></tr>
                                         <tr><td class="fw-semibold">Lượt tải:</td><td><span class="tai-lieu-view">@Model.LuotTai</span></td></tr>
                                         <tr><td class="fw-semibold">Lượt mượn:</td><td><span class="tai-lieu-view">@Model.LuotMuon</span></td></tr>
                                         break;
@@ -169,7 +169,7 @@
                                     default:
                                         <tr><td class="fw-semibold">Thông tin bổ sung:</td><td><span class="tai-lieu-view">@(string.IsNullOrEmpty(Model.MoTa) ? "Không có thông tin bổ sung" : Model.MoTa)</span></td></tr>
                                         <tr><td class="fw-semibold">Loại file:</td><td><span class="tai-lieu-view">@Model.LoaiFile</span></td></tr>
-                                        <tr><td class="fw-semibold">Kích thước:</td><td><span class="tai-lieu-view">@(Math.Round(Model.KichThuocFile / 1024.0, 1)) MB</span></td></tr>
+                                        <tr><td class="fw-semibold">Kích thước:</td><td><span class="tai-lieu-view">@(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")</span></td></tr>
                                         <tr><td class="fw-semibold">Lượt tải:</td><td><span class="tai-lieu-view">@Model.LuotTai</span></td></tr>
                                         <tr><td class="fw-semibold">Lượt mượn:</td><td><span class="tai-lieu-view">@Model.LuotMuon</span></td></tr>
                                         break;
