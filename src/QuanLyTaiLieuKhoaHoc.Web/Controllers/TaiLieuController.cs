@@ -480,6 +480,21 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return RedirectToAction("Index", "Home");
 }
 
+        // API lấy tài liệu liên quan
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetTaiLieuLienQuan(int id)
+        {
+            try
+            {
+                var taiLieuLienQuan = await _taiLieuService.GetTaiLieuLienQuanAsync(id, 2);
+                return Json(new { success = true, data = taiLieuLienQuan });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi lấy tài liệu liên quan." });
+            }
+        }
 
     }
 

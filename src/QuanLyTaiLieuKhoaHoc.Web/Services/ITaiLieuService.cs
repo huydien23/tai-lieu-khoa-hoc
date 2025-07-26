@@ -25,5 +25,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         Task<List<TaiLieuViewModel>> GetTaiLieuPhoBienAsync(int soLuong = 10);
 
         Task<TaiLieuListViewModel> GetTaiLieuCuaNguoiDungAsync(string maNguoiDung, int trang = 1, int kichThuocTrang = 10);
+
+        Task<List<TaiLieuViewModel>> GetTaiLieuLienQuanAsync(int maTaiLieu, int soLuong = 2);
     }
 }

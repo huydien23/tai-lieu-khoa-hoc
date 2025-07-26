@@ -294,6 +294,29 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             };
         }
 
+        public async Task<List<TaiLieuViewModel>> GetTaiLieuLienQuanAsync(int maTaiLieu, int soLuong = 2)
+        {
+            // Lấy thông tin tài liệu hiện tại để biết chuyên ngành
+            var taiLieuHienTai = await _context.TaiLieu
+                .FirstOrDefaultAsync(t => t.MaTaiLieu == maTaiLieu);
+
+            if (taiLieuHienTai == null)
+                return new List<TaiLieuViewModel>();
+
+            // Lấy các tài liệu cùng chuyên ngành, loại trừ tài liệu hiện tại
+            var taiLieuLienQuan = await _context.TaiLieu
+                .Include(t => t.ChuyenNganh)
+                .Include(t => t.LoaiTaiLieu)
+                .Where(t => t.MaTaiLieu != maTaiLieu && 
+                           t.MaChuyenNganh == taiLieuHienTai.MaChuyenNganh && 
+                           t.TrangThai == TrangThaiTaiLieu.DaDuyet)
+                .OrderByDescending(t => t.NgayTaiLen)
+                .Take(soLuong)
+                .ToListAsync();
+
+            return taiLieuLienQuan.Select(MapToViewModel).ToList();
+        }
+
         private TaiLieuViewModel MapToViewModel(TaiLieu taiLieu)
         {
             return new TaiLieuViewModel
