@@ -311,7 +311,7 @@
                             }
                             <p class="document-meta">
                                 @(item.TaiLieu?.LoaiFile?.ToUpper() ?? "FILE") • 
-                                @(Math.Round((item.TaiLieu?.KichThuocFile ?? 0) / 1024.0, 1)) MB • 
+                                @((item.TaiLieu?.KichThuocFile ?? 0) >= 1024 ? $"{Math.Round((item.TaiLieu?.KichThuocFile ?? 0) / 1024.0, 1)} MB" : $"{item.TaiLieu?.KichThuocFile ?? 0} KB") • 
                                 @item.TaiLieu?.TacGia 
                             </p>
                             <div class="document-actions">
@@ -386,7 +386,7 @@
                                                             {
                                                                 <br><small class="text-muted">
                                                                     @(item.TaiLieu.LoaiFile?.ToUpper() ?? "FILE") • 
-                                                                    @(Math.Round(item.TaiLieu.KichThuocFile / 1024.0, 1)) MB
+                                                                    @(item.TaiLieu.KichThuocFile >= 1024 ? $"{Math.Round(item.TaiLieu.KichThuocFile / 1024.0, 1)} MB" : $"{item.TaiLieu.KichThuocFile} KB")
                                                                 </small>
                                                             }
                                                         </div>
