@@ -1,0 +1,123 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>
+@{
+    ViewData["Title"] = "Danh sách tài liệu quá hạn trả";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Danh sách tài liệu quá hạn trả (@Model.Count() tài liệu)
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            Không có tài liệu nào quá hạn trả!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-danger">
+                                    <tr>
+                                        <th>Mã phiếu</th>
+                                        <th>Tài liệu</th>
+                                        <th>Người mượn</th>
+                                        <th>Ngày mượn</th>
+                                        <th>Ngày trả dự kiến</th>
+                                        <th>Số ngày quá hạn</th>
+                                        <th>Thông tin liên hệ</th>
+                                        <th>Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var soNgayQuaHan = (DateTime.Now - item.NgayTraDuKien.Value).Days;
+                                        var rowClass = soNgayQuaHan > 30 ? "table-danger" : soNgayQuaHan > 7 ? "table-warning" : "table-info";
+                                        
+                                        <tr class="@rowClass">
+                                            <td>@item.MaPhieu</td>
+                                            <td>
+                                                <strong>@item.TaiLieu?.TenTaiLieu</strong><br>
+                                                <small class="text-muted">@item.TaiLieu?.TacGia</small>
+                                            </td>
+                                            <td>
+                                                @if (item.NguoiMuon != null)
+                                                {
+                                                    <strong>@item.NguoiMuon.HoTen</strong><br>
+                                                    <small class="text-muted">@item.NguoiMuon.MaSo</small>
+                                                }
+                                                else
+                                                {
+                                                    <strong>@item.HoTenNguoiMuon</strong><br>
+                                                    <small class="text-muted">@item.MaSoNguoiMuon</small>
+                                                }
+                                            </td>
+                                            <td>@item.NgayMuon.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.NgayTraDuKien?.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <span class="badge @(soNgayQuaHan > 30 ? "bg-danger" : soNgayQuaHan > 7 ? "bg-warning" : "bg-info")">
+                                                    @soNgayQuaHan ngày
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (item.NguoiMuon != null)
+                                                {
+                                                    <small>
+                                                        Email: @item.NguoiMuon.Email<br>
+                                                        SĐT: @item.NguoiMuon.SoDienThoai
+                                                    </small>
+                                                }
+                                                else
+                                                {
+                                                    <small>
+                                                        Email: @item.EmailNguoiMuon<br>
+                                                        SĐT: @item.SoDienThoaiNguoiMuon
+                                                    </small>
+                                                }
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-primary btn-sm" onclick="openLapPhieuTraModal('@item.MaPhieu')">
+                                                    <i class="fas fa-undo"></i> Trả tài liệu
+                                                </button>
+                                                <button type="button" class="btn btn-info btn-sm" onclick="openXemPhieuModal('@item.MaPhieu')">
+                                                    <i class="fas fa-eye"></i> Xem chi tiết
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function openLapPhieuTraModal(maPhieu) {
+            $.get('/PhieuMuonTra/LapPhieuTra?maPhieu=' + maPhieu, function(data) {
+                $('#modalContainer').html(data);
+                $('#lapPhieuTraModal').modal('show');
+            });
+        }
+
+        function openXemPhieuModal(maPhieu) {
+            $.get('/PhieuMuonTra/XemPhieu?maPhieu=' + maPhieu, function(data) {
+                $('#modalContainer').html(data);
+                $('#chiTietPhieuModal').modal('show');
+            });
+        }
+    </script>
+} 

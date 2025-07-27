@@ -85,6 +85,17 @@
                 </div>
             }
 
+            <!-- Thông báo tài liệu quá hạn cho người dùng đã đăng nhập -->
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div id="thongBaoQuaHan" class="alert alert-warning alert-dismissible fade show" role="alert" style="display: none;">
+                    <i class="fas fa-clock me-2"></i>
+                    <strong>Thông báo:</strong> Bạn có <span id="soTaiLieuQuaHanUser">0</span> tài liệu quá hạn trả. 
+                    <a href="@Url.Action("TaiLieuQuaHanCuaToi", "PhieuMuonTra")" class="alert-link">Xem chi tiết</a>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
             <!-- Main content -->
             @RenderBody()
         </div>
@@ -120,6 +131,27 @@
     <!-- Custom JavaScript -->
     <script src="~/js/app.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Kiểm tra tài liệu quá hạn cho người dùng
+        $(document).ready(function() {
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <text>
+                checkTaiLieuQuaHan();
+                </text>
+            }
+        });
+
+        function checkTaiLieuQuaHan() {
+            $.get('/PhieuMuonTra/GetSoTaiLieuQuaHanCuaToi', function(data) {
+                if (data.soLuong > 0) {
+                    $('#soTaiLieuQuaHanUser').text(data.soLuong);
+                    $('#thongBaoQuaHan').show();
+                }
+            });
+        }
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

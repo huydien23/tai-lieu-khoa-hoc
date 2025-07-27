@@ -1624,6 +1624,28 @@ p {
     animation: pulse 0.6s ease-in-out;
 }
 
+/* Animation cho tài liệu quá hạn */
+@keyframes pulse-animation {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgba(220, 53, 69, 0.3), 0 4px 6px -4px rgba(220, 53, 69, 0.2);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    }
+}
+
+.pulse-animation {
+    animation: pulse-animation 2s ease-in-out infinite;
+}
+
 /* Stagger animation delays */
 .category-card:nth-child(1) {
     animation-delay: 0.1s;

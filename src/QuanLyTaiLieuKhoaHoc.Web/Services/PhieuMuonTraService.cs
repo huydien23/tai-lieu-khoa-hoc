@@ -115,5 +115,44 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 .Include(p => p.ThuThuDuyet)
                 .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
         }
+
+        // Chức năng báo tài liệu quá hạn
+        public async Task<List<PhieuMuonTra>> LayDanhSachTaiLieuQuaHanAsync()
+        {
+            var ngayHienTai = DateTime.Now;
+            return await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Include(p => p.NguoiMuon)
+                .Where(p => p.TrangThai == TrangThaiPhieu.DaDuyet && 
+                           p.NgayTra == null && 
+                           p.NgayTraDuKien.HasValue && 
+                           p.NgayTraDuKien.Value < ngayHienTai)
+                .OrderBy(p => p.NgayTraDuKien)
+                .ToListAsync();
+        }
+
+        public async Task<int> DemSoTaiLieuQuaHanAsync()
+        {
+            var ngayHienTai = DateTime.Now;
+            return await _context.PhieuMuonTra
+                .CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet && 
+                                p.NgayTra == null && 
+                                p.NgayTraDuKien.HasValue && 
+                                p.NgayTraDuKien.Value < ngayHienTai);
+        }
+
+        public async Task<List<PhieuMuonTra>> LayTaiLieuQuaHanTheoNguoiDungAsync(string maNguoiDung)
+        {
+            var ngayHienTai = DateTime.Now;
+            return await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Where(p => p.MaNguoiMuon == maNguoiDung &&
+                           p.TrangThai == TrangThaiPhieu.DaDuyet && 
+                           p.NgayTra == null && 
+                           p.NgayTraDuKien.HasValue && 
+                           p.NgayTraDuKien.Value < ngayHienTai)
+                .OrderBy(p => p.NgayTraDuKien)
+                .ToListAsync();
+        }
     }
 }

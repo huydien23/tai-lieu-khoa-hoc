@@ -1,0 +1,117 @@
+@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra>
+@{
+    ViewData["Title"] = "Tài liệu quá hạn của tôi";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-clock"></i>
+                        Tài liệu quá hạn của tôi (@Model.Count() tài liệu)
+                    </h4>
+                </div>
+                <div class="card-body">
+                    @if (!Model.Any())
+                    {
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            Bạn không có tài liệu nào quá hạn trả!
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Lưu ý:</strong> Vui lòng trả tài liệu đúng hạn để tránh bị phạt và ảnh hưởng đến quyền mượn tài liệu.
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-warning">
+                                    <tr>
+                                        <th>Mã phiếu</th>
+                                        <th>Tài liệu</th>
+                                        <th>Ngày mượn</th>
+                                        <th>Ngày trả dự kiến</th>
+                                        <th>Số ngày quá hạn</th>
+                                        <th>Trạng thái</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        var soNgayQuaHan = (DateTime.Now - item.NgayTraDuKien.Value).Days;
+                                        var rowClass = soNgayQuaHan > 30 ? "table-danger" : soNgayQuaHan > 7 ? "table-warning" : "table-info";
+                                        
+                                        <tr class="@rowClass">
+                                            <td>@item.MaPhieu</td>
+                                            <td>
+                                                <strong>@item.TaiLieu?.TenTaiLieu</strong><br>
+                                                <small class="text-muted">@item.TaiLieu?.TacGia</small>
+                                            </td>
+                                            <td>@item.NgayMuon.ToString("dd/MM/yyyy")</td>
+                                            <td>@item.NgayTraDuKien?.ToString("dd/MM/yyyy")</td>
+                                            <td>
+                                                <span class="badge @(soNgayQuaHan > 30 ? "bg-danger" : soNgayQuaHan > 7 ? "bg-warning" : "bg-info")">
+                                                    @soNgayQuaHan ngày
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (soNgayQuaHan > 30)
+                                                {
+                                                    <span class="badge bg-danger">Quá hạn nghiêm trọng</span>
+                                                }
+                                                else if (soNgayQuaHan > 7)
+                                {
+                                    <span class="badge bg-warning">Quá hạn</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-info">Quá hạn nhẹ</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-3">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h5>Quá hạn nhẹ</h5>
+                            <h3>@Model.Count(x => (DateTime.Now - x.NgayTraDuKien.Value).Days <= 7)</h3>
+                            <small>(≤ 7 ngày)</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-warning text-dark">
+                        <div class="card-body text-center">
+                            <h5>Quá hạn</h5>
+                            <h3>@Model.Count(x => (DateTime.Now - x.NgayTraDuKien.Value).Days > 7 && (DateTime.Now - x.NgayTraDuKien.Value).Days <= 30)</h3>
+                            <small>(8-30 ngày)</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body text-center">
+                            <h5>Quá hạn nghiêm trọng</h5>
+                            <h3>@Model.Count(x => (DateTime.Now - x.NgayTraDuKien.Value).Days > 30)</h3>
+                            <small>(> 30 ngày)</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+        </div>
+    </div>
+</div> 

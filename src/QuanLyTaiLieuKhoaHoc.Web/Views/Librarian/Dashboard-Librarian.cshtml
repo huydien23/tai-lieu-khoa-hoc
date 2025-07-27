@@ -86,6 +86,23 @@
     </div>
 </div>
 
+<!-- Thống kê tài liệu quá hạn -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card" id="quaHanCard" style="display: none;">
+            <div class="stats-icon text-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stats-number" id="soTaiLieuQuaHan">0</div>
+            <div class="stats-label">Tài liệu quá hạn</div>
+            <small class="text-danger">
+                <i class="fas fa-clock me-1"></i>Cần xử lý
+            </small>
+        </div>
+    </div>
+</div>
+</div>
+
 <!-- Content Row -->
 <div class="row">
     <!-- Recent Documents -->
@@ -540,6 +557,23 @@
 
 @section Scripts {
     <script>
+        // Kiểm tra tài liệu quá hạn khi trang load
+        $(document).ready(function() {
+            loadSoTaiLieuQuaHan();
+        });
+
+        function loadSoTaiLieuQuaHan() {
+            $.get('/PhieuMuonTra/GetSoTaiLieuQuaHan', function(data) {
+                if (data.soLuong > 0) {
+                    $('#soTaiLieuQuaHan').text(data.soLuong);
+                    $('#quaHanCard').show();
+                    $('#quaHanCard').addClass('pulse-animation');
+                } else {
+                    $('#quaHanCard').hide();
+                }
+            });
+        }
+
         // Load create document modal
         $('#createDocumentModal').on('show.bs.modal', function (e) {
             $.get('@Url.Action("CreateDocument")', function (data) {
