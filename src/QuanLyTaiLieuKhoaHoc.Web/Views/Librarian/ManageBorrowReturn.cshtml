@@ -87,6 +87,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal lập phiếu trả -->
+    <div class="modal fade" id="lapPhieuTraModal" tabindex="-1" aria-labelledby="lapPhieuTraModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Nội dung sẽ được load động bằng AJAX -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal xem chi tiết phiếu -->
+    <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Nội dung sẽ được load động bằng AJAX -->
+            </div>
+        </div>
+    </div>
     <style>
         .nav-tabs .nav-link {
             color: #295BA4;
@@ -315,6 +333,65 @@
 
         // Reset nội dung modal khi đóng để tránh form cũ còn tồn tại
         $('#lapPhieuMuonModal').on('hidden.bs.modal', function () {
+            $(this).find('.modal-content').html('');
+        });
+
+        // Function để mở modal trả tài liệu
+        window.openLapPhieuTraModal = function(maPhieu) {
+            $('#lapPhieuTraModal').remove();
+            // Thêm modal mới vào body
+            $('body').append('<div class="modal fade" id="lapPhieuTraModal" tabindex="-1" aria-labelledby="lapPhieuTraModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
+            $.get('/PhieuMuonTra/LapPhieuTra', { maPhieu: maPhieu }, function(html) {
+                $('#lapPhieuTraModal .modal-content').html(html);
+                $('#lapPhieuTraModal').modal({ backdrop: 'static', keyboard: false });
+                $('#lapPhieuTraModal').modal('show');
+            });
+        };
+
+        // Function để mở modal xem chi tiết phiếu
+        window.openXemPhieuModal = function(maPhieu) {
+            $('#xemPhieuModal').remove();
+            // Thêm modal mới vào body
+            $('body').append('<div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
+            $.get('/PhieuMuonTra/XemPhieu', { maPhieu: maPhieu }, function(html) {
+                $('#xemPhieuModal .modal-content').html(html);
+                $('#xemPhieuModal').modal({ backdrop: 'static', keyboard: false });
+                $('#xemPhieuModal').modal('show');
+            });
+        };
+
+        // Đảm bảo luôn submit qua AJAX cho form trả tài liệu
+        $(document).on('submit', '#lapPhieuTraForm', function(e) {
+            e.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        $('#lapPhieuTraModal').modal('hide');
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function() {
+                    toastr.error('Có lỗi xảy ra khi trả tài liệu!');
+                }
+            });
+        });
+
+        // Reset nội dung modal trả tài liệu khi đóng
+        $('#lapPhieuTraModal').on('hidden.bs.modal', function () {
+            $(this).find('.modal-content').html('');
+        });
+
+        // Reset nội dung modal xem chi tiết khi đóng
+        $('#xemPhieuModal').on('hidden.bs.modal', function () {
             $(this).find('.modal-content').html('');
         });
     </script>
