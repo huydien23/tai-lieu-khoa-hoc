@@ -92,6 +92,11 @@
                         data-bs-target="#v-pills-borrowreturn" type="button" role="tab">
                         <i class="fas fa-book-reader me-2"></i>Mượn/Trả tài liệu
                     </button>
+                    <button class="nav-link" id="v-pills-overdue-tab" data-bs-toggle="pill"
+                        data-bs-target="#v-pills-overdue" type="button" role="tab">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Tài liệu quá hạn
+                        <span id="overdueBadge" class="badge bg-danger ms-2" style="display: none;">0</span>
+                    </button>
                     <button class="nav-link" id="v-pills-favorites-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-favorites" type="button" role="tab">
                         <i class="fas fa-star me-2"></i>Yêu thích
@@ -352,6 +357,29 @@
             <div class="tab-pane fade" id="v-pills-borrowreturn" role="tabpanel">
                 @await Html.PartialAsync("_ManageBorrowReturnPartial", Model.PhieuMuonTra)
             </div>
+            
+            <!-- Tài liệu quá hạn Tab -->
+            <div class="tab-pane fade" id="v-pills-overdue" role="tabpanel">
+                <div class="card-custom">
+                    <div class="card-header-custom">
+                        <h6 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                            Tài liệu quá hạn của tôi
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="overdueContent">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-2 text-muted">Đang tải danh sách tài liệu quá hạn...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Tài liệu đã tải Tab -->
             <div class="tab-pane fade" id="v-pills-downloads" role="tabpanel">
                 <div class="card-custom">
@@ -461,30 +489,109 @@
 </div>
 
 <script>
-    // Kiểm tra tài liệu quá hạn khi trang load
-    $(document).ready(function() {
-        checkTaiLieuQuaHan();
+    // Đảm bảo jQuery đã được load và DOM đã sẵn sàng
+    document.addEventListener('DOMContentLoaded', function() {
+        // Chờ jQuery load
+        function waitForJQuery(callback) {
+            if (typeof $ !== 'undefined') {
+                callback();
+            } else {
+                setTimeout(function() {
+                    waitForJQuery(callback);
+                }, 50);
+            }
+        }
+
+        waitForJQuery(function() {
+            // Kiểm tra tài liệu quá hạn khi trang load
+            checkTaiLieuQuaHan();
+            
+            // Load nội dung tài liệu quá hạn khi click vào tab
+            $('#v-pills-overdue-tab').on('click', function() {
+                loadOverdueContent();
+            });
+        });
     });
 
     function checkTaiLieuQuaHan() {
+        if (typeof $ === 'undefined') {
+            setTimeout(checkTaiLieuQuaHan, 100);
+            return;
+        }
+        
         $.get('/PhieuMuonTra/GetSoTaiLieuQuaHanCuaToi', function(data) {
             if (data.soLuong > 0) {
                 $('#soTaiLieuQuaHan').text(data.soLuong);
                 $('#quaHanCard').show();
+                $('#overdueBadge').text(data.soLuong).show();
                 
                 // Thêm class để làm nổi bật
                 $('#quaHanCard').addClass('pulse-animation');
+            } else {
+                $('#quaHanCard').hide();
+                $('#overdueBadge').hide();
             }
+        });
+    }
+
+    function loadOverdueContent() {
+        if (typeof $ === 'undefined') {
+            return;
+        }
+        
+        $('#overdueContent').html(`
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2 text-muted">Đang tải danh sách tài liệu quá hạn...</p>
+            </div>
+        `);
+        
+        $.get('/PhieuMuonTra/TaiLieuQuaHanCuaToi', function(data) {
+            // Extract table content from the response
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(data, 'text/html');
+            var tableContent = doc.querySelector('.table-responsive');
+            
+            if (tableContent) {
+                $('#overdueContent').html(tableContent.outerHTML);
+            } else {
+                $('#overdueContent').html(`
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        Không có tài liệu nào quá hạn trả!
+                    </div>
+                `);
+            }
+        }).fail(function() {
+            $('#overdueContent').html(`
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Có lỗi xảy ra khi tải danh sách tài liệu quá hạn!
+                </div>
+            `);
         });
     }
 
     function deleteDownloadHistory(maLichSu) {
         if (confirm('Bạn chắc chắn muốn xóa lịch sử tải này khỏi danh sách?\n\nLưu ý: Hành động này không thể hoàn tác.')) {
+            // Lấy token từ form hoặc meta tag
+            let token = '';
+            if (typeof $ !== 'undefined') {
+                token = $('input[name="__RequestVerificationToken"]').val();
+            } else {
+                const tokenElement = document.querySelector('input[name="__RequestVerificationToken"]');
+                if (tokenElement) {
+                    token = tokenElement.value;
+                }
+            }
+            
             fetch('/Student/DeleteDownloadHistory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                    'RequestVerificationToken': token
                 },
                 body: JSON.stringify({ maLichSu })
             })
