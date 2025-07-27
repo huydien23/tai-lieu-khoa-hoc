@@ -12,6 +12,13 @@
                 </button>
             </li>
             <li class="nav-item" role="presentation">
+                <button class="nav-link" id="overdue-tab" data-bs-toggle="tab" data-bs-target="#overdue" type="button"
+                    role="tab" aria-controls="overdue" aria-selected="false">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Tài liệu quá hạn
+                    <span id="overdueBadge" class="badge bg-danger ms-2" style="display: none;">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
                 <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
                     role="tab" aria-controls="history" aria-selected="false">
                     <i class="fas fa-history me-2"></i> Lịch sử mượn trả
@@ -39,6 +46,16 @@
                     </div>
                 </form>
                 <partial name="~/Views/PhieuMuonTra/DanhSachYeuCauChoDuyet.cshtml" model="Model.YeuCauMuonTra" />
+            </div>
+            <div class="tab-pane fade" id="overdue" role="tabpanel" aria-labelledby="overdue-tab">
+                <div id="overdueContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải danh sách tài liệu quá hạn...</p>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
                 <form id="searchHistoryForm" class="position-relative mb-3" style="max-width: 400px;" autocomplete="off"
@@ -203,6 +220,62 @@
                 });
             }
         });
+
+        // Load số lượng tài liệu quá hạn khi trang load
+        $(document).ready(function() {
+            loadSoTaiLieuQuaHan();
+            
+            // Load nội dung tài liệu quá hạn khi click vào tab
+            $('#overdue-tab').on('click', function() {
+                loadOverdueContent();
+            });
+        });
+
+        function loadSoTaiLieuQuaHan() {
+            $.get('/PhieuMuonTra/GetSoTaiLieuQuaHan', function(data) {
+                if (data.soLuong > 0) {
+                    $('#overdueBadge').text(data.soLuong).show();
+                } else {
+                    $('#overdueBadge').hide();
+                }
+            });
+        }
+
+        function loadOverdueContent() {
+            $('#overdueContent').html(`
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải danh sách tài liệu quá hạn...</p>
+                </div>
+            `);
+            
+            $.get('/PhieuMuonTra/DanhSachTaiLieuQuaHan', function(data) {
+                // Extract table content from the response
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(data, 'text/html');
+                var tableContent = doc.querySelector('.table-responsive');
+                
+                if (tableContent) {
+                    $('#overdueContent').html(tableContent.outerHTML);
+                } else {
+                    $('#overdueContent').html(`
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            Không có tài liệu nào quá hạn trả!
+                        </div>
+                    `);
+                }
+            }).fail(function() {
+                $('#overdueContent').html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Có lỗi xảy ra khi tải danh sách tài liệu quá hạn!
+                    </div>
+                `);
+            });
+        }
 
         window.openLapPhieuMuonModal = function(maPhieu) {
             $('#lapPhieuMuonModal').remove();

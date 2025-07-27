@@ -101,7 +101,6 @@
         </div>
     </div>
 </div>
-</div>
 
 <!-- Content Row -->
 <div class="row">
@@ -199,30 +198,6 @@
         </div>
     </div>
 
-    <!-- Modal xem chi tiết tài liệu -->
-    <div class="modal fade" id="documentDetailsModal" tabindex="-1" aria-labelledby="documentDetailsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="documentDetailsModalLabel">
-                        <i class="fas fa-file-alt text-primary me-2"></i>
-                        Chi tiết tài liệu
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="documentDetailsContent">
-                    <div class="text-center py-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Statistics Charts -->
     <div class="col-lg-4">
         <!-- Documents by Specialty -->
@@ -297,17 +272,18 @@
     </div>
 </div>
 
-<!-- Modal for creating new document -->
-<div class="modal fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalLabel"
-    aria-hidden="true">
+
+
+<!-- Modal Container -->
+<div id="modalContainer"></div>
+
+<!-- Create Document Modal -->
+<div class="modal fade" id="createDocumentModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createDocumentModalLabel">
-                    <i class="fas fa-plus-circle text-success me-2"></i>
-                    Thêm tài liệu mới
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Thêm tài liệu mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="createDocumentContent">
                 <div class="text-center py-3">
@@ -321,7 +297,29 @@
     </div>
 </div>
 
+<!-- Document Details Modal -->
+<div class="modal fade" id="documentDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết tài liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="documentDetailsContent">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+
+
     .page-header {
         background: var(--gradient-hero);
         border-radius: var(--border-radius-xl);
