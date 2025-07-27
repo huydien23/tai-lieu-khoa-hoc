@@ -49,11 +49,11 @@
                                         <tr class="@rowClass">
                                             <td>@item.MaPhieu</td>
                                             <td>
-                                                <strong>@item.TaiLieu?.TenTaiLieu</strong><br>
-                                                <small class="text-muted">@item.TaiLieu?.TacGia</small>
+                                                <strong>@(item.TaiLieu?.TenTaiLieu ?? "N/A")</strong><br>
+                                                <small class="text-muted">@(item.TaiLieu?.TacGia ?? "N/A")</small>
                                             </td>
                                             <td>@item.NgayMuon.ToString("dd/MM/yyyy")</td>
-                                            <td>@item.NgayTraDuKien?.ToString("dd/MM/yyyy")</td>
+                                            <td>@(item.NgayTraDuKien?.ToString("dd/MM/yyyy") ?? "N/A")</td>
                                             <td>
                                                 <span class="badge @(soNgayQuaHan > 30 ? "bg-danger" : soNgayQuaHan > 7 ? "bg-warning" : "bg-info")">
                                                     @soNgayQuaHan ngày
@@ -85,7 +85,7 @@
                     <div class="card bg-info text-white">
                         <div class="card-body text-center">
                             <h5>Quá hạn nhẹ</h5>
-                            <h3>@Model.Count(x => (DateTime.Now - x.NgayTraDuKien.Value).Days <= 7)</h3>
+                            <h3>@Model.Count(x => x.NgayTraDuKien.HasValue && (DateTime.Now - x.NgayTraDuKien.Value).Days <= 7)</h3>
                             <small>(≤ 7 ngày)</small>
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                     <div class="card bg-warning text-dark">
                         <div class="card-body text-center">
                             <h5>Quá hạn</h5>
-                            <h3>@Model.Count(x => (DateTime.Now - x.NgayTraDuKien.Value).Days > 7 && (DateTime.Now - x.NgayTraDuKien.Value).Days <= 30)</h3>
+                            <h3>@Model.Count(x => x.NgayTraDuKien.HasValue && (DateTime.Now - x.NgayTraDuKien.Value).Days > 7 && (DateTime.Now - x.NgayTraDuKien.Value).Days <= 30)</h3>
                             <small>(8-30 ngày)</small>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
                     <div class="card bg-danger text-white">
                         <div class="card-body text-center">
                             <h5>Quá hạn nghiêm trọng</h5>
-                            <h3>@Model.Count(x => (DateTime.Now - x.NgayTraDuKien.Value).Days > 30)</h3>
+                            <h3>@Model.Count(x => x.NgayTraDuKien.HasValue && (DateTime.Now - x.NgayTraDuKien.Value).Days > 30)</h3>
                             <small>(> 30 ngày)</small>
                         </div>
                     </div>

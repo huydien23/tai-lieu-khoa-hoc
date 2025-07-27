@@ -85,12 +85,17 @@
                                                 }
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-primary btn-sm" onclick="openLapPhieuTraModal('@item.MaPhieu')">
-                                                    <i class="fas fa-undo"></i> Trả tài liệu
-                                                </button>
-                                                <button type="button" class="btn btn-info btn-sm" onclick="openXemPhieuModal('@item.MaPhieu')">
-                                                    <i class="fas fa-eye"></i> Xem chi tiết
-                                                </button>
+                                                <div class="btn-group-vertical" role="group">
+                                                    <button type="button" class="btn btn-primary btn-sm mb-1" onclick="openLapPhieuTraModal('@item.MaPhieu')">
+                                                        <i class="fas fa-undo"></i> Trả tài liệu
+                                                    </button>
+                                                    <button type="button" class="btn btn-warning btn-sm mb-1" onclick="sendOverdueWarning('@item.MaPhieu', '@(item.NguoiMuon?.Email ?? item.EmailNguoiMuon ?? "")', '@(item.NguoiMuon?.HoTen ?? item.HoTenNguoiMuon ?? "")', '@(item.TaiLieu?.TenTaiLieu ?? "")', @soNgayQuaHan)">
+                                                        <i class="fas fa-envelope"></i> Gửi cảnh báo
+                                                    </button>
+                                                    <button type="button" class="btn btn-info btn-sm" onclick="openXemPhieuModal('@item.MaPhieu')">
+                                                        <i class="fas fa-eye"></i> Xem chi tiết
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     }

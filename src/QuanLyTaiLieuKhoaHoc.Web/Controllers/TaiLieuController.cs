@@ -485,7 +485,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return Forbid();
             }
 
-    // Tìm tài liệu yêu thích của người dùng
+            // Tìm tài liệu yêu thích của người dùng
             var yeuThich = await _context.YeuThichTaiLieu
                 .FirstOrDefaultAsync(y => y.Id == id && y.UserId == userId);
 
@@ -495,7 +495,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 await _context.SaveChangesAsync();
             }
 
-    //  Xác định vai trò để chuyển hướng
+            //  Xác định vai trò để chuyển hướng
             if (User.IsInRole("GiangVien"))
             {
                 return RedirectToAction("Dashboard-Lecturer", "Lecturer");
@@ -505,9 +505,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return RedirectToAction("Dashboard-Student", "Student");
             }
 
-    // Nếu không có vai trò cụ thể, chuyển về trang chủ
+            // Nếu không có vai trò cụ thể, chuyển về trang chủ
             return RedirectToAction("Index", "Home");
-}
+        }
 
         // API lấy tài liệu liên quan
         [HttpGet]
@@ -531,14 +531,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 var taiLieuLienQuan = await _taiLieuService.GetTaiLieuLienQuanAsync(id, 2, vaiTro);
                 return Json(new { success = true, data = taiLieuLienQuan });
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return Json(new { success = false, message = "Có lỗi xảy ra khi lấy tài liệu liên quan." });
+                return Json(new { success = false, message = "Có lỗi xảy ra khi lấy tài liệu liên quan." }); // ex không dùng, không cần khai báo
             }
         }
 
     }
 
 
-    }
+}
 
