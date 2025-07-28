@@ -105,7 +105,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
 
 
         public virtual ICollection<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; } = new List<LichSuTaiTaiLieu>();
-        public virtual ICollection<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; } = new List<DanhGiaTaiLieu>();
     }
 
     public enum TrangThaiTaiLieu

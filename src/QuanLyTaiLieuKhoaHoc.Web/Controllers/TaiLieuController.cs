@@ -71,7 +71,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 tenLoaiTaiLieu = taiLieu.TenLoaiTaiLieu,
                 luotTai = taiLieu.LuotTai,
                 kichThuocFile = (taiLieu.KichThuocFile / 1024.0).ToString("F1") + " KB",
-                diemDanhGiaTrungBinh = taiLieu.DiemDanhGiaTrungBinh,
+                diemDanhGiaTrungBinh = 0,
                 moTa = moTaTomTat,
                 maTaiLieu = taiLieu.MaTaiLieu
             });

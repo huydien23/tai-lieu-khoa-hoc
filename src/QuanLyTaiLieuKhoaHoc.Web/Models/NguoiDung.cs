@@ -48,7 +48,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         // Navigation Properties
         public virtual ICollection<TaiLieu> TaiLieuDaTaiLen { get; set; } = new List<TaiLieu>();
         public virtual ICollection<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; } = new List<LichSuTaiTaiLieu>();
-        public virtual ICollection<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; } = new List<DanhGiaTaiLieu>();
         public virtual ICollection<YeuThichTaiLieu> TaiLieuYeuThich { get; set; } = new List<YeuThichTaiLieu>();
 
     }

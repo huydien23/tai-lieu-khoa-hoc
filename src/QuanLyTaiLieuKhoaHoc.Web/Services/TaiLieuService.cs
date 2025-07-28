@@ -24,7 +24,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
@@ -99,7 +98,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .FirstOrDefaultAsync(t => t.MaTaiLieu == maTaiLieu);
 
@@ -277,7 +275,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
@@ -307,7 +304,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var query = _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet);
 
@@ -339,7 +335,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .OrderByDescending(t => t.NgayTaiLen)
                 .Skip((trang - 1) * kichThuocTrang)
@@ -415,9 +410,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 DuongDanFile = taiLieu.DuongDanFile,
                 LoaiFile = taiLieu.LoaiFile,
                 KichThuocFile = taiLieu.KichThuocFile,
-                DiemDanhGiaTrungBinh = taiLieu.DanhGiaTaiLieu.Any() ?
-                    taiLieu.DanhGiaTaiLieu.Average(d => d.DiemDanhGia) : 0,
-                SoLuotDanhGia = taiLieu.DanhGiaTaiLieu.Count,
+                DiemDanhGiaTrungBinh = 0,
+                SoLuotDanhGia = 0,
                 // --- Bài báo khoa học ---
                 TieuDe = taiLieu.TieuDe,
                 TapChiHoiNghi = taiLieu.TapChiHoiNghi,

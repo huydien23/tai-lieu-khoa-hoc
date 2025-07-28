@@ -557,7 +557,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var document = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
@@ -583,7 +582,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var document = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
@@ -844,8 +842,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });
                 }
 
-                var userRatings = await _context.DanhGiaTaiLieu.Where(d => d.MaNguoiDung == id).ToListAsync();
-                _context.DanhGiaTaiLieu.RemoveRange(userRatings);
+
 
                 var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
                 _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);

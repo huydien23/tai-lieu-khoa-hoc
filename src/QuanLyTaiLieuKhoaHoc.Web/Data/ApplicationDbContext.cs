@@ -16,7 +16,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     public DbSet<ChuyenNganh> ChuyenNganh { get; set; }
     public DbSet<LoaiTaiLieu> LoaiTaiLieu { get; set; }
     public DbSet<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; }
-    public DbSet<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; }
     public DbSet<PhieuMuonTra> PhieuMuonTra { get; set; }
     public DbSet<YeuThichTaiLieu> YeuThichTaiLieu { get; set; }
 
@@ -31,7 +30,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
         builder.Entity<ChuyenNganh>().ToTable("ChuyenNganh");
         builder.Entity<LoaiTaiLieu>().ToTable("LoaiTaiLieu");
         builder.Entity<LichSuTaiTaiLieu>().ToTable("LichSuTaiTaiLieu");
-        builder.Entity<DanhGiaTaiLieu>().ToTable("DanhGiaTaiLieu");
 
         // Cấu hình tên bảng Identity
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().ToTable("VaiTro");
