@@ -44,19 +44,25 @@ window.sendOverdueWarning = function (maPhieu, email, hoTen, tenTaiLieu, soNgayQ
         current_date: new Date().toLocaleDateString('vi-VN'),
         library_name: 'Thư viện Đại học Nam Cần Thơ',
         contact_email: 'thuvien@nct.edu.vn',
-        contact_phone: '0292 123 4567'
+        contact_phone: '0292 123 4567',
+        user_email: email,  
+        recipient_email: email 
     };
 
-    // Gửi email sử dụng EmailJS
-    window['emailjs'].send('service_kq2fref', 'template_l8t2t4k', templateParams)
+    const finalParams = {
+        ...templateParams,
+        to: email,  
+        email: email,  
+        recipient: email  
+    };
+    
+    window['emailjs'].send('service_kq2fref', 'template_l8t2t4k', finalParams)
         .then(function (response) {
             console.log('Email sent successfully:', response);
             if (typeof toastr !== 'undefined') {
                 toastr.success('Đã gửi cảnh báo thành công!');
             }
             
-            // Ghi log gửi cảnh báo
-            logWarningSent(maPhieu, email, hoTen, tenTaiLieu, soNgayQuaHan);
         })
         .catch(function (error) {
             console.error('Email sending failed:', error);
@@ -82,8 +88,9 @@ function logWarningSent(maPhieu, email, hoTen, tenTaiLieu, soNgayQuaHan) {
         ngayGui: new Date().toISOString()
     };
 
-    // Có thể lưu vào localStorage hoặc gửi lên server
+    // Lưu vào localStorage
     let warningLogs = JSON.parse(localStorage.getItem('overdueWarningLogs') || '[]');
     warningLogs.push(logData);
     localStorage.setItem('overdueWarningLogs', JSON.stringify(warningLogs));
+    
 } 
