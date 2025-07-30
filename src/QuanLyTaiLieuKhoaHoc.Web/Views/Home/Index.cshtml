@@ -3,172 +3,782 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<div class="welcome-section">
+<!-- Hero Section với Gradient Background -->
+<div class="hero-section">
+    <div class="hero-background"></div>
     <div class="container">
-        <div class="row align-items-center">
+        <div class="row align-items-center min-vh-75">
             <div class="col-lg-6">
-                <h1 class="fw-bold">Hệ thống Quản lý Tài liệu Khoa học</h1>
-                <p class="lead">Nền tảng hiện đại giúp bạn dễ dàng tìm kiếm, quản lý và chia sẻ tài liệu khoa học một
-                    cách hiệu quả.</p>
-
-                <div class="d-flex flex-wrap gap-2 mb-4">
-                    <a href="/TaiLieu" class="btn btn-primary">
-                        <i class="fas fa-book me-2"></i>Khám phá tài liệu
-                    </a>
-                    <a href="/TaiLieu" class="btn btn-outline-primary">
-                        <i class="fas fa-search me-2"></i>Tìm kiếm nâng cao
-                    </a>
+                <div class="hero-content">
+                    <h1 class="hero-title">Hệ thống Quản lý Tài liệu Khoa học</h1>
+                    <p class="hero-subtitle">Nền tảng hiện đại giúp bạn dễ dàng tìm kiếm, quản lý và chia sẻ tài liệu khoa học một cách hiệu quả.</p>
+                    
+                    <div class="hero-actions">
+                        <a href="/TaiLieu" class="btn btn-primary btn-lg hero-btn">
+                            <i class="fas fa-book me-2"></i>Khám phá tài liệu
+                        </a>
+                        <a href="/TaiLieu" class="btn btn-outline-light btn-lg hero-btn">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm nâng cao
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <img src="~/images/hero-illustration.svg" alt="Minh họa tài liệu khoa học" class="img-fluid"
-                    onerror="this.style.display='none'">
+                <div class="hero-illustration">
+                    <div class="floating-documents">
+                        <div class="doc-icon doc-1"><i class="fas fa-file-alt"></i></div>
+                        <div class="doc-icon doc-2"><i class="fas fa-book"></i></div>
+                        <div class="doc-icon doc-3"><i class="fas fa-chart-line"></i></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Tìm kiếm nhanh -->
-<div class="search-section rounded-lg p-5 mb-5 bg-light">
-    <h2 class="fw-bold mb-4 text-center">Tìm kiếm tài liệu</h2>
-
-    <form action="/TaiLieu" method="get" class="mb-4">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." name="q">
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search me-2"></i>Tìm kiếm
-            </button>
+<!-- Search Section với Glassmorphism -->
+<div class="search-section">
+    <div class="container">
+        <div class="search-container">
+            <h2 class="search-title">Tìm kiếm tài liệu</h2>
+            
+            <form action="/TaiLieu" method="get" class="search-form">
+                <div class="search-input-group">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Nhập từ khóa tìm kiếm..." name="q">
+                        <button type="button" class="voice-search-btn" title="Tìm kiếm bằng giọng nói">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <button class="search-submit-btn" type="submit">
+                        <i class="fas fa-search me-2"></i>Tìm kiếm
+                    </button>
+                </div>
+            </form>
+            
+            <div class="popular-keywords">
+                <span class="keywords-label">Từ khóa phổ biến:</span>
+                <div class="keyword-tags">
+                    <a href="/TaiLieu?timKiem=machine+learning" class="keyword-tag">Machine Learning</a>
+                    <a href="/TaiLieu?timKiem=blockchain" class="keyword-tag">Blockchain</a>
+                    <a href="/TaiLieu?timKiem=data+science" class="keyword-tag">Data Science</a>
+                    <a href="/TaiLieu?timKiem=internet+of+things" class="keyword-tag">Internet of Things</a>
+                    <a href="/TaiLieu?timKiem=cloud+computing" class="keyword-tag">Cloud Computing</a>
+                </div>
+            </div>
         </div>
-    </form>
-
-    <div class="popular-keywords text-center">
-        <span class="text-muted me-2">Từ khóa phổ biến:</span>
-        <a href="/TaiLieu?timKiem=machine+learning" class="badge bg-light text-dark me-2 mb-2">Machine Learning</a>
-        <a href="/TaiLieu?timKiem=blockchain" class="badge bg-light text-dark me-2 mb-2">Blockchain</a>
-        <a href="/TaiLieu?timKiem=data+science" class="badge bg-light text-dark me-2 mb-2">Data Science</a>
-        <a href="/TaiLieu?timKiem=internet+of+things" class="badge bg-light text-dark me-2 mb-2">Internet of Things</a>
-        <a href="/TaiLieu?timKiem=cloud+computing" class="badge bg-light text-dark me-2 mb-2">Cloud Computing</a>
     </div>
 </div>
 
-<div class="container py-5">
-    <div class="row">
-        <!-- Main content: left column -->
-        <div class="col-lg-8">
-            
-            <!-- Tài liệu phổ biến -->
-            <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fw-bold">Tài liệu phổ biến</h2>
-                    <a href="/TaiLieu?sapXep=luot_tai_desc" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
-                </div>
-                <div class="row g-4">
-                    @foreach (var taiLieu in Model.TaiLieuPhoBien)
-                    {
-                        var moTaTomTat = taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa;
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card shadow-sm rounded-4 h-100 document-card border-0">
-                                <div class="card-body d-flex flex-column">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="fas fa-file-alt fs-4 text-primary me-2"></i>
-                                        <h5 class="card-title mb-0 flex-grow-1">@(taiLieu.TenTaiLieu ?? "N/A")</h5>
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <!-- Main content: left column -->
+            <div class="col-lg-8">
+                <!-- Tài liệu phổ biến -->
+                <div class="popular-documents-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Tài liệu phổ biến</h2>
+                        <a href="/TaiLieu?sapXep=luot_tai_desc" class="view-all-btn">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="documents-grid">
+                        @foreach (var taiLieu in Model.TaiLieuPhoBien)
+                        {
+                            var moTaTomTat = taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa;
+                            <div class="document-card-wrapper">
+                                <div class="document-card">
+                                    <div class="card-header">
+                                        <div class="doc-icon-wrapper">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div class="doc-info">
+                                            <h3 class="doc-title">@(taiLieu.TenTaiLieu ?? "N/A")</h3>
+                                            <div class="doc-meta">
+                                                <span class="doc-author">
+                                                    <i class="fas fa-user"></i>
+                                                    @(taiLieu.TacGia ?? "N/A")
+                                                </span>
+                                                <span class="doc-date">
+                                                    <i class="fas fa-calendar"></i>
+                                                    @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <ul class="list-unstyled small text-muted mb-2">
-                                        <li><i class="fas fa-user me-1"></i> @(taiLieu.TacGia ?? "N/A")</li>
-                                        <li><i class="fas fa-calendar me-1"></i> @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</li>
-                                        <li><i class="fas fa-book-reader me-1"></i> @taiLieu.SoLuongDaMuon lượt mượn</li>
-                                        <li><i class="fas fa-tag me-1"></i> @(taiLieu.TenChuyenNganh ?? "N/A")</li>
-                                    </ul>
-                                    <p class="card-text flex-grow-1">@Html.Raw(moTaTomTat ?? "")</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto gap-2 flex-wrap">
-                                        <span class="badge bg-info text-dark px-3 py-2 flex-shrink-0">@(taiLieu.TenLoaiTaiLieu ?? "")</span>
-                                        <a class="btn btn-primary btn-sm rounded-pill d-inline-flex align-items-center gap-1 flex-shrink-0" href="/TaiLieu/Details/@taiLieu.MaTaiLieu" style="white-space:nowrap; min-width:120px;">
-                                            <i class="fas fa-eye"></i> <span>Xem tóm tắt</span>
-                                        </a>
+                                    
+                                    <div class="card-body">
+                                        <p class="doc-description">@Html.Raw(moTaTomTat ?? "")</p>
+                                        
+                                        <div class="doc-stats">
+                                            <div class="stat-item">
+                                                <i class="fas fa-book-reader"></i>
+                                                <span>@taiLieu.SoLuongDaMuon lượt mượn</span>
+                                            </div>
+                                            <div class="stat-item">
+                                                <i class="fas fa-tag"></i>
+                                                <span>@(taiLieu.TenChuyenNganh ?? "N/A")</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="card-actions">
+                                            <span class="doc-category">@(taiLieu.TenLoaiTaiLieu ?? "")</span>
+                                            <a class="view-summary-btn" href="/TaiLieu/Details/@taiLieu.MaTaiLieu">
+                                                <i class="fas fa-eye"></i>
+                                                <span>Xem tóm tắt</span>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Sidebar: right column -->
-        <div class="col-lg-4">
-            <div class="sticky-top" style="top: 90px; z-index: 1;">
-                <div class="mb-4 shadow-sm rounded-4 bg-white p-4 border border-2" style="background: #f8fbff;">
-                    <h5 class="fw-bold text-primary mb-3"><i class="fas fa-chart-bar me-2"></i>Thống kê theo Chuyên
-                        ngành</h5>
-                    @foreach (var item in Model.ThongKeTheoChuyenNganh)
-                    {
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>@item.Key</span>
-                            <span class="badge bg-primary">@item.Value</span>
+            
+            <!-- Sidebar: right column -->
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3 class="stats-title">
+                                <i class="fas fa-chart-bar"></i>
+                                Thống kê theo Chuyên ngành
+                            </h3>
                         </div>
-                    }
-                    <h5 class="fw-bold text-info mb-3"><i class="fas fa-layer-group me-2"></i>Thống kê theo Loại tài
-                        liệu</h5>
-                    @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
-                    {
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>@item.Key</span>
-                            <span class="badge bg-info">@item.Value</span>
+                        
+                        <div class="stats-content">
+                            @foreach (var item in Model.ThongKeTheoChuyenNganh)
+                            {
+                                <div class="stat-row">
+                                    <div class="stat-label">@item.Key</div>
+                                    <div class="stat-value">
+                                        <span class="stat-number">@item.Value</span>
+                                        <div class="stat-bar">
+                                            <div class="stat-progress" style="width: @(item.Value * 100 / Model.ThongKeTheoChuyenNganh.Values.Max())%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    }
+                        
+                        <div class="stats-divider"></div>
+                        
+                        <div class="stats-header">
+                            <h3 class="stats-title">
+                                <i class="fas fa-layer-group"></i>
+                                Thống kê theo Loại tài liệu
+                            </h3>
+                        </div>
+                        
+                        <div class="stats-content">
+                            @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
+                            {
+                                <div class="stat-row">
+                                    <div class="stat-label">@item.Key</div>
+                                    <div class="stat-value">
+                                        <span class="stat-number">@item.Value</span>
+                                        <div class="stat-bar">
+                                            <div class="stat-progress" style="width: @(item.Value * 100 / Model.ThongKeTheoLoaiTaiLieu.Values.Max())%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-    <!-- Modal xem tóm tắt tài liệu -->
-    @{
-        await Html.RenderPartialAsync("_DocumentSummaryModal");
-    }
-    
 </div>
 
+<!-- Modal xem tóm tắt tài liệu -->
+@{
+    await Html.RenderPartialAsync("_DocumentSummaryModal");
+}
+
 <style>
-.document-card {
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-.document-card:hover {
-    box-shadow: 0 8px 32px rgba(30, 34, 90, 0.18) !important;
-    transform: scale(1.02);
-}
-.card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #1A237E;
-}
-.badge.bg-info {
-    background: #e3f2fd !important;
-    color: #1976d2 !important;
-    font-weight: 600;
-}
-.btn-primary, .btn-success {
-    font-weight: 600;
-}
-.document-card .btn, .document-card .btn-primary {
-    writing-mode: unset !important;
-    transform: unset !important;
-    display: inline-flex !important;
+/* Hero Section */
+.hero-section {
+    position: relative;
+    background: linear-gradient(135deg, #1E40AF 0%, #3B82F6 50%, #60A5FA 100%);
+    color: white;
+    overflow: hidden;
+    min-height: 75vh;
+    display: flex;
     align-items: center;
-    gap: 0.25rem;
+}
+
+.hero-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+    line-height: 1.6;
+}
+
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.hero-btn {
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.hero-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.btn-outline-light {
+    border: 2px solid rgba(255,255,255,0.8);
+    color: white;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: white;
+}
+
+/* Floating Documents Animation */
+.hero-illustration {
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-documents {
+    position: relative;
+    width: 300px;
+    height: 300px;
+}
+
+.doc-icon {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: white;
+    animation: float 6s ease-in-out infinite;
+}
+
+.doc-1 {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation-delay: 0s;
+}
+
+.doc-2 {
+    bottom: 0;
+    left: 0;
+    animation-delay: 2s;
+}
+
+.doc-3 {
+    bottom: 0;
+    right: 0;
+    animation-delay: 4s;
+}
+
+@@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+}
+
+/* Search Section */
+.search-section {
+    margin-top: -50px;
+    position: relative;
+    z-index: 10;
+    padding-bottom: 3rem;
+}
+
+.search-container {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.search-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1E40AF;
+    margin-bottom: 2rem;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    color: #6B7280;
+    z-index: 2;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #E5E7EB;
+    border-radius: 50px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.voice-search-btn {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #6B7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.voice-search-btn:hover {
+    background: #F3F4F6;
+    color: #3B82F6;
+}
+
+.search-submit-btn {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #1E40AF, #3B82F6);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
     white-space: nowrap;
-    min-width: 120px;
-    max-width: 100%;
-    overflow: visible;
 }
-.document-card .badge {
-    max-width: 100%;
-    overflow: visible;
-    white-space: normal;
+
+.search-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
-.document-card .d-flex {
-    flex-wrap: wrap !important;
+
+/* Popular Keywords */
+.popular-keywords {
+    text-align: center;
+}
+
+.keywords-label {
+    color: #6B7280;
+    font-weight: 500;
+    margin-right: 1rem;
+}
+
+.keyword-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.keyword-tag {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #F3F4F6, #E5E7EB);
+    border-radius: 25px;
+    color: #374151;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid #E5E7EB;
+}
+
+.keyword-tag:hover {
+    background: linear-gradient(135deg, #3B82F6, #1E40AF);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+/* Main Content */
+.main-content {
+    padding: 3rem 0;
+}
+
+/* Popular Documents Section */
+.popular-documents-section {
+    margin-bottom: 3rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1E40AF;
+    margin: 0;
+}
+
+.view-all-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #10B981, #059669);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    color: white;
+}
+
+/* Documents Grid */
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Document Cards */
+.document-card-wrapper {
+    perspective: 1000px;
+}
+
+.document-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #F3F4F6;
+    overflow: hidden;
+}
+
+.document-card:hover {
+    transform: translateY(-8px) rotateX(5deg);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.doc-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #3B82F6, #1E40AF);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.doc-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1E40AF;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.3;
+}
+
+.doc-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.doc-author, .doc-date {
+    font-size: 0.875rem;
+    color: #6B7280;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.doc-description {
+    color: #4B5563;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+}
+
+.doc-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6B7280;
+    background: #F9FAFB;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.doc-category {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.view-summary-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #3B82F6, #1E40AF);
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.3s ease;
+}
+
+.view-summary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+    color: white;
+}
+
+/* Sidebar */
+.sidebar {
+    position: sticky;
+    top: 2rem;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 1px solid #F3F4F6;
+    overflow: hidden;
+}
+
+.stats-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.stats-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1E40AF;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.stats-content {
+    padding: 1.5rem;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.stat-row:last-child {
+    margin-bottom: 0;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #4B5563;
+    font-weight: 500;
+    flex: 1;
+}
+
+.stat-value {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.stat-number {
+    background: linear-gradient(135deg, #3B82F6, #1E40AF);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.stat-bar {
+    flex: 1;
+    height: 6px;
+    background: #E5E7EB;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.stat-progress {
+    height: 100%;
+    background: linear-gradient(135deg, #10B981, #059669);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.stats-divider {
+    height: 1px;
+    background: #E5E7EB;
+    margin: 0 1.5rem;
+}
+
+/* Responsive Design */
+@@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+    
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .search-submit-btn {
+        width: 100%;
+    }
+    
+    .documents-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hero-actions {
+        flex-direction: column;
+    }
+    
+    .hero-btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .view-summary-btn {
+        justify-content: center;
+    }
+}
+
+/* Loading Animation */
+@@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+.loading {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200px 100%;
+    animation: shimmer 1.5s infinite;
 }
 </style>
     
