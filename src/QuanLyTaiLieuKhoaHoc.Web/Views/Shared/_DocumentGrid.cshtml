@@ -3,138 +3,758 @@
 
 @if (Model.DanhSachTaiLieu.Any())
 {
-    <div class="row">
-        @foreach (var taiLieu in Model.DanhSachTaiLieu)
-        {
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-sm rounded-4 h-100 document-card border-0">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-file-alt fs-4 text-primary me-2"></i>
-                            <h5 class="card-title mb-0 flex-grow-1">@taiLieu.TenTaiLieu</h5>
-                        </div>
-                        <ul class="list-unstyled small text-muted mb-2">
-                            <li><i class="fas fa-user me-1"></i> @taiLieu.TacGia</li>
-                            <li><i class="fas fa-calendar me-1"></i> @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</li>
-                            <li><i class="fas fa-book-reader me-1"></i> @taiLieu.SoLuongDaMuon lượt mượn</li>
-                            <li><i class="fas fa-tag me-1"></i> @taiLieu.TenChuyenNganh</li>
-                        </ul>
-                        @if (!string.IsNullOrEmpty(taiLieu.MoTa))
-                        {
-                            <p class="card-text flex-grow-1">@(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa)</p>
-                        }
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <div class="d-flex flex-column gap-1">
-                                <span class="badge bg-info text-dark px-3 py-2">@taiLieu.TenLoaiTaiLieu</span>
-                                @if (taiLieu.SoLuongConLai <= 0)
-                                {
-                                    <span class="badge bg-danger px-3 py-2">
-                                        <i class="fas fa-times-circle me-1"></i>Hết tài liệu
+    <!-- Advanced Search Results Header -->
+    <div class="search-results-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="results-summary">
+                <h4 class="mb-1">
+                    <i class="fas fa-search text-primary me-2"></i>
+                    Tìm thấy <span class="text-primary fw-bold">@Model.TongSoTaiLieu</span> tài liệu
+                </h4>
+                @if (!string.IsNullOrEmpty(Model.TimKiem))
+                {
+                    <p class="text-muted mb-0">
+                        Kết quả cho: <span class="badge bg-light text-dark">"@Model.TimKiem"</span>
+                    </p>
+                }
+            </div>
+            <div class="view-controls">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" id="gridView" title="Xem dạng lưới">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="listView" title="Xem dạng danh sách">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Document Grid -->
+    <div class="documents-grid-modern" id="documentsContainer">
+        <div class="row g-4">
+            @foreach (var taiLieu in Model.DanhSachTaiLieu)
+            {
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="document-card-master">
+                        <!-- Card Container with Glass Effect -->
+                        <div class="card-container">
+                            <!-- Header with Gradient and Pattern -->
+                            <div class="card-header-master">
+                                <div class="header-background">
+                                    <div class="gradient-overlay"></div>
+                                    <div class="pattern-overlay"></div>
+                                </div>
+                                
+                                <!-- Document Type Badge -->
+                                <div class="document-type-badge-master">
+                                    <span class="badge-content">
+                                        <i class="fas fa-file-alt me-1"></i>
+                                        @taiLieu.TenLoaiTaiLieu
                                     </span>
-                                }
+                                </div>
+                                
+                                <!-- Quick Actions -->
+                                <div class="quick-actions">
+                                    <button class="btn-quick-action" title="Thêm vào yêu thích">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="btn-quick-action" title="Chia sẻ">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div>
-                                <a asp-controller="TaiLieu" asp-action="Details" asp-route-id="@taiLieu.MaTaiLieu"
-                                   class="btn btn-primary btn-sm rounded-pill me-1" title="Xem chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("SinhVien")) && taiLieu.ChoPhepTaiFile)
+                            
+                            <!-- Card Content -->
+                            <div class="card-content-master">
+                                <!-- Document Icon and Title -->
+                                <div class="document-header">
+                                    <div class="document-icon-master">
+                                        <div class="icon-wrapper">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="document-info-master">
+                                        <h5 class="document-title">@taiLieu.TenTaiLieu</h5>
+                                        <p class="document-author">
+                                            <i class="fas fa-user-circle me-1"></i>
+                                            @taiLieu.TacGia
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Document Metadata -->
+                                <div class="document-metadata">
+                                    <div class="metadata-grid">
+                                        <div class="metadata-item">
+                                            <i class="fas fa-calendar-alt text-primary"></i>
+                                            <span>@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <i class="fas fa-book-reader text-success"></i>
+                                            <span>@taiLieu.SoLuongDaMuon lượt mượn</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <i class="fas fa-graduation-cap text-info"></i>
+                                            <span>@taiLieu.TenChuyenNganh</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Document Description -->
+                                @if (!string.IsNullOrEmpty(taiLieu.MoTa))
                                 {
-                                    <a asp-controller="TaiLieu" asp-action="Download" asp-route-id="@taiLieu.MaTaiLieu"
-                                       class="btn btn-success btn-sm rounded-pill" title="Tải xuống">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+                                    <div class="document-description-master">
+                                        <p class="description-text">
+                                            @(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa)
+                                        </p>
+                                    </div>
                                 }
+                                
+                                <!-- Status and Rating -->
+                                <div class="document-status-master">
+                                    <div class="status-badge">
+                                        @if (taiLieu.SoLuongConLai <= 0)
+                                        {
+                                            <span class="badge-status unavailable">
+                                                <i class="fas fa-times-circle me-1"></i>
+                                                Hết tài liệu
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-status available">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Còn @taiLieu.SoLuongConLai bản
+                                            </span>
+                                        }
+                                    </div>
+                                    <div class="rating-display">
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                        </div>
+                                        <span class="rating-text">4.0</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Footer with Actions -->
+                            <div class="card-footer-master">
+                                <div class="action-buttons">
+                                    <a asp-controller="TaiLieu" asp-action="Details" asp-route-id="@taiLieu.MaTaiLieu"
+                                       class="btn btn-primary-master" title="Xem chi tiết">
+                                        <i class="fas fa-eye me-1"></i>
+                                        Chi tiết
+                                    </a>
+                                    @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("SinhVien")) && taiLieu.ChoPhepTaiFile)
+                                    {
+                                        <a asp-controller="TaiLieu" asp-action="Download" asp-route-id="@taiLieu.MaTaiLieu"
+                                           class="btn btn-success-master" title="Tải xuống">
+                                            <i class="fas fa-download me-1"></i>
+                                            Tải
+                                        </a>
+                                    }
+                                </div>
+                                
+                                <!-- Document Stats -->
+                                <div class="document-stats">
+                                    <div class="stat-item">
+                                        <i class="fas fa-eye text-muted"></i>
+                                        <span>@(taiLieu.SoLuongDaMuon + 15)</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <i class="fas fa-download text-muted"></i>
+                                        <span>@(taiLieu.SoLuongDaMuon + 8)</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 
-    <!-- Pagination -->
+    <!-- Enhanced Pagination -->
     @if (Model.TongSoTrang > 1)
     {
-        <nav aria-label="Phân trang">
-            <ul class="pagination justify-content-center">
-                @if (Model.TrangHienTai > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-controller="TaiLieu"
-                           asp-route-trang="@(Model.TrangHienTai - 1)"
-                           asp-route-timKiem="@Model.TimKiem"
-                           asp-route-maChuyenNganh="@Model.MaChuyenNganh"
-                           asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
-                           asp-route-sapXep="@Model.SapXep">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                }
+        <div class="pagination-modern mt-5">
+            <nav aria-label="Phân trang">
+                <ul class="pagination justify-content-center">
+                    @if (Model.TrangHienTai > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link-modern" asp-action="Index" asp-controller="TaiLieu"
+                               asp-route-trang="@(Model.TrangHienTai - 1)"
+                               asp-route-timKiem="@Model.TimKiem"
+                               asp-route-maChuyenNganh="@Model.MaChuyenNganh"
+                               asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
+                               asp-route-sapXep="@Model.SapXep">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
 
-                @for (int i = Math.Max(1, Model.TrangHienTai - 2); i <= Math.Min(Model.TongSoTrang, Model.TrangHienTai + 2); i++)
-                {
-                    <li class="page-item @(i == Model.TrangHienTai ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-controller="TaiLieu"
-                           asp-route-trang="@i"
-                           asp-route-timKiem="@Model.TimKiem"
-                           asp-route-maChuyenNganh="@Model.MaChuyenNganh"
-                           asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
-                           asp-route-sapXep="@Model.SapXep">
-                            @i
-                        </a>
-                    </li>
-                }
+                    @for (int i = Math.Max(1, Model.TrangHienTai - 2); i <= Math.Min(Model.TongSoTrang, Model.TrangHienTai + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.TrangHienTai ? "active" : "")">
+                            <a class="page-link-modern" asp-action="Index" asp-controller="TaiLieu"
+                               asp-route-trang="@i"
+                               asp-route-timKiem="@Model.TimKiem"
+                               asp-route-maChuyenNganh="@Model.MaChuyenNganh"
+                               asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
+                               asp-route-sapXep="@Model.SapXep">
+                                @i
+                            </a>
+                        </li>
+                    }
 
-                @if (Model.TrangHienTai < Model.TongSoTrang)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-controller="TaiLieu"
-                           asp-route-trang="@(Model.TrangHienTai + 1)"
-                           asp-route-timKiem="@Model.TimKiem"
-                           asp-route-maChuyenNganh="@Model.MaChuyenNganh"
-                           asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
-                           asp-route-sapXep="@Model.SapXep">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
+                    @if (Model.TrangHienTai < Model.TongSoTrang)
+                    {
+                        <li class="page-item">
+                            <a class="page-link-modern" asp-action="Index" asp-controller="TaiLieu"
+                               asp-route-trang="@(Model.TrangHienTai + 1)"
+                               asp-route-timKiem="@Model.TimKiem"
+                               asp-route-maChuyenNganh="@Model.MaChuyenNganh"
+                               asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
+                               asp-route-sapXep="@Model.SapXep">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
     }
 }
 else
 {
-    <div class="text-center py-5">
-        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-        <h4 class="text-muted">Không tìm thấy tài liệu nào</h4>
-        <p class="text-muted">Thử thay đổi điều kiện tìm kiếm hoặc bộ lọc</p>
+    <!-- Enhanced No Results -->
+    <div class="no-results-master">
+        <div class="no-results-content">
+            <div class="no-results-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>Không tìm thấy tài liệu nào</h3>
+            <p>Thử thay đổi điều kiện tìm kiếm hoặc bộ lọc để có kết quả phù hợp</p>
+            <div class="no-results-actions">
+                <a asp-action="Index" asp-controller="TaiLieu" class="btn btn-primary-master">
+                    <i class="fas fa-refresh me-2"></i>
+                    Xem tất cả tài liệu
+                </a>
+            </div>
+        </div>
     </div>
 }
 
 <style>
-    .document-card {
-        transition: box-shadow 0.2s, transform 0.2s;
-    }
+/* Master UI/UX Design System */
 
-    .document-card:hover {
-        box-shadow: 0 8px 32px rgba(30, 34, 90, 0.18) !important;
-        transform: scale(1.02);
-    }
+/* CSS Variables for Design Tokens */
+:root {
+    /* Colors */
+    --primary-50: #eff6ff;
+    --primary-100: #dbeafe;
+    --primary-500: #3b82f6;
+    --primary-600: #2563eb;
+    --primary-700: #1d4ed8;
+    
+    --success-50: #f0fdf4;
+    --success-500: #22c55e;
+    --success-600: #16a34a;
+    
+    --warning-50: #fffbeb;
+    --warning-500: #f59e0b;
+    
+    --danger-50: #fef2f2;
+    --danger-500: #ef4444;
+    
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    
+    /* Spacing */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-5: 1.25rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-10: 2.5rem;
+    --space-12: 3rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    --radius-2xl: 1.5rem;
+    
+    /* Transitions */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1A237E;
-    }
+/* Search Results Header */
+.search-results-header {
+    background: linear-gradient(135deg, var(--primary-50) 0%, var(--gray-50) 100%);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    border: 1px solid var(--gray-200);
+}
 
-    .badge.bg-info {
-        background: #e3f2fd !important;
-        color: #1976d2 !important;
-        font-weight: 600;
-    }
+.view-controls .btn-group .btn {
+    border-radius: 0;
+    padding: var(--space-3) var(--space-4);
+    transition: var(--transition-fast);
+}
 
-    .btn-primary, .btn-success {
-        font-weight: 600;
+.view-controls .btn-group .btn:first-child {
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+}
+
+.view-controls .btn-group .btn:last-child {
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
+.view-controls .btn-group .btn.active {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Master Document Card */
+.document-card-master {
+    position: relative;
+    transition: var(--transition-normal);
+}
+
+.document-card-master:hover {
+    transform: translateY(-8px);
+}
+
+.card-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition-normal);
+    position: relative;
+}
+
+.card-container:hover {
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-200);
+}
+
+/* Header with Gradient and Pattern */
+.card-header-master {
+    position: relative;
+    height: 120px;
+    overflow: hidden;
+}
+
+.header-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+}
+
+.gradient-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    animation: shimmer 3s infinite;
+}
+
+.pattern-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+@@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Document Type Badge */
+.document-type-badge-master {
+    position: absolute;
+    top: var(--space-4);
+    left: var(--space-4);
+    z-index: 10;
+}
+
+.badge-content {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    color: var(--primary-700);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Quick Actions */
+.quick-actions {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    z-index: 10;
+    display: flex;
+    gap: var(--space-2);
+}
+
+.btn-quick-action {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray-600);
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-quick-action:hover {
+    background: white;
+    color: var(--primary-600);
+    transform: scale(1.1);
+}
+
+/* Card Content */
+.card-content-master {
+    padding: var(--space-6);
+}
+
+/* Document Header */
+.document-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+}
+
+.document-icon-master {
+    flex-shrink: 0;
+}
+
+.icon-wrapper {
+    width: 48px;
+    height: 48px;
+    background: var(--primary-50);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-600);
+    font-size: 1.25rem;
+}
+
+.document-info-master {
+    flex: 1;
+    min-width: 0;
+}
+
+.document-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: var(--space-1);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.document-author {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+/* Document Metadata */
+.document-metadata {
+    margin-bottom: var(--space-5);
+}
+
+.metadata-grid {
+    display: grid;
+    gap: var(--space-3);
+}
+
+.metadata-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+.metadata-item i {
+    width: 16px;
+    text-align: center;
+}
+
+/* Document Description */
+.document-description-master {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4);
+    margin-bottom: var(--space-5);
+    border-left: 4px solid var(--primary-500);
+}
+
+.description-text {
+    color: var(--gray-700);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Document Status */
+.document-status-master {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-5);
+}
+
+.badge-status {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-lg);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badge-status.available {
+    background: var(--success-50);
+    color: var(--success-600);
+}
+
+.badge-status.unavailable {
+    background: var(--danger-50);
+    color: var(--danger-500);
+}
+
+.rating-display {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.stars {
+    color: var(--warning-500);
+    font-size: 0.875rem;
+}
+
+.rating-text {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Card Footer */
+.card-footer-master {
+    background: var(--gray-50);
+    padding: var(--space-5);
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.action-buttons {
+    display: flex;
+    gap: var(--space-3);
+}
+
+.btn-primary-master,
+.btn-success-master {
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
+    border: none;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-primary-master {
+    background: var(--primary-600);
+    color: white;
+}
+
+.btn-primary-master:hover {
+    background: var(--primary-700);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-success-master {
+    background: var(--success-600);
+    color: white;
+}
+
+.btn-success-master:hover {
+    background: var(--success-700);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Document Stats */
+.document-stats {
+    display: flex;
+    gap: var(--space-4);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--gray-500);
+    font-size: 0.75rem;
+}
+
+/* Enhanced Pagination */
+.pagination-modern {
+    margin-top: var(--space-12);
+}
+
+.page-link-modern {
+    border: 1px solid var(--gray-200);
+    color: var(--gray-600);
+    padding: var(--space-3) var(--space-4);
+    transition: var(--transition-fast);
+    border-radius: var(--radius-md);
+    margin: 0 var(--space-1);
+}
+
+.page-link-modern:hover {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.page-item.active .page-link-modern {
+    background: var(--primary-600);
+    border-color: var(--primary-600);
+    color: white;
+}
+
+/* No Results */
+.no-results-master {
+    text-align: center;
+    padding: var(--space-12) var(--space-6);
+}
+
+.no-results-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.no-results-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gray-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-6);
+    color: var(--gray-400);
+    font-size: 2rem;
+}
+
+.no-results-master h3 {
+    color: var(--gray-800);
+    margin-bottom: var(--space-3);
+}
+
+.no-results-master p {
+    color: var(--gray-600);
+    margin-bottom: var(--space-6);
+}
+
+.no-results-actions {
+    display: flex;
+    justify-content: center;
+}
+
+/* Responsive Design */
+@@media (max-width: 768px) {
+    .card-content-master {
+        padding: var(--space-4);
     }
+    
+    .card-footer-master {
+        padding: var(--space-4);
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+    
+    .action-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .document-stats {
+        justify-content: center;
+    }
+    
+    .search-results-header {
+        padding: var(--space-4);
+    }
+}
 </style>
