@@ -2628,3 +2628,548 @@ p {
     transition: none !important;
     animation: none !important;
 }
+
+/* ===================================
+   ENHANCED HEADER & NAVIGATION STYLING
+   =================================== */
+
+/* Top Bar Styling */
+.top-bar {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 0.875rem;
+}
+
+.top-bar .text-primary {
+    color: var(--primary-color) !important;
+}
+
+/* Brand Styling */
+.navbar-brand {
+    padding: 0;
+}
+
+.brand-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+}
+
+.brand-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.navbar-brand:hover .brand-icon {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(1.05);
+}
+
+.brand-text {
+    line-height: 1.2;
+}
+
+.brand-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.125rem;
+}
+
+.brand-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Enhanced Navbar */
+.navbar-custom {
+    background: var(--gradient-modern);
+    box-shadow: var(--shadow-lg);
+    padding: 1rem 0;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-custom .navbar-nav .nav-link {
+    position: relative;
+    font-weight: 500;
+    padding: 0.75rem 1.25rem !important;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    margin: 0 0.25rem;
+}
+
+.navbar-custom .navbar-nav .nav-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+}
+
+.navbar-custom .navbar-nav .nav-link:hover::before,
+.navbar-custom .navbar-nav .nav-link.active::before {
+    left: 0;
+}
+
+.navbar-custom .navbar-nav .nav-link:hover,
+.navbar-custom .navbar-nav .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white !important;
+    transform: translateY(-1px);
+}
+
+.navbar-custom .navbar-nav .nav-link i {
+    margin-right: 0.5rem;
+    transition: var(--transition);
+}
+
+.navbar-custom .navbar-nav .nav-link:hover i {
+    transform: scale(1.1);
+}
+
+/* Dropdown Menu Styling */
+.navbar-custom .dropdown-menu {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-xl);
+    padding: 0.75rem;
+    margin-top: 0.5rem;
+    min-width: 220px;
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.navbar-custom .dropdown-item {
+    color: var(--text-dark);
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.navbar-custom .dropdown-item:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(5px);
+}
+
+.navbar-custom .dropdown-item i {
+    color: var(--text-muted);
+    transition: var(--transition);
+    width: 20px;
+}
+
+.navbar-custom .dropdown-item:hover i {
+    color: white;
+}
+
+/* ===================================
+   ENHANCED FOOTER STYLING
+   =================================== */
+
+.footer-custom {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.footer-custom::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footer-pattern" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23footer-pattern)"/></svg>');
+    pointer-events: none;
+}
+
+.footer-main {
+    position: relative;
+    z-index: 2;
+}
+
+.footer-section {
+    margin-bottom: 1rem;
+}
+
+.footer-brand {
+    margin-bottom: 1.5rem;
+}
+
+.footer-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--gradient-modern);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-md);
+}
+
+.footer-icon i {
+    font-size: 1.75rem;
+    color: white;
+}
+
+.footer-title {
+    color: white;
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.footer-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.footer-description {
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.footer-heading {
+    color: white;
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: 1.25rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.footer-heading::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--primary-color);
+    border-radius: 1px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+    color: white;
+    transform: translateX(5px);
+}
+
+.footer-links a i {
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.footer-links a:hover i {
+    color: white;
+}
+
+.footer-contact {
+    margin-top: 1rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.contact-item i {
+    color: var(--primary-color);
+    width: 20px;
+    margin-right: 0.75rem;
+}
+
+.footer-support p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-support strong {
+    color: white;
+}
+
+.social-links {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.social-link {
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: var(--transition);
+    backdrop-filter: blur(10px);
+}
+
+.social-link:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 8px 25px rgba(52, 132, 220, 0.3);
+}
+
+.social-link i {
+    font-size: 1.1rem;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 2;
+}
+
+.footer-bottom p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+}
+
+.footer-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.stat-item i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-stats {
+        flex-direction: column;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    .footer-contact {
+        text-align: center;
+    }
+
+    .contact-item {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .brand-title {
+        font-size: 1.1rem;
+    }
+
+    .brand-subtitle {
+        font-size: 0.7rem;
+    }
+
+    .footer-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .footer-icon i {
+        font-size: 1.5rem;
+    }
+}
+
+/* ===================================
+   BODY PADDING ADJUSTMENT FOR NEW HEADER
+   =================================== */
+
+body {
+    padding-top: 120px;
+    /* Adjusted for top bar + navbar */
+}
+
+@media (max-width: 991.98px) {
+    body {
+        padding-top: 110px;
+    }
+}
+
+/* ===================================
+   ANIMATIONS FOR HEADER & FOOTER
+   =================================== */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.footer-section {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.footer-section:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.footer-section:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.footer-section:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.footer-section:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+/* Hover effects for footer elements */
+.footer-icon:hover {
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: var(--shadow-lg);
+}
+
+.footer-links a:hover {
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+/* ===================================
+   TOP BAR RESPONSIVE
+   =================================== */
+
+@media (max-width: 768px) {
+    .top-bar .col-md-6:first-child {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .top-bar .col-md-6:last-child {
+        text-align: center;
+    }
+
+    .top-bar .d-flex {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 576px) {
+    .top-bar {
+        font-size: 0.8rem;
+    }
+
+    .top-bar .mx-2 {
+        display: none;
+    }
+
+    .top-bar .me-3 {
+        margin-right: 0.5rem !important;
+    }
+}
+
+/* ===================================
+   LIBRARIAN LAYOUT SPECIFIC STYLING
+   =================================== */
+
+/* Adjust body padding for librarian layout */
+body .dashboard-container {
+    padding-top: 40px;
+    /* Add padding for fixed top bar */
+}
+
+/* Sidebar adjustments for new header */
+.dashboard-container .sidebar {
+    margin-top: 0;
+    height: calc(100vh - 40px);
+    /* Adjust for top bar height */
+}
+
+/* Main content adjustments */
+.dashboard-container .main-content {
+    height: calc(100vh - 40px);
+    /* Adjust for top bar height */
+    overflow-y: auto;
+}
+
+/* Footer positioning for librarian layout */
+.dashboard-container+.footer-custom {
+    position: relative;
+    margin-top: 0;
+}
+
+/* Responsive adjustments for librarian layout */
+@media (max-width: 991.98px) {
+    .dashboard-container .sidebar {
+        height: auto;
+        min-height: calc(100vh - 40px);
+    }
+
+    .dashboard-container .main-content {
+        height: auto;
+        min-height: calc(100vh - 40px);
+    }
+}

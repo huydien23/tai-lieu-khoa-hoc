@@ -30,13 +30,48 @@
 </head>
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <header class="fixed-top">
+        <!-- Top Bar - University Info -->
+        <div class="top-bar bg-dark text-white py-2">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-university me-2 text-primary"></i>
+                            <span class="small">Trường Đại học Nam Cần Thơ</span>
+                            <span class="mx-2">|</span>
+                            <span class="small">Hệ thống Quản lý Tài liệu Khoa học</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="d-flex align-items-center justify-content-md-end">
+                            <span class="small me-3">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                @DateTime.Now.ToString("dd/MM/yyyy")
+                            </span>
+                            <span class="small">
+                                <i class="fas fa-clock me-1"></i>
+                                @DateTime.Now.ToString("HH:mm")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
             <div class="container">
                 <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="fas fa-book-reader me-2"></i>
-                    <span class="d-none d-md-inline">Quản lý Tài liệu Khoa học</span>
-                    <span class="d-md-none">QLTL</span>
+                    <div class="d-flex align-items-center">
+                        <div class="brand-icon me-3">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="brand-text">
+                            <div class="brand-title">Quản lý Tài liệu Khoa học</div>
+                            <div class="brand-subtitle d-none d-md-block">Nam Can Tho University</div>
+                        </div>
+                    </div>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -54,6 +89,21 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="TaiLieu" asp-action="Index">
                                 <i class="fas fa-book me-1"></i>Tài liệu
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-search me-1"></i>Tìm kiếm
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-search me-2"></i>Tìm kiếm nâng cao</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-tags me-2"></i>Theo chuyên ngành</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-star me-2"></i>Tài liệu phổ biến</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-info-circle me-1"></i>Hướng dẫn
                             </a>
                         </li>
                     </ul>
@@ -101,22 +151,132 @@
         </div>
     </main>
 
-    <footer class="footer-custom bg-light mt-5">
-        <div class="container py-4">
-            <div class="row">
-                <div class="col-md-6">
-                    <h6 class="footer-title mb-3">
-                        <i class="fas fa-graduation-cap me-2"></i>
-                        Hệ thống Quản lý Tài liệu Khoa học
-                    </h6>
-                    <p class="text-muted small mb-2">
-                        Website hỗ trợ quản lý và tìm kiếm tài liệu khoa học một cách hiệu quả.
-                    </p>
+    <!-- Enhanced Footer -->
+    <footer class="footer-custom">
+        <div class="footer-main py-5">
+            <div class="container">
+                <div class="row">
+                    <!-- University Info -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="footer-section">
+                            <div class="footer-brand mb-3">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="footer-icon me-3">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="footer-title mb-0">Hệ thống Quản lý Tài liệu Khoa học</h5>
+                                        <p class="footer-subtitle mb-0">Nam Can Tho University</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="footer-description">
+                                Website hỗ trợ quản lý và tìm kiếm tài liệu khoa học một cách hiệu quả, 
+                                phục vụ cho việc học tập và nghiên cứu của sinh viên, giảng viên.
+                            </p>
+                            <div class="footer-contact">
+                                <div class="contact-item">
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <span>123 Đường ABC, Quận XYZ, TP. Cần Thơ</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-phone me-2"></i>
+                                    <span>0292.3.xxx.xxx</span>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <span>thuvien@nctu.edu.vn</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <div class="footer-section">
+                            <h6 class="footer-heading">Liên kết nhanh</h6>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Trang chủ</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Tài liệu</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Tìm kiếm</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Hướng dẫn</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Liên hệ</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="col-lg-2 col-md-6 mb-4">
+                        <div class="footer-section">
+                            <h6 class="footer-heading">Chuyên ngành</h6>
+                            <ul class="footer-links">
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Công nghệ thông tin</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Kinh tế</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Nông nghiệp</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Y tế</a></li>
+                                <li><a href="#"><i class="fas fa-angle-right me-2"></i>Giáo dục</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Support & Social -->
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="footer-section">
+                            <h6 class="footer-heading">Hỗ trợ & Liên hệ</h6>
+                            <div class="footer-support mb-3">
+                                <p class="mb-2">
+                                    <i class="fas fa-headset me-2 text-primary"></i>
+                                    <strong>Hỗ trợ kỹ thuật:</strong>
+                                </p>
+                                <p class="mb-2">Thời gian làm việc: 7:30 - 17:00 (Thứ 2 - Thứ 6)</p>
+                                <p class="mb-3">Email: support@nctu.edu.vn</p>
+                            </div>
+                            
+                            <div class="footer-social">
+                                <h6 class="footer-heading mb-3">Kết nối với chúng tôi</h6>
+                                <div class="social-links">
+                                    <a href="#" class="social-link" title="Facebook">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                    <a href="#" class="social-link" title="YouTube">
+                                        <i class="fab fa-youtube"></i>
+                                    </a>
+                                    <a href="#" class="social-link" title="LinkedIn">
+                                        <i class="fab fa-linkedin-in"></i>
+                                    </a>
+                                    <a href="#" class="social-link" title="Email">
+                                        <i class="fas fa-envelope"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="text-muted small mb-1">
-                        © 2025 - Trường Đại học Nam Cần Thơ
-                    </p>
+            </div>
+        </div>
+
+        <!-- Footer Bottom -->
+        <div class="footer-bottom py-3">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="mb-0 text-center text-md-start">
+                            <i class="fas fa-copyright me-1"></i>
+                            2025 - Trường Đại học Nam Cần Thơ. Tất cả quyền được bảo lưu.
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end">
+                        <div class="footer-stats">
+                            <span class="stat-item me-3">
+                                <i class="fas fa-users me-1"></i>
+                                <span id="userCount">1,234</span> người dùng
+                            </span>
+                            <span class="stat-item">
+                                <i class="fas fa-book me-1"></i>
+                                <span id="documentCount">5,678</span> tài liệu
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -141,6 +301,9 @@
                 checkTaiLieuQuaHan();
                 </text>
             }
+            
+            // Update footer stats
+            updateFooterStats();
         });
 
         function checkTaiLieuQuaHan() {
@@ -150,6 +313,14 @@
                     $('#thongBaoQuaHan').show();
                 }
             });
+        }
+
+        function updateFooterStats() {
+            // Simulate real-time stats update
+            setInterval(function() {
+                $('#userCount').text(Math.floor(Math.random() * 2000) + 1000);
+                $('#documentCount').text(Math.floor(Math.random() * 10000) + 5000);
+            }, 30000); // Update every 30 seconds
         }
     </script>
 
