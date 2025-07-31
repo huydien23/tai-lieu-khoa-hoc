@@ -1,0 +1,364 @@
+@{
+    ViewData["Title"] = "Hướng dẫn sử dụng";
+}
+
+<div class="huong-dan-container">
+    <!-- Hero Section -->
+    <div class="huong-dan-hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="huong-dan-title">Hướng dẫn sử dụng hệ thống</h1>
+                    <p class="huong-dan-subtitle">Tìm hiểu cách sử dụng hiệu quả hệ thống quản lý tài liệu khoa học</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    <div class="huong-dan-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="huong-dan-nav">
+        <div class="container">
+            <ul class="nav nav-pills nav-fill" id="huongDanTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tim-kiem-tab" data-bs-toggle="pill" data-bs-target="#tim-kiem" type="button" role="tab">
+                        <i class="fas fa-search me-2"></i>Tìm kiếm tài liệu
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="muon-tra-tab" data-bs-toggle="pill" data-bs-target="#muon-tra" type="button" role="tab">
+                        <i class="fas fa-book me-2"></i>Mượn trả tài liệu
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="yeu-thich-tab" data-bs-toggle="pill" data-bs-target="#yeu-thich" type="button" role="tab">
+                        <i class="fas fa-heart me-2"></i>Yêu thích & Lưu trữ
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tai-khoan-tab" data-bs-toggle="pill" data-bs-target="#tai-khoan" type="button" role="tab">
+                        <i class="fas fa-user me-2"></i>Quản lý tài khoản
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="huong-dan-content">
+        <div class="container">
+            <div class="tab-content" id="huongDanTabContent">
+                <!-- Tìm kiếm tài liệu -->
+                <div class="tab-pane fade show active" id="tim-kiem" role="tabpanel">
+                    <div class="huong-dan-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-search text-primary me-3"></i>
+                            Tìm kiếm tài liệu
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-keyboard"></i>
+                                    </div>
+                                    <h4>Tìm kiếm cơ bản</h4>
+                                    <ol>
+                                        <li>Nhập từ khóa vào ô tìm kiếm trên trang chủ</li>
+                                        <li>Nhấn Enter hoặc click nút "Tìm kiếm"</li>
+                                        <li>Xem kết quả và lọc theo chuyên ngành</li>
+                                        <li>Click vào tài liệu để xem chi tiết</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-filter"></i>
+                                    </div>
+                                    <h4>Tìm kiếm nâng cao</h4>
+                                    <ol>
+                                        <li>Vào trang "Tài liệu" từ menu chính</li>
+                                        <li>Sử dụng bộ lọc theo chuyên ngành</li>
+                                        <li>Lọc theo loại tài liệu</li>
+                                        <li>Sắp xếp theo lượt tải, lượt mượn</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tips-section">
+                            <h4><i class="fas fa-lightbulb text-warning me-2"></i>Mẹo tìm kiếm hiệu quả</h4>
+                            <div class="tips-grid">
+                                <div class="tip-item">
+                                    <strong>Sử dụng từ khóa chính xác:</strong> Tìm kiếm bằng tên tác giả, tên tài liệu
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Dùng dấu ngoặc kép:</strong> "Machine Learning" để tìm cụm từ
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Kết hợp từ khóa:</strong> Blockchain + Security
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mượn trả tài liệu -->
+                <div class="tab-pane fade" id="muon-tra" role="tabpanel">
+                    <div class="huong-dan-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-book text-success me-3"></i>
+                            Mượn trả tài liệu
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-hand-holding-heart"></i>
+                                    </div>
+                                    <h4>Quy trình mượn tài liệu</h4>
+                                    <ol>
+                                        <li>Đăng nhập vào hệ thống</li>
+                                        <li>Tìm tài liệu cần mượn</li>
+                                        <li>Click nút "Mượn tài liệu"</li>
+                                        <li>Xác nhận thông tin mượn</li>
+                                        <li>Nhận thông báo xác nhận</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-undo"></i>
+                                    </div>
+                                    <h4>Quy trình trả tài liệu</h4>
+                                    <ol>
+                                        <li>Vào "Quản lý mượn trả"</li>
+                                        <li>Chọn tài liệu cần trả</li>
+                                        <li>Click nút "Trả tài liệu"</li>
+                                        <li>Xác nhận thông tin trả</li>
+                                        <li>Hoàn tất quá trình trả</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rules-section">
+                            <h4><i class="fas fa-exclamation-triangle text-danger me-2"></i>Quy định mượn trả</h4>
+                            <div class="rules-grid">
+                                <div class="rule-item">
+                                    <strong>Thời hạn mượn:</strong> Tối đa 14 ngày
+                                </div>
+                                <div class="rule-item">
+                                    <strong>Số lượng:</strong> Tối đa 5 tài liệu cùng lúc
+                                </div>
+                                <div class="rule-item">
+                                    <strong>Gia hạn:</strong> Có thể gia hạn 1 lần (7 ngày)
+                                </div>
+                                <div class="rule-item">
+                                    <strong>Phạt quá hạn:</strong> 5,000 VNĐ/ngày/tài liệu
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Yêu thích & Lưu trữ -->
+                <div class="tab-pane fade" id="yeu-thich" role="tabpanel">
+                    <div class="huong-dan-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-heart text-danger me-3"></i>
+                            Yêu thích & Lưu trữ
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <h4>Thêm vào yêu thích</h4>
+                                    <ol>
+                                        <li>Tìm tài liệu bạn quan tâm</li>
+                                        <li>Click nút "Yêu thích" (trái tim)</li>
+                                        <li>Tài liệu sẽ được lưu vào danh sách</li>
+                                        <li>Xem danh sách yêu thích trong profile</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-folder"></i>
+                                    </div>
+                                    <h4>Quản lý yêu thích</h4>
+                                    <ol>
+                                        <li>Vào trang cá nhân</li>
+                                        <li>Chọn tab "Tài liệu yêu thích"</li>
+                                        <li>Xem danh sách tài liệu đã lưu</li>
+                                        <li>Xóa khỏi yêu thích nếu cần</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="benefits-section">
+                            <h4><i class="fas fa-star text-warning me-2"></i>Lợi ích của tính năng yêu thích</h4>
+                            <div class="benefits-grid">
+                                <div class="benefit-item">
+                                    <strong>Truy cập nhanh:</strong> Tìm lại tài liệu dễ dàng
+                                </div>
+                                <div class="benefit-item">
+                                    <strong>Thông báo:</strong> Nhận thông báo khi tài liệu có sẵn
+                                </div>
+                                <div class="benefit-item">
+                                    <strong>Gợi ý:</strong> Hệ thống gợi ý tài liệu tương tự
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quản lý tài khoản -->
+                <div class="tab-pane fade" id="tai-khoan" role="tabpanel">
+                    <div class="huong-dan-section">
+                        <h2 class="section-title">
+                            <i class="fas fa-user text-info me-3"></i>
+                            Quản lý tài khoản
+                        </h2>
+                        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-user-edit"></i>
+                                    </div>
+                                    <h4>Cập nhật thông tin cá nhân</h4>
+                                    <ol>
+                                        <li>Click vào tên người dùng trên header</li>
+                                        <li>Chọn "Hồ sơ cá nhân"</li>
+                                        <li>Cập nhật thông tin cần thiết</li>
+                                        <li>Lưu thay đổi</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="instruction-card">
+                                    <div class="instruction-icon">
+                                        <i class="fas fa-key"></i>
+                                    </div>
+                                    <h4>Đổi mật khẩu</h4>
+                                    <ol>
+                                        <li>Vào trang "Hồ sơ cá nhân"</li>
+                                        <li>Chọn tab "Bảo mật"</li>
+                                        <li>Nhập mật khẩu hiện tại</li>
+                                        <li>Nhập mật khẩu mới</li>
+                                        <li>Xác nhận mật khẩu mới</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="security-section">
+                            <h4><i class="fas fa-shield-alt text-success me-2"></i>Bảo mật tài khoản</h4>
+                            <div class="security-grid">
+                                <div class="security-item">
+                                    <strong>Mật khẩu mạnh:</strong> Sử dụng ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số
+                                </div>
+                                <div class="security-item">
+                                    <strong>Đăng xuất:</strong> Luôn đăng xuất khi sử dụng máy tính chung
+                                </div>
+                                <div class="security-item">
+                                    <strong>Không chia sẻ:</strong> Không chia sẻ thông tin đăng nhập với người khác
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="faq-section">
+        <div class="container">
+            <h2 class="faq-title">Câu hỏi thường gặp</h2>
+            <div class="accordion" id="faqAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Làm thế nào để đăng ký tài khoản?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Bạn có thể đăng ký tài khoản bằng cách click vào nút "Đăng ký" trên header, điền đầy đủ thông tin cá nhân và xác nhận email.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            Tôi có thể mượn bao nhiêu tài liệu cùng lúc?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Mỗi người dùng có thể mượn tối đa 5 tài liệu cùng lúc, với thời hạn mượn là 14 ngày.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Làm sao để gia hạn thời gian mượn?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            Bạn có thể gia hạn thời gian mượn bằng cách vào trang "Quản lý mượn trả", chọn tài liệu cần gia hạn và click nút "Gia hạn".
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h3>Cần hỗ trợ thêm?</h3>
+                    <p>Nếu bạn cần hỗ trợ thêm hoặc có câu hỏi khác, vui lòng liên hệ với chúng tôi:</p>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <i class="fas fa-envelope"></i>
+                            <span>support@nctu.edu.vn</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-phone"></i>
+                            <span>0292.3.xxx.xxx</span>
+                        </div>
+                        <div class="contact-method">
+                            <i class="fas fa-clock"></i>
+                            <span>7:30 - 17:00 (Thứ 2 - Thứ 6)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
