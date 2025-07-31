@@ -313,20 +313,6 @@
                         </div>
                     }
 
-                    <!-- Tài khoản test
-                    @if (ViewContext.HttpContext.Request.Host.Host == "localhost")
-                    {
-                        <div class="alert alert-info"
-                            style="background: #e3f2fd; color: #0d47a1; border-radius: 12px; border: none; padding: 1rem;">
-                            <strong><i class="fas fa-info-circle me-2"></i>Tài khoản test:</strong><br>
-                            <small>
-                                <strong>Thủ thư:</strong> thuthu@library.edu.vn / ThuThu@2024<br>
-                                <strong>Giảng viên:</strong> giangvien@university.edu.vn / abc123<br>
-                                <strong>Sinh viên:</strong> sinhvien@student.edu.vn / abc123
-                            </small>
-                        </div>
-                    } -->
-
                     <form method="post">
                         <div class="form-floating-custom">
                             <i class="fas fa-envelope"></i>
@@ -369,9 +355,6 @@
                         </button>
 
                         <div class="text-center">
-                            <!-- <p class="text-muted small mb-2">
-                                <a href="#" class="auth-link">Quên mật khẩu?</a>
-                            </p> -->
                             <p class="text-muted small">
                                 Chưa có tài khoản?
                                 <a asp-controller="Account" asp-action="Register" class="auth-link">Đăng ký ngay</a>
@@ -429,15 +412,12 @@
         }
 
         $(document).ready(function () {
-            // Form validation
             $('form').on('submit', function (e) {
                 const email = $('input[name="Email"]').val();
                 const password = $('input[name="Password"]').val();
 
                 if (!email || !password) {
                     e.preventDefault();
-
-                    // Show error message
                     const errorMsg = `
                         <div class="alert alert-danger-custom alert-dismissible fade show" role="alert">
                             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -451,7 +431,6 @@
                     return false;
                 }
 
-                // Show loading state
                 const submitBtn = $(this).find('button[type="submit"]');
                 const originalText = submitBtn.html();
                 submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>Đang đăng nhập...');

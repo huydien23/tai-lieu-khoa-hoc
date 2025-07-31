@@ -57,7 +57,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         [Display(Name = "File tài liệu")]
         public IFormFile? FileTaiLieu { get; set; }
 
-        // For tracking
         public string? MaNguoiTaiLen { get; set; }
 
         // Properties for display

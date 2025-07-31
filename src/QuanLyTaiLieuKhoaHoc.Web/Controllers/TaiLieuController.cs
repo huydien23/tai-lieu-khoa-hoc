@@ -92,7 +92,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             ViewData["Title"] = "Danh sách / Tìm kiếm tài liệu";
 
-            // Chuẩn bị data cho dropdown
             await LoadDropdownData();
 
             // Set ViewBag cho form tìm kiếm

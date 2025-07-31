@@ -25,7 +25,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public IActionResult DocumentStats()
         {
-            // TODO: Return real statistics
             var stats = new
             {
                 totalDocuments = 1234,
@@ -45,7 +44,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public IActionResult BorrowStats(string period = "month")
         {
-            // TODO: Return real borrow statistics
             var data = period switch
             {
                 "week" => new[] { 12, 19, 15, 25, 22, 18, 30 },
@@ -60,7 +58,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public IActionResult ExportReport(string type, string format = "excel")
         {
-            // TODO: Implement export functionality
             TempData["SuccessMessage"] = $"Đang xuất báo cáo {type} định dạng {format}...";
             return RedirectToAction("Reports");
         }

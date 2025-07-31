@@ -374,27 +374,23 @@
 
     <script>
         $(document).ready(function () {
-            // Form validation
             $('.auth-form').on('submit', function (e) {
                 var isValid = true;
                 var password = $('#password').val();
                 var confirmPassword = $('#confirmPassword').val();
 
-                // Check password match
                 if (password !== confirmPassword) {
                     alert('Mật khẩu xác nhận không khớp');
                     e.preventDefault();
                     isValid = false;
                 }
 
-                // Check password strength
                 if (password.length < 6) {
                     alert('Mật khẩu phải có ít nhất 6 ký tự');
                     e.preventDefault();
                     isValid = false;
                 }
 
-                // Check terms agreement
                 if (!$('#agreeTerms').is(':checked')) {
                     alert('Vui lòng đồng ý với điều khoản sử dụng');
                     e.preventDefault();
@@ -402,7 +398,6 @@
                 }
             });
 
-            // Password strength indicator
             $('#password').on('input', function () {
                 var password = $(this).val();
                 var strength = checkPasswordStrength(password);

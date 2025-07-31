@@ -8,209 +8,329 @@
     };
 }
 
-<div class="container py-4">
+<div class="document-details-page">
     <!-- Breadcrumb -->
     @await Html.PartialAsync("_Breadcrumb", breadcrumbItems)
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h1 class="card-title mb-0">@Model.TenTaiLieu</h1>
+    <div class="container">
+        <!-- Document Header Section -->
+        <div class="document-header-section">
+            <div class="document-type-indicator">
+                <div class="type-icon">
+                    <i class="fas fa-file-alt"></i>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Người tải lên:</strong> @Model.TacGia
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Ngày tải lên:</strong> @Model.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")
-                        </div>
+                <span class="type-label">@Model.TenLoaiTaiLieu</span>
+            </div>
+            
+            <h1 class="document-main-title">@Model.TenTaiLieu</h1>
+            
+            <div class="document-author-info">
+                <i class="fas fa-user-circle"></i>
+                <span>Tác giả: @Model.TacGia</span>
+            </div>
+            
+            <div class="document-stats">
+                <div class="stat-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>@Model.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                </div>
+                @if (Model.ChoPhepTaiFile)
+                {
+                    <div class="stat-item">
+                        <i class="fas fa-download"></i>
+                        <span>@Model.LuotTai lượt tải</span>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Chuyên ngành:</strong>
-                            <span class="badge bg-success">@Model.TenChuyenNganh</span>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Loại tài liệu:</strong>
-                            <span class="badge bg-primary">@Model.TenLoaiTaiLieu</span>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <strong>Lượt mượn:</strong> @Model.SoLuongDaMuon
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Kích thước:</strong> @(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-12">
-                            <strong>Tình trạng tài liệu:</strong>
-                            <div class="d-flex gap-2 mt-1">
-                                <span class="badge bg-primary">Tổng: @Model.SoLuong</span>
-                                <span class="badge bg-warning">Đã mượn: @Model.SoLuongDaMuon</span>
-                                @if (Model.SoLuongConLai > 0)
-                                {
-                                    <span class="badge bg-success">Còn lại: @Model.SoLuongConLai</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-danger">Hết tài liệu</span>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    @if (Model.ChoPhepTaiFile)
-                    {
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <strong>Lượt tải:</strong> @Model.LuotTai
-                            </div>
-                        </div>
-                    }
-                    <div class="mb-4">
-                        <h5>Mô tả:</h5>
-                        <p class="text-muted">@Model.MoTa</p>
-                    </div>
-                    @* Hiển thị thông tin chuyên biệt theo loại tài liệu *@
-                    @if (Model.TenLoaiTaiLieu != null && Model.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase)) {
-                        <div class="mb-4 p-3 border rounded bg-light">
-                            <h5 class="mb-3 text-primary">
-                                <i class="fas fa-newspaper me-2"></i>Thông tin Bài báo khoa học
-                            </h5>
-                            <table class="table table-sm table-borderless mb-0">
-                                <tr><th>Tiêu đề:</th><td>@Model.TieuDe</td></tr>
-                                <tr><th>Tạp chí/Hội nghị:</th><td>@Model.TapChiHoiNghi</td></tr>
-                                <tr><th>Ngày công bố:</th><td>@(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</td></tr>
-                                <tr><th>DOI:</th><td>@Model.DOI</td></tr>
-                                <tr><th>ISSN:</th><td>@Model.ISSN</td></tr>
-                                <tr><th>Cấp độ:</th><td>@Model.CapDo</td></tr>
-                            </table>
-                        </div>
-                    }
-                    else if (Model.TenLoaiTaiLieu != null && Model.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase)) {
-                        <div class="mb-4 p-3 border rounded bg-light">
-                            <h5 class="mb-3 text-success">
-                                <i class="fas fa-project-diagram me-2"></i>Thông tin Đề tài nghiên cứu khoa học
-                            </h5>
-                            <table class="table table-sm table-borderless mb-0">
-                                <tr><th>Tên đề tài:</th><td>@Model.TenDeTai</td></tr>
-                                <tr><th>Mã số đề tài:</th><td>@Model.MaSoDeTai</td></tr>
-                                <tr><th>Cấp đề tài:</th><td>@Model.CapDeTai</td></tr>
-                                <tr><th>Thời gian thực hiện:</th><td>@Model.ThoiGianThucHien</td></tr>
-                                <tr><th>Cơ quan chủ trì:</th><td>@Model.CoQuanChuTri</td></tr>
-                                <tr><th>Chủ nhiệm đề tài:</th><td>@Model.ChuNhiemDeTai</td></tr>
-                            </table>
-                        </div>
-                    }
-                    else if (Model.TenLoaiTaiLieu != null && (Model.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))) {
-                        <div class="mb-4 p-3 border rounded bg-light">
-                            <h5 class="mb-3 text-warning">
-                                <i class="fas fa-book me-2"></i>Thông tin Giáo trình - Tài liệu giảng dạy
-                            </h5>
-                            <table class="table table-sm table-borderless mb-0">
-                                <tr><th>Tên giáo trình:</th><td>@Model.TenGiaoTrinh</td></tr>
-                                <tr><th>Môn học liên quan:</th><td>@Model.MonHocLienQuan</td></tr>
-                                <tr><th>Đơn vị phát hành:</th><td>@Model.DonViPhatHanh</td></tr>
-                                <tr><th>Năm xuất bản:</th><td>@Model.NamXuatBan</td></tr>
-                                <tr><th>Số tín chỉ:</th><td>@Model.SoTinChi</td></tr>
-                            </table>
-                        </div>
-                    }
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <div class="d-flex gap-2">
-                            @if (User.IsInRole("GiangVien"))
-                            {
-                                if (Model.ChoPhepTaiFile)
-                                {
-                                    <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
-                                        <i class="fas fa-download me-2"></i>Tải xuống
-                                    </a>
-                                }
-                                <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                        </form>
-                            }
-                            else if (User.IsInRole("SinhVien"))
-                            {
-                                if (Model.ChoPhepTaiFile)
-                                {
-                                    <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
-                                        <i class="fas fa-download me-2"></i>Tải xuống
-                                    </a>
-
-                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        
-                                    
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    @if (Model.SoLuongConLai > 0)
-                                    {
-                                        <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                                            data-bs-target="#muonModal">
-                                            <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
-                                        </button>
-                                    }
-                                    else
-                                    {
-                                        <button type="button" class="btn btn-danger" disabled>
-                                            <i class="fas fa-times-circle me-2"></i>Hết tài liệu
-                                        </button>
-                                    }
-
-                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
-                                        <button type="submit" class="btn btn-outline-danger">
-                                        <i class="fas fa-heart me-2"></i>Yêu thích
-                                        </button>
-                                    </form>
-                                }
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <a asp-controller="Account" asp-action="Login">Đăng nhập</a> để xem tài liệu.
-                        </div>
-                    }
+                }
+                <div class="stat-item">
+                    <i class="fas fa-book-reader"></i>
+                    <span>@Model.SoLuongDaMuon lượt mượn</span>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Tài liệu liên quan</h5>
+
+        <!-- Document Status Banner -->
+        <div class="status-banner">
+            <div class="status-item">
+                <span class="status-label">Tổng số:</span>
+                <span class="status-value total">@Model.SoLuong</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Đã mượn:</span>
+                <span class="status-value borrowed">@Model.SoLuongDaMuon</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">Còn lại:</span>
+                @if (Model.SoLuongConLai > 0)
+                {
+                    <span class="status-value available">@Model.SoLuongConLai</span>
+                }
+                else
+                {
+                    <span class="status-value unavailable">Hết</span>
+                }
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-sections">
+            <!-- Basic Information Section -->
+            <section class="info-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <h2>Thông tin cơ bản</h2>
                 </div>
-                <div class="card-body" id="taiLieuLienQuan">
-                    <div class="text-center">
-                        <div class="spinner-border spinner-border-sm text-primary" role="status">
-                            <span class="visually-hidden">Đang tải...</span>
+                <div class="section-content">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Chuyên ngành</label>
+                            <div class="info-value">
+                                <span class="tag">@Model.TenChuyenNganh</span>
+                            </div>
                         </div>
-                        <p class="text-muted mt-2">Đang tải tài liệu liên quan...</p>
+                        <div class="info-item">
+                            <label>Kích thước</label>
+                            <div class="info-value">
+                                @(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- Description Section -->
+            <section class="info-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-align-left"></i>
+                    </div>
+                    <h2>Mô tả</h2>
+                </div>
+                <div class="section-content">
+                    <div class="description-text">
+                        @Model.MoTa
+                    </div>
+                </div>
+            </section>
+
+            <!-- Specialized Information Section -->
+            @if (Model.TenLoaiTaiLieu != null && Model.TenLoaiTaiLieu.Contains("báo", System.StringComparison.OrdinalIgnoreCase)) {
+                <section class="info-section specialized">
+                    <div class="section-header special">
+                        <div class="section-icon">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                        <h2>Thông tin Bài báo khoa học</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tiêu đề</label>
+                                <div class="info-value">@Model.TieuDe</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Tạp chí/Hội nghị</label>
+                                <div class="info-value">@Model.TapChiHoiNghi</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Ngày công bố</label>
+                                <div class="info-value">@(Model.NgayCongBo?.ToString("dd/MM/yyyy") ?? "")</div>
+                            </div>
+                            <div class="info-item">
+                                <label>DOI</label>
+                                <div class="info-value">@Model.DOI</div>
+                            </div>
+                            <div class="info-item">
+                                <label>ISSN</label>
+                                <div class="info-value">@Model.ISSN</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Cấp độ</label>
+                                <div class="info-value">
+                                    <span class="tag">@Model.CapDo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+            else if (Model.TenLoaiTaiLieu != null && Model.TenLoaiTaiLieu.Contains("đề tài", System.StringComparison.OrdinalIgnoreCase)) {
+                <section class="info-section specialized">
+                    <div class="section-header special">
+                        <div class="section-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <h2>Thông tin Đề tài nghiên cứu khoa học</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tên đề tài</label>
+                                <div class="info-value">@Model.TenDeTai</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Mã số đề tài</label>
+                                <div class="info-value">
+                                    <span class="tag">@Model.MaSoDeTai</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <label>Cấp đề tài</label>
+                                <div class="info-value">
+                                    <span class="tag">@Model.CapDeTai</span>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <label>Thời gian thực hiện</label>
+                                <div class="info-value">@Model.ThoiGianThucHien</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Cơ quan chủ trì</label>
+                                <div class="info-value">@Model.CoQuanChuTri</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Chủ nhiệm đề tài</label>
+                                <div class="info-value">@Model.ChuNhiemDeTai</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+            else if (Model.TenLoaiTaiLieu != null && (Model.TenLoaiTaiLieu.Contains("giáo trình", System.StringComparison.OrdinalIgnoreCase) || Model.TenLoaiTaiLieu.Contains("giảng dạy", System.StringComparison.OrdinalIgnoreCase))) {
+                <section class="info-section specialized">
+                    <div class="section-header special">
+                        <div class="section-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h2>Thông tin Giáo trình - Tài liệu giảng dạy</h2>
+                    </div>
+                    <div class="section-content">
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Tên giáo trình</label>
+                                <div class="info-value">@Model.TenGiaoTrinh</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Môn học liên quan</label>
+                                <div class="info-value">@Model.MonHocLienQuan</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Đơn vị phát hành</label>
+                                <div class="info-value">@Model.DonViPhatHanh</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Năm xuất bản</label>
+                                <div class="info-value">@Model.NamXuatBan</div>
+                            </div>
+                            <div class="info-item">
+                                <label>Số tín chỉ</label>
+                                <div class="info-value">
+                                    <span class="tag">@Model.SoTinChi</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            }
+
+            <!-- Action Section -->
+            <section class="action-section">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <div class="action-buttons">
+                        @if (User.IsInRole("GiangVien"))
+                        {
+                            if (Model.ChoPhepTaiFile)
+                            {
+                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="action-btn primary">
+                                    <i class="fas fa-download"></i>
+                                    <span>Tải xuống</span>
+                                </a>
+                            }
+                            <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                <button type="submit" class="action-btn secondary">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Yêu thích</span>
+                                </button>
+                            </form>
+                        }
+                        else if (User.IsInRole("SinhVien"))
+                        {
+                            if (Model.ChoPhepTaiFile)
+                            {
+                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="action-btn primary">
+                                    <i class="fas fa-download"></i>
+                                    <span>Tải xuống</span>
+                                </a>
+                                <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                    <button type="submit" class="action-btn secondary">
+                                        <i class="fas fa-heart"></i>
+                                        <span>Yêu thích</span>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                @if (Model.SoLuongConLai > 0)
+                                {
+                                    <button type="button" class="action-btn success" data-bs-toggle="modal" data-bs-target="#muonModal">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <span>Gửi yêu cầu mượn</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="action-btn disabled" disabled>
+                                        <i class="fas fa-times-circle"></i>
+                                        <span>Hết tài liệu</span>
+                                    </button>
+                                }
+                                <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                    <button type="submit" class="action-btn secondary">
+                                        <i class="fas fa-heart"></i>
+                                        <span>Yêu thích</span>
+                                    </button>
+                                </form>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="login-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <span><a asp-controller="Account" asp-action="Login">Đăng nhập</a> để xem tài liệu.</span>
+                    </div>
+                }
+            </section>
+
+            <!-- Related Documents Section -->
+            <section class="related-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h2>Tài liệu liên quan</h2>
+                </div>
+                <div class="section-content">
+                    <div id="taiLieuLienQuan" class="related-documents">
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <p>Đang tải tài liệu liên quan...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 </div>
-
 
 <!-- Modal Gửi Yêu Cầu Mượn -->
 <div class="modal fade" id="muonModal" tabindex="-1" aria-labelledby="muonModalLabel" aria-hidden="true">
@@ -248,7 +368,6 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Load tài liệu liên quan khi trang load xong
             loadTaiLieuLienQuan();
         });
 
@@ -276,12 +395,14 @@
             var html = '';
             
             taiLieuList.forEach(function(taiLieu) {
-                html += '<div class="mb-3 p-3 border rounded">';
-                html += '<h6 class="mb-2"><a href="/TaiLieu/Details/' + taiLieu.maTaiLieu + '" class="text-decoration-none">' + taiLieu.tenTaiLieu + '</a></h6>';
-                html += '<p class="text-muted small mb-2">Tác giả: ' + taiLieu.tacGia + '</p>';
-                html += '<div class="d-flex justify-content-between align-items-center">';
-                html += '<span class="badge bg-success">' + taiLieu.tenChuyenNganh + '</span>';
-                html += '<small class="text-muted">' + formatDate(taiLieu.ngayTaiLen) + '</small>';
+                html += '<div class="related-item">';
+                html += '<div class="related-item-content">';
+                html += '<h4><a href="/TaiLieu/Details/' + taiLieu.maTaiLieu + '">' + taiLieu.tenTaiLieu + '</a></h4>';
+                html += '<p class="related-author">Tác giả: ' + taiLieu.tacGia + '</p>';
+                html += '<div class="related-meta">';
+                html += '<span class="related-tag">' + taiLieu.tenChuyenNganh + '</span>';
+                html += '<span class="related-date">' + formatDate(taiLieu.ngayTaiLen) + '</span>';
+                html += '</div>';
                 html += '</div>';
                 html += '</div>';
             });
@@ -290,9 +411,9 @@
         }
 
         function showNoRelatedDocuments() {
-            var html = '<div class="text-center">';
-            html += '<i class="fas fa-info-circle text-muted mb-2" style="font-size: 2rem;"></i>';
-            html += '<p class="text-muted">Chưa có tài liệu liên quan.</p>';
+            var html = '<div class="no-related">';
+            html += '<div class="no-related-icon"><i class="fas fa-info-circle"></i></div>';
+            html += '<p>Chưa có tài liệu liên quan.</p>';
             html += '</div>';
             
             $('#taiLieuLienQuan').html(html);

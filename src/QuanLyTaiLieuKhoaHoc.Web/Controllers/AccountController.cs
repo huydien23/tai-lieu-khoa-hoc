@@ -154,7 +154,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
-    // Gán role
+            // Gán role
             var identityRole = role switch
             {
             "lecturer" => "GiangVien",
@@ -162,13 +162,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             _ => "SinhVien"
             };
 
-    // Tạo role nếu chưa tồn tại
+            // Tạo role nếu chưa tồn tại
             if (!await _roleManager.RoleExistsAsync(identityRole))
             {
                 await _roleManager.CreateAsync(new IdentityRole(identityRole));
             }
  
-    // Gán user vào role
+            // Gán user vào role
             await _userManager.AddToRoleAsync(user, identityRole);
 
                 TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
@@ -204,7 +204,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
-            // TODO: Implement forgot password logic
             TempData["SuccessMessage"] = "Hướng dẫn đặt lại mật khẩu đã được gửi tới email của bạn";
             return View();
         }
@@ -302,7 +301,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
         }
 
-        // Temporary method to force seed users
         [HttpGet]
         public async Task<IActionResult> ForceSeed()
         {
@@ -359,7 +357,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
         }
 
-        // Temporary method to check users in database
         [HttpGet]
         public async Task<IActionResult> CheckUsers()
         {

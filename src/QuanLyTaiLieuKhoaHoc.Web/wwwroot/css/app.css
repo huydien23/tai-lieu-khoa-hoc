@@ -3088,7 +3088,6 @@ body {
     animation-delay: 0.4s;
 }
 
-/* Hover effects for footer elements */
 .footer-icon:hover {
     transform: scale(1.05) rotate(5deg);
     box-shadow: var(--shadow-lg);
@@ -3135,33 +3134,25 @@ body {
    LIBRARIAN LAYOUT SPECIFIC STYLING
    =================================== */
 
-/* Adjust body padding for librarian layout */
 body .dashboard-container {
     padding-top: 40px;
-    /* Add padding for fixed top bar */
 }
 
-/* Sidebar adjustments for new header */
 .dashboard-container .sidebar {
     margin-top: 0;
     height: calc(100vh - 40px);
-    /* Adjust for top bar height */
 }
 
-/* Main content adjustments */
 .dashboard-container .main-content {
     height: calc(100vh - 40px);
-    /* Adjust for top bar height */
     overflow-y: auto;
 }
 
-/* Footer positioning for librarian layout */
 .dashboard-container+.footer-custom {
     position: relative;
     margin-top: 0;
 }
 
-/* Responsive adjustments for librarian layout */
 @media (max-width: 991.98px) {
     .dashboard-container .sidebar {
         height: auto;
