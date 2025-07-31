@@ -1,3 +1,5 @@
+/* Authentication Enhancements - Cải thiện thêm cho trang đăng nhập/đăng ký với bảng màu xanh sáng */
+
 /* Enhanced Glass Effect */
 .auth-container {
     position: relative;
@@ -40,7 +42,7 @@
 .form-floating-custom input:focus,
 .form-control:focus {
     border-color: var(--auth-border-focus);
-    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.15);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
     transform: translateY(-1px);
     background: var(--auth-bg-white);
     color: var(--auth-text-dark);
@@ -271,7 +273,7 @@
 }
 
 .form-check-input:focus {
-    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
 }
 
 /* Enhanced Role Selection */
@@ -346,14 +348,14 @@
 /* Enhanced Dark Mode Support */
 @media (prefers-color-scheme: dark) {
     .auth-container {
-        background: rgba(15, 20, 25, 0.95);
-        border-color: rgba(44, 90, 160, 0.2);
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(59, 130, 246, 0.2);
     }
 
     .form-floating-custom input,
     .form-control {
         background: rgba(255, 255, 255, 0.95);
-        border-color: rgba(44, 90, 160, 0.3);
+        border-color: rgba(59, 130, 246, 0.3);
         color: var(--auth-text-dark);
     }
 

@@ -1,29 +1,29 @@
 /* Authentication Pages Styles - Đồng bộ với bảng màu xanh đen của dự án */
 
 :root {
-    /* Bảng màu xanh đen chính */
-    --auth-primary: #1a365d;
-    /* Xanh đen đậm */
-    --auth-primary-dark: #0f2027;
-    /* Xanh đen rất đậm */
-    --auth-primary-light: #2d5a87;
-    /* Xanh đen nhạt hơn */
-    --auth-primary-lighter: #4a7ba7;
-    /* Xanh đen trung bình */
-    --auth-primary-lightest: #6b9bc3;
-    /* Xanh đen sáng */
-    --auth-primary-hover: #0d1b2a;
-    /* Xanh đen hover */
-    --auth-deep-blue: #0f1419;
-    /* Xanh đen sâu nhất */
-    --auth-light-blue: #e8f4fd;
-    /* Xanh nhạt cho background */
-    --auth-lighter-blue: #d1e7f5;
+    /* Bảng màu xanh đen chính - Làm sáng hơn */
+    --auth-primary: #2563eb;
+    /* Xanh sáng hơn */
+    --auth-primary-dark: #1d4ed8;
+    /* Xanh đậm vừa phải */
+    --auth-primary-light: #3b82f6;
     /* Xanh nhạt hơn */
-    --auth-medium-blue: #2c5aa0;
-    /* Xanh trung bình */
-    --auth-dark-blue: #1e3a5f;
-    /* Xanh đen trung bình */
+    --auth-primary-lighter: #60a5fa;
+    /* Xanh trung bình sáng */
+    --auth-primary-lightest: #93c5fd;
+    /* Xanh sáng */
+    --auth-primary-hover: #1e40af;
+    /* Xanh hover */
+    --auth-deep-blue: #1e3a8a;
+    /* Xanh đen sáng hơn */
+    --auth-light-blue: #eff6ff;
+    /* Xanh nhạt cho background */
+    --auth-lighter-blue: #dbeafe;
+    /* Xanh nhạt hơn */
+    --auth-medium-blue: #3b82f6;
+    /* Xanh trung bình sáng */
+    --auth-dark-blue: #1e40af;
+    /* Xanh đen trung bình sáng */
 
     /* Text colors - Cải thiện độ tương phản */
     --auth-text-dark: #0a0a0a;
@@ -44,22 +44,22 @@
     /* Border colors */
     --auth-border-light: #e2e8f0;
     /* Xám nhạt */
-    --auth-border-focus: #2c5aa0;
-    /* Xanh trung bình */
+    --auth-border-focus: #3b82f6;
+    /* Xanh trung bình sáng */
 
     /* Shadow colors */
-    --auth-shadow-light: rgba(15, 20, 25, 0.1);
-    --auth-shadow-medium: rgba(44, 90, 160, 0.2);
-    --auth-shadow-heavy: rgba(44, 90, 160, 0.3);
+    --auth-shadow-light: rgba(15, 20, 25, 0.08);
+    --auth-shadow-medium: rgba(59, 130, 246, 0.15);
+    --auth-shadow-heavy: rgba(59, 130, 246, 0.25);
 }
 
-/* Body Background - Gradient xanh đen */
+/* Body Background - Gradient xanh sáng hơn */
 body {
     background: linear-gradient(135deg,
-            #e8f4fd 0%,
-            #d1e7f5 25%,
-            #2c5aa0 75%,
-            #0f1419 100%);
+            #eff6ff 0%,
+            #dbeafe 25%,
+            #3b82f6 75%,
+            #1e3a8a 100%);
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
     display: flex;
@@ -78,12 +78,12 @@ body {
     max-width: 900px;
     width: 95%;
     margin: 2rem auto;
-    border: 1px solid rgba(44, 90, 160, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.1);
     display: flex;
     flex-direction: row;
 }
 
-/* Info Side - Gradient xanh đen  */
+/* Info Side - Gradient xanh sáng hơn */
 .auth-info-side {
     background: linear-gradient(135deg, var(--auth-medium-blue), var(--auth-deep-blue));
     color: white;
@@ -136,7 +136,7 @@ body {
     max-width: 450px;
 }
 
-/* Logo - Gradient xanh đen */
+/* Logo - Gradient xanh sáng hơn */
 .auth-logo {
     width: 60px;
     height: 60px;
@@ -173,7 +173,7 @@ body {
 
 .form-floating-custom input:focus {
     border-color: var(--auth-border-focus);
-    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.15);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.15);
     outline: none;
     background: var(--auth-bg-white);
     color: var(--auth-text-dark);
@@ -243,7 +243,7 @@ body {
     border-left: 4px solid #17a2b8;
 }
 
-/* Buttons - Gradient xanh đen */
+/* Buttons - Gradient xanh sáng hơn */
 .btn-auth {
     background: linear-gradient(135deg, var(--auth-medium-blue) 0%, var(--auth-deep-blue) 100%);
     border: none;
@@ -260,7 +260,7 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px var(--auth-shadow-heavy);
     color: white;
-    background: linear-gradient(135deg, var(--auth-deep-blue) 0%, var(--auth-primary-dark) 100%);
+    background: linear-gradient(135deg, var(--auth-deep-blue) 0%, var(--auth-primary-hover) 100%);
 }
 
 .btn-primary {
@@ -274,7 +274,7 @@ body {
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, var(--auth-deep-blue), var(--auth-primary-dark));
+    background: linear-gradient(135deg, var(--auth-deep-blue), var(--auth-primary-hover));
     transform: translateY(-1px);
     box-shadow: 0 6px 12px var(--auth-shadow-heavy);
 }
@@ -381,7 +381,7 @@ body {
 
 .form-control:focus {
     border-color: var(--auth-border-focus);
-    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
     background: var(--auth-bg-white);
     color: var(--auth-text-dark);
 }
