@@ -1,16 +1,16 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.TaiLieuViewModel
 @{
     ViewData["Title"] = $"Chi tiết: {Model.TenTaiLieu}";
+    var breadcrumbItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Tài liệu", Url.Action("Index", "TaiLieu"), "fas fa-book"),
+        new BreadcrumbItem(Model.TenTaiLieu, null, "fas fa-file-alt")
+    };
 }
 
 <div class="container py-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
-            <li class="breadcrumb-item"><a href="/TaiLieu">Tài liệu</a></li>
-            <li class="breadcrumb-item active">@Model.TenTaiLieu</li>
-        </ol>
-    </nav>
+    <!-- Breadcrumb -->
+    @await Html.PartialAsync("_Breadcrumb", breadcrumbItems)
 
     <div class="row">
         <div class="col-lg-8">

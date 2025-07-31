@@ -4,7 +4,14 @@
     ViewData["Title"] = "Danh sách / Tìm kiếm tài liệu";
     ViewBag.SearchAction = "Index";
     ViewBag.SearchController = "TaiLieu";
+    var breadcrumbItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Tài liệu", null, "fas fa-book")
+    };
 }
+
+<!-- Breadcrumb -->
+@await Html.PartialAsync("_Breadcrumb", breadcrumbItems)
 
 <!-- Hero Section -->
 <div class="hero-section">

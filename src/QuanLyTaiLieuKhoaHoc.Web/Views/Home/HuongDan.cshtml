@@ -1,8 +1,15 @@
 @{
     ViewData["Title"] = "Hướng dẫn sử dụng";
+    var breadcrumbItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Hướng dẫn", null, "fas fa-info-circle")
+    };
 }
 
 <div class="huong-dan-container">
+    <!-- Breadcrumb -->
+    @await Html.PartialAsync("_Breadcrumb", breadcrumbItems)
+    
     <!-- Hero Section -->
     <div class="huong-dan-hero">
         <div class="container">
