@@ -6,40 +6,126 @@
     ViewBag.SearchController = "TaiLieu";
 }
 
-<div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2><i class="fas fa-file-alt me-2"></i>Danh sách / Tìm kiếm tài liệu</h2>
-            <p class="text-muted mb-0">Khám phá và tìm kiếm tài liệu khoa học</p>
-        </div>
-        @if (User.Identity?.IsAuthenticated == true && User.IsInRole("ThuThu"))
-        {
-            <a asp-action="Create" class="btn btn-primary">
-                <i class="fas fa-plus me-2"></i>Thêm Tài liệu mới
-            </a>
-        }
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-background">
+        <div class="hero-overlay"></div>
+        <div class="hero-pattern"></div>
     </div>
-
-    <!-- Search Form -->
-    @await Html.PartialAsync("_DocumentSearchForm", Model)
-
-    <!-- Results Info -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <span class="badge bg-primary">
-                Tìm thấy @Model.TongSoTaiLieu tài liệu
-            </span>
-            @if (!string.IsNullOrEmpty(Model.TimKiem))
-            {
-                <span class="badge bg-secondary">
-                    Từ khóa: "@Model.TimKiem"
-                </span>
-            }
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <i class="fas fa-search me-3"></i>
+                    Khám phá kho tàng tài liệu khoa học
+                </h1>
+                <p class="hero-subtitle">
+                    Hơn <span class="highlight">@Model.TongSoTaiLieu</span> tài liệu chất lượng cao từ các chuyên gia hàng đầu
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <i class="fas fa-users"></i>
+                        <span>1,234+</span>
+                        <small>Người dùng</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-download"></i>
+                        <span>5,678+</span>
+                        <small>Lượt tải</small>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-star"></i>
+                        <span>4.8</span>
+                        <small>Đánh giá</small>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-actions">
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("ThuThu"))
+                {
+                    <a asp-action="Create" class="btn btn-hero-primary">
+                        <i class="fas fa-plus me-2"></i>Thêm Tài liệu mới
+                    </a>
+                }
+                <a href="#search-section" class="btn btn-hero-secondary">
+                    <i class="fas fa-search me-2"></i>Bắt đầu tìm kiếm
+                </a>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Documents Grid -->
-    <div id="documentsGrid" class="documents-view">
-        @await Html.PartialAsync("_DocumentGrid", Model)
+<!-- Main Content -->
+<div class="main-content-wrapper">
+    <div class="container-fluid">
+        <!-- Search Section -->
+        <div id="search-section" class="search-section">
+            <div class="search-container">
+                <div class="search-header">
+                    <h2><i class="fas fa-filter me-2"></i>Tìm kiếm và Lọc</h2>
+                    <p class="text-muted">Tìm kiếm tài liệu theo từ khóa, chuyên ngành hoặc loại tài liệu</p>
+                </div>
+                
+                <!-- Enhanced Search Form -->
+                @await Html.PartialAsync("_DocumentSearchForm", Model)
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <!-- Results Header -->
+            <div class="results-header">
+                <div class="results-info">
+                    <div class="results-badge">
+                        <i class="fas fa-search me-2"></i>
+                        Tìm thấy <strong>@Model.TongSoTaiLieu</strong> tài liệu
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.TimKiem))
+                    {
+                        <div class="search-keyword">
+                            <i class="fas fa-tag me-1"></i>
+                            Từ khóa: <span class="keyword">"@Model.TimKiem"</span>
+                        </div>
+                    }
+                </div>
+                
+                <div class="view-controls">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-view active" id="gridView" title="Xem dạng lưới">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button type="button" class="btn btn-view" id="listView" title="Xem dạng danh sách">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button type="button" class="btn btn-view" id="masonryView" title="Xem dạng masonry">
+                            <i class="fas fa-th"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Grid -->
+            <div id="documentsGrid" class="documents-view">
+                @await Html.PartialAsync("_DocumentGrid", Model)
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Action Button -->
+<div class="fab-container">
+    <button class="fab-button" id="fabMain" title="Tùy chọn nhanh">
+        <i class="fas fa-plus"></i>
+    </button>
+    <div class="fab-options">
+        <button class="fab-option" title="Tìm kiếm nâng cao">
+            <i class="fas fa-search-plus"></i>
+        </button>
+        <button class="fab-option" title="Lọc nhanh">
+            <i class="fas fa-filter"></i>
+        </button>
+        <button class="fab-option" title="Sắp xếp">
+            <i class="fas fa-sort"></i>
+        </button>
     </div>
 </div>
