@@ -112,7 +112,7 @@
                                     </div>
                                 }
                                 
-                                <!-- Status and Rating -->
+                                <!-- Document Status -->
                                 <div class="document-status-master">
                                     <div class="status-badge">
                                         @if (taiLieu.SoLuongConLai <= 0)
@@ -130,15 +130,10 @@
                                             </span>
                                         }
                                     </div>
-                                    <div class="rating-display">
-                                        <div class="stars">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="far fa-star"></i>
-                                        </div>
-                                        <span class="rating-text">4.0</span>
+                                    <!-- Document Type Color Indicator -->
+                                    <div class="document-type-indicator">
+                                        <span class="type-dot @DocumentHelper.GetDocumentTypeClass(taiLieu.TenLoaiTaiLieu ?? "")"></span>
+                                        <span class="type-label">@taiLieu.TenLoaiTaiLieu</span>
                                     </div>
                                 </div>
                             </div>
