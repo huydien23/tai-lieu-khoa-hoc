@@ -1,0 +1,388 @@
+/* Enhanced Glass Effect */
+.auth-container {
+    position: relative;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.auth-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.1) 0%,
+            rgba(255, 255, 255, 0.05) 50%,
+            rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Enhanced Form Controls - Cải thiện độ tương phản */
+.form-floating-custom input,
+.form-control {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid var(--auth-border-light);
+    background: var(--auth-bg-white);
+    color: var(--auth-text-dark);
+}
+
+.form-floating-custom input:hover,
+.form-control:hover {
+    border-color: var(--auth-primary-lighter);
+    background: var(--auth-bg-white);
+    color: var(--auth-text-dark);
+}
+
+.form-floating-custom input:focus,
+.form-control:focus {
+    border-color: var(--auth-border-focus);
+    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.15);
+    transform: translateY(-1px);
+    background: var(--auth-bg-white);
+    color: var(--auth-text-dark);
+}
+
+/* Enhanced Buttons */
+.btn-auth,
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-auth::before,
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent);
+    transition: left 0.5s;
+}
+
+.btn-auth:hover::before,
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+.btn-auth:hover,
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px var(--auth-shadow-heavy);
+}
+
+/* Enhanced Logo */
+.auth-logo {
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-logo::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+    transform: rotate(45deg);
+    animation: logoShine 3s infinite;
+}
+
+@keyframes logoShine {
+    0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+
+    50% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+    }
+
+    100% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+    }
+}
+
+/* Enhanced Info Side */
+.auth-info-side {
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-info-side::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 20%,
+            rgba(255, 255, 255, 0.1) 0%,
+            transparent 50%);
+    pointer-events: none;
+}
+
+/* Enhanced Feature Items */
+.feature-item {
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent);
+    transition: left 0.6s ease;
+}
+
+.feature-item:hover::before {
+    left: 100%;
+}
+
+.feature-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Alerts */
+.alert-custom {
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid;
+}
+
+.alert-success-custom {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+}
+
+.alert-danger-custom {
+    border-left-color: #dc3545;
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+}
+
+.alert-warning-custom {
+    border-left-color: #ffc107;
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+}
+
+.alert-info-custom {
+    border-left-color: #17a2b8;
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+}
+
+/* Enhanced Form Validation */
+.form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+    animation: shake 0.5s ease-in-out;
+}
+
+.form-control.is-valid {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* Enhanced Loading States */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn:disabled::before {
+    display: none;
+}
+
+/* Enhanced Password Toggle */
+.password-toggle {
+    transition: all 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: var(--auth-border-focus);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Enhanced Links */
+.auth-link {
+    position: relative;
+}
+
+.auth-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--auth-medium-blue);
+    transition: width 0.3s ease;
+}
+
+.auth-link:hover::after {
+    width: 100%;
+}
+
+/* Enhanced Checkboxes */
+.form-check-input {
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background-color: var(--auth-medium-blue);
+    border-color: var(--auth-medium-blue);
+    transform: scale(1.1);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(44, 90, 160, 0.25);
+}
+
+/* Enhanced Role Selection */
+.role-selection .form-check {
+    transition: all 0.3s ease;
+}
+
+.role-selection .form-check:hover {
+    transform: translateY(-1px);
+}
+
+.role-selection .form-check-input:checked+.form-check-label {
+    color: var(--auth-medium-blue);
+    font-weight: 600;
+}
+
+/* Enhanced Responsive Design */
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 0.5rem;
+        width: calc(100% - 1rem);
+    }
+
+    .auth-form-side,
+    .auth-info-side {
+        padding: 1rem;
+    }
+
+    .btn-auth,
+    .btn-primary {
+        padding: 0.875rem 1.5rem;
+    }
+}
+
+/* Enhanced Accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+    .auth-container::before,
+    .auth-container::after,
+    .btn-auth::before,
+    .btn-primary::before,
+    .auth-logo::before,
+    .feature-item::before {
+        animation: none;
+        transition: none;
+    }
+
+    .form-floating-custom input:focus,
+    .form-control:focus {
+        transform: none;
+    }
+
+    .btn-auth:hover,
+    .btn-primary:hover {
+        transform: none;
+    }
+
+    .feature-item:hover {
+        transform: none;
+    }
+}
+
+/* Enhanced Focus States for Accessibility */
+.btn-auth:focus,
+.btn-primary:focus,
+.form-control:focus,
+.password-toggle:focus {
+    outline: 2px solid var(--auth-medium-blue);
+    outline-offset: 2px;
+}
+
+/* Enhanced Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .auth-container {
+        background: rgba(15, 20, 25, 0.95);
+        border-color: rgba(44, 90, 160, 0.2);
+    }
+
+    .form-floating-custom input,
+    .form-control {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(44, 90, 160, 0.3);
+        color: var(--auth-text-dark);
+    }
+
+    .form-floating-custom input:focus,
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.98);
+        color: var(--auth-text-dark);
+    }
+
+    .text-muted {
+        color: var(--auth-text-muted) !important;
+    }
+}
+
+/* Enhanced Print Styles */
+@media print {
+    .auth-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+
+    .auth-info-side {
+        display: none;
+    }
+
+    .btn-auth,
+    .btn-primary {
+        background: #000 !important;
+        color: #fff !important;
+        border: 1px solid #000 !important;
+    }
+}
