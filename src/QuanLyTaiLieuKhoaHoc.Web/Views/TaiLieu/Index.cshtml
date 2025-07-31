@@ -41,12 +41,6 @@
                 </div>
             </div>
             <div class="hero-actions">
-                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("ThuThu"))
-                {
-                    <a asp-action="Create" class="btn btn-hero-primary">
-                        <i class="fas fa-plus me-2"></i>Thêm Tài liệu mới
-                    </a>
-                }
                 <a href="#search-section" class="btn btn-hero-secondary">
                     <i class="fas fa-search me-2"></i>Bắt đầu tìm kiếm
                 </a>
@@ -73,36 +67,6 @@
 
         <!-- Results Section -->
         <div class="results-section">
-            <!-- Results Header -->
-            <div class="results-header">
-                <div class="results-info">
-                    <div class="results-badge">
-                        <i class="fas fa-search me-2"></i>
-                        Tìm thấy <strong>@Model.TongSoTaiLieu</strong> tài liệu
-                    </div>
-                    @if (!string.IsNullOrEmpty(Model.TimKiem))
-                    {
-                        <div class="search-keyword">
-                            <i class="fas fa-tag me-1"></i>
-                            Từ khóa: <span class="keyword">"@Model.TimKiem"</span>
-                        </div>
-                    }
-                </div>
-                
-                <div class="view-controls">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-view active" id="gridView" title="Xem dạng lưới">
-                            <i class="fas fa-th-large"></i>
-                        </button>
-                        <button type="button" class="btn btn-view" id="listView" title="Xem dạng danh sách">
-                            <i class="fas fa-list"></i>
-                        </button>
-                        <button type="button" class="btn btn-view" id="masonryView" title="Xem dạng masonry">
-                            <i class="fas fa-th"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
             <!-- Documents Grid -->
             <div id="documentsGrid" class="documents-view">

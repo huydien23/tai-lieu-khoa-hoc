@@ -4,6 +4,14 @@
 // ===================================  
 
 $(document).ready(function () {
+  // Clear search history on page refresh
+  clearSearchHistory();
+  
+  // Clear search history before page unload
+  $(window).on('beforeunload', function() {
+    clearSearchHistory();
+  });
+  
   // Initialize tooltips
   var tooltipTriggerList = [].slice.call(
     document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -899,6 +907,50 @@ const additionalCSS = `
 const style = document.createElement('style');
 style.textContent = additionalCSS;
 document.head.appendChild(style);
+
+// Clear search history and reset search form
+function clearSearchHistory() {
+    // Clear localStorage search history
+    localStorage.removeItem('searchHistory');
+    localStorage.removeItem('searchSuggestions');
+    
+    // Clear sessionStorage search data
+    sessionStorage.removeItem('lastSearchQuery');
+    sessionStorage.removeItem('searchFilters');
+    
+    // Clear all search input fields by name/ID
+    $('input[name="timKiem"], #timKiem, #quickSearch, #searchInput, #searchQuery').val('');
+    
+    // Clear search suggestions
+    hideSearchSuggestions();
+    
+    // Reset all select fields in search form
+    $('.filter-select').val('');
+    $('select[name="maChuyenNganh"]').val('');
+    $('select[name="maLoaiTaiLieu"]').val('');
+    $('select[name="sapXep"]').val('moiNhat');
+    
+    // Reset all input fields in search form
+    $('.filter-input').val('');
+    $('input[name="namXuatBan"]').val('');
+    $('input[name="tacGia"]').val('');
+    $('input[name="tuKhoa"]').val('');
+    
+    // Clear active filters display
+    $('#activeFilters').hide();
+    $('#activeFilterTags').empty();
+    
+    // Reset search results info
+    $('.results-info').text('Tìm thấy 0 tài liệu');
+    
+    // Disable autocomplete on all search inputs
+    $('input[type="text"], input[type="search"]').attr('autocomplete', 'off');
+    
+    // Clear browser's autocomplete cache for search inputs
+    $('input[name="timKiem"], #timKiem').attr('autocomplete', 'new-password');
+    
+    console.log('Search history cleared on page refresh');
+}
 
 // Export for global use
 window.AppUtils = {
