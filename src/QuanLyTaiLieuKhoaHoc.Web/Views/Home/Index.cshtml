@@ -111,28 +111,55 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="card-body">
-                                        <p class="doc-description">@Html.Raw(moTaTomTat ?? "")</p>
-                                        
-                                        <div class="doc-stats">
-                                            <div class="stat-item">
-                                                <i class="fas fa-book-reader"></i>
-                                                <span>@taiLieu.SoLuongDaMuon lượt mượn</span>
-                                            </div>
-                                            <div class="stat-item">
-                                                <i class="fas fa-tag"></i>
-                                                <span>@(taiLieu.TenChuyenNganh ?? "N/A")</span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="card-actions">
-                                            <span class="doc-category">@(taiLieu.TenLoaiTaiLieu ?? "")</span>
-                                            <a class="view-summary-btn" href="/TaiLieu/Details/@taiLieu.MaTaiLieu">
-                                                <i class="fas fa-eye"></i>
-                                                <span>Xem tóm tắt</span>
-                                            </a>
-                                        </div>
-                                    </div>
+                                                                         <div class="card-body">
+                                         <!-- Mô tả tài liệu -->
+                                         <div class="doc-description-section">
+                                             <h4 class="description-title">
+                                                 <i class="fas fa-info-circle"></i>
+                                                 Mô tả
+                                             </h4>
+                                             <p class="doc-description">@Html.Raw(moTaTomTat ?? "Chưa có mô tả cho tài liệu này.")</p>
+                                         </div>
+                                         
+                                         <!-- Thông tin chi tiết -->
+                                         <div class="doc-details-section">
+                                             <h4 class="details-title">
+                                                 <i class="fas fa-list-alt"></i>
+                                                 Chi tiết
+                                             </h4>
+                                             <div class="doc-stats">
+                                                 <div class="stat-item">
+                                                     <i class="fas fa-book-reader"></i>
+                                                     <span>@taiLieu.SoLuongDaMuon lượt mượn</span>
+                                                 </div>
+                                                 <div class="stat-item">
+                                                     <i class="fas fa-tag"></i>
+                                                     <span>@(taiLieu.TenChuyenNganh ?? "N/A")</span>
+                                                 </div>
+                                                 <div class="stat-item">
+                                                     <i class="fas fa-calendar-alt"></i>
+                                                     <span>@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Actions -->
+                                         <div class="card-actions">
+                                             <div class="action-left">
+                                                 <span class="doc-category">@(taiLieu.TenLoaiTaiLieu ?? "")</span>
+                                                 <span class="doc-status available">
+                                                     <i class="fas fa-check-circle"></i>
+                                                     Có sẵn
+                                                 </span>
+                                             </div>
+                                             <div class="action-right">
+                                                 <a class="view-summary-btn" href="/TaiLieu/Details/@taiLieu.MaTaiLieu">
+                                                     <i class="fas fa-eye"></i>
+                                                     <span>Xem tóm tắt</span>
+                                                 </a>
+                                             </div>
+                                         </div>
+                                     </div>
                                 </div>
                             </div>
                         }
@@ -599,11 +626,15 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
+    align-items: stretch;
 }
 
 /* Document Cards */
 .document-card-wrapper {
     perspective: 1000px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .document-card {
@@ -613,6 +644,10 @@
     transition: all 0.3s ease;
     border: 1px solid #F3F4F6;
     overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
 }
 
 .document-card:hover {
@@ -645,6 +680,12 @@
     color: #1E40AF;
     margin: 0 0 0.5rem 0;
     line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 3.25rem;
 }
 
 .doc-meta {
@@ -659,17 +700,76 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .card-body {
     padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Description Section */
+.doc-description-section {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+    border-radius: 12px;
+    border-left: 4px solid #3B82F6;
+}
+
+.description-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1E40AF;
+    margin: 0 0 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.description-title i {
+    font-size: 0.8rem;
 }
 
 .doc-description {
     color: #4B5563;
     line-height: 1.6;
+    margin: 0;
+    font-size: 0.9rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.2rem;
+}
+
+/* Details Section */
+.doc-details-section {
     margin-bottom: 1.5rem;
-    font-size: 0.95rem;
+    padding: 1rem;
+    background: #F9FAFB;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+}
+
+.details-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.details-title i {
+    font-size: 0.8rem;
+    color: #6B7280;
 }
 
 .doc-stats {
@@ -696,6 +796,44 @@
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+    margin-top: auto;
+    flex-shrink: 0;
+    padding: 1rem;
+    background: linear-gradient(135deg, #F8FAFC, #F1F5F9);
+    border-radius: 12px;
+    border: 1px solid #E2E8F0;
+}
+
+.action-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.action-right {
+    display: flex;
+    align-items: center;
+}
+
+.doc-status {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.doc-status.available {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.doc-status.unavailable {
+    background: #FEE2E2;
+    color: #991B1B;
 }
 
 .doc-category {
@@ -719,6 +857,9 @@
     font-weight: 600;
     font-size: 0.875rem;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 120px;
+    justify-content: center;
 }
 
 .view-summary-btn:hover {
@@ -871,10 +1012,24 @@
         align-items: flex-start;
     }
     
-    .card-actions {
-        flex-direction: column;
-        align-items: stretch;
-    }
+         .card-actions {
+         flex-direction: column;
+         align-items: stretch;
+         gap: 1rem;
+     }
+     
+     .action-left {
+         justify-content: center;
+     }
+     
+     .action-right {
+         justify-content: center;
+     }
+     
+     .doc-description-section,
+     .doc-details-section {
+         padding: 0.75rem;
+     }
     
     .view-summary-btn {
         justify-content: center;

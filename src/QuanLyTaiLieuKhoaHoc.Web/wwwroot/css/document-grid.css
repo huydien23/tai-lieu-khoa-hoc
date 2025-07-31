@@ -273,7 +273,10 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-overflow: ellipsis;
     letter-spacing: -0.025em;
+    max-height: 3.25rem;
+    /* 2 lines * 1.3 line-height + margin */
 }
 
 .document-author {
@@ -283,6 +286,10 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
 }
 
 /* Document Metadata */
@@ -305,11 +312,16 @@
     background: #F9FAFB;
     padding: 0.5rem 0.75rem;
     border-radius: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .metadata-item i {
     width: 16px;
     text-align: center;
+    flex-shrink: 0;
 }
 
 /* Document Description */
@@ -319,6 +331,10 @@
     padding: var(--space-4);
     margin-bottom: var(--space-5);
     border-left: 4px solid var(--primary-500);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .description-text {
@@ -326,6 +342,13 @@
     line-height: 1.6;
     margin-bottom: 0;
     font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 4.8rem;
+    /* 3 lines * 1.6 line-height */
 }
 
 /* Document Status */
@@ -413,6 +436,9 @@
 .action-buttons {
     display: flex;
     gap: var(--space-3);
+    justify-content: space-between;
+    width: 100%;
+    flex-shrink: 0;
 }
 
 .btn-primary-master,
@@ -427,6 +453,9 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    white-space: nowrap;
+    min-width: 120px;
+    justify-content: center;
 }
 
 .btn-primary-master {
@@ -879,6 +908,37 @@
 /* Enhanced Document Grid */
 .documents-grid-modern {
     position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-6);
+    align-items: stretch;
+}
+
+/* Ensure all cards have equal height */
+.documents-grid-modern .document-card-master {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.documents-grid-modern .card-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    /* Fixed minimum height */
+}
+
+.documents-grid-modern .card-content-master {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.documents-grid-modern .card-footer-master {
+    margin-top: auto;
+    flex-shrink: 0;
 }
 
 .documents-grid-modern::before {
@@ -973,6 +1033,11 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .documents-grid-modern {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: var(--space-4);
+    }
+
     .card-content-master {
         padding: var(--space-4);
     }
