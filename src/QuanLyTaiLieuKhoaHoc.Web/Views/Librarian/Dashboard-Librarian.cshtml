@@ -180,311 +180,97 @@
                     <i class="fas fa-bell me-2"></i>
                     Hoạt động hệ thống
                 </h5>
-                <a href="#" class="view-all-link">Xem tất cả</a>
+                <!-- <a href="#" class="view-all-link">Xem tất cả</a> -->
             </div>
         </div>
         <div class="system-activities">
-            @if (Model.HoạtĐộngHệThống?.Any() == true)
-            {
-                @foreach (var activity in Model.HoạtĐộngHệThống.Take(3))
+            @{
+                // Lấy số lượng tài liệu quá hạn
+                var soTaiLieuQuaHan = Model.SoPhieuDangMuon;
+                var nguoiDungMoi = ViewBag.NguoiDungMoi as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung;
+                
+                var activities = new List<dynamic>();
+                
+                if (soTaiLieuQuaHan > 0)
                 {
-                    var iconClass = activity.LoạiHoạtĐộng switch
+                    activities.Add(new {
+                        Type = ActivityType.TàiLiệuQuáHạn,
+                        Title = "Tài liệu quá hạn",
+                        Description = $"{soTaiLieuQuaHan} tài liệu đã quá hạn cần xử lý ngay",
+                        Time = DateTime.Now.AddMinutes(-5),
+                        IconClass = "fas fa-exclamation-triangle",
+                        BgColor = "#ef4444",
+                        BorderColor = "#ef4444"
+                    });
+                }
+                
+                // Thêm thống kê hoạt động
+                activities.Add(new {
+                    Type = ActivityType.ThốngKêHoạtĐộng,
+                    Title = "Thống kê hoạt động",
+                    Description = $"Hôm nay có {Model.SoPhieuDangMuon} lượt mượn tài liệu mới",
+                    Time = DateTime.Now.AddMinutes(-10),
+                    IconClass = "fas fa-chart-line",
+                    BgColor = "#10b981",
+                    BorderColor = "#10b981"
+                });
+                
+                if (nguoiDungMoi != null)
+                {
+                    var vaiTroText = nguoiDungMoi.VaiTro switch
                     {
-                        ActivityType.NgườiDùngMớiĐăngKý => "fas fa-user text-primary",
-                        ActivityType.YêuCầuMượnTàiLiệu => "fas fa-book text-warning",
-                        ActivityType.TàiLiệuĐượcTrả => "fas fa-undo text-info",
-                        ActivityType.CảnhBáoQuáHạn => "fas fa-clock text-warning",
-                        ActivityType.TàiLiệuQuáHạn => "fas fa-exclamation-triangle text-danger",
-                        ActivityType.TàiLiệuMớiĐượcThêm => "fas fa-file-alt text-primary",
-                        ActivityType.ThốngKêHoạtĐộng => "fas fa-chart-line text-success",
-                        _ => "fas fa-bell text-primary"
+                        VaiTroNguoiDung.SinhVien => "Sinh viên",
+                        VaiTroNguoiDung.GiangVien => "Giảng viên",
+                        VaiTroNguoiDung.ThuThu => "Thủ thư",
+                        _ => "Người dùng"
                     };
-
-                    var timeAgo = GetTimeAgo(activity.ThờiGian);
-
+                    
+                    activities.Add(new {
+                        Type = ActivityType.NgườiDùngMớiĐăngKý,
+                        Title = "Người dùng mới đăng ký",
+                        Description = $"{nguoiDungMoi.HoTen} ({vaiTroText}) đã đăng ký tài khoản mới",
+                        Time = nguoiDungMoi.NgayTao,
+                        IconClass = "fas fa-user-plus",
+                        BgColor = "#10b981",
+                        BorderColor = "#10b981"
+                    });
+                }
+                
+                if (!activities.Any())
+                {
+                    activities.Add(new {
+                        Type = ActivityType.ThốngKêHoạtĐộng,
+                        Title = "Hệ thống hoạt động bình thường",
+                        Description = "Không có hoạt động đặc biệt nào cần xử lý",
+                        Time = DateTime.Now.AddMinutes(-30),
+                        IconClass = "fas fa-check-circle",
+                        BgColor = "#6b7280",
+                        BorderColor = "#6b7280"
+                    });
+                }
+                
+                foreach (var activity in activities)
+                {
+                    var timeAgo = GetTimeAgo(activity.Time);
+                    
                     <div class="system-activity">
-                        <div class="activity-icon-small">
-                            <i class="@iconClass"></i>
+                        <div class="activity-border" style="background-color: @activity.BorderColor;"></div>
+                        <div class="activity-icon-circle" style="background-color: @activity.BgColor;">
+                            <i class="@activity.IconClass"></i>
                         </div>
                         <div class="activity-details">
-                            <div class="activity-title">@activity.TiêuĐề</div>
+                            <div class="activity-title">@activity.Title</div>
+                            <div class="activity-description">@activity.Description</div>
                             <div class="activity-time">@timeAgo</div>
                         </div>
                     </div>
                 }
             }
-            else
-            {
-                <div class="no-activities">
-                    <i class="fas fa-bell fa-2x mb-2"></i>
-                    <p>Không có hoạt động nào</p>
-                </div>
-            }
         </div>
     </div>
 </div>
 
-<style>
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
-        gap: 1.5rem;
-        margin-top: 2rem;
-        height: calc(100vh - 200px);
-    }
 
-    .dashboard-section {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .section-header {
-        margin-bottom: 1rem;
-    }
-
-    .section-title {
-        color: #1e40af;
-        font-weight: 600;
-        margin: 0;
-        font-size: 1.1rem;
-    }
-
-    .view-all-link {
-        color: #3b82f6;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    .view-all-link:hover {
-        color: #1d4ed8;
-        text-decoration: underline;
-    }
-
-    /* Hoạt động hôm nay */
-    .activity-cards {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
-        gap: 1rem;
-        flex: 1;
-    }
-
-    .activity-card {
-        background: #f8fafc;
-        border-radius: 8px;
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        border: 1px solid #e2e8f0;
-    }
-
-    .activity-icon {
-        width: 40px;
-        height: 40px;
-        background: #3b82f6;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.2rem;
-    }
-
-    .activity-content {
-        flex: 1;
-    }
-
-    .activity-number {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1e40af;
-        line-height: 1;
-    }
-
-    .activity-label {
-        font-size: 0.8rem;
-        color: #64748b;
-        font-weight: 600;
-        margin-top: 0.25rem;
-    }
-
-    /* Thống kê nhanh */
-    .stats-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        flex: 1;
-    }
-
-    .stat-card {
-        background: #f8fafc;
-        border-radius: 8px;
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        border: 1px solid #e2e8f0;
-    }
-
-    .stat-icon {
-        width: 50px;
-        height: 50px;
-        background: #3b82f6;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.5rem;
-    }
-
-    .stat-content {
-        flex: 1;
-    }
-
-    .stat-number {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1e40af;
-        line-height: 1;
-    }
-
-    .stat-label {
-        font-size: 0.9rem;
-        color: #374151;
-        margin-top: 0.25rem;
-    }
-
-    /* Tài liệu cần xử lý */
-    .process-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        flex: 1;
-    }
-
-    .process-card {
-        border-radius: 8px;
-        padding: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        color: white;
-    }
-
-    .process-card.overdue {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
-    }
-
-    .process-card.pending {
-        background: linear-gradient(135deg, #f59e0b, #d97706);
-    }
-
-    .process-icon {
-        width: 50px;
-        height: 50px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.5rem;
-    }
-
-    .process-content {
-        flex: 1;
-    }
-
-    .process-number {
-        font-size: 1.8rem;
-        font-weight: 700;
-        line-height: 1;
-    }
-
-    .process-label {
-        font-size: 0.9rem;
-        font-weight: 600;
-        margin-top: 0.25rem;
-        opacity: 0.9;
-    }
-
-    /* Hoạt động hệ thống */
-    .system-activities {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        flex: 1;
-    }
-
-    .system-activity {
-        background: #f8fafc;
-        border-radius: 8px;
-        padding: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        border: 1px solid #e2e8f0;
-    }
-
-    .activity-icon-small {
-        width: 32px;
-        height: 32px;
-        background: white;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9rem;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-
-    .activity-details {
-        flex: 1;
-    }
-
-    .activity-title {
-        font-size: 0.9rem;
-        color: #374151;
-        font-weight: 500;
-        margin-bottom: 0.25rem;
-    }
-
-    .activity-time {
-        font-size: 0.8rem;
-        color: #6b7280;
-    }
-
-    .no-activities {
-        text-align: center;
-        color: #9ca3af;
-        padding: 2rem 1rem;
-    }
-
-    .no-activities i {
-        margin-bottom: 0.5rem;
-    }
-
-    .no-activities p {
-        margin: 0;
-        font-size: 0.9rem;
-    }
-
-    /* Responsive */
-    @@media (max-width: 768px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto auto auto;
-            height: auto;
-        }
-    }
-</style>
 
 @section Scripts {
     <script>

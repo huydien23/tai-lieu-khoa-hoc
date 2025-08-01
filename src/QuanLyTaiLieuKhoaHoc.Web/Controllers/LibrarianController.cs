@@ -105,11 +105,23 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
+            // Lấy số lượng tài liệu quá hạn
+            var soTaiLieuQuaHan = await _context.PhieuMuonTra
+                .CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTraDuKien < DateTime.Now);
+
+            // Lấy người dùng mới đăng ký trong 24h qua
+            var nguoiDungMoi = await _context.Users
+                .Where(u => u.NgayTao >= DateTime.Now.AddDays(-1))
+                .OrderByDescending(u => u.NgayTao)
+                .FirstOrDefaultAsync();
+
             var model = new DashboardViewModel
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
                 TongSoNguoiDung = await _context.Users.CountAsync(),
                 TongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.DaTra),
+                TongSoLuotTai = await _context.LichSuTaiTaiLieu.CountAsync(),
+                SoPhieuDangMuon = soTaiLieuQuaHan, // Sử dụng cho tài liệu quá hạn
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
@@ -125,6 +137,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     .ToDictionaryAsync(g => g.Key, g => g.Count()),
                 HoạtĐộngHệThống = await _systemActivityService.GetActivitiesForDashboardAsync()
             };
+
+            // Thêm thông tin người dùng mới vào ViewBag
+            ViewBag.NguoiDungMoi = nguoiDungMoi;
 
             ViewData["Title"] = "Dashboard Thủ thư";
             return View(model);
