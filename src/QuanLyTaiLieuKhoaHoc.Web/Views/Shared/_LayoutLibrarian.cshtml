@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/app.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/librarian-dashboard.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuanLyTaiLieuKhoaHoc.Web.styles.css" asp-append-version="true" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
@@ -26,10 +27,10 @@
 
         .sidebar {
             width: 250px;
-            background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-800) 100%);
+            background: var(--gradient-modern);
             color: white;
             padding: 0;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
         }
 
         .sidebar-header {
@@ -71,9 +72,10 @@
 
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background: rgba(255, 255, 255, 0.1);
-            border-left-color: var(--blue-300);
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--primary-lighter);
             color: white;
+            transform: translateX(5px);
         }
 
         .sidebar-menu i {
@@ -130,10 +132,10 @@
         }
 
         .card-header {
-            background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-800) 100%);
-            color: white;
-            border-radius: 10px 10px 0 0 !important;
-            border: none;
+            background: var(--gradient-soft);
+            color: var(--text-dark);
+            border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0 !important;
+            border-bottom: 2px solid var(--border-color);
         }
     </style>
 </head>
