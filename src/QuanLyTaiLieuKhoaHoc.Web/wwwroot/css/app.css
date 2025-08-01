@@ -2635,7 +2635,6 @@ p {
 
 /* Top Bar Styling */
 .top-bar {
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%) !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.875rem;
 }
@@ -3134,9 +3133,6 @@ body {
    LIBRARIAN LAYOUT SPECIFIC STYLING
    =================================== */
 
-body .dashboard-container {
-    padding-top: 40px;
-}
 
 .dashboard-container .sidebar {
     margin-top: 0;
