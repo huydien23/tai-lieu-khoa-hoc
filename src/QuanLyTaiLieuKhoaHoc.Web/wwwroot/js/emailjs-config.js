@@ -1,7 +1,7 @@
 // EmailJS Configuration
 document.addEventListener('DOMContentLoaded', function () {
     if (typeof window['emailjs'] !== 'undefined') {
-        window['emailjs'].init('Ig3KrQ7KfcaIKloR8');
+        window['emailjs'].init('wwmbO9Ggo_Apkmmw9');
         console.log('EmailJS initialized successfully');
     } else {
         console.error('EmailJS library not loaded');
@@ -56,7 +56,7 @@ window.sendOverdueWarning = function (maPhieu, email, hoTen, tenTaiLieu, soNgayQ
         recipient: email  
     };
     
-    window['emailjs'].send('service_kq2fref', 'template_l8t2t4k', finalParams)
+    window['emailjs'].send('service_spct7ln', 'template_uq4q7cd', finalParams)
         .then(function (response) {
             console.log('Email sent successfully:', response);
             if (typeof toastr !== 'undefined') {
