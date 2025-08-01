@@ -16,12 +16,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ITaiLieuService _taiLieuService;
+        private readonly ISystemActivityService _systemActivityService;
         private readonly UserManager<NguoiDung> _userManager;
 
-        public LibrarianController(ApplicationDbContext context, ITaiLieuService taiLieuService, UserManager<NguoiDung> userManager)
+        public LibrarianController(ApplicationDbContext context, ITaiLieuService taiLieuService, ISystemActivityService systemActivityService, UserManager<NguoiDung> userManager)
         {
             _context = context;
             _taiLieuService = taiLieuService;
+            _systemActivityService = systemActivityService;
             _userManager = userManager;
         }
 
@@ -120,7 +122,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 ThongKeTheoLoaiTaiLieu = await _context.TaiLieu
                     .Include(t => t.LoaiTaiLieu)
                     .GroupBy(t => t.LoaiTaiLieu!.TenLoaiTaiLieu)
-                    .ToDictionaryAsync(g => g.Key, g => g.Count())
+                    .ToDictionaryAsync(g => g.Key, g => g.Count()),
+                HoạtĐộngHệThống = await _systemActivityService.GetActivitiesForDashboardAsync()
             };
 
             ViewData["Title"] = "Dashboard Thủ thư";
@@ -1325,6 +1328,116 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Có lỗi xảy ra khi đổi mật khẩu: " + ex.Message });
+            }
+        }
+
+        // API endpoints for system activities
+        [HttpGet]
+        public async Task<IActionResult> GetSystemActivities()
+        {
+            try
+            {
+                var activities = await _systemActivityService.GetActivitiesForDashboardAsync();
+                return Json(new { success = true, data = activities });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> MarkActivityAsProcessed(string activityId)
+        {
+            try
+            {
+                var result = await _systemActivityService.MarkActivityAsProcessedAsync(activityId);
+                return Json(new { success = result });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApproveBorrowRequest(int phieuId)
+        {
+            try
+            {
+                var phieu = await _context.PhieuMuonTra
+                    .Include(p => p.TaiLieu)
+                    .Include(p => p.NguoiMuon)
+                    .FirstOrDefaultAsync(p => p.MaPhieu == phieuId);
+
+                if (phieu == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn" });
+                }
+
+                phieu.TrangThai = TrangThaiPhieu.DaDuyet;
+                await _context.SaveChangesAsync();
+
+                // Tạo hoạt động mới
+                var activity = new SystemActivity
+                {
+                    LoạiHoạtĐộng = ActivityType.YêuCầuMượnTàiLiệu,
+                    TiêuĐề = "Yêu cầu mượn đã được duyệt",
+                    MôTả = $"Đã duyệt yêu cầu mượn \"{phieu.TaiLieu?.TenTaiLieu}\" của {phieu.NguoiMuon?.HoTen}",
+                    ThờiGian = DateTime.Now,
+                    MứcĐộƯuTiên = ActivityPriority.Thấp,
+                    ĐãXửLý = true,
+                    NgườiThựcHiện = User.Identity?.Name
+                };
+
+                await _systemActivityService.CreateActivityAsync(activity);
+
+                return Json(new { success = true, message = "Đã duyệt yêu cầu mượn thành công" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RejectBorrowRequest(int phieuId, string lyDo)
+        {
+            try
+            {
+                var phieu = await _context.PhieuMuonTra
+                    .Include(p => p.TaiLieu)
+                    .Include(p => p.NguoiMuon)
+                    .FirstOrDefaultAsync(p => p.MaPhieu == phieuId);
+
+                if (phieu == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn" });
+                }
+
+                phieu.TrangThai = TrangThaiPhieu.TuChoi;
+                phieu.GhiChu = lyDo;
+                await _context.SaveChangesAsync();
+
+                // Tạo hoạt động mới
+                var activity = new SystemActivity
+                {
+                    LoạiHoạtĐộng = ActivityType.YêuCầuMượnTàiLiệu,
+                    TiêuĐề = "Yêu cầu mượn đã bị từ chối",
+                    MôTả = $"Đã từ chối yêu cầu mượn \"{phieu.TaiLieu?.TenTaiLieu}\" của {phieu.NguoiMuon?.HoTen}. Lý do: {lyDo}",
+                    ThờiGian = DateTime.Now,
+                    MứcĐộƯuTiên = ActivityPriority.Thấp,
+                    ĐãXửLý = true,
+                    NgườiThựcHiện = User.Identity?.Name
+                };
+
+                await _systemActivityService.CreateActivityAsync(activity);
+
+                return Json(new { success = true, message = "Đã từ chối yêu cầu mượn" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
             }
         }
     }

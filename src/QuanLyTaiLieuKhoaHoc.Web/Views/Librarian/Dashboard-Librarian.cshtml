@@ -3,6 +3,22 @@
     ViewData["Title"] = "Dashboard Thủ thư";
 }
 
+@functions {
+    public string GetTimeAgo(DateTime time)
+    {
+        var timeSpan = DateTime.Now - time;
+        
+        if (timeSpan.TotalMinutes < 1)
+            return "Vừa xong";
+        else if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} phút trước";
+        else if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} giờ trước";
+        else
+            return $"{(int)timeSpan.TotalDays} ngày trước";
+    }
+}
+
 <!-- Dashboard Header -->
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-center">
@@ -104,96 +120,79 @@
 
 <!-- Content Row -->
 <div class="row">
-    <!-- Recent Documents -->
+    <!-- System Activities -->
     <div class="col-lg-8">
         <div class="card shadow-sm">
             <div class="card-header bg-white border-0 py-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold" style="color: var(--primary-dark);">
-                        <i class="fas fa-clock text-primary me-2"></i>
-                        Tài liệu mới nhất
+                        <i class="fas fa-bell text-primary me-2"></i>
+                        Hoạt động hệ thống
                     </h5>
-                    <a href="@Url.Action("ManageDocuments")" class="btn btn-outline-primary btn-sm">
+                    <a href="#" class="btn btn-outline-primary btn-sm">
                         Xem tất cả
                     </a>
                 </div>
             </div>
             <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-0 ps-4">Tài liệu</th>
-                                <th class="border-0">Tác giả</th>
-                                <th class="border-0">Chuyên ngành</th>
-                                <th class="border-0">Ngày tải</th>
-                                <th class="border-0">Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.TaiLieuMoiNhat?.Any() == true)
-                            {
-                                @foreach (var taiLieu in Model.TaiLieuMoiNhat.Take(8))
-                                {
-                                    <tr>
-                                        <td class="ps-4">
-                                            <div class="d-flex align-items-center">
-                                                <div class="document-icon me-3">
-                                                    <i class="fas fa-file-pdf text-danger"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-semibold">@taiLieu.TenTaiLieu</div>
-                                                    <small class="text-muted">@taiLieu.TenLoaiTaiLieu</small>
-                                                    <br />
-                                                    <a href="#"
-                                                        class="text-primary text-decoration-underline fw-normal btn-view-details"
-                                                        data-id="@taiLieu.MaTaiLieu" style="font-size: 0.95em;">Xem chi tiết</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="text-dark">@taiLieu.TacGia</div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-dark">
-                                                @taiLieu.TenChuyenNganh
-                                            </span>
-                                        </td>
-                                        <td class="text-muted">
-                                            @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")
-                                        </td>
-                                        <td>
-                                            @switch (taiLieu.TrangThai)
-                                            {
-                                                case 0: // ChoDuyet
-                                                        <span class="badge bg-warning">Chờ duyệt</span>
-                                                    break;
-                                                case 1: // DaDuyet
-                                                        <span class="badge bg-success">Đã duyệt</span>
-                                                    break;
-                                                case 2: // TuChoi
-                                                        <span class="badge bg-danger">Từ chối</span>
-                                                    break;
-                                                default:
-                                                    <span class="badge bg-secondary">Không xác định</span>
-                                                    break;
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <i class="fas fa-folder-open fa-2x mb-3"></i>
-                                        <br />Chưa có tài liệu nào
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                                 <div class="activity-list" id="activityList">
+                     @if (Model.HoạtĐộngHệThống?.Any() == true)
+                     {
+                         @foreach (var activity in Model.HoạtĐộngHệThống)
+                         {
+                             var priorityClass = activity.MứcĐộƯuTiên switch
+                             {
+                                 ActivityPriority.Cao => "high-priority",
+                                 ActivityPriority.TrungBình => "medium-priority",
+                                 _ => "low-priority"
+                             };
+
+                             var iconClass = activity.LoạiHoạtĐộng switch
+                             {
+                                 ActivityType.NgườiDùngMớiĐăngKý => "fas fa-user-plus text-success",
+                                 ActivityType.YêuCầuMượnTàiLiệu => "fas fa-book text-warning",
+                                 ActivityType.TàiLiệuĐượcTrả => "fas fa-undo text-info",
+                                 ActivityType.CảnhBáoQuáHạn => "fas fa-clock text-warning",
+                                 ActivityType.TàiLiệuQuáHạn => "fas fa-exclamation-triangle text-danger",
+                                 ActivityType.TàiLiệuMớiĐượcThêm => "fas fa-file-alt text-primary",
+                                 ActivityType.ThốngKêHoạtĐộng => "fas fa-chart-bar text-info",
+                                 _ => "fas fa-bell text-primary"
+                             };
+
+                             var bgClass = activity.LoạiHoạtĐộng switch
+                             {
+                                 ActivityType.NgườiDùngMớiĐăngKý => "bg-success-soft",
+                                 ActivityType.YêuCầuMượnTàiLiệu => "bg-warning-soft",
+                                 ActivityType.TàiLiệuĐượcTrả => "bg-info-soft",
+                                 ActivityType.CảnhBáoQuáHạn => "bg-warning-soft",
+                                 ActivityType.TàiLiệuQuáHạn => "bg-danger-soft",
+                                 ActivityType.TàiLiệuMớiĐượcThêm => "bg-primary-soft",
+                                 ActivityType.ThốngKêHoạtĐộng => "bg-info-soft",
+                                 _ => "bg-primary-soft"
+                             };
+
+                             var timeAgo = GetTimeAgo(activity.ThờiGian);
+
+                             <div class="activity-item @priorityClass" data-activity-id="@activity.Id" data-activity-type="@activity.LoạiHoạtĐộng" data-phieu-id="@activity.DữLiệuBổSung">
+                                 <div class="activity-icon @bgClass">
+                                     <i class="@iconClass"></i>
+                                 </div>
+                                                                   <div class="activity-content">
+                                      <div class="activity-title">@activity.TiêuĐề</div>
+                                      <div class="activity-description">@activity.MôTả</div>
+                                      <div class="activity-time">@timeAgo</div>
+                                  </div>
+                              </div>
+                         }
+                     }
+                     else
+                     {
+                         <div class="text-center text-muted py-4">
+                             <i class="fas fa-bell fa-2x mb-2"></i>
+                             <br>Không có hoạt động nào
+                         </div>
+                     }
+                 </div>
             </div>
         </div>
     </div>
@@ -612,5 +611,110 @@
         $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
             $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
         });
+
+        
+
+        function showSuccessMessage(message) {
+            toastr.success(message, 'Thành công!', {
+                timeOut: 3000,
+                progressBar: true
+            });
+        }
+
+        function showErrorMessage(message) {
+            toastr.error(message, 'Lỗi!', {
+                timeOut: 5000,
+                progressBar: true
+            });
+        }
+
+        // Auto-refresh activity list every 30 seconds
+        setInterval(function() {
+            refreshActivityList();
+        }, 30000);
+
+        function refreshActivityList() {
+            $.get('@Url.Action("GetSystemActivities")', function(response) {
+                if (response.success && response.data) {
+                    updateActivityList(response.data);
+                }
+            }).fail(function() {
+                console.log('Failed to refresh activity list');
+            });
+        }
+
+        function updateActivityList(activities) {
+            var activityList = $('#activityList');
+            if (activities.length === 0) {
+                activityList.html('<div class="text-center text-muted py-4"><i class="fas fa-bell fa-2x mb-2"></i><br>Không có hoạt động nào</div>');
+                return;
+            }
+
+            var html = '';
+            activities.forEach(function(activity) {
+                var priorityClass = getPriorityClass(activity.mứcĐộƯuTiên);
+                var iconClass = getIconClass(activity.loạiHoạtĐộng);
+                var bgClass = getBgClass(activity.loạiHoạtĐộng);
+                var timeAgo = getTimeAgo(new Date(activity.thờiGian));
+
+                html += '<div class="activity-item ' + priorityClass + '" data-activity-id="' + activity.id + '" data-activity-type="' + activity.loạiHoạtĐộng + '" data-phieu-id="' + (activity.dữLiệuBổSung || '') + '">';
+                html += '<div class="activity-icon ' + bgClass + '"><i class="' + iconClass + '"></i></div>';
+                html += '<div class="activity-content">';
+                                 html += '<div class="activity-title">' + activity.tiêuĐề + '</div>';
+                 html += '<div class="activity-description">' + activity.môTả + '</div>';
+                 html += '<div class="activity-time">' + timeAgo + '</div>';
+                 html += '</div>';
+                 html += '</div>';
+            });
+            
+            activityList.html(html);
+        }
+
+        function getPriorityClass(priority) {
+            switch(priority) {
+                case 'Cao': return 'high-priority';
+                case 'TrungBình': return 'medium-priority';
+                default: return 'low-priority';
+            }
+        }
+
+        function getIconClass(activityType) {
+            switch(activityType) {
+                case 'NgườiDùngMớiĐăngKý': return 'fas fa-user-plus text-success';
+                case 'YêuCầuMượnTàiLiệu': return 'fas fa-book text-warning';
+                case 'TàiLiệuĐượcTrả': return 'fas fa-undo text-info';
+                case 'CảnhBáoQuáHạn': return 'fas fa-clock text-warning';
+                case 'TàiLiệuQuáHạn': return 'fas fa-exclamation-triangle text-danger';
+                case 'TàiLiệuMớiĐượcThêm': return 'fas fa-file-alt text-primary';
+                case 'ThốngKêHoạtĐộng': return 'fas fa-chart-bar text-info';
+                default: return 'fas fa-bell text-primary';
+            }
+        }
+
+        function getBgClass(activityType) {
+            switch(activityType) {
+                case 'NgườiDùngMớiĐăngKý': return 'bg-success-soft';
+                case 'YêuCầuMượnTàiLiệu': return 'bg-warning-soft';
+                case 'TàiLiệuĐượcTrả': return 'bg-info-soft';
+                case 'CảnhBáoQuáHạn': return 'bg-warning-soft';
+                case 'TàiLiệuQuáHạn': return 'bg-danger-soft';
+                case 'TàiLiệuMớiĐượcThêm': return 'bg-primary-soft';
+                case 'ThốngKêHoạtĐộng': return 'bg-info-soft';
+                default: return 'bg-primary-soft';
+            }
+        }
+
+        function getTimeAgo(date) {
+            var now = new Date();
+            var diffMs = now - date;
+            var diffMins = Math.floor(diffMs / 60000);
+            var diffHours = Math.floor(diffMs / 3600000);
+            var diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'Vừa xong';
+            else if (diffMins < 60) return diffMins + ' phút trước';
+            else if (diffHours < 24) return diffHours + ' giờ trước';
+            else return diffDays + ' ngày trước';
+        }
     </script>
 }

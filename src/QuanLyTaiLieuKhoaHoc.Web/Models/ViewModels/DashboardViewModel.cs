@@ -48,6 +48,42 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public IEnumerable<PhieuMuonTra> PhieuMuonTra { get; set; } = new List<PhieuMuonTra>();
         public int SoLuotTaiXuong { get; set; }
         public List<QuanLyTaiLieuKhoaHoc.Web.Models.LichSuTaiTaiLieu> LichSuTaiXuong { get; set; } = new();
+
+        // Hoạt động hệ thống
+        public List<SystemActivity> HoạtĐộngHệThống { get; set; } = new List<SystemActivity>();
+    }
+
+    public class SystemActivity
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public ActivityType LoạiHoạtĐộng { get; set; }
+        public string TiêuĐề { get; set; } = string.Empty;
+        public string MôTả { get; set; } = string.Empty;
+        public DateTime ThờiGian { get; set; }
+        public ActivityPriority MứcĐộƯuTiên { get; set; }
+        public string? DữLiệuBổSung { get; set; }
+        public bool ĐãXửLý { get; set; } = false;
+        public string? NgườiThựcHiện { get; set; }
+        public string? LiênKết { get; set; }
+    }
+
+    public enum ActivityType
+    {
+        NgườiDùngMớiĐăngKý,
+        YêuCầuMượnTàiLiệu,
+        TàiLiệuĐượcTrả,
+        CảnhBáoQuáHạn,
+        TàiLiệuQuáHạn,
+        TàiLiệuMớiĐượcThêm,
+        ThốngKêHoạtĐộng,
+        ThôngBáoHệThống
+    }
+
+    public enum ActivityPriority
+    {
+        Thấp,
+        TrungBình,
+        Cao
     }
 
     public class ThongKeViewModel
