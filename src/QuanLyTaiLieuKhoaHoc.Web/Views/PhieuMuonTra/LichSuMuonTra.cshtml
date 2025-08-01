@@ -2,85 +2,386 @@
 @{
     ViewData["Title"] = "Lịch sử mượn/trả tài liệu";
 }
-<h2>@ViewData["Title"]</h2>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Mã phiếu</th>
-            <th>Tài liệu</th>
-            <th>Người mượn</th>
-            <th>Ngày mượn</th>
-            <th>Ngày trả dự kiến</th>
-            <th>Ngày trả thực tế</th>
-            <th>Trạng thái</th>
-            <th>Thao tác</th>
-        </tr>
-    </thead>
-    <tbody>
+<!-- Modern Header -->
+<div class="history-header mb-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h4 class="mb-0">
+                <i class="fas fa-history text-primary me-2"></i>
+                Lịch sử mượn trả
+            </h4>
+            <p class="text-muted mb-0 mt-1">Quản lý và theo dõi lịch sử mượn trả tài liệu</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <div class="history-stats">
+                <span class="stat-badge">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span id="totalRecords">@Model.Count()</span> phiếu
+                </span>
+                <span class="stat-badge">
+                    <i class="fas fa-clock"></i>
+                    <span id="pendingReturns">@Model.Count(p => p.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet && !p.NgayTra.HasValue)</span> đang mượn
+                </span>
+                <span class="stat-badge">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="completedReturns">@Model.Count(p => p.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra)</span> đã trả
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters and Search -->
+<div class="history-filters mb-4">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <select id="statusFilter" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="DaDuyet">Đang mượn</option>
+                <option value="DaTra">Đã trả</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select id="sortFilter" class="form-select">
+                <option value="newest">Mới nhất</option>
+                <option value="oldest">Cũ nhất</option>
+                <option value="overdue">Quá hạn</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" id="historySearch" class="form-control" placeholder="Tìm kiếm theo mã phiếu, tên tài liệu, người mượn...">
+                <button class="btn btn-outline-secondary" type="button" id="clearHistorySearch">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History Cards Container -->
+<div id="historyCardsContainer">
+    <div class="row" id="historyCards">
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.MaPhieu</td>
-                <td>@item.TaiLieu?.TenTaiLieu</td>
-                <td>
-                    @if (item.NguoiMuon != null)
-                    {
-                        @item.NguoiMuon.HoTen
-                    }
-                    else if (!string.IsNullOrEmpty(item.HoTenNguoiMuon))
-                    {
-                        @item.HoTenNguoiMuon
-                        @if (!string.IsNullOrEmpty(item.MaSoNguoiMuon))
-                        {
-                            @($" ({item.MaSoNguoiMuon})")
-                        }
-                    }
-                    else
-                    {
-                        @:"-"
-                    }
-                </td>
-                <td>@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@(item.NgayTraDuKien?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
-                <td>@(item.NgayTra?.ToString("dd/MM/yyyy HH:mm") ?? "-")</td>
-                <td>
-                    @switch (item.TrangThai)
-                    {
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
-                            <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                            break;
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
-                            <span class="badge bg-primary">Đã duyệt</span>
-                            break;
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
-                            <span class="badge bg-success">Đã trả</span>
-                            break;
-                        case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
-                            <span class="badge bg-danger">Từ chối</span>
-                            break;
-                    }
-                </td>
-                <td>
-                    @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet && !item.NgayTra.HasValue)
-                    {
-                        <button class="btn btn-sm btn-success" onclick="openTraPhieuModal('@item.MaPhieu')">
-                            <i class="fas fa-undo-alt"></i> Trả tài liệu
-                        </button>
-                    }
-                    <button class="btn btn-sm btn-info btn-xem-phieu" data-maphieu="@item.MaPhieu">
-                        <i class="fas fa-eye"></i> Xem chi tiết
-                    </button>
-                </td>
-            </tr>
+            <div class="col-lg-6 col-xl-4 mb-3 history-card" 
+                 data-status="@item.TrangThai.ToString()"
+                 data-date="@item.NgayMuon.ToString("yyyy-MM-dd")"
+                 data-search="@($"{item.MaPhieu} {item.TaiLieu?.TenTaiLieu} {(item.NguoiMuon?.HoTen ?? item.HoTenNguoiMuon)}").ToLower()">
+                <div class="card history-item-card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <div class="history-icon me-2">
+                                @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra)
+                                {
+                                    <i class="fas fa-check-circle text-success"></i>
+                                }
+                                else if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet)
+                                {
+                                    <i class="fas fa-clock text-warning"></i>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-file-alt text-primary"></i>
+                                }
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Phiếu #@item.MaPhieu</h6>
+                                <small class="text-muted">@item.NgayMuon.ToString("dd/MM/yyyy HH:mm")</small>
+                            </div>
+                        </div>
+                        <div class="status-badge @GetStatusClass(item.TrangThai)">
+                            @GetStatusText(item.TrangThai)
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="history-item-info">
+                            <div class="info-row">
+                                <span class="info-label">Tài liệu:</span>
+                                <span class="info-value">@item.TaiLieu?.TenTaiLieu</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Người mượn:</span>
+                                <span class="info-value">
+                                    @if (item.NguoiMuon != null)
+                                    {
+                                        @item.NguoiMuon.HoTen
+                                    }
+                                    else if (!string.IsNullOrEmpty(item.HoTenNguoiMuon))
+                                    {
+                                        @item.HoTenNguoiMuon
+                                        @if (!string.IsNullOrEmpty(item.MaSoNguoiMuon))
+                                        {
+                                            @($" ({item.MaSoNguoiMuon})")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @:"-"
+                                    }
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Ngày trả dự kiến:</span>
+                                <span class="info-value @(item.NgayTraDuKien < DateTime.Now && !item.NgayTra.HasValue ? "text-danger" : "")">
+                                    @(item.NgayTraDuKien?.ToString("dd/MM/yyyy HH:mm") ?? "-")
+                                </span>
+                            </div>
+                            @if (item.NgayTra.HasValue)
+                            {
+                                <div class="info-row">
+                                    <span class="info-label">Ngày trả thực tế:</span>
+                                    <span class="info-value text-success">
+                                        @item.NgayTra.Value.ToString("dd/MM/yyyy HH:mm")
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex gap-2">
+                            @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet && !item.NgayTra.HasValue)
+                            {
+                                <button class="btn btn-sm btn-success flex-fill" onclick="openLapPhieuTraModal('@item.MaPhieu')">
+                                    <i class="fas fa-undo-alt me-1"></i> Trả tài liệu
+                                </button>
+                            }
+                            <button class="btn btn-sm btn-outline-primary flex-fill" onclick="openXemPhieuModal('@item.MaPhieu')">
+                                <i class="fas fa-eye me-1"></i> Chi tiết
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+</div>
 
-<!-- XÓA modal trả tài liệu tĩnh và JS khởi tạo modal tĩnh ở đây -->
+<!-- Pagination -->
+<div class="history-pagination mt-4">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <div class="pagination-info">
+                Hiển thị <span id="startRecord">1</span> - <span id="endRecord">10</span> 
+                trong tổng số <span id="totalFilteredRecords">@Model.Count()</span> phiếu
+            </div>
+        </div>
+        <div class="col-md-6">
+            <nav aria-label="History pagination">
+                <ul class="pagination justify-content-md-end mb-0" id="historyPagination">
+                    <!-- Pagination will be generated by JavaScript -->
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private string GetStatusClass(QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu status)
+    {
+        return status switch
+        {
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet => "status-pending",
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet => "status-borrowed",
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra => "status-returned",
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi => "status-rejected",
+            _ => "status-default"
+        };
+    }
+
+    private string GetStatusText(QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu status)
+    {
+        return status switch
+        {
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet => "Chờ duyệt",
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet => "Đang mượn",
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra => "Đã trả",
+            QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi => "Từ chối",
+            _ => "Không xác định"
+        };
+    }
+}
 
 @section Scripts {
 <script>
+    $(document).ready(function() {
+        let currentPage = 1;
+        const itemsPerPage = 9;
+        let filteredCards = [];
+
+        // Initialize pagination
+        function initializePagination() {
+            filteredCards = $('.history-card').toArray();
+            updatePagination();
+            showPage(1);
+        }
+
+        // Show specific page
+        function showPage(page) {
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            
+            $('.history-card').hide();
+            filteredCards.slice(startIndex, endIndex).forEach(card => {
+                $(card).show();
+            });
+            
+            updatePaginationInfo(startIndex + 1, Math.min(endIndex, filteredCards.length));
+        }
+
+        // Update pagination controls
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+            const pagination = $('#historyPagination');
+            pagination.empty();
+
+            if (totalPages <= 1) {
+                pagination.hide();
+                return;
+            }
+
+            pagination.show();
+
+            // Previous button
+            const prevBtn = $('<li class="page-item">')
+                .append($('<a class="page-link" href="#" aria-label="Previous">')
+                    .append('<span aria-hidden="true">&laquo;</span>'));
+            
+            if (currentPage === 1) {
+                prevBtn.addClass('disabled');
+            } else {
+                prevBtn.find('a').click(function(e) {
+                    e.preventDefault();
+                    if (currentPage > 1) {
+                        currentPage--;
+                        showPage(currentPage);
+                        updatePagination();
+                    }
+                });
+            }
+            pagination.append(prevBtn);
+
+            // Page numbers
+            const startPage = Math.max(1, currentPage - 2);
+            const endPage = Math.min(totalPages, currentPage + 2);
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageItem = $('<li class="page-item">')
+                    .append($('<a class="page-link" href="#">').text(i));
+                
+                if (i === currentPage) {
+                    pageItem.addClass('active');
+                } else {
+                    pageItem.find('a').click(function(e) {
+                        e.preventDefault();
+                        currentPage = i;
+                        showPage(currentPage);
+                        updatePagination();
+                    });
+                }
+                pagination.append(pageItem);
+            }
+
+            // Next button
+            const nextBtn = $('<li class="page-item">')
+                .append($('<a class="page-link" href="#" aria-label="Next">')
+                    .append('<span aria-hidden="true">&raquo;</span>'));
+            
+            if (currentPage === totalPages) {
+                nextBtn.addClass('disabled');
+            } else {
+                nextBtn.find('a').click(function(e) {
+                    e.preventDefault();
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        showPage(currentPage);
+                        updatePagination();
+                    }
+                });
+            }
+            pagination.append(nextBtn);
+        }
+
+        // Update pagination info
+        function updatePaginationInfo(start, end) {
+            $('#startRecord').text(start);
+            $('#endRecord').text(end);
+            $('#totalFilteredRecords').text(filteredCards.length);
+        }
+
+        // Filter cards
+        function filterCards() {
+            const searchTerm = $('#historySearch').val().toLowerCase();
+            const statusFilter = $('#statusFilter').val();
+            const sortFilter = $('#sortFilter').val();
+
+            filteredCards = $('.history-card').filter(function() {
+                const card = $(this);
+                const matchesSearch = card.data('search').includes(searchTerm);
+                const matchesStatus = !statusFilter || card.data('status') === statusFilter;
+                return matchesSearch && matchesStatus;
+            }).toArray();
+
+            // Sort cards
+            filteredCards.sort(function(a, b) {
+                const cardA = $(a);
+                const cardB = $(b);
+                
+                switch(sortFilter) {
+                    case 'oldest':
+                        return new Date(cardA.data('date')) - new Date(cardB.data('date'));
+                    case 'newest':
+                        return new Date(cardB.data('date')) - new Date(cardA.data('date'));
+                    case 'overdue':
+                        // Sort by overdue status first, then by date
+                        const aOverdue = cardA.find('.text-danger').length > 0;
+                        const bOverdue = cardB.find('.text-danger').length > 0;
+                        if (aOverdue && !bOverdue) return -1;
+                        if (!aOverdue && bOverdue) return 1;
+                        return new Date(cardB.data('date')) - new Date(cardA.data('date'));
+                    default:
+                        return new Date(cardB.data('date')) - new Date(cardA.data('date'));
+                }
+            });
+
+            currentPage = 1;
+            updatePagination();
+            showPage(1);
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            $('#totalRecords').text(filteredCards.length);
+            $('#pendingReturns').text(filteredCards.filter(card => 
+                $(card).data('status') === 'DaDuyet' && 
+                $(card).find('.text-danger').length > 0
+            ).length);
+            $('#completedReturns').text(filteredCards.filter(card => 
+                $(card).data('status') === 'DaTra'
+            ).length);
+        }
+
+        // Event listeners
+        $('#historySearch').on('input', function() {
+            filterCards();
+        });
+
+        $('#clearHistorySearch').on('click', function() {
+            $('#historySearch').val('');
+            filterCards();
+        });
+
+        $('#statusFilter, #sortFilter').on('change', function() {
+            filterCards();
+        });
+
+        // Initialize
+        initializePagination();
+    });
+
+    // Existing modal functions
     window.openTraPhieuModal = function(maPhieu) {
         $('#traPhieuModal').remove();
         $('body').append('<div class="modal fade" id="traPhieuModal" tabindex="-1" aria-labelledby="traPhieuModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
@@ -119,56 +420,34 @@
     $(document).on('hidden.bs.modal', '#traPhieuModal', function () {
         $(this).find('.modal-content').html('');
     });
-}
 </script>
 }
 
-<style>
-  .modal-backdrop.show { z-index: 1050; }
-  .modal { z-index: 1060; }
-  .modal-lg { max-width: 900px; }
-  .modal-content { max-height: 80vh; overflow-y: auto; }
-  
-  .btn-success {
-    background-color: #28a745;
-    border-color: #28a745;
-  }
-  
-  .btn-success:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-  }
-  
-  .alert-info {
-    background-color: #d1ecf1;
-    border-color: #bee5eb;
-    color: #0c5460;
-  }
-</style>
+
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    $(document).on('click', '.btn-xem-phieu', function () {
-      var maPhieu = $(this).data('maphieu');
-      $('#xemPhieuModal').remove(); // Xóa modal cũ
+    document.addEventListener('DOMContentLoaded', function () {
+        $(document).on('click', '.btn-xem-phieu', function () {
+            var maPhieu = $(this).data('maphieu');
+            $('#xemPhieuModal').remove();
 
-      $('body').append(`
-        <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content"></div>
-          </div>
-        </div>
-      `);
+            $('body').append(`
+                <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content"></div>
+                    </div>
+                </div>
+            `);
 
-      $.get('/PhieuMuonTra/XemPhieu?maPhieu=' + maPhieu)
-        .done(function (html) {
-          $('#xemPhieuModal .modal-content').html(html);
-          var modal = new bootstrap.Modal(document.getElementById('xemPhieuModal'));
-          modal.show();
-        })
-        .fail(function (xhr) {
-          alert('Không thể tải nội dung phiếu: ' + xhr.status);
+            $.get('/PhieuMuonTra/XemPhieu?maPhieu=' + maPhieu)
+                .done(function (html) {
+                    $('#xemPhieuModal .modal-content').html(html);
+                    var modal = new bootstrap.Modal(document.getElementById('xemPhieuModal'));
+                    modal.show();
+                })
+                .fail(function (xhr) {
+                    alert('Không thể tải nội dung phiếu: ' + xhr.status);
+                });
         });
     });
-  });
 </script>
