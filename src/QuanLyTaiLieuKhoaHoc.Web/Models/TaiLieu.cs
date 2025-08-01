@@ -84,7 +84,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         public int LuotTai { get; set; } = 0;
 
         [Display(Name = "Trạng thái")]
-        public TrangThaiTaiLieu TrangThai { get; set; } = TrangThaiTaiLieu.ChoDuyet;
+        public TrangThaiTaiLieu TrangThai { get; set; } = TrangThaiTaiLieu.DaDuyet;
 
         // Foreign Keys
         [Required(ErrorMessage = "Chuyên ngành không được để trống")]

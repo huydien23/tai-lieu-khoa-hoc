@@ -65,15 +65,15 @@
                 }
             </select>
         </div>
-        <div class="filter-group">
-            <label class="filter-label">Trạng thái:</label>
-            <select class="filter-select" id="trangThaiFilter">
-                <option value="">Tất cả</option>
-                <option value="DaDuyet">Đã duyệt</option>
-                <option value="ChoDuyet">Chờ duyệt</option>
-                <option value="TuChoi">Từ chối</option>
-            </select>
-        </div>
+                       <div class="filter-group">
+                   <label class="filter-label">Trạng thái:</label>
+                   <select class="filter-select" id="trangThaiFilter">
+                       <option value="">Tất cả</option>
+                       <option value="DaDuyet">Đã duyệt</option>
+                       <option value="TuChoi">Từ chối</option>
+                       <option value="An">Ẩn</option>
+                   </select>
+               </div>
     </div>
     <div class="stats-container">
         <div class="stat-item">
@@ -85,24 +85,24 @@
                 <div class="stat-label">Tổng tài liệu</div>
             </div>
         </div>
-        <div class="stat-item">
-            <div class="stat-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number">@Model.Count(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)</div>
-                <div class="stat-label">Đã duyệt</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-icon">
-                <i class="fas fa-clock"></i>
-            </div>
-            <div class="stat-content">
-                <div class="stat-number">@Model.Count(t => t.TrangThai == TrangThaiTaiLieu.ChoDuyet)</div>
-                <div class="stat-label">Chờ duyệt</div>
-            </div>
-        </div>
+                       <div class="stat-item">
+                   <div class="stat-icon">
+                       <i class="fas fa-check-circle"></i>
+                   </div>
+                   <div class="stat-content">
+                       <div class="stat-number">@Model.Count(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)</div>
+                       <div class="stat-label">Đã duyệt</div>
+                   </div>
+               </div>
+               <div class="stat-item">
+                   <div class="stat-icon">
+                       <i class="fas fa-eye-slash"></i>
+                   </div>
+                   <div class="stat-content">
+                       <div class="stat-number">@Model.Count(t => t.TrangThai == TrangThaiTaiLieu.An)</div>
+                       <div class="stat-label">Đã ẩn</div>
+                   </div>
+               </div>
         <div class="stat-item">
             <div class="stat-icon">
                 <i class="fas fa-book-reader"></i>
@@ -145,27 +145,27 @@
                             @item.LoaiTaiLieu?.TenLoaiTaiLieu
                         </div>
                         <div class="document-status">
-                            @switch (item.TrangThai)
-                            {
-                                case TrangThaiTaiLieu.DaDuyet:
-                                    <span class="status-badge approved">
-                                        <i class="fas fa-check-circle"></i>
-                                        Đã duyệt
-                                    </span>
-                                    break;
-                                case TrangThaiTaiLieu.ChoDuyet:
-                                    <span class="status-badge pending">
-                                        <i class="fas fa-clock"></i>
-                                        Chờ duyệt
-                                    </span>
-                                    break;
-                                case TrangThaiTaiLieu.TuChoi:
-                                    <span class="status-badge rejected">
-                                        <i class="fas fa-times-circle"></i>
-                                        Từ chối
-                                    </span>
-                                    break;
-                            }
+                                                               @switch (item.TrangThai)
+                                   {
+                                       case TrangThaiTaiLieu.DaDuyet:
+                                           <span class="status-badge approved">
+                                               <i class="fas fa-check-circle"></i>
+                                               Đã duyệt
+                                           </span>
+                                           break;
+                                       case TrangThaiTaiLieu.TuChoi:
+                                           <span class="status-badge rejected">
+                                               <i class="fas fa-times-circle"></i>
+                                               Từ chối
+                                           </span>
+                                           break;
+                                       case TrangThaiTaiLieu.An:
+                                           <span class="status-badge hidden">
+                                               <i class="fas fa-eye-slash"></i>
+                                               Đã ẩn
+                                           </span>
+                                           break;
+                                   }
                         </div>
                     </div>
                     
@@ -231,22 +231,20 @@
                                 <i class="fas fa-file-signature"></i>
                             </button>
                             
-                            @if (item.TrangThai == TrangThaiTaiLieu.ChoDuyet)
-                            {
-                                <form asp-action="ApproveDocument" method="post" style="display: inline;">
-                                    <input type="hidden" name="id" value="@item.MaTaiLieu" />
-                                    <button type="submit" class="btn-action btn-approve" title="Duyệt tài liệu"
-                                        onclick="return confirm('Bạn có chắc chắn muốn duyệt tài liệu này?')">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                </form>
-                                
-                                <button type="button" class="btn-action btn-reject" title="Từ chối tài liệu"
-                                    data-bs-toggle="modal" data-bs-target="#rejectModal"
-                                    data-document-id="@item.MaTaiLieu" data-document-name="@item.TenTaiLieu">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            }
+                                                               @if (item.TrangThai == TrangThaiTaiLieu.DaDuyet)
+                                   {
+                                       <button type="button" class="btn-action btn-hide" title="Ẩn tài liệu"
+                                           onclick="hideDocument(@item.MaTaiLieu, '@item.TenTaiLieu')">
+                                           <i class="fas fa-eye-slash"></i>
+                                       </button>
+                                   }
+                                   else if (item.TrangThai == TrangThaiTaiLieu.An)
+                                   {
+                                       <button type="button" class="btn-action btn-show" title="Hiện tài liệu"
+                                           onclick="showDocument(@item.MaTaiLieu, '@item.TenTaiLieu')">
+                                           <i class="fas fa-eye"></i>
+                                       </button>
+                                   }
                             
                             <button type="button" class="btn-action btn-delete" title="Xóa tài liệu"
                                 onclick="deleteDocument(@item.MaTaiLieu, '@item.TenTaiLieu')">
@@ -692,6 +690,54 @@
             }
         }
 
+        // Hide document function
+        function hideDocument(id, name) {
+            if (confirm(`Bạn có chắc chắn muốn ẩn tài liệu "${name}"?`)) {
+                $.ajax({
+                    url: '@Url.Action("HideDocument")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Có lỗi xảy ra khi ẩn tài liệu: ' + error);
+                    }
+                });
+            }
+        }
+
+        // Show document function
+        function showDocument(id, name) {
+            if (confirm(`Bạn có chắc chắn muốn hiện tài liệu "${name}"?`)) {
+                $.ajax({
+                    url: '@Url.Action("ShowDocument")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        toastr.error('Có lỗi xảy ra khi hiện tài liệu: ' + error);
+                    }
+                });
+            }
+        }
+
         // Cập nhật lại dữ liệu số lượng mượn
         function fixSoLuongMuonData() {
             if (confirm('Bạn có chắc chắn muốn cập nhật lại dữ liệu số lượng mượn? Hành động này sẽ đồng bộ lại tất cả phiếu mượn cũ và tính lại số lượng tài liệu.')) {
@@ -863,8 +909,8 @@
             const approvedDocuments = filteredDocuments.filter(card => 
                 card.dataset.trangThai === 'DaDuyet'
             ).length;
-            const pendingDocuments = filteredDocuments.filter(card => 
-                card.dataset.trangThai === 'ChoDuyet'
+            const hiddenDocuments = filteredDocuments.filter(card => 
+                card.dataset.trangThai === 'An'
             ).length;
 
             // Update stats display
@@ -872,7 +918,7 @@
             if (statItems.length >= 4) {
                 statItems[0].querySelector('.stat-number').textContent = totalDocuments;
                 statItems[1].querySelector('.stat-number').textContent = approvedDocuments;
-                statItems[2].querySelector('.stat-number').textContent = pendingDocuments;
+                statItems[2].querySelector('.stat-number').textContent = hiddenDocuments;
             }
         }
 

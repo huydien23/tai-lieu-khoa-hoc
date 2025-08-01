@@ -1482,6 +1482,11 @@
     color: white;
 }
 
+.status-badge.hidden {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+    color: white;
+}
+
 .document-card .card-body {
     padding: 1.5rem;
 }
@@ -1631,6 +1636,14 @@
 
 .btn-delete {
     background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.btn-hide {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+.btn-show {
+    background: linear-gradient(135deg, #10b981, #059669);
 }
 
 /* Pagination */

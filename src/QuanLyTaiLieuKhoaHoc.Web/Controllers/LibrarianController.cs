@@ -176,40 +176,38 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return View(documents);
         }
 
+
+
         [HttpPost]
-        public async Task<IActionResult> ApproveDocument(int id)
+        public async Task<IActionResult> HideDocument(int id)
+        {
+            var document = await _context.TaiLieu.Where(t => t.MaTaiLieu == id).FirstOrDefaultAsync();
+            if (document != null)
+            {
+                document.TrangThai = TrangThaiTaiLieu.An;
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Đã ẩn tài liệu thành công!" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ShowDocument(int id)
         {
             var document = await _context.TaiLieu.Where(t => t.MaTaiLieu == id).FirstOrDefaultAsync();
             if (document != null)
             {
                 document.TrangThai = TrangThaiTaiLieu.DaDuyet;
                 await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Đã duyệt tài liệu thành công!";
+                return Json(new { success = true, message = "Đã hiện tài liệu thành công!" });
             }
             else
             {
-                TempData["ErrorMessage"] = "Không tìm thấy tài liệu!";
+                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
             }
-
-            return RedirectToAction(nameof(ManageDocuments));
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> RejectDocument(int id, string? lyDo)
-        {
-            var document = await _context.TaiLieu.Where(t => t.MaTaiLieu == id).FirstOrDefaultAsync();
-            if (document != null)
-            {
-                document.TrangThai = TrangThaiTaiLieu.TuChoi;
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Đã từ chối tài liệu!";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Không tìm thấy tài liệu!";
-            }
-
-            return RedirectToAction(nameof(ManageDocuments));
         }
 
         [HttpPost]
@@ -724,7 +722,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 model.LoaiFile = Path.GetExtension(taiLieuFile.FileName).TrimStart('.');
                 model.KichThuocFile = taiLieuFile.Length / 1024; // KB
                 model.NgayTaiLen = DateTime.Now;
-                model.TrangThai = TrangThaiTaiLieu.DaDuyet; // Thủ thư tự động duyệt
+                model.TrangThai = TrangThaiTaiLieu.DaDuyet; // Thủ thư tự động duyệt khi tạo
 
                 _context.TaiLieu.Add(model);
                 await _context.SaveChangesAsync();
