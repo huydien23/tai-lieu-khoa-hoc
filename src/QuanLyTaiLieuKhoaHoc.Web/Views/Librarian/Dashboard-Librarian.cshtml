@@ -19,101 +19,36 @@
     }
 }
 
-<!-- Dashboard Header -->
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="h2 fw-bold mb-2">
-                <i class="fas fa-book-reader me-3 text-primary"></i>
-                Dashboard Thủ thư
-            </h1>
-            <p class="text-muted mb-0">Quản lý và giám sát tài liệu khoa học</p>
-        </div>
-        <div class="page-actions">
-            <button type="button" class="btn btn-success me-2" data-bs-toggle="modal"
-                data-bs-target="#createDocumentModal">
-                <i class="fas fa-plus me-2"></i>Thêm tài liệu
-            </button>
-            <a href="@Url.Action("ManageDocuments")" class="btn btn-primary me-2">
-                <i class="fas fa-tasks me-2"></i>Quản lý tài liệu
-            </a>
-            <a href="@Url.Action("ManageBorrowReturn")" class="btn btn-warning me-2">
-                <i class="fas fa-exchange-alt me-2"></i>Quản lý mượn/trả
-            </a>
-            <a href="@Url.Action("ManageUsers")" class="btn btn-outline-primary" style="color: white;">
-                <i class="fas fa-users me-2"></i>Quản lý người dùng
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- Key Statistics -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-primary">
-                <i class="fas fa-book-open"></i>
+<!-- Modern Dashboard Header -->
+<div class="modern-header">
+    <div class="header-background">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <div class="header-text">
+                    <h1 class="header-title">Dashboard Thủ thư</h1>
+                    <p class="header-subtitle">Quản lý & giám sát tài liệu khoa học</p>
+                </div>
             </div>
-            <div class="stats-number">@Model.TongSoTaiLieu</div>
-            <div class="stats-label">Tổng tài liệu</div>
-            <small class="text-success">
-                <i class="fas fa-arrow-up me-1"></i>@Model.TaiLieuMoiTrongThang mới tháng này
-            </small>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-success">
-                <i class="fas fa-users"></i>
+            <div class="header-right">
+                <div class="header-info">
+                    <div class="current-time">
+                        <i class="fas fa-clock me-2"></i>
+                        <span id="currentDateTime">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">Thủ thư</span>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("Logout", "Account")" class="logout-btn" title="Đăng xuất">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
             </div>
-            <div class="stats-number">@Model.TongSoNguoiDung</div>
-            <div class="stats-label">Người dùng</div>
-            <small class="text-info">
-                <i class="fas fa-info-circle me-1"></i>Đã đăng ký
-            </small>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-warning">
-                <i class="fas fa-book-reader"></i>
-            </div>
-            <div class="stats-number">@Model.TongSoLuotMuon</div>
-            <div class="stats-label">Tổng lượt mượn</div>
-            <small class="text-success">
-                <i class="fas fa-chart-line me-1"></i>Tổng cộng
-            </small>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-info">
-                <i class="fas fa-calendar-plus"></i>
-            </div>
-            <div class="stats-number">@Model.TaiLieuMoiTrongThang</div>
-            <div class="stats-label">Mới tháng này</div>
-            <small class="text-primary">
-                <i class="fas fa-calendar me-1"></i>@DateTime.Now.ToString("MM/yyyy")
-            </small>
-        </div>
-    </div>
-</div>
-
-<!-- Thống kê tài liệu quá hạn -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card" id="quaHanCard" style="display: none;">
-            <div class="stats-icon text-danger">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="stats-number" id="soTaiLieuQuaHan">0</div>
-            <div class="stats-label">Tài liệu quá hạn</div>
-            <small class="text-danger">
-                <i class="fas fa-clock me-1"></i>Cần xử lý
-            </small>
         </div>
     </div>
 </div>
@@ -716,5 +651,20 @@
             else if (diffHours < 24) return diffHours + ' giờ trước';
             else return diffDays + ' ngày trước';
         }
+
+        // Update current time every second
+        function updateCurrentTime() {
+            var now = new Date();
+            var timeString = now.getDate().toString().padStart(2, '0') + '/' + 
+                           (now.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                           now.getFullYear() + ' ' + 
+                           now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('currentDateTime').textContent = timeString;
+        }
+
+        // Initialize time update
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000); // Update every minute
     </script>
 }
