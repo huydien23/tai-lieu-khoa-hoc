@@ -5,201 +5,279 @@
     ViewData["Title"] = "Quản lý Tài liệu";
 }
 
-<div class="content-header">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0" style="color: var(--primary-color);" 
-            <i class="fas fa-file-alt me-2 text-primary"></i>
-            Quản lý Tài liệu
-        </h2>
-        <div class="d-flex gap-2">
-            <button type="button" class="btn btn-warning" onclick="fixSoLuongMuonData()">
-                <i class="fas fa-sync-alt me-1"></i>Cập nhật lại dữ liệu
-            </button>
-            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDocumentModal">
-                <i class="fas fa-plus me-1"></i>Thêm tài liệu
-            </button>
-            <div class="input-group" style="width: 300px;">
-                <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm tài liệu...">
-                <button class="btn btn-outline-secondary" type="button">
-                    <i class="fas fa-search"></i>
-                </button>
+<!-- Modern Header -->
+<div class="modern-document-header">
+    <div class="header-background">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="header-text">
+                    <h1 class="header-title">Quản lý Tài liệu</h1>
+                    <p class="header-subtitle">Quản lý và giám sát tài liệu khoa học</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="search-container">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Tìm kiếm tài liệu...">
+                        <button class="search-btn" type="button">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn-refresh" onclick="fixSoLuongMuonData()" title="Cập nhật dữ liệu">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button type="button" class="btn-add" data-bs-toggle="modal" data-bs-target="#createDocumentModal" title="Thêm tài liệu">
+                        <i class="fas fa-plus"></i>
+                        <span>Thêm tài liệu</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header bg-light">
-        <h5 class="mb-0" style=" color: #f9f9f9;">
-            <i class="fas fa-list me-2"></i>
-            Danh sách tài liệu (@Model.Count() tài liệu)
-        </h5>
+<!-- Filters and Stats -->
+<div class="filters-section">
+    <div class="filters-container">
+        <div class="filter-group">
+            <label class="filter-label">Chuyên ngành:</label>
+            <select class="filter-select" id="chuyenNganhFilter">
+                <option value="">Tất cả</option>
+                @foreach (var chuyenNganh in Model.Select(t => t.ChuyenNganh).Distinct().Where(c => c != null))
+                {
+                    <option value="@chuyenNganh.TenChuyenNganh">@chuyenNganh.TenChuyenNganh</option>
+                }
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Loại tài liệu:</label>
+            <select class="filter-select" id="loaiTaiLieuFilter">
+                <option value="">Tất cả</option>
+                @foreach (var loaiTaiLieu in Model.Select(t => t.LoaiTaiLieu).Distinct().Where(l => l != null))
+                {
+                    <option value="@loaiTaiLieu.TenLoaiTaiLieu">@loaiTaiLieu.TenLoaiTaiLieu</option>
+                }
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Trạng thái:</label>
+            <select class="filter-select" id="trangThaiFilter">
+                <option value="">Tất cả</option>
+                <option value="DaDuyet">Đã duyệt</option>
+                <option value="ChoDuyet">Chờ duyệt</option>
+                <option value="TuChoi">Từ chối</option>
+            </select>
+        </div>
     </div>
-    <div class="card-body p-0">
-        @if (!Model.Any())
-        {
-            <div class="text-center py-5">
-                <i class="fas fa-file-alt fa-3x text-muted mb-3"></i>
-                <p class="text-muted">Chưa có tài liệu nào trong hệ thống.</p>
+    <div class="stats-container">
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-file-alt"></i>
             </div>
-        }
-        else
-        {
-            <div class="table-responsive">
-                <table class="table table-hover mb-0" id="documentsTable">
-                    <thead class="table-light">
-                        <tr>
-                            <th scope="col">
-                                <i class="fas fa-file me-1"></i>
-                                Tên tài liệu
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-user-edit me-1"></i>
-                                Tác giả
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-layer-group me-1"></i>
-                                Chuyên ngành
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-tag me-1"></i>
-                                Loại tài liệu
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-calendar me-1"></i>
-                                Ngày tải lên
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-book-reader me-1"></i>
-                                Lượt mượn
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-copy me-1"></i>
-                                Số lượng
-                            </th>
-                            <th scope="col">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Trạng thái
-                            </th>
-                            <th scope="col" class="text-center">
-                                <i class="fas fa-cogs me-1"></i>
-                                Thao tác
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <div class="fw-semibold text-primary">@item.TenTaiLieu</div>
-                                    <small class="text-muted">@(item.MoTa.Length > 50 ? item.MoTa.Substring(0, 50) + "..." :
-                                                                        item.MoTa)</small>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-user-edit text-secondary me-2"></i>
-                                        <span>@item.TacGia</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary">@item.ChuyenNganh?.TenChuyenNganh</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-info text-dark">@item.LoaiTaiLieu?.TenLoaiTaiLieu</span>
-                                </td>
-                                <td>
-                                    <small class="text-muted">
-                                        @item.NgayTaiLen.ToString("dd/MM/yyyy HH:mm")
-                                    </small>
-                                </td>
-                                <td>
-                                    <span class="badge bg-success">@item.SoLuongDaMuon</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex flex-column gap-1">
-                                        <span class="badge bg-primary">Tổng: @item.SoLuong</span>
-                                        <span class="badge bg-warning">Đã mượn: @item.SoLuongDaMuon</span>
-                                        @if (item.SoLuongConLai > 0)
-                                        {
-                                            <span class="badge bg-success">Còn lại: @item.SoLuongConLai</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge bg-danger">Hết</span>
-                                        }
-                                    </div>
-                                </td>
-                                <td>
-                                    @switch (item.TrangThai)
+            <div class="stat-content">
+                <div class="stat-number">@Model.Count()</div>
+                <div class="stat-label">Tổng tài liệu</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">@Model.Count(t => t.TrangThai == TrangThaiTaiLieu.DaDuyet)</div>
+                <div class="stat-label">Đã duyệt</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">@Model.Count(t => t.TrangThai == TrangThaiTaiLieu.ChoDuyet)</div>
+                <div class="stat-label">Chờ duyệt</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">
+                <i class="fas fa-book-reader"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-number">@Model.Sum(t => t.SoLuongDaMuon)</div>
+                <div class="stat-label">Lượt mượn</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Documents Grid -->
+<div class="documents-container">
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <div class="empty-icon">
+                <i class="fas fa-file-alt"></i>
+            </div>
+            <h3>Chưa có tài liệu nào</h3>
+            <p>Hãy thêm tài liệu đầu tiên để bắt đầu quản lý</p>
+            <button type="button" class="btn-add-empty" data-bs-toggle="modal" data-bs-target="#createDocumentModal">
+                <i class="fas fa-plus"></i>
+                Thêm tài liệu đầu tiên
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="documents-grid" id="documentsGrid">
+            @foreach (var item in Model)
+            {
+                <div class="document-card" data-chuyen-nganh="@item.ChuyenNganh?.TenChuyenNganh" 
+                     data-loai-tai-lieu="@item.LoaiTaiLieu?.TenLoaiTaiLieu" 
+                     data-trang-thai="@item.TrangThai.ToString()">
+                    <div class="card-header">
+                        <div class="document-type-badge">
+                            <i class="fas fa-file-alt"></i>
+                            @item.LoaiTaiLieu?.TenLoaiTaiLieu
+                        </div>
+                        <div class="document-status">
+                            @switch (item.TrangThai)
+                            {
+                                case TrangThaiTaiLieu.DaDuyet:
+                                    <span class="status-badge approved">
+                                        <i class="fas fa-check-circle"></i>
+                                        Đã duyệt
+                                    </span>
+                                    break;
+                                case TrangThaiTaiLieu.ChoDuyet:
+                                    <span class="status-badge pending">
+                                        <i class="fas fa-clock"></i>
+                                        Chờ duyệt
+                                    </span>
+                                    break;
+                                case TrangThaiTaiLieu.TuChoi:
+                                    <span class="status-badge rejected">
+                                        <i class="fas fa-times-circle"></i>
+                                        Từ chối
+                                    </span>
+                                    break;
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h5 class="document-title">@item.TenTaiLieu</h5>
+                        <p class="document-description">
+                            @(item.MoTa.Length > 100 ? item.MoTa.Substring(0, 100) + "..." : item.MoTa)
+                        </p>
+                        
+                        <div class="document-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-user-edit"></i>
+                                <span>@item.TacGia</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-layer-group"></i>
+                                <span>@item.ChuyenNganh?.TenChuyenNganh</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>@item.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        </div>
+                        
+                        <div class="document-stats">
+                            <div class="stat-row">
+                                <div class="stat-item">
+                                    <span class="stat-label">Tổng:</span>
+                                    <span class="stat-value">@item.SoLuong</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Đã mượn:</span>
+                                    <span class="stat-value">@item.SoLuongDaMuon</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Còn lại:</span>
+                                    @if (item.SoLuongConLai > 0)
                                     {
-                                        case TrangThaiTaiLieu.DaDuyet:
-                                            <span class="badge bg-success">
-                                                <i class="fas fa-check-circle me-1"></i>
-                                                Đã duyệt
-                                            </span>
-                                            break;
-                                        case TrangThaiTaiLieu.ChoDuyet:
-                                            <span class="badge bg-warning text-dark">
-                                                <i class="fas fa-clock me-1"></i>
-                                                Chờ duyệt
-                                            </span>
-                                            break;
-                                        case TrangThaiTaiLieu.TuChoi:
-                                            <span class="badge bg-danger">
-                                                <i class="fas fa-times-circle me-1"></i>
-                                                Từ chối
-                                            </span>
-                                            break;
+                                        <span class="stat-value available">@item.SoLuongConLai</span>
                                     }
-                                </td>
-                                <td>
-                                    <div class="d-flex justify-content-center gap-1">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" title="Xem chi tiết"
-                                            onclick="viewDocumentDetails(@item.MaTaiLieu)">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
-                                        <!-- Nút lập phiếu mượn: chỉ mở modal chung -->
-                                        <button type="button" class="btn btn-outline-warning btn-sm" title="Lập phiếu mượn"
-                                            onclick="openCreatePhieuMuonModal(@item.MaTaiLieu, '@item.TenTaiLieu')">
-                                            <i class="fas fa-file-signature"></i> Lập phiếu mượn
-                                        </button>
-
-                                        @if (item.TrangThai == TrangThaiTaiLieu.ChoDuyet)
-                                        {
-                                            <form asp-action="ApproveDocument" method="post" style="display: inline;">
-                                                <input type="hidden" name="id" value="@item.MaTaiLieu" />
-                                                <button type="submit" class="btn btn-outline-success btn-sm" title="Duyệt tài liệu"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn duyệt tài liệu này?')">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                            </form>
-
-                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Từ chối tài liệu"
-                                                data-bs-toggle="modal" data-bs-target="#rejectModal"
-                                                data-document-id="@item.MaTaiLieu" data-document-name="@item.TenTaiLieu">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        }
-
-                                        @if (!string.IsNullOrEmpty(item.DuongDanFile))
-                                        {
-                                            <!-- Nút tải tài liệu đã bị loại bỏ theo yêu cầu nghiệp vụ mới -->
-                                        }
-
-                                        <button type="button" class="btn btn-outline-danger btn-sm" title="Xóa tài liệu"
-                                            onclick="deleteDocument(@item.MaTaiLieu, '@item.TenTaiLieu')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                                    else
+                                    {
+                                        <span class="stat-value unavailable">Hết</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="borrow-count">
+                                <i class="fas fa-book-reader"></i>
+                                <span>@item.SoLuongDaMuon lượt mượn</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <div class="action-buttons">
+                            <button type="button" class="btn-action btn-view" title="Xem chi tiết"
+                                onclick="viewDocumentDetails(@item.MaTaiLieu)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            
+                            <button type="button" class="btn-action btn-borrow" title="Lập phiếu mượn"
+                                onclick="openCreatePhieuMuonModal(@item.MaTaiLieu, '@item.TenTaiLieu')">
+                                <i class="fas fa-file-signature"></i>
+                            </button>
+                            
+                            @if (item.TrangThai == TrangThaiTaiLieu.ChoDuyet)
+                            {
+                                <form asp-action="ApproveDocument" method="post" style="display: inline;">
+                                    <input type="hidden" name="id" value="@item.MaTaiLieu" />
+                                    <button type="submit" class="btn-action btn-approve" title="Duyệt tài liệu"
+                                        onclick="return confirm('Bạn có chắc chắn muốn duyệt tài liệu này?')">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                </form>
+                                
+                                <button type="button" class="btn-action btn-reject" title="Từ chối tài liệu"
+                                    data-bs-toggle="modal" data-bs-target="#rejectModal"
+                                    data-document-id="@item.MaTaiLieu" data-document-name="@item.TenTaiLieu">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            }
+                            
+                            <button type="button" class="btn-action btn-delete" title="Xóa tài liệu"
+                                onclick="deleteDocument(@item.MaTaiLieu, '@item.TenTaiLieu')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination-container">
+            <div class="pagination-info">
+                <span>Hiển thị <span id="currentPageInfo">1-10</span> của <span id="totalItems">@Model.Count()</span> tài liệu</span>
             </div>
-        }
-    </div>
+            <div class="pagination-controls">
+                <button class="btn-pagination" id="prevPage" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                    Trước
+                </button>
+                <div class="page-numbers" id="pageNumbers">
+                    <!-- Page numbers will be generated by JavaScript -->
+                </div>
+                <button class="btn-pagination" id="nextPage">
+                    Sau
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    }
 </div>
 
 <!-- Modal lập phiếu mượn (chỉ render 1 lần ngoài vòng lặp) -->
@@ -621,23 +699,210 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
                     }
                 })
-                .then(res => res.json())
+                .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         toastr.success(data.message);
-                        setTimeout(() => location.reload(), 2000);
+                        setTimeout(() => location.reload(), 1500);
                     } else {
                         toastr.error(data.message);
                     }
                 })
                 .catch(error => {
-                    toastr.error('Có lỗi xảy ra: ' + error);
+                    console.error('Error:', error);
+                    toastr.error('Có lỗi xảy ra khi cập nhật dữ liệu');
                 });
             }
         }
+
+        // Pagination and Filtering System
+        let currentPage = 1;
+        const itemsPerPage = 12;
+        let filteredDocuments = [];
+
+        // Initialize pagination
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePagination();
+            setupFilters();
+            setupSearch();
+        });
+
+        function initializePagination() {
+            const documents = Array.from(document.querySelectorAll('.document-card'));
+            filteredDocuments = documents;
+            updatePagination();
+        }
+
+        function setupFilters() {
+            const chuyenNganhFilter = document.getElementById('chuyenNganhFilter');
+            const loaiTaiLieuFilter = document.getElementById('loaiTaiLieuFilter');
+            const trangThaiFilter = document.getElementById('trangThaiFilter');
+
+            [chuyenNganhFilter, loaiTaiLieuFilter, trangThaiFilter].forEach(filter => {
+                filter.addEventListener('change', applyFilters);
+            });
+        }
+
+        function setupSearch() {
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    applyFilters();
+                }, 300);
+            });
+        }
+
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const chuyenNganh = document.getElementById('chuyenNganhFilter').value;
+            const loaiTaiLieu = document.getElementById('loaiTaiLieuFilter').value;
+            const trangThai = document.getElementById('trangThaiFilter').value;
+
+            const allDocuments = Array.from(document.querySelectorAll('.document-card'));
+            
+            filteredDocuments = allDocuments.filter(card => {
+                const title = card.querySelector('.document-title').textContent.toLowerCase();
+                const description = card.querySelector('.document-description').textContent.toLowerCase();
+                const author = card.querySelector('.meta-item span').textContent.toLowerCase();
+                
+                const cardChuyenNganh = card.dataset.chuyenNganh || '';
+                const cardLoaiTaiLieu = card.dataset.loaiTaiLieu || '';
+                const cardTrangThai = card.dataset.trangThai || '';
+
+                // Search filter
+                const matchesSearch = !searchTerm || 
+                    title.includes(searchTerm) || 
+                    description.includes(searchTerm) || 
+                    author.includes(searchTerm);
+
+                // Category filters
+                const matchesChuyenNganh = !chuyenNganh || cardChuyenNganh === chuyenNganh;
+                const matchesLoaiTaiLieu = !loaiTaiLieu || cardLoaiTaiLieu === loaiTaiLieu;
+                const matchesTrangThai = !trangThai || cardTrangThai === trangThai;
+
+                return matchesSearch && matchesChuyenNganh && matchesLoaiTaiLieu && matchesTrangThai;
+            });
+
+            currentPage = 1;
+            updatePagination();
+            updateStats();
+        }
+
+        function updatePagination() {
+            const totalItems = filteredDocuments.length;
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+            
+            // Update pagination info
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+            
+            document.getElementById('currentPageInfo').textContent = `${startItem}-${endItem}`;
+            document.getElementById('totalItems').textContent = totalItems;
+
+            // Update pagination controls
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            const pageNumbers = document.getElementById('pageNumbers');
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            // Generate page numbers
+            pageNumbers.innerHTML = '';
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-number ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.onclick = () => goToPage(i);
+                pageNumbers.appendChild(pageBtn);
+            }
+
+            // Show/hide documents
+            showCurrentPage();
+        }
+
+        function showCurrentPage() {
+            const allDocuments = document.querySelectorAll('.document-card');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+
+            allDocuments.forEach((card, index) => {
+                if (filteredDocuments.includes(card)) {
+                    const filteredIndex = filteredDocuments.indexOf(card);
+                    if (filteredIndex >= startIndex && filteredIndex < endIndex) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            updatePagination();
+        }
+
+        function updateStats() {
+            const totalDocuments = filteredDocuments.length;
+            const approvedDocuments = filteredDocuments.filter(card => 
+                card.dataset.trangThai === 'DaDuyet'
+            ).length;
+            const pendingDocuments = filteredDocuments.filter(card => 
+                card.dataset.trangThai === 'ChoDuyet'
+            ).length;
+
+            // Update stats display
+            const statItems = document.querySelectorAll('.stats-container .stat-item');
+            if (statItems.length >= 4) {
+                statItems[0].querySelector('.stat-number').textContent = totalDocuments;
+                statItems[1].querySelector('.stat-number').textContent = approvedDocuments;
+                statItems[2].querySelector('.stat-number').textContent = pendingDocuments;
+            }
+        }
+
+        // Pagination button event listeners
+        document.getElementById('prevPage').addEventListener('click', function() {
+            if (currentPage > 1) {
+                goToPage(currentPage - 1);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', function() {
+            const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                goToPage(currentPage + 1);
+            }
+        });
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('chuyenNganhFilter').value = '';
+            document.getElementById('loaiTaiLieuFilter').value = '';
+            document.getElementById('trangThaiFilter').value = '';
+            applyFilters();
+        }
+
+        // Add clear filters button functionality
+        document.querySelector('.search-btn').addEventListener('click', function() {
+            clearFilters();
+        });
 
         // Make deleteDocument function global
         window.deleteDocument = deleteDocument;
