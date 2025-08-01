@@ -53,606 +53,442 @@
     </div>
 </div>
 
-<!-- Content Row -->
-<div class="row">
-    <!-- System Activities -->
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold" style="color: var(--primary-dark);">
-                        <i class="fas fa-bell text-primary me-2"></i>
-                        Hoạt động hệ thống
-                    </h5>
-                    <a href="#" class="btn btn-outline-primary btn-sm">
-                        Xem tất cả
-                    </a>
+<!-- Dashboard Grid Layout 2x2 -->
+<div class="dashboard-grid">
+    <!-- Top Left: Hoạt động hôm nay -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h5 class="section-title">
+                <i class="fas fa-chart-line me-2"></i>
+                Hoạt động hôm nay
+            </h5>
+        </div>
+        <div class="activity-cards">
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">1</div>
+                    <div class="activity-label">ĐÃ MƯỢN</div>
                 </div>
             </div>
-            <div class="card-body p-0">
-                                 <div class="activity-list" id="activityList">
-                     @if (Model.HoạtĐộngHệThống?.Any() == true)
-                     {
-                         @foreach (var activity in Model.HoạtĐộngHệThống)
-                         {
-                             var priorityClass = activity.MứcĐộƯuTiên switch
-                             {
-                                 ActivityPriority.Cao => "high-priority",
-                                 ActivityPriority.TrungBình => "medium-priority",
-                                 _ => "low-priority"
-                             };
-
-                             var iconClass = activity.LoạiHoạtĐộng switch
-                             {
-                                 ActivityType.NgườiDùngMớiĐăngKý => "fas fa-user-plus text-success",
-                                 ActivityType.YêuCầuMượnTàiLiệu => "fas fa-book text-warning",
-                                 ActivityType.TàiLiệuĐượcTrả => "fas fa-undo text-info",
-                                 ActivityType.CảnhBáoQuáHạn => "fas fa-clock text-warning",
-                                 ActivityType.TàiLiệuQuáHạn => "fas fa-exclamation-triangle text-danger",
-                                 ActivityType.TàiLiệuMớiĐượcThêm => "fas fa-file-alt text-primary",
-                                 ActivityType.ThốngKêHoạtĐộng => "fas fa-chart-bar text-info",
-                                 _ => "fas fa-bell text-primary"
-                             };
-
-                             var bgClass = activity.LoạiHoạtĐộng switch
-                             {
-                                 ActivityType.NgườiDùngMớiĐăngKý => "bg-success-soft",
-                                 ActivityType.YêuCầuMượnTàiLiệu => "bg-warning-soft",
-                                 ActivityType.TàiLiệuĐượcTrả => "bg-info-soft",
-                                 ActivityType.CảnhBáoQuáHạn => "bg-warning-soft",
-                                 ActivityType.TàiLiệuQuáHạn => "bg-danger-soft",
-                                 ActivityType.TàiLiệuMớiĐượcThêm => "bg-primary-soft",
-                                 ActivityType.ThốngKêHoạtĐộng => "bg-info-soft",
-                                 _ => "bg-primary-soft"
-                             };
-
-                             var timeAgo = GetTimeAgo(activity.ThờiGian);
-
-                             <div class="activity-item @priorityClass" data-activity-id="@activity.Id" data-activity-type="@activity.LoạiHoạtĐộng" data-phieu-id="@activity.DữLiệuBổSung">
-                                 <div class="activity-icon @bgClass">
-                                     <i class="@iconClass"></i>
-                                 </div>
-                                                                   <div class="activity-content">
-                                      <div class="activity-title">@activity.TiêuĐề</div>
-                                      <div class="activity-description">@activity.MôTả</div>
-                                      <div class="activity-time">@timeAgo</div>
-                                  </div>
-                              </div>
-                         }
-                     }
-                     else
-                     {
-                         <div class="text-center text-muted py-4">
-                             <i class="fas fa-bell fa-2x mb-2"></i>
-                             <br>Không có hoạt động nào
-                         </div>
-                     }
-                 </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">0</div>
+                    <div class="activity-label">ĐÃ TRẢ</div>
+                </div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">0</div>
+                    <div class="activity-label">CHỜ DUYỆT</div>
+                </div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">0</div>
+                    <div class="activity-label">ĐANG ONLINE</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Charts -->
-    <div class="col-lg-4">
-        <!-- Documents by Specialty -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white border-0 py-3">
-                                    <h5 class="mb-0 fw-bold" style="color: var(--primary-dark);">
-                        <i class="fas fa-chart-pie text-primary me-2"></i>
-                        Theo chuyên ngành
-                    </h5>
+    <!-- Top Right: Thống kê nhanh -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h5 class="section-title">
+                <i class="fas fa-list me-2"></i>
+                Thống kê nhanh
+            </h5>
+        </div>
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">@Model.TongSoTaiLieu</div>
+                    <div class="stat-label">Tổng tài liệu</div>
+                </div>
             </div>
-            <div class="card-body">
-                @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">@Model.TongSoNguoiDung</div>
+                    <div class="stat-label">Tổng người dùng</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">@Model.TongSoLuotMuon</div>
+                    <div class="stat-label">Lượt mượn tháng</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Left: Tài liệu cần xử lý -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h5 class="section-title">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Tài liệu cần xử lý
+            </h5>
+        </div>
+        <div class="process-cards">
+            <div class="process-card overdue">
+                <div class="process-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="process-content">
+                    <div class="process-number">1</div>
+                    <div class="process-label">QUÁ HẠN</div>
+                </div>
+            </div>
+            <div class="process-card pending">
+                <div class="process-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="process-content">
+                    <div class="process-number">0</div>
+                    <div class="process-label">CHỜ DUYỆT</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Right: Hoạt động hệ thống -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="section-title">
+                    <i class="fas fa-bell me-2"></i>
+                    Hoạt động hệ thống
+                </h5>
+                <a href="#" class="view-all-link">Xem tất cả</a>
+            </div>
+        </div>
+        <div class="system-activities">
+            @if (Model.HoạtĐộngHệThống?.Any() == true)
+            {
+                @foreach (var activity in Model.HoạtĐộngHệThống.Take(3))
                 {
-                    @foreach (var item in Model.ThongKeTheoChuyenNganh.Take(5))
+                    var iconClass = activity.LoạiHoạtĐộng switch
                     {
-                        <div class="progress-item mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-dark fw-medium">@item.Key</span>
-                                <span class="text-muted">@item.Value</span>
-                            </div>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary"
-                                    style="width: @((double)item.Value / Model.TongSoTaiLieu * 100)%"></div>
-                            </div>
+                        ActivityType.NgườiDùngMớiĐăngKý => "fas fa-user text-primary",
+                        ActivityType.YêuCầuMượnTàiLiệu => "fas fa-book text-warning",
+                        ActivityType.TàiLiệuĐượcTrả => "fas fa-undo text-info",
+                        ActivityType.CảnhBáoQuáHạn => "fas fa-clock text-warning",
+                        ActivityType.TàiLiệuQuáHạn => "fas fa-exclamation-triangle text-danger",
+                        ActivityType.TàiLiệuMớiĐượcThêm => "fas fa-file-alt text-primary",
+                        ActivityType.ThốngKêHoạtĐộng => "fas fa-chart-line text-success",
+                        _ => "fas fa-bell text-primary"
+                    };
+
+                    var timeAgo = GetTimeAgo(activity.ThờiGian);
+
+                    <div class="system-activity">
+                        <div class="activity-icon-small">
+                            <i class="@iconClass"></i>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-chart-pie fa-2x mb-2"></i>
-                        <br>Chưa có dữ liệu
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Documents by Type -->
-        <div class="card shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                                    <h5 class="mb-0 fw-bold" style="color: var(--primary-dark);">
-                        <i class="fas fa-chart-bar text-success me-2"></i>
-                        Theo loại tài liệu
-                    </h5>
-            </div>
-            <div class="card-body">
-                @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
-                {
-                    @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
-                    {
-                        <div class="progress-item mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-dark fw-medium">@item.Key</span>
-                                <span class="text-muted">@item.Value</span>
-                            </div>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-success"
-                                    style="width: @((double)item.Value / Model.TongSoTaiLieu * 100)%"></div>
-                            </div>
+                        <div class="activity-details">
+                            <div class="activity-title">@activity.TiêuĐề</div>
+                            <div class="activity-time">@timeAgo</div>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-chart-bar fa-2x mb-2"></i>
-                        <br>Chưa có dữ liệu
                     </div>
                 }
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<!-- Modal Container -->
-<div id="modalContainer"></div>
-
-<!-- Create Document Modal -->
-<div class="modal fade" id="createDocumentModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Thêm tài liệu mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="createDocumentContent">
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Đang tải form...</p>
+            }
+            else
+            {
+                <div class="no-activities">
+                    <i class="fas fa-bell fa-2x mb-2"></i>
+                    <p>Không có hoạt động nào</p>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Document Details Modal -->
-<div class="modal fade" id="documentDetailsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Chi tiết tài liệu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="documentDetailsContent">
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                </div>
-            </div>
+            }
         </div>
     </div>
 </div>
 
 <style>
-
-
-    .page-header {
-        background: var(--gradient-hero);
-        border-radius: var(--border-radius-xl);
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        color: white;
-        box-shadow: var(--shadow-xl);
-        position: relative;
-        overflow: hidden;
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        height: calc(100vh - 200px);
     }
 
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-        pointer-events: none;
+    .dashboard-section {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
     }
 
-    .page-header h1 {
-        color: white !important;
-        font-weight: 700;
-        text-shadow: var(--shadow-sm);
+    .section-header {
+        margin-bottom: 1rem;
     }
 
-    .page-header .text-muted {
-        color: rgba(255, 255, 255, 0.9) !important;
+    .section-title {
+        color: #1e40af;
+        font-weight: 600;
+        margin: 0;
         font-size: 1.1rem;
     }
 
-    /* Stats cards với màu từ bảng màu hệ thống */
-    .stats-card {
-        background: var(--gradient-card);
-        border-radius: var(--border-radius-xl);
-        padding: 2rem;
-        box-shadow: var(--shadow-lg);
-        border: 1px solid var(--border-light);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stats-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: var(--shadow-xl);
-        border-color: var(--primary-lighter);
-    }
-
-    .stats-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: var(--gradient-modern);
-        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
-    }
-
-    .stats-icon {
-        font-size: 3rem;
-        margin-bottom: 1.2rem;
-        background: var(--gradient-primary);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 2px 4px rgba(52, 132, 220, 0.2));
-    }
-
-    .stats-number {
-        font-size: 3rem;
-        font-weight: 800;
-        background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 0.5rem;
-        line-height: 1;
-    }
-
-    .stats-label {
+    .view-all-link {
+        color: #3b82f6;
+        text-decoration: none;
         font-size: 0.9rem;
-        color: var(--text-muted);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 0.75rem;
+        font-weight: 500;
     }
 
-    /* Document icons với màu từ bảng màu hệ thống */
-    .document-icon {
-        width: 45px;
-        height: 45px;
-        background: var(--gradient-soft);
-        border-radius: var(--border-radius-lg);
+    .view-all-link:hover {
+        color: #1d4ed8;
+        text-decoration: underline;
+    }
+
+    /* Hoạt động hôm nay */
+    .activity-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1rem;
+        flex: 1;
+    }
+
+    .activity-card {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        background: #3b82f6;
+        border-radius: 8px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.3rem;
-        color: var(--primary-color);
-        box-shadow: var(--shadow-sm);
+        color: white;
+        font-size: 1.2rem;
     }
 
-    /* Progress bars với gradient từ bảng màu hệ thống */
-    .progress-item .progress {
-        background: var(--bg-light);
-        border-radius: 15px;
-        height: 12px;
-        box-shadow: inset var(--shadow-xs);
+    .activity-content {
+        flex: 1;
     }
 
-    .progress-item .progress-bar {
-        background: var(--gradient-modern);
-        border-radius: 15px;
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* Cards với màu từ bảng màu hệ thống */
-    .card {
-        border: none;
-        border-radius: var(--border-radius-xl);
-        box-shadow: var(--shadow-md);
-        transition: var(--transition);
-    }
-
-    .card:hover {
-        box-shadow: var(--shadow-lg);
-    }
-
-    .card-header {
-        background: var(--gradient-soft);
-        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0 !important;
-        border-bottom: 2px solid var(--border-color);
-        padding: 1.5rem;
-    }
-
-    .card-header h6 {
-        color: var(--primary-dark);
+    .activity-number {
+        font-size: 1.5rem;
         font-weight: 700;
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
-    /* Table styling với màu từ bảng màu hệ thống */
-    .table th {
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
         color: #1e40af;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border: none;
-        padding: 1rem;
+        line-height: 1;
     }
 
-    .table td {
-        color: #374151;
-        padding: 1rem;
-        border-color: rgba(14, 165, 233, 0.1);
-        vertical-align: middle;
-    }
-
-    .table tbody tr:hover {
-        background: var(--bg-secondary);
-        transition: var(--transition-fast);
-    }
-
-    /* Badges với màu từ bảng màu hệ thống */
-    .badge {
+    .activity-label {
+        font-size: 0.8rem;
+        color: #64748b;
         font-weight: 600;
-        padding: 0.5rem 1rem;
-        font-size: 0.75rem;
-        border-radius: var(--border-radius-xl);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        margin-top: 0.25rem;
     }
 
-    .badge.bg-success {
-        background: linear-gradient(45deg, var(--success-color), var(--success-light)) !important;
-        box-shadow: var(--shadow-sm);
+    /* Thống kê nhanh */
+    .stats-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        flex: 1;
     }
 
-    .badge.bg-warning {
-        background: linear-gradient(45deg, var(--warning-color), var(--warning-light)) !important;
-        box-shadow: var(--shadow-sm);
+    .stat-card {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid #e2e8f0;
     }
 
-    .badge.bg-info {
-        background: linear-gradient(45deg, var(--info-color), var(--primary-lighter)) !important;
-        box-shadow: var(--shadow-sm);
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: #3b82f6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
     }
 
-    .badge.bg-primary {
-        background: var(--gradient-primary) !important;
-        box-shadow: var(--shadow-sm);
+    .stat-content {
+        flex: 1;
     }
 
-    /* Custom scrollbar với màu hệ thống */
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
+    .stat-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1e40af;
+        line-height: 1;
     }
 
-    .table-responsive::-webkit-scrollbar-track {
-        background: var(--bg-light);
-        border-radius: 10px;
+    .stat-label {
+        font-size: 0.9rem;
+        color: #374151;
+        margin-top: 0.25rem;
     }
 
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: var(--gradient-primary);
-        border-radius: 10px;
+    /* Tài liệu cần xử lý */
+    .process-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        flex: 1;
     }
 
-    /* Animation for loading states */
-    @@keyframes shimmer {
-        0% {
-            background-position: -200px 0;
+    .process-card {
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: white;
+    }
+
+    .process-card.overdue {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .process-card.pending {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .process-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .process-content {
+        flex: 1;
+    }
+
+    .process-number {
+        font-size: 1.8rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .process-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 0.25rem;
+        opacity: 0.9;
+    }
+
+    /* Hoạt động hệ thống */
+    .system-activities {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        flex: 1;
+    }
+
+    .system-activity {
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        border: 1px solid #e2e8f0;
+    }
+
+    .activity-icon-small {
+        width: 32px;
+        height: 32px;
+        background: white;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .activity-details {
+        flex: 1;
+    }
+
+    .activity-title {
+        font-size: 0.9rem;
+        color: #374151;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+        font-size: 0.8rem;
+        color: #6b7280;
+    }
+
+    .no-activities {
+        text-align: center;
+        color: #9ca3af;
+        padding: 2rem 1rem;
+    }
+
+    .no-activities i {
+        margin-bottom: 0.5rem;
+    }
+
+    .no-activities p {
+        margin: 0;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto auto;
+            height: auto;
         }
-
-        100% {
-            background-position: calc(200px + 100%) 0;
-        }
-    }
-
-    .shimmer {
-        background: linear-gradient(90deg, var(--bg-light) 25%, var(--bg-darker) 50%, var(--bg-light) 75%);
-        background-size: 200px 100%;
-        animation: shimmer 1.5s infinite;
     }
 </style>
 
 @section Scripts {
     <script>
-        // Kiểm tra tài liệu quá hạn khi trang load
-        $(document).ready(function() {
-            loadSoTaiLieuQuaHan();
-        });
-
-        function loadSoTaiLieuQuaHan() {
-            $.get('/PhieuMuonTra/GetSoTaiLieuQuaHan', function(data) {
-                if (data.soLuong > 0) {
-                    $('#soTaiLieuQuaHan').text(data.soLuong);
-                    $('#quaHanCard').show();
-                    $('#quaHanCard').addClass('pulse-animation');
-                } else {
-                    $('#quaHanCard').hide();
-                }
-            });
-        }
-
-        // Load create document modal
-        $('#createDocumentModal').on('show.bs.modal', function (e) {
-            $.get('@Url.Action("CreateDocument")', function (data) {
-                $('#createDocumentContent').html(data);
-            }).fail(function () {
-                $('#createDocumentContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải form!</div>');
-            });
-        });
-
-        // Reset modal when hidden
-        $('#createDocumentModal').on('hidden.bs.modal', function (e) {
-            $('#createDocumentContent').html(`
-                                <div class="text-center py-3">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2 text-muted">Đang tải form...</p>
-                                </div>
-                            `);
-        });
-
-        // Xem chi tiết tài liệu
-        $(document).on('click', '.btn-view-details', function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            $('#documentDetailsModal').modal('show');
-            $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
-            $.get('@Url.Action("ChiTietTaiLieu", "Librarian")', { id: id }, function (data) {
-                // Replace "Lượt tải" with "Lượt mượn" in the returned HTML if present
-                var html = data.replace(/Lượt tải/g, 'Lượt mượn');
-                $('#documentDetailsContent').html(html);
-            }).fail(function () {
-                $('#documentDetailsContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải thông tin!</div>');
-            });
-        });
-
-        // Reset modal chi tiết khi đóng
-        $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
-            $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
-        });
-
-        
-
-        function showSuccessMessage(message) {
-            toastr.success(message, 'Thành công!', {
-                timeOut: 3000,
-                progressBar: true
-            });
-        }
-
-        function showErrorMessage(message) {
-            toastr.error(message, 'Lỗi!', {
-                timeOut: 5000,
-                progressBar: true
-            });
-        }
-
-        // Auto-refresh activity list every 30 seconds
-        setInterval(function() {
-            refreshActivityList();
-        }, 30000);
-
-        function refreshActivityList() {
-            $.get('@Url.Action("GetSystemActivities")', function(response) {
-                if (response.success && response.data) {
-                    updateActivityList(response.data);
-                }
-            }).fail(function() {
-                console.log('Failed to refresh activity list');
-            });
-        }
-
-        function updateActivityList(activities) {
-            var activityList = $('#activityList');
-            if (activities.length === 0) {
-                activityList.html('<div class="text-center text-muted py-4"><i class="fas fa-bell fa-2x mb-2"></i><br>Không có hoạt động nào</div>');
-                return;
-            }
-
-            var html = '';
-            activities.forEach(function(activity) {
-                var priorityClass = getPriorityClass(activity.mứcĐộƯuTiên);
-                var iconClass = getIconClass(activity.loạiHoạtĐộng);
-                var bgClass = getBgClass(activity.loạiHoạtĐộng);
-                var timeAgo = getTimeAgo(new Date(activity.thờiGian));
-
-                html += '<div class="activity-item ' + priorityClass + '" data-activity-id="' + activity.id + '" data-activity-type="' + activity.loạiHoạtĐộng + '" data-phieu-id="' + (activity.dữLiệuBổSung || '') + '">';
-                html += '<div class="activity-icon ' + bgClass + '"><i class="' + iconClass + '"></i></div>';
-                html += '<div class="activity-content">';
-                                 html += '<div class="activity-title">' + activity.tiêuĐề + '</div>';
-                 html += '<div class="activity-description">' + activity.môTả + '</div>';
-                 html += '<div class="activity-time">' + timeAgo + '</div>';
-                 html += '</div>';
-                 html += '</div>';
-            });
-            
-            activityList.html(html);
-        }
-
-        function getPriorityClass(priority) {
-            switch(priority) {
-                case 'Cao': return 'high-priority';
-                case 'TrungBình': return 'medium-priority';
-                default: return 'low-priority';
-            }
-        }
-
-        function getIconClass(activityType) {
-            switch(activityType) {
-                case 'NgườiDùngMớiĐăngKý': return 'fas fa-user-plus text-success';
-                case 'YêuCầuMượnTàiLiệu': return 'fas fa-book text-warning';
-                case 'TàiLiệuĐượcTrả': return 'fas fa-undo text-info';
-                case 'CảnhBáoQuáHạn': return 'fas fa-clock text-warning';
-                case 'TàiLiệuQuáHạn': return 'fas fa-exclamation-triangle text-danger';
-                case 'TàiLiệuMớiĐượcThêm': return 'fas fa-file-alt text-primary';
-                case 'ThốngKêHoạtĐộng': return 'fas fa-chart-bar text-info';
-                default: return 'fas fa-bell text-primary';
-            }
-        }
-
-        function getBgClass(activityType) {
-            switch(activityType) {
-                case 'NgườiDùngMớiĐăngKý': return 'bg-success-soft';
-                case 'YêuCầuMượnTàiLiệu': return 'bg-warning-soft';
-                case 'TàiLiệuĐượcTrả': return 'bg-info-soft';
-                case 'CảnhBáoQuáHạn': return 'bg-warning-soft';
-                case 'TàiLiệuQuáHạn': return 'bg-danger-soft';
-                case 'TàiLiệuMớiĐượcThêm': return 'bg-primary-soft';
-                case 'ThốngKêHoạtĐộng': return 'bg-info-soft';
-                default: return 'bg-primary-soft';
-            }
-        }
-
-        function getTimeAgo(date) {
-            var now = new Date();
-            var diffMs = now - date;
-            var diffMins = Math.floor(diffMs / 60000);
-            var diffHours = Math.floor(diffMs / 3600000);
-            var diffDays = Math.floor(diffMs / 86400000);
-            
-            if (diffMins < 1) return 'Vừa xong';
-            else if (diffMins < 60) return diffMins + ' phút trước';
-            else if (diffHours < 24) return diffHours + ' giờ trước';
-            else return diffDays + ' ngày trước';
-        }
-
-        // Update current time every second
+        // Update current time every minute
         function updateCurrentTime() {
             var now = new Date();
             var timeString = now.getDate().toString().padStart(2, '0') + '/' + 
