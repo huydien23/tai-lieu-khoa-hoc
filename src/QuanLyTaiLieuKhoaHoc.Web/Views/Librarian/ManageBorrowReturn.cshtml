@@ -22,7 +22,10 @@
             <div class="search-container">
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" id="searchRequests" placeholder="Tìm kiếm theo mã số, họ tên...">
+                    <input type="text" class="search-input" id="globalSearch" placeholder="Tìm kiếm theo mã số, họ tên, tài liệu...">
+                    <button class="search-clear" id="clearGlobalSearch" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             </div>
             <button type="button" class="btn-refresh" onclick="loadSoTaiLieuQuaHan()" title="Cập nhật dữ liệu">
@@ -107,20 +110,13 @@
                 <div class="requests-section">
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="searchRequests"
-                                       placeholder="Tìm kiếm theo mã số, họ tên...">
-                                <button class="btn btn-outline-secondary" type="button" id="searchRequestsButton">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary" id="clearSearchRequests" style="display: none;">
-                                    <i class="fas fa-times"></i>
-                                </button>
+                            <div class="search-info">
+                                <span class="text-muted">Tìm kiếm trong: <strong>Yêu cầu mượn</strong></span>
                             </div>
                         </div>
                         <div class="col-md-6 text-md-end">
                             <div class="requests-info">
-                                <span class="text-muted">Tổng cộng: <strong>@Model.YeuCauMuonTra.Count()</strong> yêu cầu chờ duyệt</span>
+                                <span class="text-muted">Tổng cộng: <strong id="requestsCount">@Model.YeuCauMuonTra.Count()</strong> yêu cầu chờ duyệt</span>
                             </div>
                         </div>
                     </div>
@@ -138,7 +134,21 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                <partial name="~/Views/PhieuMuonTra/LichSuMuonTra.cshtml" model="Model.LichSuMuonTra" />
+                <div class="history-section">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="search-info">
+                                <span class="text-muted">Tìm kiếm trong: <strong>Lịch sử mượn trả</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="history-info">
+                                <span class="text-muted">Tổng cộng: <strong id="historyCount">@Model.LichSuMuonTra.Count()</strong> bản ghi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <partial name="~/Views/PhieuMuonTra/LichSuMuonTra.cshtml" model="Model.LichSuMuonTra" />
+                </div>
             </div>
         </div>
     </div>
@@ -174,43 +184,118 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Thanh tìm kiếm tab Yêu cầu mượn
-            var $inputReq = $('#searchRequests');
-            var $clearReq = $('#clearSearchRequests');
-            var $btnReq = $('#searchRequestsButton');
+            // Global search functionality
+            var $globalSearch = $('#globalSearch');
+            var $clearGlobalSearch = $('#clearGlobalSearch');
+            var currentTab = 'requests';
             
-            $inputReq.on('input', function () {
-                if ($inputReq.val()) {
-                    $clearReq.show();
+            // Handle global search input
+            $globalSearch.on('input', function () {
+                var value = $(this).val().toLowerCase();
+                if (value) {
+                    $clearGlobalSearch.show();
                 } else {
-                    $clearReq.hide();
+                    $clearGlobalSearch.hide();
                 }
-                filterRequests();
+                performGlobalSearch(value);
             });
             
-            $clearReq.on('click', function () {
-                $inputReq.val('');
-                $clearReq.hide();
-                $inputReq.focus();
-                filterRequests();
+            // Handle clear search
+            $clearGlobalSearch.on('click', function () {
+                $globalSearch.val('');
+                $clearGlobalSearch.hide();
+                $globalSearch.focus();
+                performGlobalSearch('');
             });
             
-            $btnReq.on('click', function () {
-                filterRequests();
-            });
-            
-            $inputReq.on('keydown', function (e) {
+            // Handle Enter key
+            $globalSearch.on('keydown', function (e) {
                 if (e.key === 'Enter') {
-                    filterRequests();
+                    performGlobalSearch($(this).val().toLowerCase());
                 }
             });
             
-            function filterRequests() {
-                var value = $inputReq.val().toLowerCase();
-                $('#requests table tbody tr').filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                });
+            // Global search function
+            function performGlobalSearch(searchTerm) {
+                switch (currentTab) {
+                    case 'requests':
+                        filterRequests(searchTerm);
+                        break;
+                    case 'overdue':
+                        filterOverdue(searchTerm);
+                        break;
+                    case 'history':
+                        filterHistory(searchTerm);
+                        break;
+                }
             }
+            
+            // Filter functions for each tab
+            function filterRequests(searchTerm) {
+                var visibleCount = 0;
+                $('#requests table tbody tr').each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    var isVisible = !searchTerm || rowText.indexOf(searchTerm) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) visibleCount++;
+                });
+                $('#requestsCount').text(visibleCount);
+            }
+            
+            function filterOverdue(searchTerm) {
+                var visibleCount = 0;
+                $('#overdueContent table tbody tr').each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    var isVisible = !searchTerm || rowText.indexOf(searchTerm) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) visibleCount++;
+                });
+                // Update overdue count if available
+                if ($('#overdueCount').length) {
+                    $('#overdueCount').text(visibleCount);
+                }
+            }
+            
+            function filterHistory(searchTerm) {
+                var visibleCount = 0;
+                $('#history .history-card').each(function () {
+                    var cardText = $(this).text().toLowerCase();
+                    var isVisible = !searchTerm || cardText.indexOf(searchTerm) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) visibleCount++;
+                });
+                $('#historyCount').text(visibleCount);
+            }
+            
+            // Tab change handler
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var target = $(e.target).attr('data-bs-target');
+                switch (target) {
+                    case '#requests':
+                        currentTab = 'requests';
+                        break;
+                    case '#overdue':
+                        currentTab = 'overdue';
+                        break;
+                    case '#history':
+                        currentTab = 'history';
+                        break;
+                }
+                
+                // Update search placeholder based on current tab
+                var placeholders = {
+                    'requests': 'Tìm kiếm trong yêu cầu mượn...',
+                    'overdue': 'Tìm kiếm trong tài liệu quá hạn...',
+                    'history': 'Tìm kiếm trong lịch sử mượn trả...'
+                };
+                $globalSearch.attr('placeholder', placeholders[currentTab]);
+                
+                // Re-apply current search if any
+                var currentSearch = $globalSearch.val().toLowerCase();
+                if (currentSearch) {
+                    performGlobalSearch(currentSearch);
+                }
+            });
 
             // Load số lượng tài liệu quá hạn khi trang load
             loadSoTaiLieuQuaHan();
@@ -251,6 +336,11 @@
 
                 if (tableContent) {
                     $('#overdueContent').html(tableContent.outerHTML);
+                    // Re-apply search if any
+                    var currentSearch = $('#globalSearch').val().toLowerCase();
+                    if (currentSearch) {
+                        filterOverdue(currentSearch);
+                    }
                 } else {
                     $('#overdueContent').html(`
                         <div class="alert alert-success">
@@ -266,6 +356,17 @@
                         Có lỗi xảy ra khi tải danh sách tài liệu quá hạn!
                     </div>
                 `);
+            });
+        }
+
+        // Helper function for overdue filtering (accessible globally)
+        function filterOverdue(searchTerm) {
+            var visibleCount = 0;
+            $('#overdueContent table tbody tr').each(function () {
+                var rowText = $(this).text().toLowerCase();
+                var isVisible = !searchTerm || rowText.indexOf(searchTerm) > -1;
+                $(this).toggle(isVisible);
+                if (isVisible) visibleCount++;
             });
         }
 
