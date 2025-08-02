@@ -27,7 +27,6 @@
 .category-management-header {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     border-radius: var(--border-radius-xl);
-    padding: 2rem;
     margin-bottom: 2rem;
     position: relative;
     overflow: hidden;

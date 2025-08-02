@@ -716,8 +716,33 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Statistics()
         {
-            var tongSoLuotMuon = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet || p.TrangThai == TrangThaiPhieu.DaTra);
-            var tongSoLuotTra = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaTra);
+            // Sửa logic thống kê phiếu mượn trả
+            var tongSoPhieu = await _context.PhieuMuonTra.CountAsync();
+            var soPhieuChoDuyet = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.ChoDuyet);
+            var soPhieuDangMuon = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null);
+            var soPhieuDaTra = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.DaTra);
+            var soPhieuTuChoi = await _context.PhieuMuonTra.CountAsync(p => p.TrangThai == TrangThaiPhieu.TuChoi);
+            
+            // Load lịch sử mượn trả
+            var lichSuMuonTra = await _context.PhieuMuonTra
+                .Include(p => p.TaiLieu)
+                .Include(p => p.NguoiMuon)
+                .OrderByDescending(p => p.NgayMuon)
+                .Take(20)
+                .ToListAsync();
+            
+            // Thống kê theo loại tài liệu
+            var soLuongBaiBaoKhoaHoc = await _context.TaiLieu.CountAsync(t => !string.IsNullOrEmpty(t.TieuDe));
+            var soLuongDeTaiNghienCuu = await _context.TaiLieu.CountAsync(t => !string.IsNullOrEmpty(t.TenDeTai));
+            var soLuongGiaoTrinh = await _context.TaiLieu.CountAsync(t => !string.IsNullOrEmpty(t.TenGiaoTrinh));
+            
+            // Thống kê lượt tải và yêu thích
+            var soLuongYeuThich = await _context.YeuThichTaiLieu.CountAsync();
+            var luotTaiTrongTuan = await _context.LichSuTaiTaiLieu.CountAsync(l => l.ThoiGianTai >= DateTime.Today.AddDays(-7));
+            var luotTaiTuanTruoc = await _context.LichSuTaiTaiLieu.CountAsync(l => 
+                l.ThoiGianTai >= DateTime.Today.AddDays(-14) && l.ThoiGianTai < DateTime.Today.AddDays(-7));
+            var soLuotXemGanDay = await _context.LichSuTaiTaiLieu.CountAsync(l => l.ThoiGianTai >= DateTime.Today.AddDays(-1));
+            
             var tongSoLuotTai = await _context.LichSuTaiTaiLieu.CountAsync();
             var lichSuTaiTaiLieu = await _context.LichSuTaiTaiLieu
                 .Include(l => l.NguoiDung)
@@ -726,13 +751,25 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Take(200)
                 .ToListAsync();
             ViewBag.LichSuTaiTaiLieu = lichSuTaiTaiLieu;
+            
             var model = new DashboardViewModel
             {
                 TongSoTaiLieu = await _context.TaiLieu.CountAsync(),
                 TongSoNguoiDung = await _context.Users.CountAsync(),
-                TongSoLuotMuon = tongSoLuotMuon,
-                SoPhieuDaTra = tongSoLuotTra,
+                TongSoLuotMuon = tongSoPhieu, // Sửa: Tổng số phiếu
+                SoPhieuChoDuyet = soPhieuChoDuyet, // Thêm: Phiếu chờ duyệt
+                SoPhieuDangMuon = soPhieuDangMuon, // Thêm: Phiếu đang mượn
+                SoPhieuDaTra = soPhieuDaTra, // Sửa: Phiếu đã trả
+                SoPhieuTuChoi = soPhieuTuChoi, // Thêm: Phiếu từ chối
                 TongSoLuotTai = tongSoLuotTai,
+                LichSuMuonTra = lichSuMuonTra, // Thêm: Lịch sử mượn trả
+                SoLuongBaiBaoKhoaHoc = soLuongBaiBaoKhoaHoc, // Thêm: Số lượng bài báo khoa học
+                SoLuongDeTaiNghienCuu = soLuongDeTaiNghienCuu, // Thêm: Số lượng đề tài nghiên cứu
+                SoLuongGiaoTrinh = soLuongGiaoTrinh, // Thêm: Số lượng giáo trình
+                SoLuongYeuThich = soLuongYeuThich, // Thêm: Số lượng yêu thích
+                LuotTaiTrongTuan = luotTaiTrongTuan, // Thêm: Lượt tải trong tuần
+                LuotTaiTuanTruoc = luotTaiTuanTruoc, // Thêm: Lượt tải tuần trước
+                SoLuotXemGanDay = soLuotXemGanDay, // Thêm: Lượt xem gần đây
                 TaiLieuMoiTrongThang = await _context.TaiLieu
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
