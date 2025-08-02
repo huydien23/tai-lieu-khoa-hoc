@@ -4,256 +4,369 @@
     ViewData["Title"] = "Quản lý Loại tài liệu";
 }
 
-<div class="content-header" style="margin-bottom; 20px">  
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0" style="color: var(--primary-color);">  
-            <i class="fas fa-tags me-2 text-primary"></i>
-            Quản lý Loại tài liệu
-        </h2>
-        <div class="d-flex gap-2">
-            <a asp-action="CreateDocumentType" class="btn btn-primary">
-                <i class="fas fa-plus me-1"></i>Thêm loại tài liệu
+<link rel="stylesheet" href="~/css/category-management.css" />
+
+<!-- Modern Header -->
+<div class="category-management-header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <div class="header-text">
+                <h1>Quản lý Loại tài liệu</h1>
+                <p>Phân loại và quản lý các loại tài liệu khoa học trong hệ thống</p>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm loại tài liệu..." 
+                           value="@ViewData["Search"]" class="search-input">
+                </div>
+            </div>
+            <a asp-action="CreateDocumentType" class="btn-add-category">
+                <i class="fas fa-plus"></i>
+                <span>Thêm loại tài liệu mới</span>
             </a>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0" style="color: white;">
-                    <i class="fas fa-list me-2"></i>
-                    Danh sách loại tài liệu (@Model.Count() loại)
-                </h5>
-            </div>
-            <div class="card-body p-0">
-                @if (!Model.Any())
-                {
-                    <div class="text-center py-5">
-                        <i class="fas fa-tags fa-3x text-muted mb-3"></i>
-                        <p class="text-muted">Chưa có loại tài liệu nào trong hệ thống.</p>
-                        <a asp-action="CreateDocumentType" class="btn btn-primary">
-                            <i class="fas fa-plus me-1"></i>Thêm loại tài liệu đầu tiên
-                        </a>
-                    </div>
-                }
-                else
-                {
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th scope="col">
-                                        <i class="fas fa-tag me-1"></i>
-                                        Tên loại tài liệu
-                                    </th>
-                                    <th scope="col">
-                                        <i class="fas fa-align-left me-1"></i>
-                                        Mô tả
-                                    </th>
-                                    <th scope="col">
-                                        <i class="fas fa-calendar me-1"></i>
-                                        Ngày tạo
-                                    </th>
-                                    <th scope="col">
-                                        <i class="fas fa-file-alt me-1"></i>
-                                        Số tài liệu
-                                    </th>
-                                    <th scope="col">
-                                        <i class="fas fa-toggle-on me-1"></i>
-                                        Trạng thái
-                                    </th>
-                                    <th scope="col" class="text-center">
-                                        <i class="fas fa-cogs me-1"></i>
-                                        Thao tác
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            <div class="fw-semibold text-primary">@item.TenLoaiTaiLieu</div>
-                                        </td>
-                                        <td>
-                                            <span class="text-muted">
-                                                @if (!string.IsNullOrEmpty(item.MoTa))
-                                                {
-                                                    @(item.MoTa.Length > 50 ? item.MoTa.Substring(0, 50) + "..." : item.MoTa)
-                                                }
-                                                else
-                                                {
-                                                    <em>Chưa có mô tả</em>
-                                                }
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <small class="text-muted">
-                                                @item.NgayTao.ToString("dd/MM/yyyy")
-                                            </small>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-info text-dark">
-                                                @(item.TaiLieu?.Count ?? 0) tài liệu
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if (item.TrangThaiHoatDong)
-                                            {
-                                                <span class="badge bg-success">
-                                                    <i class="fas fa-check-circle me-1"></i>
-                                                    Hoạt động
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-danger">
-                                                    <i class="fas fa-times-circle me-1"></i>
-                                                    Vô hiệu hóa
-                                                </span>
-                                            }
-                                        </td>
-                                        <td>
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <a asp-action="EditDocumentType" asp-route-id="@item.MaLoaiTaiLieu"
-                                                    class="btn btn-outline-primary btn-sm" title="Chỉnh sửa">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-
-                                                <form asp-action="ToggleDocumentTypeStatus" method="post"
-                                                    style="display: inline;">
-                                                    <input type="hidden" name="id" value="@item.MaLoaiTaiLieu" />
-                                                    @if (item.TrangThaiHoatDong)
-                                                    {
-                                                        <button type="submit" class="btn btn-outline-warning btn-sm"
-                                                            title="Vô hiệu hóa"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa loại tài liệu này?')">
-                                                            <i class="fas fa-ban"></i>
-                                                        </button>
-                                                    }
-                                                    else
-                                                    {
-                                                        <button type="submit" class="btn btn-outline-success btn-sm"
-                                                            title="Kích hoạt"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn kích hoạt loại tài liệu này?')">
-                                                            <i class="fas fa-check"></i>
-                                                        </button>
-                                                    }
-                                                </form>
-
-                                                <button type="button" class="btn btn-outline-danger btn-sm" title="Xóa"
-                                                    onclick="deleteDocumentType(@item.MaLoaiTaiLieu, '@item.TenLoaiTaiLieu')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-            </div>
-        </div>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
+}
 
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header bg-light">
-                <h5 class="mb-0" style="color: white;">
-                    <i class="fas fa-chart-pie me-2"></i>
-                    Thống kê nhanh
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row text-center">
-                    <div class="col-6">
-                        <div class="border rounded p-3 mb-3">
-                            <div class="text-primary fs-4 fw-bold">@Model.Count()</div>
-                            <small class="text-muted">Tổng loại tài liệu</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="border rounded p-3 mb-3">
-                            <div class="text-success fs-4 fw-bold">@Model.Count(l => l.TrangThaiHoatDong)</div>
-                            <small class="text-muted">Đang hoạt động</small>
-                        </div>
-                    </div>
-                </div>
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
-                @if (Model.Any())
-                {
-                    <hr>
-                    <h6 class="fw-semibold mb-3">
-                        <i class="fas fa-crown me-2 text-warning"></i>
-                        Top loại tài liệu phổ biến
-                    </h6>
-                    @foreach (var item in Model.Where(l => l.TaiLieu != null).OrderByDescending(l =>
-                                    l.TaiLieu!.Count).Take(5))
-                    {
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="small">@item.TenLoaiTaiLieu</span>
-                            <span class="badge bg-secondary">@(item.TaiLieu?.Count ?? 0)</span>
-                        </div>
-                    }
-                }
+<!-- Statistics Cards -->
+<div class="stats-container">
+    <div class="stat-card total">
+        <div class="stat-header">
+            <div class="stat-icon total">
+                <i class="fas fa-tags"></i>
             </div>
         </div>
-
-        <div class="card mt-3">
-            <div class="card-header bg-light">
-                <h5 class="mb-0" style="color: white;">
-                    <i class="fas fa-info-circle me-2"></i>
-                    Hướng dẫn
-                </h5>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled small">
-                    <li class="mb-2">
-                        <i class="fas fa-check text-success me-2"></i>
-                        Thêm loại tài liệu mới để phân loại tài liệu
-                    </li>
-                    <li class="mb-2">
-                        <i class="fas fa-edit text-primary me-2"></i>
-                        Chỉnh sửa thông tin loại tài liệu
-                    </li>
-                    <li class="mb-2">
-                        <i class="fas fa-toggle-on text-warning me-2"></i>
-                        Kích hoạt/vô hiệu hóa loại tài liệu
-                    </li>
-                    <li class="mb-0">
-                        <i class="fas fa-chart-bar text-info me-2"></i>
-                        Xem thống kê số lượng tài liệu theo loại
-                    </li>
-                </ul>
+        <div class="stat-number">@Model.Count()</div>
+        <div class="stat-label">Tổng loại tài liệu</div>
+    </div>
+    
+    <div class="stat-card active">
+        <div class="stat-header">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
             </div>
         </div>
+        <div class="stat-number">@Model.Count(l => l.TrangThaiHoatDong)</div>
+        <div class="stat-label">Đang hoạt động</div>
+    </div>
+    
+    <div class="stat-card inactive">
+        <div class="stat-header">
+            <div class="stat-icon inactive">
+                <i class="fas fa-pause-circle"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.Count(l => !l.TrangThaiHoatDong)</div>
+        <div class="stat-label">Vô hiệu hóa</div>
+    </div>
+    
+    <div class="stat-card new">
+        <div class="stat-header">
+            <div class="stat-icon new">
+                <i class="fas fa-file-alt"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.Sum(l => l.TaiLieu?.Count ?? 0)</div>
+        <div class="stat-label">Tổng tài liệu</div>
     </div>
 </div>
 
+<!-- Filters Section -->
+<div class="filters-section">
+    <h5><i class="fas fa-filter me-2"></i>Bộ lọc</h5>
+    <form id="filterForm" method="get" asp-action="ManageDocumentTypes">
+        <div class="filters-container">
+            <div class="filter-group">
+                <label class="filter-label">Tìm kiếm</label>
+                <input type="text" id="search" name="search" class="filter-input" 
+                       value="@ViewData["Search"]" placeholder="Tên loại tài liệu hoặc mô tả...">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Trạng thái</label>
+                <select id="status" name="status" class="filter-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Vô hiệu hóa</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-filter me-2"></i>Lọc
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Document Types Table -->
+<div class="table-container">
+    <div class="table-header">
+        <h3 class="table-title"><i class="fas fa-list me-2"></i>Danh sách loại tài liệu</h3>
+        
+        <div class="table-actions">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="selectAll">
+                <label class="form-check-label" for="selectAll">
+                    Chọn tất cả
+                </label>
+            </div>
+            
+            <button type="button" id="bulkActivateBtn" class="btn-bulk-action" disabled>
+                <i class="fas fa-check me-1"></i>Kích hoạt hàng loạt
+            </button>
+            
+            <a href="@Url.Action("ExportDocumentTypes", new { search = ViewData["Search"], status = ViewData["Status"] })" 
+               class="btn-bulk-action" style="background: var(--success-color);">
+                <i class="fas fa-file-excel me-1"></i>Xuất Excel
+            </a>
+        </div>
+    </div>
+    
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th width="50">#</th>
+                        <th width="50"></th>
+                        <th>Tên loại tài liệu</th>
+                        <th>Mô tả</th>
+                        <th width="120">Số tài liệu</th>
+                        <th width="120">Ngày tạo</th>
+                        <th width="120">Trạng thái</th>
+                        <th width="150">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int index = 1;}
+                    @foreach (var item in Model)
+                    {
+                        <tr data-document-type-id="@item.MaLoaiTaiLieu" 
+                            data-name="@item.TenLoaiTaiLieu"
+                            data-status="@(item.TrangThaiHoatDong ? "active" : "inactive")">
+                            <td>@index</td>
+                            <td>
+                                <input type="checkbox" class="form-check-input document-type-checkbox" 
+                                       value="@item.MaLoaiTaiLieu">
+                            </td>
+                            <td>
+                                <div class="category-name">@item.TenLoaiTaiLieu</div>
+                            </td>
+                            <td>
+                                <div class="category-description">
+                                    @if (!string.IsNullOrEmpty(item.MoTa))
+                                    {
+                                        @(item.MoTa.Length > 100 ? item.MoTa.Substring(0, 100) + "..." : item.MoTa)
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted fst-italic">Chưa có mô tả</span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-documents">@(item.TaiLieu?.Count ?? 0)</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">@item.NgayTao.ToString("dd/MM/yyyy")</small>
+                            </td>
+                            <td>
+                                @if (item.TrangThaiHoatDong)
+                                {
+                                    <span class="badge badge-active">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive">Vô hiệu hóa</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="EditDocumentType" asp-route-id="@item.MaLoaiTaiLieu" 
+                                       class="btn btn-action btn-edit" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    <form asp-action="ToggleDocumentTypeStatus" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@item.MaLoaiTaiLieu" />
+                                        @if (item.TrangThaiHoatDong)
+                                        {
+                                            <button type="submit" class="btn btn-action btn-toggle" 
+                                                    title="Vô hiệu hóa"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa loại tài liệu này?');">
+                                                <i class="fas fa-pause"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-action btn-toggle" 
+                                                    title="Kích hoạt"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn kích hoạt loại tài liệu này?');">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                        }
+                                    </form>
+
+                                    <button type="button" class="btn btn-action btn-delete" 
+                                            title="Xóa" 
+                                            onclick="deleteDocumentType(@item.MaLoaiTaiLieu, '@item.TenLoaiTaiLieu')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-tags"></i>
+            <h4>Chưa có loại tài liệu nào</h4>
+            <p>Hãy thêm loại tài liệu đầu tiên để bắt đầu quản lý.</p>
+            <a asp-action="CreateDocumentType" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Thêm loại tài liệu mới
+            </a>
+        </div>
+    }
+</div>
+
 <script>
-    function deleteDocumentType(id, name) {
-        if (confirm(`Bạn có chắc chắn muốn xóa loại tài liệu "${name}"?\n\nLưu ý: Chỉ có thể xóa khi loại tài liệu không còn tài liệu nào.`)) {
+$(document).ready(function() {
+    // Set selected value for status dropdown
+    var currentStatus = '@ViewData["Status"]';
+    if (currentStatus) {
+        $('#status').val(currentStatus);
+    }
+    
+    // Search functionality
+    $('#searchInput').on('input', function() {
+        var searchTerm = $(this).val();
+        var currentUrl = new URL(window.location);
+        currentUrl.searchParams.set('search', searchTerm);
+        currentUrl.searchParams.set('page', '1');
+        window.location.href = currentUrl.toString();
+    });
+
+    // Select all functionality
+    $('#selectAll').change(function() {
+        $('.document-type-checkbox').prop('checked', $(this).is(':checked'));
+        updateBulkActions();
+    });
+
+    // Individual checkbox change
+    $('.document-type-checkbox').change(function() {
+        updateBulkActions();
+        
+        // Update select all checkbox
+        var totalCheckboxes = $('.document-type-checkbox').length;
+        var checkedCheckboxes = $('.document-type-checkbox:checked').length;
+        
+        if (checkedCheckboxes === 0) {
+            $('#selectAll').prop('indeterminate', false).prop('checked', false);
+        } else if (checkedCheckboxes === totalCheckboxes) {
+            $('#selectAll').prop('indeterminate', false).prop('checked', true);
+        } else {
+            $('#selectAll').prop('indeterminate', true);
+        }
+    });
+
+    // Bulk activate functionality
+    $('#bulkActivateBtn').click(function() {
+        var selectedIds = $('.document-type-checkbox:checked').map(function() {
+            return parseInt($(this).val());
+        }).get();
+
+        if (selectedIds.length === 0) {
+            toastr.warning('Vui lòng chọn ít nhất một loại tài liệu để kích hoạt.');
+            return;
+        }
+
+        if (confirm(`Bạn có chắc chắn muốn kích hoạt ${selectedIds.length} loại tài liệu đã chọn?`)) {
             $.ajax({
-                url: '@Url.Action("DeleteDocumentType")',
+                url: '@Url.Action("BulkActivateDocumentTypes")',
                 type: 'POST',
-                data: { id: id },
-                success: function (response) {
+                data: { documentTypeIds: selectedIds },
+                success: function(response) {
                     if (response.success) {
                         toastr.success(response.message);
-                        setTimeout(function () {
+                        setTimeout(function() {
                             location.reload();
                         }, 1000);
                     } else {
                         toastr.error(response.message);
                     }
                 },
-                error: function (xhr, status, error) {
+                error: function(xhr, status, error) {
                     toastr.error('Có lỗi xảy ra: ' + error);
                 }
             });
         }
+    });
+
+    function updateBulkActions() {
+        var checkedCount = $('.document-type-checkbox:checked').length;
+        $('#bulkActivateBtn').prop('disabled', checkedCount === 0);
+        
+        if (checkedCount > 0) {
+            $('#bulkActivateBtn').text(`Kích hoạt (${checkedCount})`);
+        } else {
+            $('#bulkActivateBtn').text('Kích hoạt hàng loạt');
+        }
     }
+});
+
+function deleteDocumentType(id, name) {
+    if (confirm(`Bạn có chắc chắn muốn xóa loại tài liệu "${name}"?\n\nLưu ý: Chỉ có thể xóa khi loại tài liệu không còn tài liệu nào.`)) {
+        $.ajax({
+            url: '@Url.Action("DeleteDocumentType")',
+            type: 'POST',
+            data: { id: id },
+            success: function (response) {
+                if (response.success) {
+                    toastr.success(response.message);
+                    setTimeout(function () {
+                        location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                toastr.error('Có lỗi xảy ra: ' + error);
+            }
+        });
+    }
+}
 </script>
