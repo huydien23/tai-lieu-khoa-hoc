@@ -1,20 +1,37 @@
-@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.ChuyenNganh>
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.PaginatedList<QuanLyTaiLieuKhoaHoc.Web.Models.ChuyenNganh>
 
 @{
     ViewData["Title"] = "Quản lý Chuyên ngành";
     Layout = "_LayoutLibrarian";
 }
 
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <h1 class="page-title">
-            <i class="fas fa-graduation-cap me-2"></i>
-            Quản lý Chuyên ngành
-        </h1>
-        <a asp-action="CreateCategory" class="btn btn-primary">
-            <i class="fas fa-plus me-1"></i>
-            Thêm chuyên ngành mới
-        </a>
+<link rel="stylesheet" href="~/css/category-management.css" />
+
+<div class="category-management-header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="header-text">
+                <h1>Quản lý Chuyên ngành</h1>
+                <p>Quản lý và tổ chức các chuyên ngành trong hệ thống thư viện</p>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm chuyên ngành..." 
+                           value="@ViewData["Search"]" class="search-input">
+                </div>
+            </div>
+            <a asp-action="CreateCategory" class="btn-add-category">
+                <i class="fas fa-plus"></i>
+                <span>Thêm chuyên ngành mới</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -36,155 +53,398 @@
     </div>
 }
 
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Danh sách chuyên ngành</h3>
+<!-- Statistics Cards -->
+<div class="stats-container">
+    <div class="stat-card total">
+        <div class="stat-header">
+            <div class="stat-icon total">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model?.TotalCount</div>
+        <div class="stat-label">Tổng chuyên ngành</div>
     </div>
-    <div class="card-body">
-        @if (Model.Any())
-        {
-            <div class="table-responsive">
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Tên chuyên ngành</th>
-                            <th>Mô tả</th>
-                            <th>Số tài liệu</th>
-                            <th>Số người dùng</th>
-                            <th>Ngày tạo</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{int index = 1;}
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>@index</td>
-                                <td>
-                                    <strong>@item.TenChuyenNganh</strong>
-                                </td>
-                                <td>
-                                    @if (!string.IsNullOrEmpty(item.MoTa))
+    
+    <div class="stat-card active">
+        <div class="stat-header">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-number">@(Model?.Count(c => c.TrangThaiHoatDong) ?? 0)</div>
+        <div class="stat-label">Đang hoạt động</div>
+    </div>
+    
+    <div class="stat-card inactive">
+        <div class="stat-header">
+            <div class="stat-icon inactive">
+                <i class="fas fa-pause-circle"></i>
+            </div>
+        </div>
+        <div class="stat-number">@(Model?.Count(c => !c.TrangThaiHoatDong) ?? 0)</div>
+        <div class="stat-label">Vô hiệu hóa</div>
+    </div>
+    
+    <div class="stat-card new">
+        <div class="stat-header">
+            <div class="stat-icon new">
+                <i class="fas fa-calendar-plus"></i>
+            </div>
+        </div>
+        <div class="stat-number">@(Model?.Count(c => c.NgayTao.Date == DateTime.Today) ?? 0)</div>
+        <div class="stat-label">Mới hôm nay</div>
+    </div>
+</div>
+
+<!-- Filters Section -->
+<div class="filters-section">
+    <h5><i class="fas fa-filter me-2"></i>Bộ lọc</h5>
+    <form id="filterForm" method="get" asp-action="ManageCategories">
+        <div class="filters-container">
+            <div class="filter-group">
+                <label class="filter-label">Tìm kiếm</label>
+                <input type="text" id="search" name="search" class="filter-input" 
+                       value="@ViewData["Search"]" placeholder="Tên chuyên ngành hoặc mô tả...">
+            </div>
+            
+            <div class="filter-group">
+                <label class="filter-label">Trạng thái</label>
+                <select id="status" name="status" class="filter-select">
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Hoạt động</option>
+                    <option value="inactive">Vô hiệu hóa</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <button type="submit" class="btn-filter">
+                    <i class="fas fa-filter me-2"></i>Lọc
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Categories Table -->
+<div class="table-container">
+    <div class="table-header">
+        <h3 class="table-title"><i class="fas fa-list me-2"></i>Danh sách chuyên ngành</h3>
+        
+        <div class="table-actions">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="selectAll">
+                <label class="form-check-label" for="selectAll">
+                    Chọn tất cả
+                </label>
+            </div>
+            
+            <button type="button" id="bulkActivateBtn" class="btn-bulk-action" disabled>
+                <i class="fas fa-check me-1"></i>Kích hoạt hàng loạt
+            </button>
+            
+            <a href="@Url.Action("ExportCategories", new { search = ViewData["Search"], status = ViewData["Status"] })" 
+               class="btn-bulk-action" style="background: var(--success-color);">
+                <i class="fas fa-file-excel me-1"></i>Xuất Excel
+            </a>
+        </div>
+    </div>
+    
+    @if (Model?.Any() == true)
+    {
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th width="50">#</th>
+                        <th width="50"></th>
+                        <th>Tên chuyên ngành</th>
+                        <th>Mô tả</th>
+                        <th width="120">Số tài liệu</th>
+                        <th width="120">Số người dùng</th>
+                        <th width="120">Ngày tạo</th>
+                        <th width="120">Trạng thái</th>
+                        <th width="150">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int index = 1;}
+                    @foreach (var category in Model)
+                    {
+                        <tr data-category-id="@category.MaChuyenNganh" 
+                            data-name="@category.TenChuyenNganh"
+                            data-status="@(category.TrangThaiHoatDong ? "active" : "inactive")">
+                            <td>@index</td>
+                            <td>
+                                <input type="checkbox" class="form-check-input category-checkbox" 
+                                       value="@category.MaChuyenNganh">
+                            </td>
+                            <td>
+                                <div class="category-name">@category.TenChuyenNganh</div>
+                            </td>
+                            <td>
+                                <div class="category-description">
+                                    @if (!string.IsNullOrEmpty(category.MoTa))
                                     {
-                                        <span class="text-muted">@(item.MoTa.Length > 100 ? item.MoTa.Substring(0, 100) + "..." : item.MoTa)</span>
+                                        @(category.MoTa.Length > 100 ? category.MoTa.Substring(0, 100) + "..." : category.MoTa)
                                     }
                                     else
                                     {
                                         <span class="text-muted fst-italic">Chưa có mô tả</span>
                                     }
-                                </td>
-                                <td>
-                                    <span class="badge bg-info">@item.TaiLieu.Count</span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary">@item.NguoiDung.Count</span>
-                                </td>
-                                <td>
-                                    <small class="text-muted">@item.NgayTao.ToString("dd/MM/yyyy")</small>
-                                </td>
-                                <td>
-                                    @if (item.TrangThaiHoatDong)
-                                    {
-                                        <span class="badge bg-success">Hoạt động</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-danger">Vô hiệu hóa</span>
-                                    }
-                                </td>
-                                <td>
-                                    <div class="btn-group" role="group">
-                                        <a asp-action="EditCategory" asp-route-id="@item.MaChuyenNganh" 
-                                           class="btn btn-sm btn-outline-primary" title="Chỉnh sửa">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        
-                                        <form asp-action="ToggleCategoryStatus" method="post" class="d-inline">
-                                            <input type="hidden" name="id" value="@item.MaChuyenNganh" />
-                                            @if (item.TrangThaiHoatDong)
-                                            {
-                                                <button type="submit" class="btn btn-sm btn-outline-warning" 
-                                                        title="Vô hiệu hóa"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa chuyên ngành này?');">
-                                                    <i class="fas fa-pause"></i>
-                                                </button>
-                                            }
-                                            else
-                                            {
-                                                <button type="submit" class="btn btn-sm btn-outline-success" 
-                                                        title="Kích hoạt"
-                                                        onclick="return confirm('Bạn có chắc chắn muốn kích hoạt chuyên ngành này?');">
-                                                    <i class="fas fa-play"></i>
-                                                </button>
-                                            }
-                                        </form>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge badge-documents">@category.TaiLieu.Count</span>
+                            </td>
+                            <td>
+                                <span class="badge badge-users">@category.NguoiDung.Count</span>
+                            </td>
+                            <td>
+                                <small class="text-muted">@category.NgayTao.ToString("dd/MM/yyyy")</small>
+                            </td>
+                            <td>
+                                @if (category.TrangThaiHoatDong)
+                                {
+                                    <span class="badge badge-active">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-inactive">Vô hiệu hóa</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="EditCategory" asp-route-id="@category.MaChuyenNganh" 
+                                       class="btn btn-action btn-edit" title="Chỉnh sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    
+                                    <form asp-action="ToggleCategoryStatus" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@category.MaChuyenNganh" />
+                                        @if (category.TrangThaiHoatDong)
+                                        {
+                                            <button type="submit" class="btn btn-action btn-toggle" 
+                                                    title="Vô hiệu hóa"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn vô hiệu hóa chuyên ngành này?');">
+                                                <i class="fas fa-pause"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-action btn-toggle" 
+                                                    title="Kích hoạt"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn kích hoạt chuyên ngành này?');">
+                                                <i class="fas fa-play"></i>
+                                            </button>
+                                        }
+                                    </form>
 
-                                        <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                title="Xóa" onclick="deleteCategory(@item.MaChuyenNganh, '@item.TenChuyenNganh')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            index++;
-                        }
-                    </tbody>
-                </table>
-            </div>
-        }
-        else
+                                    <button type="button" class="btn btn-action btn-delete" 
+                                            title="Xóa" 
+                                            onclick="deleteCategory(@category.MaChuyenNganh, '@category.TenChuyenNganh')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
         {
-            <div class="text-center py-4">
-                <i class="fas fa-graduation-cap fa-3x text-muted mb-3"></i>
-                <h5 class="text-muted">Chưa có chuyên ngành nào</h5>
-                <p class="text-muted">Hãy thêm chuyên ngành đầu tiên để bắt đầu quản lý.</p>
-                <a asp-action="CreateCategory" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i>
-                    Thêm chuyên ngành mới
-                </a>
+            <div class="pagination-container">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="pagination-info">
+                        Hiển thị @(((Model.PageIndex - 1) * Model.PageSize) + 1) - @Math.Min(Model.PageIndex * Model.PageSize, Model.TotalCount) 
+                        trong tổng số @Model.TotalCount chuyên ngành
+                    </div>
+                    
+                    <nav>
+                        <ul class="pagination">
+                            @if (Model.HasPreviousPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ManageCategories", new { page = Model.PageIndex - 1, search = ViewData["Search"], status = ViewData["Status"] })">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                                </li>
+                            }
+
+                            @{
+                                var startPage = Math.Max(1, Model.PageIndex - 2);
+                                var endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
+                            }
+
+                            @if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ManageCategories", new { page = 1, search = ViewData["Search"], status = ViewData["Status"] })">1</a>
+                                </li>
+                                @if (startPage > 2)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                            }
+
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                if (i == Model.PageIndex)
+                                {
+                                    <li class="page-item active">
+                                        <span class="page-link">@i</span>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" href="@Url.Action("ManageCategories", new { page = i, search = ViewData["Search"], status = ViewData["Status"] })">@i</a>
+                                    </li>
+                                }
+                            }
+
+                            @if (endPage < Model.TotalPages)
+                            {
+                                @if (endPage < Model.TotalPages - 1)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ManageCategories", new { page = Model.TotalPages, search = ViewData["Search"], status = ViewData["Status"] })">@Model.TotalPages</a>
+                                </li>
+                            }
+
+                            @if (Model.HasNextPage)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" href="@Url.Action("ManageCategories", new { page = Model.PageIndex + 1, search = ViewData["Search"], status = ViewData["Status"] })">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="page-item disabled">
+                                    <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
             </div>
         }
-    </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="fas fa-graduation-cap"></i>
+            <h4>Chưa có chuyên ngành nào</h4>
+            <p>Hãy thêm chuyên ngành đầu tiên để bắt đầu quản lý.</p>
+            <a asp-action="CreateCategory" class="btn btn-primary">
+                <i class="fas fa-plus me-1"></i>Thêm chuyên ngành mới
+            </a>
+        </div>
+    }
 </div>
 
-<style>
-.page-header {
-    margin-bottom: 1.5rem;
-}
-
-.page-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.card {
-    border: none;
-    box-shadow: var(--card-shadow);
-}
-
-.card-header {
-    background-color: var(--light-gray);
-    border-bottom: 1px solid var(--border-color);
-}
-
-.table th {
-    background-color: var(--light-gray);
-    font-weight: 600;
-    color: var(--text-color);
-    border-top: none;
-}
-
-.btn-group .btn {
-    margin-right: 2px;
-}
-
-</style>
-
 <script>
+$(document).ready(function() {
+    // Set selected value for status dropdown
+    var currentStatus = '@ViewData["Status"]';
+    if (currentStatus) {
+        $('#status').val(currentStatus);
+    }
+    
+    // Search functionality
+    $('#searchInput').on('input', function() {
+        var searchTerm = $(this).val();
+        var currentUrl = new URL(window.location);
+        currentUrl.searchParams.set('search', searchTerm);
+        currentUrl.searchParams.set('page', '1');
+        window.location.href = currentUrl.toString();
+    });
+
+    // Select all functionality
+    $('#selectAll').change(function() {
+        $('.category-checkbox').prop('checked', $(this).is(':checked'));
+        updateBulkActions();
+    });
+
+    // Individual checkbox change
+    $('.category-checkbox').change(function() {
+        updateBulkActions();
+        
+        // Update select all checkbox
+        var totalCheckboxes = $('.category-checkbox').length;
+        var checkedCheckboxes = $('.category-checkbox:checked').length;
+        
+        if (checkedCheckboxes === 0) {
+            $('#selectAll').prop('indeterminate', false).prop('checked', false);
+        } else if (checkedCheckboxes === totalCheckboxes) {
+            $('#selectAll').prop('indeterminate', false).prop('checked', true);
+        } else {
+            $('#selectAll').prop('indeterminate', true);
+        }
+    });
+
+    // Bulk activate functionality
+    $('#bulkActivateBtn').click(function() {
+        var selectedIds = $('.category-checkbox:checked').map(function() {
+            return parseInt($(this).val());
+        }).get();
+
+        if (selectedIds.length === 0) {
+            toastr.warning('Vui lòng chọn ít nhất một chuyên ngành để kích hoạt.');
+            return;
+        }
+
+        if (confirm(`Bạn có chắc chắn muốn kích hoạt ${selectedIds.length} chuyên ngành đã chọn?`)) {
+            $.ajax({
+                url: '@Url.Action("BulkActivateCategories")',
+                type: 'POST',
+                data: { categoryIds: selectedIds },
+                success: function(response) {
+                    if (response.success) {
+                        toastr.success(response.message);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    toastr.error('Có lỗi xảy ra: ' + error);
+                }
+            });
+        }
+    });
+
+    function updateBulkActions() {
+        var checkedCount = $('.category-checkbox:checked').length;
+        $('#bulkActivateBtn').prop('disabled', checkedCount === 0);
+        
+        if (checkedCount > 0) {
+            $('#bulkActivateBtn').text(`Kích hoạt (${checkedCount})`);
+        } else {
+            $('#bulkActivateBtn').text('Kích hoạt hàng loạt');
+        }
+    }
+});
+
 function deleteCategory(id, name) {
     if (confirm(`Bạn có chắc chắn muốn xóa chuyên ngành "${name}"?\n\nLưu ý: Chỉ có thể xóa khi chuyên ngành không còn tài liệu hoặc người dùng nào.`)) {
         $.ajax({

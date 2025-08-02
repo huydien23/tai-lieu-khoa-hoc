@@ -281,15 +281,39 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         // QUẢN LÝ CHUYÊN NGÀNH
         [HttpGet]
-        public async Task<IActionResult> ManageCategories()
+        public async Task<IActionResult> ManageCategories(int page = 1, string search = "", string status = "")
         {
-            var categories = await _context.ChuyenNganh
+            var query = _context.ChuyenNganh
                 .Include(c => c.TaiLieu)
                 .Include(c => c.NguoiDung)
-                .OrderBy(c => c.TenChuyenNganh)
-                .ToListAsync();
+                .AsQueryable();
 
+            // Apply search filter
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(c => c.TenChuyenNganh.Contains(search) || 
+                                        (c.MoTa != null && c.MoTa.Contains(search)));
+            }
+
+            // Apply status filter
+            if (!string.IsNullOrEmpty(status))
+            {
+                bool isActive = status.ToLower() == "active";
+                query = query.Where(c => c.TrangThaiHoatDong == isActive);
+            }
+
+            // Order by name
+            query = query.OrderBy(c => c.TenChuyenNganh);
+
+            // Apply pagination
+            var pageSize = 10;
+            var categories = await PaginatedList<ChuyenNganh>.CreateAsync(query, page, pageSize);
+
+            // Pass filter values to view
+            ViewData["Search"] = search;
+            ViewData["Status"] = status;
             ViewData["Title"] = "Quản lý Chuyên ngành";
+            
             return View(categories);
         }
 
@@ -401,6 +425,139 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = "Có lỗi xảy ra khi xóa chuyên ngành: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BulkActivateCategories(List<int> categoryIds)
+        {
+            try
+            {
+                var categories = await _context.ChuyenNganh
+                    .Where(c => categoryIds.Contains(c.MaChuyenNganh))
+                    .ToListAsync();
+
+                foreach (var category in categories)
+                {
+                    category.TrangThaiHoatDong = true;
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Log activity
+                var currentUser = await _userManager.GetUserAsync(User);
+                var activity = new SystemActivity
+                {
+                    LoạiHoạtĐộng = ActivityType.BulkCategoryActivation,
+                    TiêuĐề = $"Kích hoạt hàng loạt {categories.Count} chuyên ngành",
+                    MôTả = $"Đã kích hoạt {categories.Count} chuyên ngành thành công",
+                    ThờiGian = DateTime.Now,
+                    MứcĐộƯuTiên = ActivityPriority.TrungBình,
+                    NgườiThựcHiện = currentUser?.Id ?? "System"
+                };
+                await _systemActivityService.CreateActivityAsync(activity);
+
+                return Json(new { success = true, message = $"Đã kích hoạt {categories.Count} chuyên ngành thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExportCategories(string? search, string? status)
+        {
+            try
+            {
+                var query = _context.ChuyenNganh
+                    .Include(c => c.TaiLieu)
+                    .Include(c => c.NguoiDung)
+                    .AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(search))
+                {
+                    query = query.Where(c => c.TenChuyenNganh.Contains(search) || 
+                                            (c.MoTa != null && c.MoTa.Contains(search)));
+                }
+
+                if (!string.IsNullOrEmpty(status))
+                {
+                    bool isActive = status.ToLower() == "active";
+                    query = query.Where(c => c.TrangThaiHoatDong == isActive);
+                }
+
+                var categories = await query.OrderBy(c => c.TenChuyenNganh).ToListAsync();
+
+                using var package = new OfficeOpenXml.ExcelPackage();
+                var worksheet = package.Workbook.Worksheets.Add("Chuyên ngành");
+
+                // Set header row
+                worksheet.Cells[1, 1].Value = "STT";
+                worksheet.Cells[1, 2].Value = "Tên chuyên ngành";
+                worksheet.Cells[1, 3].Value = "Mô tả";
+                worksheet.Cells[1, 4].Value = "Số tài liệu";
+                worksheet.Cells[1, 5].Value = "Số người dùng";
+                worksheet.Cells[1, 6].Value = "Ngày tạo";
+                worksheet.Cells[1, 7].Value = "Trạng thái";
+
+                // Style header row
+                var headerRange = worksheet.Cells[1, 1, 1, 7];
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                headerRange.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(52, 73, 94));
+                headerRange.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                headerRange.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                // Populate data
+                for (int i = 0; i < categories.Count; i++)
+                {
+                    var category = categories[i];
+                    int row = i + 2;
+
+                    worksheet.Cells[row, 1].Value = i + 1;
+                    worksheet.Cells[row, 2].Value = category.TenChuyenNganh;
+                    worksheet.Cells[row, 3].Value = category.MoTa ?? "";
+                    worksheet.Cells[row, 4].Value = category.TaiLieu.Count;
+                    worksheet.Cells[row, 5].Value = category.NguoiDung.Count;
+                    worksheet.Cells[row, 6].Value = category.NgayTao.ToString("dd/MM/yyyy");
+                    worksheet.Cells[row, 7].Value = category.TrangThaiHoatDong ? "Hoạt động" : "Vô hiệu hóa";
+
+                    // Color code status column
+                    if (category.TrangThaiHoatDong)
+                    {
+                        worksheet.Cells[row, 7].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        worksheet.Cells[row, 7].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(76, 175, 80));
+                        worksheet.Cells[row, 7].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    }
+                    else
+                    {
+                        worksheet.Cells[row, 7].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                        worksheet.Cells[row, 7].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(244, 67, 54));
+                        worksheet.Cells[row, 7].Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    }
+                }
+
+                // Auto-fit columns
+                worksheet.Cells.AutoFitColumns();
+
+                // Add borders
+                var dataRange = worksheet.Cells[1, 1, categories.Count + 1, 7];
+                dataRange.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                dataRange.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                dataRange.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                dataRange.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+
+                var fileName = $"DanhSachChuyenNganh_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                return File(package.GetAsByteArray(), contentType, fileName);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Có lỗi xảy ra khi xuất file: " + ex.Message;
+                return RedirectToAction(nameof(ManageCategories));
             }
         }
 
@@ -1576,7 +1733,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
                 if (!string.IsNullOrEmpty(major))
                 {
-                    query = query.Where(u => u.ChuyenNganh.TenChuyenNganh == major);
+                    query = query.Where(u => u.ChuyenNganh != null && u.ChuyenNganh.TenChuyenNganh == major);
                 }
 
                 var users = await query.ToListAsync();
