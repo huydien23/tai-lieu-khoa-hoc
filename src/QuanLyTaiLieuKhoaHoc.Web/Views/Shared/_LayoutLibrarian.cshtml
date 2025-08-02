@@ -152,13 +152,25 @@
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h4 style="color: white;"><i class="fas fa-book-open"></i> Thủ thư</h4>
-                <div class="user-info">
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        var currentUser = await UserManager.GetUserAsync(User);
-                        @(currentUser?.HoTen ?? currentUser?.UserName)
-                    }
+                <div class="sidebar-brand">
+                    <div class="brand-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h4>Thủ thư</h4>
+                        <div class="user-info">
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                var currentUser = await UserManager.GetUserAsync(User);
+                                @(currentUser?.HoTen ?? currentUser?.UserName)
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="sidebar-actions">
+                    <a href="@Url.Action("Logout", "Account")" class="logout-btn-sidebar" title="Đăng xuất">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
                 </div>
             </div>
 
@@ -166,56 +178,79 @@
                 <li>
                     <a href="@Url.Action("Dashboard-Librarian", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard-Librarian" ? "active" : "")">
-                        <i class="fas fa-tachometer-alt"></i> Tổng quan
+                        <i class="fas fa-tachometer-alt"></i> 
+                        <span class="menu-text">Tổng quan</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("ManageDocuments", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageDocuments" ? "active" : "")">
-                        <i class="fas fa-file-alt"></i> Quản lý Tài liệu
+                        <i class="fas fa-file-alt"></i> 
+                        <span class="menu-text">Quản lý Tài liệu</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("ManageBorrowReturn", "Librarian")"
                        class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageBorrowReturn" ? "active" : "")">
-                        <i class="fas fa-exchange-alt"></i> Quản lý mượn trả
+                        <i class="fas fa-exchange-alt"></i> 
+                        <span class="menu-text">Quản lý mượn trả</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("ManageUsers", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageUsers" ? "active" : "")">
-                        <i class="fas fa-users"></i> Quản lý Người dùng
+                        <i class="fas fa-users"></i> 
+                        <span class="menu-text">Quản lý Người dùng</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("ManageCategories", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageCategories" ? "active" : "")">
-                        <i class="fas fa-graduation-cap"></i> Quản lý Chuyên ngành
+                        <i class="fas fa-graduation-cap"></i> 
+                        <span class="menu-text">Quản lý Chuyên ngành</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("ManageDocumentTypes", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "ManageDocumentTypes" ? "active" : "")">
-                        <i class="fas fa-tags"></i> Quản lý Loại tài liệu
+                        <i class="fas fa-tags"></i> 
+                        <span class="menu-text">Quản lý Loại tài liệu</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("Statistics", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "Statistics" ? "active" : "")">
-                        <i class="fas fa-chart-bar"></i> Thống kê
+                        <i class="fas fa-chart-bar"></i> 
+                        <span class="menu-text">Thống kê</span>
                     </a>
                 </li>
                 <li>
                     <a href="@Url.Action("CaiDat", "Librarian")"
                         class="@(ViewContext.RouteData.Values["Action"]?.ToString() == "CaiDat" ? "active" : "")">
-                        <i class="fas fa-cog"></i> Cài đặt
+                        <i class="fas fa-cog"></i> 
+                        <span class="menu-text">Cài đặt</span>
                     </a>
                 </li>
             </ul>
+
+            <!-- Sidebar Footer -->
+            <div class="sidebar-footer">
+                <div class="system-status">
+                    <div class="status-indicator online"></div>
+                    <span class="status-text">Hệ thống hoạt động</span>
+                </div>
+            </div>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
+            <!-- Mobile Toggle Button -->
+            <div class="mobile-toggle">
+                <button class="btn-toggle-sidebar" type="button" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
             <div class="content-area">
                 @if (TempData["SuccessMessage"] != null)
                 {
@@ -269,6 +304,7 @@
         // Update footer stats
         $(document).ready(function() {
             updateFooterStats();
+            initSidebarToggle();
         });
 
         function updateFooterStats() {
@@ -277,6 +313,58 @@
                 $('#userCount').text(Math.floor(Math.random() * 2000) + 1000);
                 $('#documentCount').text(Math.floor(Math.random() * 10000) + 5000);
             }, 30000); // Update every 30 seconds
+        }
+
+        // Sidebar Toggle Functionality
+        function initSidebarToggle() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.createElement('div');
+            overlay.className = 'sidebar-overlay';
+            document.body.appendChild(overlay);
+
+            // Toggle sidebar
+            sidebarToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+                document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+            });
+
+            // Close sidebar when clicking overlay
+            overlay.addEventListener('click', function() {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            });
+
+            // Close sidebar when pressing Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(e) {
+                if (window.innerWidth <= 991.98) {
+                    if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target) && sidebar.classList.contains('show')) {
+                        sidebar.classList.remove('show');
+                        overlay.classList.remove('show');
+                        document.body.style.overflow = '';
+                    }
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 991.98) {
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                    document.body.style.overflow = '';
+                }
+            });
         }
     </script>
 
