@@ -1,135 +1,175 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.DashboardViewModel
+@using QuanLyTaiLieuKhoaHoc.Web.Models
 @{
     ViewData["Title"] = "Quản lý mượn trả";
 }
 
-<div class="borrow-return-container">
-    <!-- Modern Header -->
-    <div class="page-header mb-4">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <h3 class="mb-0">
-                    <i class="fas fa-exchange-alt text-primary me-2"></i>
-                    Quản lý mượn trả tài liệu
-                </h3>
-                <p class="text-muted mb-0 mt-1">Quản lý yêu cầu mượn, theo dõi tài liệu quá hạn và lịch sử mượn trả</p>
+<link rel="stylesheet" href="~/css/borrow-return-management.css" />
+
+<!-- Modern Header -->
+<div class="borrow-return-header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="fas fa-exchange-alt"></i>
             </div>
-            <div class="col-md-6 text-md-end">
-                <div class="header-stats">
-                    <span class="stat-badge">
-                        <i class="fas fa-clipboard-list"></i>
-                        <span id="totalRequests">@Model.YeuCauMuonTra.Count()</span> yêu cầu
-                    </span>
-                    <span class="stat-badge">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span id="overdueCount">0</span> quá hạn
-                    </span>
+            <div class="header-text">
+                <h1>Quản lý mượn trả tài liệu</h1>
+                <p>Quản lý yêu cầu mượn, theo dõi tài liệu quá hạn và lịch sử mượn trả</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchRequests" placeholder="Tìm kiếm theo mã số, họ tên...">
                 </div>
             </div>
+            <button type="button" class="btn-refresh" onclick="loadSoTaiLieuQuaHan()" title="Cập nhật dữ liệu">
+                <i class="fas fa-sync-alt"></i>
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- Main Content -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-white border-0 py-3">
-            <ul class="nav nav-tabs" id="borrowReturnTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
-                            type="button" role="tab" aria-controls="requests" aria-selected="true">
-                        <i class="fas fa-clipboard-list me-2"></i> Yêu cầu mượn
-                        @if (Model.YeuCauMuonTra.Count() > 0)
-                        {
-                            <span class="badge bg-warning ms-2">@Model.YeuCauMuonTra.Count()</span>
-                        }
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="overdue-tab" data-bs-toggle="tab" data-bs-target="#overdue" type="button"
-                            role="tab" aria-controls="overdue" aria-selected="false">
-                        <i class="fas fa-exclamation-triangle me-2"></i> Tài liệu quá hạn
-                        <span id="overdueBadge" class="badge bg-danger ms-2" style="display: none;">0</span>
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
-                            role="tab" aria-controls="history" aria-selected="false">
-                        <i class="fas fa-history me-2"></i> Lịch sử mượn trả
-                    </button>
-                </li>
-            </ul>
+<!-- Stats Cards -->
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon requests">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="tab-content" id="borrowReturnTabsContent">
-                <div class="tab-pane fade show active" id="requests" role="tabpanel" aria-labelledby="requests-tab">
-                    <div class="requests-section">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="searchRequests"
-                                           placeholder="Tìm kiếm theo mã số, họ tên...">
-                                    <button class="btn btn-outline-secondary" type="button" id="searchRequestsButton">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-outline-secondary" id="clearSearchRequests" style="display: none;">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="col-md-6 text-md-end">
-                                <div class="requests-info">
-                                    <span class="text-muted">Tổng cộng: <strong>@Model.YeuCauMuonTra.Count()</strong> yêu cầu chờ duyệt</span>
-                                </div>
+        <div class="stat-number">@Model.YeuCauMuonTra.Count()</div>
+        <div class="stat-label">Yêu cầu chờ duyệt</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon overdue">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+        <div class="stat-number" id="overdueCount">0</div>
+        <div class="stat-label">Tài liệu quá hạn</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon history">
+                <i class="fas fa-history"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.LichSuMuonTra.Count()</div>
+        <div class="stat-label">Lịch sử mượn trả</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.LichSuMuonTra.Count(l => l.TrangThai == TrangThaiPhieu.DaTra)</div>
+        <div class="stat-label">Đã trả hôm nay</div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="card shadow-sm">
+    <div class="card-header bg-white border-0 py-3">
+        <ul class="nav nav-tabs" id="borrowReturnTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
+                        type="button" role="tab" aria-controls="requests" aria-selected="true">
+                    <i class="fas fa-clipboard-list me-2"></i> Yêu cầu mượn
+                    @if (Model.YeuCauMuonTra.Count() > 0)
+                    {
+                        <span class="badge bg-warning ms-2">@Model.YeuCauMuonTra.Count()</span>
+                    }
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="overdue-tab" data-bs-toggle="tab" data-bs-target="#overdue" type="button"
+                        role="tab" aria-controls="overdue" aria-selected="false">
+                    <i class="fas fa-exclamation-triangle me-2"></i> Tài liệu quá hạn
+                    <span id="overdueBadge" class="badge bg-danger ms-2" style="display: none;">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button"
+                        role="tab" aria-controls="history" aria-selected="false">
+                    <i class="fas fa-history me-2"></i> Lịch sử mượn trả
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="borrowReturnTabsContent">
+            <div class="tab-pane fade show active" id="requests" role="tabpanel" aria-labelledby="requests-tab">
+                <div class="requests-section">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="searchRequests"
+                                       placeholder="Tìm kiếm theo mã số, họ tên...">
+                                <button class="btn btn-outline-secondary" type="button" id="searchRequestsButton">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="clearSearchRequests" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
                         </div>
-                        <partial name="~/Views/PhieuMuonTra/DanhSachYeuCauChoDuyet.cshtml" model="Model.YeuCauMuonTra" />
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="overdue" role="tabpanel" aria-labelledby="overdue-tab">
-                    <div id="overdueContent">
-                        <div class="text-center py-4">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div class="col-md-6 text-md-end">
+                            <div class="requests-info">
+                                <span class="text-muted">Tổng cộng: <strong>@Model.YeuCauMuonTra.Count()</strong> yêu cầu chờ duyệt</span>
                             </div>
-                            <p class="mt-2 text-muted">Đang tải danh sách tài liệu quá hạn...</p>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                    <partial name="~/Views/PhieuMuonTra/LichSuMuonTra.cshtml" model="Model.LichSuMuonTra" />
+                    <partial name="~/Views/PhieuMuonTra/DanhSachYeuCauChoDuyet.cshtml" model="Model.YeuCauMuonTra" />
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal lập phiếu mượn -->
-    <div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Nội dung sẽ được load động bằng AJAX -->
+            <div class="tab-pane fade" id="overdue" role="tabpanel" aria-labelledby="overdue-tab">
+                <div id="overdueContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Đang tải danh sách tài liệu quá hạn...</p>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal lập phiếu trả -->
-    <div class="modal fade" id="lapPhieuTraModal" tabindex="-1" aria-labelledby="lapPhieuTraModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Nội dung sẽ được load động bằng AJAX -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal xem chi tiết phiếu -->
-    <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Nội dung sẽ được load động bằng AJAX -->
+            <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                <partial name="~/Views/PhieuMuonTra/LichSuMuonTra.cshtml" model="Model.LichSuMuonTra" />
             </div>
         </div>
     </div>
 </div>
 
+<!-- Modal lập phiếu mượn -->
+<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Nội dung sẽ được load động bằng AJAX -->
+        </div>
+    </div>
+</div>
 
+<!-- Modal lập phiếu trả -->
+<div class="modal fade" id="lapPhieuTraModal" tabindex="-1" aria-labelledby="lapPhieuTraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Nội dung sẽ được load động bằng AJAX -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal xem chi tiết phiếu -->
+<div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Nội dung sẽ được load động bằng AJAX -->
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
