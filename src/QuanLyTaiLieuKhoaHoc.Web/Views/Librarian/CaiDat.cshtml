@@ -3,130 +3,135 @@
     Layout = "~/Views/Shared/_LayoutLibrarian.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0" style="color: #f9f9f9;">
-                        <i class="fas fa-cog"></i> Cài đặt hệ thống
-                    </h5>
+<!-- Modern Settings Header -->
+<div class="modern-header">
+    <div class="header-background">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fas fa-cog"></i>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-header bg-primary text-white">
-                                    <h6 class="mb-0" style="color: #f9f9f9;"><i class="fas fa-user-cog">
-                                        </i> Cài đặt tài khoản</h6>
-                                </div>
-                                <div class="card-body">
-                                    @if (TempData["SuccessMessage"] != null)
-                                    {
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                            @TempData["SuccessMessage"]
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                    }
-                                    @if (TempData["ErrorMessage"] != null)
-                                    {
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                            @TempData["ErrorMessage"]
-                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                                aria-label="Close"></button>
-                                        </div>
-                                    }
-                                    <form asp-controller="Account" asp-action="ChangePassword" method="post"
-                                        autocomplete="off">
-                                        <div class="mb-3">
-                                            <label for="currentPassword" class="form-label">Mật khẩu hiện tại</label>
-                                            <input type="password" class="form-control" id="currentPassword"
-                                                name="currentPassword" placeholder="Nhập mật khẩu hiện tại" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="newPassword" class="form-label">Mật khẩu mới</label>
-                                            <input type="password" class="form-control" id="newPassword"
-                                                name="newPassword" placeholder="Nhập mật khẩu mới" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="confirmPassword" class="form-label">Xác nhận mật khẩu
-                                                mới</label>
-                                            <input type="password" class="form-control" id="confirmPassword"
-                                                name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-save"></i> Đổi mật khẩu
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                <div class="header-text">
+                    <h1 class="header-title">Cài đặt hệ thống</h1>
+                    <p class="header-subtitle">Quản lý tài khoản và bảo trì dữ liệu</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-info">
+                    <div class="current-time">
+                        <i class="fas fa-clock me-2"></i>
+                        <span id="currentDateTime">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                        <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-header bg-info text-white">
-                                    <h6 class="mb-0" style="color: #f9f9f9;"><i class="fas fa-cogs"></i> Cài đặt hệ
-                                        thống</h6>
-                                </div>
-                                <div class="card-body">
-                                    <form>
-                                        <div class="mb-3">
-                                            <label for="maxFileSize" class="form-label">Kích thước tệp tối đa
-                                                (MB)</label>
-                                            <input type="number" class="form-control" id="maxFileSize" value="10"
-                                                min="1" max="100">
-                                            <div class="form-text">Kích thước tối đa cho mỗi tệp tải lên</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="allowedExtensions" class="form-label">Định dạng tệp cho
-                                                phép</label>
-                                            <input type="text" class="form-control" id="allowedExtensions"
-                                                value=".pdf,.doc,.docx,.ppt,.pptx">
-                                            <div class="form-text">Các định dạng tệp được phép tải lên</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="autoApprove"
-                                                    checked>
-                                                <label class="form-check-label" for="autoApprove">
-                                                    Tự động duyệt tài liệu mới
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-info" style="color: #f9f9f9;">
-                                            <i class="fas fa-save"></i> Lưu cài đặt
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+<!-- Notification Container -->
+<div id="notificationContainer" class="notification-container"></div>
+
+<!-- Settings Grid Layout -->
+<div class="settings-grid">
+    <!-- Account Settings Section -->
+    <div class="settings-section">
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="settings-content">
+                    <h5 class="settings-title">Cài đặt tài khoản</h5>
+                    <p class="settings-subtitle">Thay đổi mật khẩu và thông tin cá nhân</p>
+                </div>
+            </div>
+            <div class="settings-card-body">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        @TempData["ErrorMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                
+                <form asp-controller="Account" asp-action="ChangePassword" method="post" autocomplete="off" class="settings-form">
+                    <div class="form-group">
+                        <label for="currentPassword" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Mật khẩu hiện tại
+                        </label>
+                        <input type="password" class="form-control modern-input" id="currentPassword"
+                               name="currentPassword" placeholder="Nhập mật khẩu hiện tại" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword" class="form-label">
+                            <i class="fas fa-key me-2"></i>Mật khẩu mới
+                        </label>
+                        <input type="password" class="form-control modern-input" id="newPassword"
+                               name="newPassword" placeholder="Nhập mật khẩu mới" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="fas fa-check-circle me-2"></i>Xác nhận mật khẩu mới
+                        </label>
+                        <input type="password" class="form-control modern-input" id="confirmPassword"
+                               name="confirmPassword" placeholder="Xác nhận mật khẩu mới" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary modern-btn">
+                            <i class="fas fa-save me-2"></i>Đổi mật khẩu
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Maintenance Section -->
+    <div class="settings-section">
+        <div class="settings-card">
+            <div class="settings-card-header">
+                <div class="settings-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="settings-content">
+                    <h5 class="settings-title">Bảo trì hệ thống</h5>
+                    <p class="settings-subtitle">Công cụ bảo trì và sao lưu dữ liệu</p>
+                </div>
+            </div>
+            <div class="settings-card-body">
+                <div class="maintenance-tools">
+                    <div class="maintenance-tool">
+                        <div class="tool-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h6 class="tool-title">Sao lưu dữ liệu</h6>
+                            <p class="tool-description">Tạo bản sao lưu cơ sở dữ liệu</p>
+                            <button type="button" class="btn btn-outline-primary modern-btn" id="btnSaoLuuDuLieu">
+                                <i class="fas fa-download me-2"></i>Sao lưu dữ liệu
+                            </button>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-header bg-warning text-dark">
-                                    <h6 class="mb-0" style="color: #f9f9f9;"><i class="fas fa-database"></i> Bảo trì hệ
-                                        thống</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <form id="formSaoLuuDuLieu" method="post" action="/Librarian/SaoLuuDuLieu">
-                                                @Html.AntiForgeryToken()
-                                                <div class="d-grid">
-                                                    <button type="button" class="btn btn-outline-primary active"
-                                                        id="btnSaoLuuDuLieu">
-                                                        <i class="fas fa-download"></i> Sao lưu dữ liệu
-                                                    </button>
-                                                </div>
-                                                <small class="text-muted">Tạo bản sao lưu cơ sở dữ liệu</small>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                    
+                    <div class="maintenance-tool">
+                        <div class="tool-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="tool-content">
+                            <h6 class="tool-title">Báo cáo hệ thống</h6>
+                            <p class="tool-description">Tạo báo cáo chi tiết về trạng thái hệ thống</p>
+                            <button type="button" class="btn btn-outline-info modern-btn" id="btnBaoCaoHeThong">
+                                <i class="fas fa-file-alt me-2"></i>Tạo báo cáo
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -141,56 +146,102 @@
         var btnSaoLuu = document.getElementById('btnSaoLuuDuLieu');
         if (btnSaoLuu) {
             btnSaoLuu.addEventListener('click', function () {
-                var form = document.getElementById('formSaoLuuDuLieu');
-                var token = form.querySelector('input[name=__RequestVerificationToken]')?.value;
+                // Thêm loading state
+                btnSaoLuu.disabled = true;
+                btnSaoLuu.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang sao lưu...';
+                
                 fetch('/Librarian/SaoLuuDuLieu', {
                     method: 'POST',
                     headers: {
-                        'RequestVerificationToken': token
+                        'RequestVerificationToken': document.querySelector('input[name=__RequestVerificationToken]')?.value
                     }
                 })
                     .then(res => res.json())
                     .then(data => {
-                        var showAlert = function (type, message) {
-                            var alertDiv = document.createElement('div');
-                            alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show';
-                            alertDiv.role = 'alert';
-                            alertDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>';
-                            var container = document.querySelector('.container-fluid');
-                            container.prepend(alertDiv);
-                            setTimeout(function () {
-                                var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
-                                bsAlert.close();
-                            }, 3000);
-                        };
                         showAlert(data.success ? 'success' : 'danger', data.message);
                     })
                     .catch(() => {
-                        var showAlert = function (type, message) {
-                            var alertDiv = document.createElement('div');
-                            alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show';
-                            alertDiv.role = 'alert';
-                            alertDiv.innerHTML = message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>';
-                            var container = document.querySelector('.container-fluid');
-                            container.prepend(alertDiv);
-                            setTimeout(function () {
-                                var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
-                                bsAlert.close();
-                            }, 3000);
-                        };
                         showAlert('danger', 'Có lỗi xảy ra khi sao lưu dữ liệu!');
+                    })
+                    .finally(() => {
+                        // Khôi phục trạng thái button
+                        btnSaoLuu.disabled = false;
+                        btnSaoLuu.innerHTML = '<i class="fas fa-download me-2"></i>Sao lưu dữ liệu';
                     });
             });
         }
-    });
-    // Ẩn alert sau 3 giây
-    window.addEventListener('DOMContentLoaded', function () {
-        setTimeout(function () {
-            var alerts = document.querySelectorAll('.alert-dismissible');
-            alerts.forEach(function (alert) {
-                var bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                bsAlert.close();
+        
+        // Xử lý nút Báo cáo hệ thống
+        var btnBaoCao = document.getElementById('btnBaoCaoHeThong');
+        if (btnBaoCao) {
+            btnBaoCao.addEventListener('click', function () {
+                btnBaoCao.disabled = true;
+                btnBaoCao.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tạo báo cáo...';
+                
+                // Mở báo cáo trong tab mới
+                window.open('/Librarian/Statistics', '_blank');
+                
+                setTimeout(() => {
+                    btnBaoCao.disabled = false;
+                    btnBaoCao.innerHTML = '<i class="fas fa-file-alt me-2"></i>Tạo báo cáo';
+                }, 1000);
             });
-        }, 3000);
+        }
+        
+        // Cập nhật thời gian hiện tại
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeString = now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN');
+            document.getElementById('currentDateTime').textContent = dateTimeString;
+        }
+        
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Load thông tin hệ thống
+        loadSystemInfo();
     });
+    
+    function loadSystemInfo() {
+        // Load thống kê cơ bản
+        fetch('/Librarian/GetSystemStats')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('totalUsers').textContent = data.totalUsers;
+                    document.getElementById('totalDocuments').textContent = data.totalDocuments;
+                    document.getElementById('todayBorrows').textContent = data.todayBorrows;
+                    document.getElementById('pendingRequests').textContent = data.pendingRequests;
+                    document.getElementById('monthlyBorrows').textContent = data.monthlyBorrows;
+                    document.getElementById('newDocuments').textContent = data.newDocuments;
+                    document.getElementById('newUsers').textContent = data.newUsers;
+                    document.getElementById('overdueDocuments').textContent = data.overdueDocuments;
+                }
+            })
+            .catch(() => {
+                console.log('Không thể load thông tin hệ thống');
+            });
+    }
+    
+    function showAlert(type, message) {
+        // Xóa tất cả thông báo cũ
+        var container = document.getElementById('notificationContainer');
+        container.innerHTML = '';
+        
+        var alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-' + type + ' alert-dismissible fade show';
+        alertDiv.role = 'alert';
+        alertDiv.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + ' me-2"></i>' + 
+                           message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Đóng"></button>';
+        
+        container.appendChild(alertDiv);
+        
+        // Auto hide after 5 seconds
+        setTimeout(function () {
+            var bsAlert = bootstrap.Alert.getOrCreateInstance(alertDiv);
+            bsAlert.close();
+        }, 5000);
+    }
+    
+
 </script>

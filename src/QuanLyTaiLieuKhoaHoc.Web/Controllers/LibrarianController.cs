@@ -1146,6 +1146,71 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return View();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetSystemStats()
+        {
+            try
+            {
+                var today = DateTime.Today;
+                var startOfMonth = new DateTime(today.Year, today.Month, 1);
+
+                // Tổng số người dùng
+                var totalUsers = await _context.Users.CountAsync();
+
+                // Tổng số tài liệu
+                var totalDocuments = await _context.TaiLieu.CountAsync();
+
+                // Phiếu mượn hôm nay
+                var todayBorrows = await _context.PhieuMuonTra
+                    .Where(p => p.NgayMuon.Date == today)
+                    .CountAsync();
+
+                // Yêu cầu chờ duyệt
+                var pendingRequests = await _context.PhieuMuonTra
+                    .Where(p => p.TrangThai == TrangThaiPhieu.ChoDuyet)
+                    .CountAsync();
+
+                // Phiếu mượn trong tháng
+                var monthlyBorrows = await _context.PhieuMuonTra
+                    .Where(p => p.NgayMuon >= startOfMonth)
+                    .CountAsync();
+
+                                       // Tài liệu được thêm mới trong tháng
+                       var newDocuments = await _context.TaiLieu
+                           .Where(t => t.NgayTaiLen >= startOfMonth)
+                           .CountAsync();
+
+                // Người dùng mới trong tháng
+                var newUsers = await _context.Users
+                    .Where(u => u.NgayTao >= startOfMonth)
+                    .CountAsync();
+
+                // Tài liệu quá hạn
+                var overdueDocuments = await _context.PhieuMuonTra
+                    .Where(p => p.TrangThai == TrangThaiPhieu.DaDuyet && 
+                               p.NgayTraDuKien < today && 
+                               p.NgayTra == null)
+                    .CountAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    totalUsers,
+                    totalDocuments,
+                    todayBorrows,
+                    pendingRequests,
+                    monthlyBorrows,
+                    newDocuments,
+                    newUsers,
+                    overdueDocuments
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
         // Sao lưu dữ liệu 
         [HttpPost]
         public IActionResult SaoLuuDuLieu()

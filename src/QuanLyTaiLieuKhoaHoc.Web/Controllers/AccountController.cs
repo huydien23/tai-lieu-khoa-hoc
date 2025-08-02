@@ -321,14 +321,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                         UserName = "thuthu@library.edu.vn",
                         Email = "thuthu@library.edu.vn",
                         EmailConfirmed = true,
-                        HoTen = "Nguyễn Thị Hoa",
+                        HoTen = "Nguyễn Huy Điền",
                         VaiTro = VaiTroNguoiDung.ThuThu,
                         MaChuyenNganh = 1,
                         MaSo = "TT001",
                         NgayTao = DateTime.Now,
                         TrangThaiHoatDong = true
                     };
-                    var result = await _userManager.CreateAsync(librarianUser, "ThuThu@2024");
+                    var result = await _userManager.CreateAsync(librarianUser, "thuthu123");
 
                     if (result.Succeeded)
                     {

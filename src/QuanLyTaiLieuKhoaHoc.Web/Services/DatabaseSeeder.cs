@@ -64,7 +64,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     NgayTao = DateTime.Now,
                     TrangThaiHoatDong = true
                 };
-                await userManager.CreateAsync(librarianUser, "ThuThu@2024");
+                await userManager.CreateAsync(librarianUser, "thuthu123");
             }
 
             // Lấy lại ID các loại tài liệu
