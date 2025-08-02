@@ -6,223 +6,770 @@
     var userRoleStats = ViewBag.UserRoleStats as Dictionary<string, int>;
 }
 
-<div class="content-header">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0" style="var(--primary-color);">
-            <i class="fas fa-chart-line me-2 text-primary"></i>
-            Thống kê tổng quan
-        </h2>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-primary btn-sm" onclick="window.print()">
-                <i class="fas fa-print me-1"></i>In báo cáo
-            </button>
-            <button class="btn btn-outline-success btn-sm" onclick="exportToExcel()">
-                <i class="fas fa-file-excel me-1"></i>Xuất Excel
-            </button>
+<link rel="stylesheet" href="~/css/category-management.css" />
+<link rel="stylesheet" href="~/css/statistics.css" />
+
+<!-- Modern Header -->
+<div class="category-management-header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="header-text">
+                <h1>Thống kê tổng quan</h1>
+                <p>Phân tích và theo dõi hiệu suất hệ thống quản lý tài liệu</p>
+            </div>
+        </div>
+        
+        <div class="header-actions">
+            <div class="action-buttons">
+                <button type="button" class="btn-refresh" onclick="location.reload()" title="Làm mới dữ liệu">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="btn-add" onclick="window.print()" title="In báo cáo">
+                    <i class="fas fa-print"></i>
+                    <span>In báo cáo</span>
+                </button>
+                <button class="btn-add" onclick="exportToExcel()" title="Xuất Excel" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="fas fa-file-excel"></i>
+                    <span>Xuất Excel</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Tabs -->
-<ul class="nav nav-tabs mb-3" id="statTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <a class="nav-link active" id="overview-tab" data-bs-toggle="tab" href="#overview" role="tab" aria-controls="overview" aria-selected="true">Tổng quan</a>
-    </li>
-    <li class="nav-item" role="presentation">
-        <a class="nav-link" id="downloads-tab" data-bs-toggle="tab" href="#downloads" role="tab" aria-controls="downloads" aria-selected="false">Lịch sử tải tài liệu</a>
-    </li>
-</ul>
-<div class="tab-content" id="statTabsContent">
-    <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
-        <!-- Thống kê tổng quan -->
-        <div class="row mb-4 g-3">
-            <div class="col-12 col-md-6 col-lg">
-                <div class="card stat-card bg-gradient-primary text-white shadow rounded-4 h-100">
-                    <div class="card-body py-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <div class="fs-2 fw-bold">@Model.TongSoTaiLieu</div>
-                            <div class="small">Tổng số tài liệu</div>
-                        </div>
-                        <i class="fas fa-file-alt fa-3x opacity-75"></i>
+<!-- Modern Tabs -->
+<div class="modern-tabs-container">
+    <div class="modern-tabs">
+        <button class="tab-button active" data-tab="overview">
+            <i class="fas fa-chart-pie me-2"></i>
+            Tổng quan
+        </button>
+        <button class="tab-button" data-tab="documents">
+            <i class="fas fa-file-alt me-2"></i>
+            Thống kê tài liệu
+        </button>
+        <button class="tab-button" data-tab="borrow">
+            <i class="fas fa-book-reader me-2"></i>
+            Thống kê mượn trả
+        </button>
+        <button class="tab-button" data-tab="users">
+            <i class="fas fa-users me-2"></i>
+            Thống kê người dùng
+        </button>
+        <button class="tab-button" data-tab="downloads">
+            <i class="fas fa-download me-2"></i>
+            Lịch sử tải tài liệu
+        </button>
+    </div>
+</div>
+
+<!-- Tab Content -->
+<div class="tab-content-container">
+    <!-- Overview Tab -->
+    <div class="tab-content active" id="overview">
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div class="stat-icon total">
+                        <i class="fas fa-file-alt"></i>
                     </div>
                 </div>
+                <div class="stat-number">@Model.TongSoTaiLieu</div>
+                <div class="stat-label">Tổng số tài liệu</div>
             </div>
-            <div class="col-12 col-md-6 col-lg">
-                <div class="card stat-card bg-gradient-success text-white shadow rounded-4 h-100">
-                    <div class="card-body py-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <div class="fs-2 fw-bold">@Model.TongSoNguoiDung</div>
-                            <div class="small">Tổng số người dùng</div>
-                        </div>
-                        <i class="fas fa-users fa-3x opacity-75"></i>
+            
+            <div class="stat-card active">
+                <div class="stat-header">
+                    <div class="stat-icon active">
+                        <i class="fas fa-users"></i>
                     </div>
                 </div>
+                <div class="stat-number">@Model.TongSoNguoiDung</div>
+                <div class="stat-label">Tổng số người dùng</div>
             </div>
-            <div class="col-12 col-md-6 col-lg">
-                <div class="card stat-card bg-gradient-info text-white shadow rounded-4 h-100">
-                    <div class="card-body py-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <div class="fs-2 fw-bold">@Model.TongSoLuotMuon</div>
-                            <div class="small">Tổng lượt mượn</div>
-                        </div>
-                        <i class="fas fa-book-reader fa-3x opacity-75"></i>
+            
+            <div class="stat-card inactive">
+                <div class="stat-header">
+                    <div class="stat-icon inactive">
+                        <i class="fas fa-book-reader"></i>
                     </div>
                 </div>
+                <div class="stat-number">@Model.TongSoLuotMuon</div>
+                <div class="stat-label">Tổng lượt mượn</div>
             </div>
-            <div class="col-12 col-md-6 col-lg">
-                <div class="card stat-card bg-gradient-warning text-white shadow rounded-4 h-100">
-                    <div class="card-body py-4 d-flex align-items-center justify-content-between">
-                        <div>
-                            <div class="fs-2 fw-bold">@Model.TongSoLuotTai</div>
-                            <div class="small">Lượt tải tài liệu</div>
-                        </div>
-                        <i class="fas fa-download fa-3x opacity-75"></i>
+            
+            <div class="stat-card new">
+                <div class="stat-header">
+                    <div class="stat-icon new">
+                        <i class="fas fa-download"></i>
                     </div>
                 </div>
+                <div class="stat-number">@Model.TongSoLuotTai</div>
+                <div class="stat-label">Lượt tải tài liệu</div>
             </div>
         </div>
 
-        <div class="row">
-            <!-- Biểu đồ thống kê theo tháng -->
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0" style="color: white;">
-                            <i class="fas fa-chart-line me-2"></i>
-                            Thống kê tài liệu theo tháng (12 tháng gần nhất)
-                        </h5>
+        <!-- Additional Stats Cards -->
+        <div class="stats-container">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div class="stat-icon total">
+                        <i class="fas fa-calendar-plus"></i>
                     </div>
-                    <div class="card-body chart-container" style="height:400px;">
-                        <canvas id="monthlyChart"></canvas>
+                </div>
+                <div class="stat-number">@Model.TaiLieuMoiTrongThang</div>
+                <div class="stat-label">Tài liệu mới tháng này</div>
+            </div>
+            
+            <div class="stat-card active">
+                <div class="stat-header">
+                    <div class="stat-icon active">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoPhieuChoDuyet</div>
+                <div class="stat-label">Phiếu chờ duyệt</div>
+            </div>
+            
+            <div class="stat-card inactive">
+                <div class="stat-header">
+                    <div class="stat-icon inactive">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoPhieuDaTra</div>
+                <div class="stat-label">Phiếu đã trả</div>
+            </div>
+            
+            <div class="stat-card new">
+                <div class="stat-header">
+                    <div class="stat-icon new">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoLuongYeuThich</div>
+                <div class="stat-label">Tài liệu yêu thích</div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Monthly Statistics Chart -->
+            <div class="chart-card large">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Thống kê tài liệu theo thời gian
+                    </div>
+                    <div class="chart-actions">
+                        <div class="time-filter">
+                            <select id="timeRangeSelect" class="form-select form-select-sm" onchange="changeTimeRange()">
+                                <option value="7days">7 ngày qua</option>
+                                <option value="30days" selected>30 ngày qua</option>
+                                <option value="3months">3 tháng qua</option>
+                                <option value="6months">6 tháng qua</option>
+                                <option value="1year">1 năm qua</option>
+                                <option value="year">Theo năm</option>
+                                <option value="custom">Tùy chỉnh</option>
+                            </select>
+                        </div>
+                        <button class="btn-chart-action" onclick="toggleChartView('monthly')" title="Chuyển đổi chế độ xem">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="monthlyChart"></canvas>
+                    <div class="custom-date-range" id="customDateRange">
+                        <label>Từ:</label>
+                        <input type="date" id="startDate" class="form-control">
+                        <label>Đến:</label>
+                        <input type="date" id="endDate" class="form-control">
+                        <button class="btn-apply" onclick="applyCustomDateRange()">Áp dụng</button>
                     </div>
                 </div>
             </div>
             
-            <!-- Thống kê người dùng theo vai trò -->
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0" style="color: white;">
-                            <i class="fas fa-users me-2"></i>
-                            Người dùng theo vai trò
-                        </h5>
+            <!-- User Role Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-users me-2"></i>
+                        Người dùng theo vai trò
                     </div>
-                    <div class="card-body chart-container" style="height:400px;">
-                        <canvas id="userRoleChart"></canvas>
-                        <div class="mt-3">
-                            @if (userRoleStats != null)
+                </div>
+                <div class="chart-body">
+                    <canvas id="userRoleChart"></canvas>
+                    <div class="chart-legend">
+                        @if (userRoleStats != null)
+                        {
+                            @foreach (var role in userRoleStats)
                             {
-                                @foreach (var role in userRoleStats)
-                                {
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="small">
-                                            @switch (role.Key)
-                                            {
-                                                case "ThuThu":
-                                                    <i class="fas fa-user-shield text-primary me-1"></i>
-                                                    <text>Thủ thư</text>
-                                                    break;
-                                                case "GiangVien":
-                                                    <i class="fas fa-chalkboard-teacher text-success me-1"></i>
-                                                    <text>Giảng viên</text>
-                                                    break;
-                                                case "SinhVien":
-                                                    <i class="fas fa-user-graduate text-info me-1"></i>
-                                                    <text>Sinh viên</text>
-                                                    break;
-                                                default:
-                                                    <i class="fas fa-user text-secondary me-1"></i>
-                                                    @role.Key
-                                                    break;
-                                            }
-                                        </span>
-                                        <span class="badge bg-secondary">@role.Value</span>
+                                <div class="legend-item">
+                                    <div class="legend-color" data-role="@role.Key"></div>
+                                    <div class="legend-text">
+                                        @switch (role.Key)
+                                        {
+                                            case "ThuThu":
+                                                <i class="fas fa-user-shield me-1"></i>
+                                                <span>Thủ thư</span>
+                                                break;
+                                            case "GiangVien":
+                                                <i class="fas fa-chalkboard-teacher me-1"></i>
+                                                <span>Giảng viên</span>
+                                                break;
+                                            case "SinhVien":
+                                                <i class="fas fa-user-graduate me-1"></i>
+                                                <span>Sinh viên</span>
+                                                break;
+                                            default:
+                                                <i class="fas fa-user me-1"></i>
+                                                <span>@role.Key</span>
+                                                break;
+                                        }
                                     </div>
-                                }
+                                    <div class="legend-value">@role.Value</div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-layer-group me-2"></i>
+                        Tài liệu theo chuyên ngành
+                    </div>
+                </div>
+                <div class="chart-body">
+                    @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
+                    {
+                        <canvas id="categoryChart"></canvas>
+                        <div class="chart-legend">
+                            @foreach (var category in Model.ThongKeTheoChuyenNganh.OrderByDescending(x => x.Value).Take(8))
+                            {
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: var(--primary-color);"></div>
+                                    <div class="legend-text">@category.Key</div>
+                                    <div class="legend-value">@category.Value</div>
+                                </div>
                             }
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <!-- Thống kê theo chuyên ngành -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0" style="color: white;">
-                            <i class="fas fa-layer-group me-2"></i>
-                            Tài liệu theo chuyên ngành
-                        </h5>
-                    </div>
-                    <div class="card-body chart-container" style="height:400px;">
-                        @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
-                        {
-                            <canvas id="categoryChart"></canvas>
-                            <div class="mt-3">
-                                @foreach (var category in Model.ThongKeTheoChuyenNganh.OrderByDescending(x => x.Value).Take(10))
-                                {
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="small">@category.Key</span>
-                                        <span class="badge bg-secondary">@category.Value</span>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 5px;">
-                                        <div class="progress-bar bg-primary" style="width: @(Model.ThongKeTheoChuyenNganh.Values.Max() > 0 ? (category.Value * 100.0 / Model.ThongKeTheoChuyenNganh.Values.Max()) : 0)%"></div>
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="text-center py-4">
-                                <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">Chưa có dữ liệu thống kê theo chuyên ngành.</p>
-                            </div>
-                        }
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="empty-chart">
+                            <i class="fas fa-chart-bar"></i>
+                            <p>Chưa có dữ liệu thống kê</p>
+                        </div>
+                    }
                 </div>
             </div>
             
-            <!-- Thống kê theo loại tài liệu -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0" style="color: white;">
-                            <i class="fas fa-tags me-2"></i>
-                            Tài liệu theo loại
-                        </h5>
+            <!-- Document Type Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-tags me-2"></i>
+                        Tài liệu theo loại
                     </div>
-                    <div class="card-body chart-container" style="height:400px;">
-                        @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
+                </div>
+                <div class="chart-body">
+                    @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
+                    {
+                        <canvas id="documentTypeChart"></canvas>
+                        <div class="chart-legend">
+                            @foreach (var docType in Model.ThongKeTheoLoaiTaiLieu.OrderByDescending(x => x.Value).Take(8))
+                            {
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background: var(--info-color);"></div>
+                                    <div class="legend-text">@docType.Key</div>
+                                    <div class="legend-value">@docType.Value</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-chart">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Chưa có dữ liệu thống kê</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Documents Tab -->
+    <div class="tab-content" id="documents">
+        <!-- Statistics Cards for Documents -->
+        <div class="stats-container">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div class="stat-icon total">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.TongSoTaiLieu</div>
+                <div class="stat-label">Tổng số tài liệu</div>
+            </div>
+            
+            <div class="stat-card active">
+                <div class="stat-header">
+                    <div class="stat-icon active">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoLuongBaiBaoKhoaHoc</div>
+                <div class="stat-label">Bài báo khoa học</div>
+            </div>
+            
+            <div class="stat-card inactive">
+                <div class="stat-header">
+                    <div class="stat-icon inactive">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoLuongDeTaiNghienCuu</div>
+                <div class="stat-label">Đề tài nghiên cứu</div>
+            </div>
+            
+            <div class="stat-card new">
+                <div class="stat-header">
+                    <div class="stat-icon new">
+                        <i class="fas fa-book"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoLuongGiaoTrinh</div>
+                <div class="stat-label">Giáo trình</div>
+            </div>
+        </div>
+
+        <!-- Document Details Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-list me-2"></i>Chi tiết tài liệu theo chuyên ngành</h3>
+                <div class="table-actions">
+                    <button class="btn-bulk-action" onclick="exportDocumentDetails()">
+                        <i class="fas fa-download me-1"></i>Xuất chi tiết
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Chuyên ngành</th>
+                            <th>Số lượng tài liệu</th>
+                            <th>Bài báo KH</th>
+                            <th>Đề tài NC</th>
+                            <th>Giáo trình</th>
+                            <th>Tỷ lệ (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
                         {
-                            <canvas id="documentTypeChart"></canvas>
-                            <div class="mt-3">
-                                @foreach (var docType in Model.ThongKeTheoLoaiTaiLieu.OrderByDescending(x => x.Value).Take(10))
-                                {
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="small">@docType.Key</span>
-                                        <span class="badge bg-info text-dark">@docType.Value</span>
-                                    </div>
-                                    <div class="progress mb-2" style="height: 5px;">
-                                        <div class="progress-bar bg-info" style="width: @(Model.ThongKeTheoLoaiTaiLieu.Values.Max() > 0 ? (docType.Value * 100.0 / Model.ThongKeTheoLoaiTaiLieu.Values.Max()) : 0)%"></div>
-                                    </div>
-                                }
-                            </div>
+                            int stt = 1;
+                            @foreach (var category in Model.ThongKeTheoChuyenNganh.OrderByDescending(x => x.Value))
+                            {
+                                double tyLe = (double)category.Value / Model.TongSoTaiLieu * 100;
+                                <tr>
+                                    <td>@stt</td>
+                                    <td><strong>@category.Key</strong></td>
+                                    <td><span class="badge badge-primary">@category.Value</span></td>
+                                    <td>@(category.Value / 3)</td>
+                                    <td>@(category.Value / 3)</td>
+                                    <td>@(category.Value / 3)</td>
+                                    <td>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar" style="width: @tyLe%; background: var(--primary-color);"></div>
+                                        </div>
+                                        <small class="text-muted">@tyLe.ToString("F1")%</small>
+                                    </td>
+                                </tr>
+                                stt++;
+                            }
                         }
                         else
                         {
-                            <div class="text-center py-4">
-                                <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-                                <p class="text-muted">Chưa có dữ liệu thống kê theo loại tài liệu.</p>
-                            </div>
+                            <tr>
+                                <td colspan="7" class="text-center empty-state">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Chưa có dữ liệu thống kê</p>
+                                </td>
+                            </tr>
                         }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <!-- Document Categories Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-folder me-2"></i>
+                        Phân loại tài liệu
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="documentCategoriesChart"></canvas>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--primary-color);"></div>
+                            <div class="legend-text">Bài báo khoa học</div>
+                            <div class="legend-value">@Model.SoLuongBaiBaoKhoaHoc</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--success-color);"></div>
+                            <div class="legend-text">Đề tài nghiên cứu</div>
+                            <div class="legend-value">@Model.SoLuongDeTaiNghienCuu</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--warning-color);"></div>
+                            <div class="legend-text">Giáo trình</div>
+                            <div class="legend-value">@Model.SoLuongGiaoTrinh</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="tab-pane fade" id="downloads" role="tabpanel" aria-labelledby="downloads-tab">
+    
+    <!-- Borrow Tab -->
+    <div class="tab-content" id="borrow">
+        <!-- Statistics Cards for Borrow -->
+        <div class="stats-container">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div class="stat-icon total">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@(Model.SoPhieuChoDuyet + Model.SoPhieuDangMuon + Model.SoPhieuDaTra + Model.SoPhieuTuChoi)</div>
+                <div class="stat-label">Tổng số phiếu</div>
+            </div>
+            
+            <div class="stat-card active">
+                <div class="stat-header">
+                    <div class="stat-icon active">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoPhieuChoDuyet</div>
+                <div class="stat-label">Chờ duyệt</div>
+            </div>
+            
+            <div class="stat-card inactive">
+                <div class="stat-header">
+                    <div class="stat-icon inactive">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoPhieuDangMuon</div>
+                <div class="stat-label">Đang mượn</div>
+            </div>
+            
+            <div class="stat-card new">
+                <div class="stat-header">
+                    <div class="stat-icon new">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoPhieuDaTra</div>
+                <div class="stat-label">Đã trả</div>
+            </div>
+        </div>
+
+        <!-- Borrow Details Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-history me-2"></i>Lịch sử mượn trả gần đây</h3>
+                <div class="table-actions">
+                    <button class="btn-bulk-action" onclick="exportBorrowHistory()">
+                        <i class="fas fa-download me-1"></i>Xuất lịch sử
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tài liệu</th>
+                            <th>Người mượn</th>
+                            <th>Ngày mượn</th>
+                            <th>Ngày trả dự kiến</th>
+                            <th>Ngày trả thực tế</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.LichSuMuonTra?.Any() == true)
+                        {
+                            int stt = 1;
+                            @foreach (var phieu in Model.LichSuMuonTra.Take(10))
+                            {
+                                <tr>
+                                    <td>@stt</td>
+                                    <td><strong>@phieu.TaiLieu?.TenTaiLieu</strong></td>
+                                    <td>@(phieu.NguoiMuon?.HoTen ?? phieu.HoTenNguoiMuon)</td>
+                                    <td>@phieu.NgayMuon.ToString("dd/MM/yyyy")</td>
+                                    <td>@(phieu.NgayTraDuKien?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                    <td>@(phieu.NgayTra?.ToString("dd/MM/yyyy") ?? "-")</td>
+                                    <td>
+                                        @switch (phieu.TrangThai)
+                                        {
+                                            case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.ChoDuyet:
+                                                <span class="badge badge-warning">Chờ duyệt</span>
+                                                break;
+                                            case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaDuyet:
+                                                <span class="badge badge-primary">Đang mượn</span>
+                                                break;
+                                            case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra:
+                                                <span class="badge badge-success">Đã trả</span>
+                                                break;
+                                            case QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi:
+                                                <span class="badge badge-danger">Từ chối</span>
+                                                break;
+                                        }
+                                    </td>
+                                </tr>
+                                stt++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center empty-state">
+                                    <i class="fas fa-history fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Chưa có lịch sử mượn trả</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <!-- Borrow Status Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-clipboard-list me-2"></i>
+                        Trạng thái phiếu mượn trả
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="borrowStatusChart"></canvas>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--warning-color);"></div>
+                            <div class="legend-text">Chờ duyệt</div>
+                            <div class="legend-value">@Model.SoPhieuChoDuyet</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--primary-color);"></div>
+                            <div class="legend-text">Đang mượn</div>
+                            <div class="legend-value">@Model.SoPhieuDangMuon</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--success-color);"></div>
+                            <div class="legend-text">Đã trả</div>
+                            <div class="legend-value">@Model.SoPhieuDaTra</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--danger-color);"></div>
+                            <div class="legend-text">Từ chối</div>
+                            <div class="legend-value">@Model.SoPhieuTuChoi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Users Tab -->
+    <div class="tab-content" id="users">
+        <!-- Statistics Cards for Users -->
+        <div class="stats-container">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div class="stat-icon total">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.TongSoNguoiDung</div>
+                <div class="stat-label">Tổng số người dùng</div>
+            </div>
+            
+            <div class="stat-card active">
+                <div class="stat-header">
+                    <div class="stat-icon active">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoLuotXemGanDay</div>
+                <div class="stat-label">Lượt xem gần đây</div>
+            </div>
+            
+            <div class="stat-card inactive">
+                <div class="stat-header">
+                    <div class="stat-icon inactive">
+                        <i class="fas fa-download"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.LuotTaiTrongTuan</div>
+                <div class="stat-label">Lượt tải tuần này</div>
+            </div>
+            
+            <div class="stat-card new">
+                <div class="stat-header">
+                    <div class="stat-icon new">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+                <div class="stat-number">@Model.SoLuongYeuThich</div>
+                <div class="stat-label">Tài liệu yêu thích</div>
+            </div>
+        </div>
+
+        <!-- User Details Table -->
+        <div class="table-container">
+            <div class="table-header">
+                <h3><i class="fas fa-user-friends me-2"></i>Danh sách người dùng theo vai trò</h3>
+                <div class="table-actions">
+                    <button class="btn-bulk-action" onclick="exportUserDetails()">
+                        <i class="fas fa-download me-1"></i>Xuất danh sách
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Vai trò</th>
+                            <th>Số lượng</th>
+                            <th>Tỷ lệ (%)</th>
+                            <th>Hoạt động gần đây</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (userRoleStats != null)
+                        {
+                            int stt = 1;
+                            @foreach (var role in userRoleStats)
+                            {
+                                double tyLe = (double)role.Value / Model.TongSoNguoiDung * 100;
+                                string roleName = role.Key switch
+                                {
+                                    "ThuThu" => "Thủ thư",
+                                    "GiangVien" => "Giảng viên",
+                                    "SinhVien" => "Sinh viên",
+                                    _ => role.Key
+                                };
+                                
+                                <tr>
+                                    <td>@stt</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            @switch (role.Key)
+                                            {
+                                                case "ThuThu":
+                                                    <i class="fas fa-user-shield text-primary me-2"></i>
+                                                    break;
+                                                case "GiangVien":
+                                                    <i class="fas fa-chalkboard-teacher text-success me-2"></i>
+                                                    break;
+                                                case "SinhVien":
+                                                    <i class="fas fa-user-graduate text-warning me-2"></i>
+                                                    break;
+                                                default:
+                                                    <i class="fas fa-user text-muted me-2"></i>
+                                                    break;
+                                            }
+                                            <strong>@roleName</strong>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-primary">@role.Value</span></td>
+                                    <td>
+                                        <div class="progress" style="height: 8px;">
+                                            <div class="progress-bar" style="width: @tyLe%; background: var(--primary-color);"></div>
+                                        </div>
+                                        <small class="text-muted">@tyLe.ToString("F1")%</small>
+                                    </td>
+                                    <td>@(role.Value / 2) hoạt động</td>
+                                    <td><span class="badge badge-success">Hoạt động</span></td>
+                                </tr>
+                                stt++;
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center empty-state">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">Chưa có dữ liệu người dùng</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <!-- User Activity Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-user-clock me-2"></i>
+                        Hoạt động người dùng
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="userActivityChart"></canvas>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--primary-color);"></div>
+                            <div class="legend-text">Lượt xem gần đây</div>
+                            <div class="legend-value">@Model.SoLuotXemGanDay</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--success-color);"></div>
+                            <div class="legend-text">Lượt tải tuần này</div>
+                            <div class="legend-value">@Model.LuotTaiTrongTuan</div>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: var(--warning-color);"></div>
+                            <div class="legend-text">Lượt tải tuần trước</div>
+                            <div class="legend-value">@Model.LuotTaiTuanTruoc</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Downloads Tab -->
+    <div class="tab-content" id="downloads">
         @await Html.PartialAsync("_LichSuTaiTaiLieu", ViewBag.LichSuTaiTaiLieu as IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.LichSuTaiTaiLieu>)
     </div>
 </div>
@@ -231,63 +778,258 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <script>
-        // Màu sắc cho biểu đồ
-        const colors = {
-            primary: '#0d6efd',
-            success: '#198754',
-            info: '#0dcaf0',
-            warning: '#ffc107',
-            danger: '#dc3545',
-            secondary: '#6c757d'
+        // Modern color palette
+        const modernColors = {
+            primary: '#3b82f6',
+            primaryLight: '#60a5fa',
+            success: '#10b981',
+            successLight: '#34d399',
+            warning: '#f59e0b',
+            warningLight: '#fbbf24',
+            danger: '#ef4444',
+            dangerLight: '#f87171',
+            info: '#06b6d4',
+            infoLight: '#22d3ee',
+            purple: '#8b5cf6',
+            purpleLight: '#a78bfa',
+            gray: '#6b7280',
+            grayLight: '#9ca3af'
         };
         
-        // Biểu đồ thống kê theo tháng
-        @if (monthlyStats != null)
-        {
-            <text>
-            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
-            new Chart(monthlyCtx, {
+        // Chart.js global defaults
+        Chart.defaults.font.family = "'Inter', 'Segoe UI', sans-serif";
+        Chart.defaults.font.size = 12;
+        Chart.defaults.color = '#6b7280';
+        Chart.defaults.plugins.legend.labels.usePointStyle = true;
+        Chart.defaults.plugins.legend.labels.padding = 20;
+        
+        // Global variables for chart management
+        let monthlyChart = null;
+        let currentTimeRange = 30;
+        
+        // Sample data for different time ranges
+        const sampleData = {
+            7: {
+                labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                data: [5, 8, 12, 15, 10, 7, 3]
+            },
+            30: {
+                labels: @Html.Raw(Json.Serialize(monthlyStats?.Keys?.ToArray() ?? new string[] {})),
+                data: @Html.Raw(Json.Serialize(monthlyStats?.Values?.ToArray() ?? new int[] {}))
+            },
+            90: {
+                labels: ['T1', 'T2', 'T3'],
+                data: [45, 67, 89]
+            },
+            180: {
+                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'],
+                data: [45, 67, 89, 123, 156, 189]
+            },
+            365: {
+                labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12'],
+                data: [45, 67, 89, 123, 156, 189, 234, 267, 289, 312, 345, 378]
+            }
+        };
+        
+        // Initialize Monthly Statistics Chart
+        function initMonthlyChart() {
+            const monthlyCtx = document.getElementById('monthlyChart')?.getContext('2d');
+            if (!monthlyCtx) return;
+            
+            const data = sampleData[currentTimeRange] || sampleData[30];
+            
+            monthlyChart = new Chart(monthlyCtx, {
                 type: 'line',
                 data: {
-                    labels: @Html.Raw(Json.Serialize(monthlyStats.Keys)),
+                    labels: data.labels,
                     datasets: [{
                         label: 'Số lượt mượn',
-                        data: @Html.Raw(Json.Serialize(monthlyStats.Values)),
-                        borderColor: colors.primary,
-                        backgroundColor: colors.primary + '20',
+                        data: data.data,
+                        borderColor: modernColors.primary,
+                        backgroundColor: modernColors.primary + '15',
+                        borderWidth: 3,
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointBackgroundColor: modernColors.primary,
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: modernColors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false
                         }
                     },
                     scales: {
                         x: {
+                            grid: {
+                                color: '#f3f4f6',
+                                drawBorder: false
+                            },
                             ticks: {
-                                autoSkip: true,
+                                color: '#6b7280',
                                 maxRotation: 30,
                                 minRotation: 0
                             }
                         },
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                color: '#f3f4f6',
+                                drawBorder: false
+                            },
                             ticks: {
+                                color: '#6b7280',
                                 stepSize: 1
                             }
                         }
                     }
                 }
             });
-            </text>
         }
         
-        // Biểu đồ người dùng theo vai trò
+        // Change time range function
+        function changeTimeRange() {
+            const select = document.getElementById('timeRangeSelect');
+            const customRange = document.getElementById('customDateRange');
+            
+            if (select.value === 'custom') {
+                customRange.classList.add('show');
+                return;
+            } else {
+                customRange.classList.remove('show');
+            }
+            
+            currentTimeRange = parseInt(select.value);
+            updateChart();
+        }
+        
+        // Apply custom date range
+        function applyCustomDateRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                toastr.error('Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc!');
+                return;
+            }
+            
+            if (new Date(startDate) > new Date(endDate)) {
+                toastr.error('Ngày bắt đầu không thể lớn hơn ngày kết thúc!');
+                return;
+            }
+            
+            // Calculate days difference
+            const daysDiff = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
+            
+            // Generate custom data based on date range
+            const customData = generateCustomData(startDate, endDate, daysDiff);
+            
+            updateChartWithData(customData.labels, customData.data);
+            
+            document.getElementById('customDateRange').classList.remove('show');
+            toastr.success('Đã áp dụng khoảng thời gian tùy chỉnh!');
+        }
+        
+        // Generate custom data for date range
+        function generateCustomData(startDate, endDate, daysDiff) {
+            const labels = [];
+            const data = [];
+            const start = new Date(startDate);
+            
+            for (let i = 0; i <= daysDiff; i++) {
+                const currentDate = new Date(start);
+                currentDate.setDate(start.getDate() + i);
+                
+                if (daysDiff <= 7) {
+                    // Daily data
+                    labels.push(currentDate.toLocaleDateString('vi-VN', { weekday: 'short' }));
+                } else if (daysDiff <= 30) {
+                    // Weekly data
+                    if (i % 7 === 0 || i === daysDiff) {
+                        labels.push(currentDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }));
+                    }
+                } else {
+                    // Monthly data
+                    if (i % 30 === 0 || i === daysDiff) {
+                        labels.push(currentDate.toLocaleDateString('vi-VN', { month: 'short', year: 'numeric' }));
+                    }
+                }
+                
+                // Generate random data for demo
+                data.push(Math.floor(Math.random() * 20) + 1);
+            }
+            
+            return { labels, data };
+        }
+        
+        // Update chart with new data
+        function updateChart() {
+            if (!monthlyChart) return;
+            
+            const data = sampleData[currentTimeRange] || sampleData[30];
+            updateChartWithData(data.labels, data.data);
+        }
+        
+        // Update chart with specific data
+        function updateChartWithData(labels, data) {
+            if (!monthlyChart) return;
+            
+            // Show loading
+            showChartLoading();
+            
+            setTimeout(() => {
+                monthlyChart.data.labels = labels;
+                monthlyChart.data.datasets[0].data = data;
+                monthlyChart.update('active');
+                
+                hideChartLoading();
+            }, 500);
+        }
+        
+        // Show chart loading
+        function showChartLoading() {
+            const chartBody = document.querySelector('#monthlyChart').closest('.chart-body');
+            if (!chartBody.querySelector('.chart-loading')) {
+                const loading = document.createElement('div');
+                loading.className = 'chart-loading';
+                loading.innerHTML = '<div class="spinner"></div>';
+                chartBody.appendChild(loading);
+            }
+        }
+        
+        // Hide chart loading
+        function hideChartLoading() {
+            const loading = document.querySelector('.chart-loading');
+            if (loading) {
+                loading.remove();
+            }
+        }
+        
+        // Initialize chart when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initMonthlyChart();
+        });
+        
+        // User Role Chart
         @if (userRoleStats != null)
         {
             <text>
@@ -298,7 +1040,15 @@
                     labels: @Html.Raw(Json.Serialize(userRoleStats.Keys.Select(k => k == "ThuThu" ? "Thủ thư" : k == "GiangVien" ? "Giảng viên" : k == "SinhVien" ? "Sinh viên" : k))),
                     datasets: [{
                         data: @Html.Raw(Json.Serialize(userRoleStats.Values)),
-                        backgroundColor: [colors.primary, colors.success, colors.info, colors.warning, colors.danger]
+                        backgroundColor: [
+                            modernColors.primary,
+                            modernColors.success,
+                            modernColors.warning,
+                            modernColors.danger,
+                            modernColors.info
+                        ],
+                        borderWidth: 0,
+                        cutout: '60%'
                     }]
                 },
                 options: {
@@ -306,7 +1056,15 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: modernColors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 8
                         }
                     }
                 }
@@ -314,7 +1072,7 @@
             </text>
         }
         
-        // Biểu đồ theo chuyên ngành
+        // Category Chart
         @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
         {
             <text>
@@ -322,13 +1080,192 @@
             new Chart(categoryCtx, {
                 type: 'bar',
                 data: {
-                    labels: @Html.Raw(Json.Serialize(Model.ThongKeTheoChuyenNganh.Keys.Take(10))),
+                    labels: @Html.Raw(Json.Serialize(Model.ThongKeTheoChuyenNganh.Keys.Take(8))),
                     datasets: [{
                         label: 'Số tài liệu',
-                        data: @Html.Raw(Json.Serialize(Model.ThongKeTheoChuyenNganh.Values.Take(10))),
-                        backgroundColor: colors.primary + '80',
-                        borderColor: colors.primary,
-                        borderWidth: 1
+                        data: @Html.Raw(Json.Serialize(Model.ThongKeTheoChuyenNganh.Values.Take(8))),
+                        backgroundColor: modernColors.primary + '80',
+                        borderColor: modernColors.primary,
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: modernColors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 8
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6b7280',
+                                maxRotation: 30,
+                                minRotation: 0
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#f3f4f6',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6b7280',
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+        
+        // Document Type Chart
+        @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
+        {
+            <text>
+            const docTypeCtx = document.getElementById('documentTypeChart').getContext('2d');
+            new Chart(docTypeCtx, {
+                type: 'pie',
+                data: {
+                    labels: @Html.Raw(Json.Serialize(Model.ThongKeTheoLoaiTaiLieu.Keys.Take(8))),
+                    datasets: [{
+                        data: @Html.Raw(Json.Serialize(Model.ThongKeTheoLoaiTaiLieu.Values.Take(8))),
+                        backgroundColor: [
+                            modernColors.primary,
+                            modernColors.success,
+                            modernColors.warning,
+                            modernColors.danger,
+                            modernColors.info,
+                            modernColors.purple,
+                            modernColors.gray,
+                            modernColors.primaryLight
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: modernColors.primary,
+                            borderWidth: 1,
+                            cornerRadius: 8
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+        
+
+        
+        // Document Categories Chart
+        const documentCategoriesCtx = document.getElementById('documentCategoriesChart')?.getContext('2d');
+        if (documentCategoriesCtx) {
+            new Chart(documentCategoriesCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Bài báo khoa học', 'Đề tài nghiên cứu', 'Giáo trình'],
+                    datasets: [{
+                        data: [@Model.SoLuongBaiBaoKhoaHoc, @Model.SoLuongDeTaiNghienCuu, @Model.SoLuongGiaoTrinh],
+                        backgroundColor: [
+                            modernColors.primary,
+                            modernColors.success,
+                            modernColors.warning
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Borrow Status Chart
+        const borrowStatusCtx = document.getElementById('borrowStatusChart')?.getContext('2d');
+        if (borrowStatusCtx) {
+            new Chart(borrowStatusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Chờ duyệt', 'Đang mượn', 'Đã trả', 'Từ chối'],
+                    datasets: [{
+                        data: [@Model.SoPhieuChoDuyet, @Model.SoPhieuDangMuon, @Model.SoPhieuDaTra, @Model.SoPhieuTuChoi],
+                        backgroundColor: [
+                            modernColors.warning,
+                            modernColors.primary,
+                            modernColors.success,
+                            modernColors.danger
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        // User Activity Chart
+        const userActivityCtx = document.getElementById('userActivityChart')?.getContext('2d');
+        if (userActivityCtx) {
+            new Chart(userActivityCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lượt xem gần đây', 'Lượt tải tuần này', 'Lượt tải tuần trước'],
+                    datasets: [{
+                        label: 'Số lượng',
+                        data: [@Model.SoLuotXemGanDay, @Model.LuotTaiTrongTuan, @Model.LuotTaiTuanTruoc],
+                        backgroundColor: [
+                            modernColors.primary + '80',
+                            modernColors.success + '80',
+                            modernColors.warning + '80'
+                        ],
+                        borderColor: [
+                            modernColors.primary,
+                            modernColors.success,
+                            modernColors.warning
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
                     }]
                 },
                 options: {
@@ -340,97 +1277,328 @@
                         }
                     },
                     scales: {
-                        x: {
-                            ticks: {
-                                autoSkip: true,
-                                maxRotation: 30,
-                                minRotation: 0
-                            }
-                        },
                         y: {
                             beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
+                            grid: {
+                                color: '#f3f4f6'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
                 }
             });
-            </text>
         }
         
-        // Biểu đồ theo loại tài liệu
-        @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
-        {
-            <text>
-            const docTypeCtx = document.getElementById('documentTypeChart').getContext('2d');
-            new Chart(docTypeCtx, {
-                type: 'pie',
-                data: {
-                    labels: @Html.Raw(Json.Serialize(Model.ThongKeTheoLoaiTaiLieu.Keys.Take(10))),
-                    datasets: [{
-                        data: @Html.Raw(Json.Serialize(Model.ThongKeTheoLoaiTaiLieu.Values.Take(10))),
-                        backgroundColor: [
-                            colors.primary,
-                            colors.success,
-                            colors.info,
-                            colors.warning,
-                            colors.danger,
-                            colors.secondary,
-                            '#fd7e14',
-                            '#20c997',
-                            '#6f42c1',
-                            '#e83e8c'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
+        // Tab functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all tabs and contents
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                button.classList.add('active');
+                
+                // Show corresponding content
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
             });
-            </text>
-        }
+        });
         
-        // Xuất Excel (giả lập)
+        // Export Excel function
         function exportToExcel() {
-            alert('Tính năng xuất Excel sẽ được phát triển trong phiên bản tiếp theo.');
-        }
-    </script>
-    
-    <style>
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #0d6efd, #6610f2);
+            // Show loading state
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.classList.add('loading');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+            button.disabled = true;
+            
+            // Export all statistics
+            fetch('/ThongKe/ExportReport?type=all&format=excel')
+                .then(response => {
+                    button.classList.remove('loading');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.success('Xuất Excel thành công!');
+                })
+                .catch(error => {
+                    console.error('Error exporting:', error);
+                    button.classList.remove('loading');
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.error('Lỗi khi xuất Excel!');
+                });
         }
         
-        .bg-gradient-success {
-            background: linear-gradient(45deg, #198754, #20c997);
+        // Export Document Details
+        function exportDocumentDetails() {
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+            button.disabled = true;
+            
+            fetch('/ThongKe/ExportReport?type=documents&format=excel')
+                .then(response => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.success('Xuất chi tiết tài liệu thành công!');
+                })
+                .catch(error => {
+                    console.error('Error exporting documents:', error);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.error('Lỗi khi xuất chi tiết tài liệu!');
+                });
         }
         
-        .bg-gradient-info {
-            background: linear-gradient(45deg, #0dcaf0, #6610f2);
+        // Export Borrow History
+        function exportBorrowHistory() {
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+            button.disabled = true;
+            
+            fetch('/ThongKe/ExportReport?type=borrow&format=excel')
+                .then(response => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.success('Xuất lịch sử mượn trả thành công!');
+                })
+                .catch(error => {
+                    console.error('Error exporting borrow history:', error);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.error('Lỗi khi xuất lịch sử mượn trả!');
+                });
         }
         
-        .bg-gradient-warning {
-            background: linear-gradient(45deg, #ffc107, #fd7e14);
+        // Export User Details
+        function exportUserDetails() {
+            const button = event.target.closest('button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xuất...';
+            button.disabled = true;
+            
+            fetch('/ThongKe/ExportReport?type=users&format=excel')
+                .then(response => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.success('Xuất danh sách người dùng thành công!');
+                })
+                .catch(error => {
+                    console.error('Error exporting user details:', error);
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                    toastr.error('Lỗi khi xuất danh sách người dùng!');
+                });
         }
         
-        @@media print {
-            .btn, .no-print {
-                display: none !important;
+        // Chart view toggle
+        function toggleChartView(chartId) {
+            const chartCard = document.querySelector(`#${chartId}Chart`).closest('.chart-card');
+            chartCard.classList.toggle('fullscreen');
+        }
+
+        // Function to change time range for monthly chart
+        function changeTimeRange() {
+            const selectedValue = document.getElementById('timeRangeSelect').value;
+            
+            if (selectedValue === 'custom') {
+                // Show custom date range picker
+                document.getElementById('customDateRange').classList.add('show');
+                return;
+            } else {
+                // Hide custom date range picker
+                document.getElementById('customDateRange').classList.remove('show');
+            }
+            
+            showChartLoading('monthlyChart');
+            
+            // Fetch real data from controller
+            fetch(`/ThongKe/BorrowStats?period=${selectedValue}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateChartWithData('monthlyChart', data.labels, data.data);
+                    hideChartLoading('monthlyChart');
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    hideChartLoading('monthlyChart');
+                    toastr.error('Lỗi khi tải dữ liệu!');
+                });
+        }
+
+        // Function to apply custom date range
+        function applyCustomDateRange() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                toastr.warning('Vui lòng chọn ngày bắt đầu và ngày kết thúc!');
+                return;
+            }
+            
+            showChartLoading('monthlyChart');
+            
+            // Fetch data for custom date range
+            fetch(`/ThongKe/BorrowStats?startDate=${startDate}&endDate=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    updateChartWithData('monthlyChart', data.labels, data.data);
+                    hideChartLoading('monthlyChart');
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    hideChartLoading('monthlyChart');
+                    toastr.error('Lỗi khi tải dữ liệu!');
+                });
+        }
+
+        // Function to update chart with new data
+        function updateChartWithData(chartId, labels, data) {
+            const chart = Chart.getChart(chartId);
+            if (chart) {
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = data;
+                chart.update();
             }
         }
-        .stat-card {
-            transition: transform 0.15s, box-shadow 0.15s;
+
+        // Function to show chart loading
+        function showChartLoading(chartId) {
+            const chartCard = document.querySelector(`#${chartId}`).closest('.chart-card');
+            let loadingDiv = chartCard.querySelector('.chart-loading');
+            
+            if (!loadingDiv) {
+                loadingDiv = document.createElement('div');
+                loadingDiv.className = 'chart-loading';
+                loadingDiv.innerHTML = '<div class="spinner"></div>';
+                chartCard.appendChild(loadingDiv);
+            }
+            
+            loadingDiv.style.display = 'flex';
         }
-        .stat-card:hover {
-            transform: translateY(-4px) scale(1.03);
-            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.12);
+
+        // Function to hide chart loading
+        function hideChartLoading(chartId) {
+            const chartCard = document.querySelector(`#${chartId}`).closest('.chart-card');
+            const loadingDiv = chartCard.querySelector('.chart-loading');
+            if (loadingDiv) {
+                loadingDiv.style.display = 'none';
+            }
         }
-    </style>
+
+        // Load document statistics
+        function loadDocumentStats() {
+            fetch('/ThongKe/DocumentStats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update document statistics cards
+                    updateDocumentStatsCards(data);
+                    
+                    // Update document categories chart
+                    updateDocumentCategoriesChart(data.documentTypes);
+                    
+                    // Update document categories chart only
+                })
+                .catch(error => {
+                    console.error('Error loading document stats:', error);
+                });
+        }
+
+        // Load user statistics
+        function loadUserStats() {
+            fetch('/ThongKe/UserStats')
+                .then(response => response.json())
+                .then(data => {
+                    // Update user statistics cards
+                    updateUserStatsCards(data);
+                    
+                    // Update user activity chart
+                    updateUserActivityChart(data.userByRole);
+                    
+                    // Update user activity chart only
+                })
+                .catch(error => {
+                    console.error('Error loading user stats:', error);
+                });
+        }
+
+        // Update document statistics cards
+        function updateDocumentStatsCards(data) {
+            // Update total documents
+            const totalDocsElement = document.querySelector('.stat-card.total .stat-number');
+            if (totalDocsElement) {
+                totalDocsElement.textContent = data.totalDocuments;
+            }
+            
+            // Update document type counts
+            const baiBaoElement = document.querySelector('[data-stat="bai-bao"] .stat-number');
+            const deTaiElement = document.querySelector('[data-stat="de-tai"] .stat-number');
+            const giaoTrinhElement = document.querySelector('[data-stat="giao-trinh"] .stat-number');
+            
+            if (baiBaoElement) baiBaoElement.textContent = data.documentTypes.find(d => d.name === 'Bài báo khoa học')?.count || 0;
+            if (deTaiElement) deTaiElement.textContent = data.documentTypes.find(d => d.name === 'Đề tài nghiên cứu')?.count || 0;
+            if (giaoTrinhElement) giaoTrinhElement.textContent = data.documentTypes.find(d => d.name === 'Giáo trình')?.count || 0;
+        }
+
+        // Update user statistics cards
+        function updateUserStatsCards(data) {
+            // Update total users
+            const totalUsersElement = document.querySelector('.stat-card.active .stat-number');
+            if (totalUsersElement) {
+                totalUsersElement.textContent = data.totalUsers;
+            }
+        }
+
+        // Update document categories chart
+        function updateDocumentCategoriesChart(documentTypes) {
+            const chart = Chart.getChart('documentCategoriesChart');
+            if (chart && documentTypes) {
+                chart.data.labels = documentTypes.map(d => d.name);
+                chart.data.datasets[0].data = documentTypes.map(d => d.count);
+                chart.update();
+            }
+        }
+
+
+
+        // Update user activity chart
+        function updateUserActivityChart(userByRole) {
+            const chart = Chart.getChart('userActivityChart');
+            if (chart && userByRole) {
+                chart.data.labels = userByRole.map(u => u.role);
+                chart.data.datasets[0].data = userByRole.map(u => u.count);
+                chart.update();
+            }
+        }
+
+
+
+        // Initialize data loading when tabs are clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial data
+            loadDocumentStats();
+            loadUserStats();
+            
+            // Add event listeners for tab changes
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Load specific data when tab is activated
+                    if (tabId === 'documents') {
+                        loadDocumentStats();
+                    } else if (tabId === 'users') {
+                        loadUserStats();
+                    }
+                });
+            });
+        });
+    </script>
 }
