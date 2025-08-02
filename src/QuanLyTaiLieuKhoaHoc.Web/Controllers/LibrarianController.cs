@@ -147,7 +147,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ManageUsers()
+        public async Task<IActionResult> ManageUsers(int page = 1, string search = "", string role = "", string status = "", string major = "")
         {
             var currentUser = await _userManager.GetUserAsync(User);
             if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
@@ -155,12 +155,54 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 TempData["ErrorMessage"] = "Bạn không có quyền truy cập trang này!";
                 return RedirectToAction("Index", "Home");
             }
-            var users = await _context.Users
-                .Include(u => u.ChuyenNganh)
-                .OrderBy(u => u.HoTen)
-                .ToListAsync();
 
+            const int pageSize = 10;
+            var query = _context.Users
+                .Include(u => u.ChuyenNganh)
+                .AsQueryable();
+
+            // Apply search filter
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(u => u.HoTen.Contains(search) || u.Email.Contains(search) || u.MaSo.Contains(search));
+            }
+
+            // Apply role filter
+            if (!string.IsNullOrEmpty(role))
+            {
+                if (Enum.TryParse<VaiTroNguoiDung>(role, out var roleEnum))
+                {
+                    query = query.Where(u => u.VaiTro == roleEnum);
+                }
+            }
+
+            // Apply status filter
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (bool.TryParse(status, out var statusBool))
+                {
+                    query = query.Where(u => u.TrangThaiHoatDong == statusBool);
+                }
+            }
+
+            // Apply major filter
+            if (!string.IsNullOrEmpty(major))
+            {
+                query = query.Where(u => u.ChuyenNganh.TenChuyenNganh == major);
+            }
+
+            // Order by name
+            query = query.OrderBy(u => u.HoTen);
+
+            var users = await PaginatedList<NguoiDung>.CreateAsync(query, page, pageSize);
+
+            // Pass filter values to view
+            ViewData["CurrentSearch"] = search;
+            ViewData["CurrentRole"] = role;
+            ViewData["CurrentStatus"] = status;
+            ViewData["CurrentMajor"] = major;
             ViewData["Title"] = "Quản lý Người dùng";
+
             return View(users);
         }
 
@@ -1539,19 +1581,72 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
                 var users = await query.ToListAsync();
 
-                // Create Excel file content (CSV format for simplicity)
-                var csv = new System.Text.StringBuilder();
-                csv.AppendLine("Họ tên,Email,Mã số,Vai trò,Chuyên ngành,Trạng thái,Ngày tạo");
+                // Generate Excel file using EPPlus
+                using var package = new OfficeOpenXml.ExcelPackage();
+                var worksheet = package.Workbook.Worksheets.Add("Danh sách người dùng");
 
-                foreach (var user in users)
+                // Set header row
+                worksheet.Cells[1, 1].Value = "STT";
+                worksheet.Cells[1, 2].Value = "Họ tên";
+                worksheet.Cells[1, 3].Value = "Email";
+                worksheet.Cells[1, 4].Value = "Mã số";
+                worksheet.Cells[1, 5].Value = "Vai trò";
+                worksheet.Cells[1, 6].Value = "Chuyên ngành";
+                worksheet.Cells[1, 7].Value = "Trạng thái";
+                worksheet.Cells[1, 8].Value = "Ngày tạo";
+
+                // Style header row
+                using (var range = worksheet.Cells[1, 1, 1, 8])
                 {
-                    csv.AppendLine($"\"{user.HoTen}\",\"{user.Email}\",\"{user.MaSo}\",\"{user.VaiTro}\",\"{user.ChuyenNganh?.TenChuyenNganh ?? ""}\",\"{(user.TrangThaiHoatDong ? "Hoạt động" : "Không hoạt động")}\",\"{user.NgayTao:dd/MM/yyyy}\"");
+                    range.Style.Font.Bold = true;
+                    range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(52, 73, 94));
+                    range.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                    range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 }
 
-                var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
-                var fileName = $"danh_sach_nguoi_dung_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+                // Add data rows
+                for (int i = 0; i < users.Count; i++)
+                {
+                    var user = users[i];
+                    var row = i + 2;
 
-                return File(bytes, "text/csv", fileName);
+                    worksheet.Cells[row, 1].Value = i + 1;
+                    worksheet.Cells[row, 2].Value = user.HoTen;
+                    worksheet.Cells[row, 3].Value = user.Email;
+                    worksheet.Cells[row, 4].Value = user.MaSo;
+                    worksheet.Cells[row, 5].Value = user.VaiTro.ToString();
+                    worksheet.Cells[row, 6].Value = user.ChuyenNganh?.TenChuyenNganh ?? "";
+                    worksheet.Cells[row, 7].Value = user.TrangThaiHoatDong ? "Hoạt động" : "Không hoạt động";
+                    worksheet.Cells[row, 8].Value = user.NgayTao.ToString("dd/MM/yyyy");
+
+                    // Style status column
+                    if (user.TrangThaiHoatDong)
+                    {
+                        worksheet.Cells[row, 7].Style.Font.Color.SetColor(System.Drawing.Color.Green);
+                    }
+                    else
+                    {
+                        worksheet.Cells[row, 7].Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                    }
+                }
+
+                // Auto-fit columns
+                worksheet.Cells.AutoFitColumns();
+
+                // Add borders
+                using (var range = worksheet.Cells[1, 1, users.Count + 1, 8])
+                {
+                    range.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    range.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    range.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    range.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                }
+
+                var fileName = $"danh_sach_nguoi_dung_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                var bytes = package.GetAsByteArray();
+
+                return File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }
             catch (Exception ex)
             {

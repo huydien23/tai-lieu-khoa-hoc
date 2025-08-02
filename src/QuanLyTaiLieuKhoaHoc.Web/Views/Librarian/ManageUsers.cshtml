@@ -1,4 +1,4 @@
-@model IEnumerable<QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung>
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.PaginatedList<QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung>
 
 @{
     ViewData["Title"] = "Quản lý Người dùng";
@@ -41,7 +41,7 @@
                 <i class="fas fa-users"></i>
             </div>
         </div>
-        <div class="stat-number">@Model?.Count()</div>
+        <div class="stat-number">@Model?.TotalCount</div>
         <div class="stat-label">Tổng người dùng</div>
     </div>
     <div class="stat-card">
@@ -279,6 +279,102 @@
         </table>
     </div>
 </div>
+
+<!-- Pagination -->
+@if (Model != null && Model.TotalPages > 1)
+{
+    <div class="pagination-container">
+        <nav aria-label="Phân trang">
+            <ul class="pagination justify-content-center">
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ManageUsers", new { page = Model.PageIndex - 1, search = ViewData["CurrentSearch"], role = ViewData["CurrentRole"], status = ViewData["CurrentStatus"], major = ViewData["CurrentMajor"] })">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="fas fa-chevron-left"></i>
+                        </span>
+                    </li>
+                }
+
+                @{
+                    var startPage = Math.Max(1, Model.PageIndex - 2);
+                    var endPage = Math.Min(Model.TotalPages, Model.PageIndex + 2);
+                }
+
+                @if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ManageUsers", new { page = 1, search = ViewData["CurrentSearch"], role = ViewData["CurrentRole"], status = ViewData["CurrentStatus"], major = ViewData["CurrentMajor"] })">1</a>
+                    </li>
+                    @if (startPage > 2)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    if (i == Model.PageIndex)
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("ManageUsers", new { page = i, search = ViewData["CurrentSearch"], role = ViewData["CurrentRole"], status = ViewData["CurrentStatus"], major = ViewData["CurrentMajor"] })">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (endPage < Model.TotalPages)
+                {
+                    @if (endPage < Model.TotalPages - 1)
+                    {
+                        <li class="page-item disabled">
+                            <span class="page-link">...</span>
+                        </li>
+                    }
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ManageUsers", new { page = Model.TotalPages, search = ViewData["CurrentSearch"], role = ViewData["CurrentRole"], status = ViewData["CurrentStatus"], major = ViewData["CurrentMajor"] })">@Model.TotalPages</a>
+                    </li>
+                }
+
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("ManageUsers", new { page = Model.PageIndex + 1, search = ViewData["CurrentSearch"], role = ViewData["CurrentRole"], status = ViewData["CurrentStatus"], major = ViewData["CurrentMajor"] })">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">
+                            <i class="fas fa-chevron-right"></i>
+                        </span>
+                    </li>
+                }
+            </ul>
+        </nav>
+        <div class="pagination-info text-center mt-2">
+            <small class="text-muted">
+                Hiển thị @((Model.PageIndex - 1) * Model.PageSize + 1) - @Math.Min(Model.PageIndex * Model.PageSize, Model.TotalCount) trong tổng số @Model.TotalCount người dùng
+            </small>
+        </div>
+    </div>
+}
         </div>
     </div>
 </div>
