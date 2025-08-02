@@ -76,7 +76,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         TàiLiệuQuáHạn,
         TàiLiệuMớiĐượcThêm,
         ThốngKêHoạtĐộng,
-        ThôngBáoHệThống
+        ThôngBáoHệThống,
+        BulkUserActivation
     }
 
     public enum ActivityPriority

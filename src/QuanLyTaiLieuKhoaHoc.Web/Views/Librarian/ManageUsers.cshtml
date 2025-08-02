@@ -4,150 +4,288 @@
     ViewData["Title"] = "Quản lý Người dùng";
 }
 
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0" style="color: #f9f9f9;" >
-                    <i class="fas fa-users me-2"></i>
-                    Quản lý Người dùng
-                </h5>
-                <button type="button" class="btn btn-light btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#addUserModal">
-                    <i class="fas fa-plus me-1"></i>
-                    Thêm người dùng
-                </button>
+<link rel="stylesheet" href="~/css/user-management.css" />
+
+<!-- Modern Header -->
+<div class="user-management-header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="fas fa-users"></i>
             </div>
-            <div class="card-body">
+            <div class="header-text">
+                <h1>Quản lý Người dùng</h1>
+                <p>Quản lý tài khoản người dùng trong hệ thống</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="userSearch" placeholder="Tìm kiếm người dùng...">
+                </div>
+            </div>
+            <button type="button" class="btn-add-user" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="fas fa-plus"></i>
+                Thêm người dùng
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon users">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model?.Count()</div>
+        <div class="stat-label">Tổng người dùng</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon active">
+                <i class="fas fa-user-check"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model?.Count(u => u.TrangThaiHoatDong)</div>
+        <div class="stat-label">Đang hoạt động</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon inactive">
+                <i class="fas fa-user-times"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model?.Count(u => !u.TrangThaiHoatDong)</div>
+        <div class="stat-label">Đã vô hiệu</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon new">
+                <i class="fas fa-user-plus"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model?.Count(u => u.NgayTao.Date == DateTime.Today)</div>
+        <div class="stat-label">Mới hôm nay</div>
+    </div>
+</div>
+
+<!-- Filters Section -->
+<div class="filters-section">
+    <div class="filters-container">
+        <div class="filter-group">
+            <label class="filter-label">Vai trò</label>
+            <select class="filter-select" id="roleFilter">
+                <option value="">Tất cả vai trò</option>
+                <option value="ThuThu">Thủ thư</option>
+                <option value="GiangVien">Giảng viên</option>
+                <option value="SinhVien">Sinh viên</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Trạng thái</label>
+            <select class="filter-select" id="statusFilter">
+                <option value="">Tất cả trạng thái</option>
+                <option value="true">Đang hoạt động</option>
+                <option value="false">Đã vô hiệu</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Chuyên ngành</label>
+            <select class="filter-select" id="majorFilter">
+                <option value="">Tất cả chuyên ngành</option>
+                @if (Model != null)
+                {
+                    var majors = Model.Where(u => u.ChuyenNganh != null).Select(u => u.ChuyenNganh.TenChuyenNganh).Distinct();
+                    foreach (var major in majors)
+                    {
+                        <option value="@major">@major</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="filter-group">
+            <label class="filter-label">Ngày tạo</label>
+            <select class="filter-select" id="dateFilter">
+                <option value="">Tất cả thời gian</option>
+                <option value="today">Hôm nay</option>
+                <option value="week">Tuần này</option>
+                <option value="month">Tháng này</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <button type="button" class="btn-filter" onclick="applyFilters()">
+                <i class="fas fa-filter me-2"></i>Lọc
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="table-container">
+    <div class="table-header">
+        <h3 class="table-title">
+            <i class="fas fa-list me-2"></i>Danh sách người dùng
+        </h3>
+        <div class="table-actions">
+            <button type="button" class="btn-bulk-action" onclick="exportUsers()">
+                <i class="fas fa-download me-2"></i>Xuất Excel
+            </button>
+            <button type="button" class="btn-bulk-action" onclick="bulkActivate()">
+                <i class="fas fa-check me-2"></i>Kích hoạt hàng loạt
+            </button>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table" id="usersTable">
+            <thead>
+                <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                    </th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Mã số</th>
+                    <th>Vai trò</th>
+                    <th>Chuyên ngành</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày tạo</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
                 @if (Model?.Any() == true)
                 {
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Họ tên</th>
-                                    <th>Email</th>
-                                    <th>Mã số</th>
-                                    <th>Vai trò</th>
-                                    <th>Chuyên ngành</th>
-                                    <th>Trạng thái</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var user in Model)
+                    @foreach (var user in Model)
+                    {
+                        <tr data-user-id="@user.Id" data-role="@user.VaiTro" data-status="@user.TrangThaiHoatDong" data-major="@(user.ChuyenNganh?.TenChuyenNganh ?? "")" data-date="@user.NgayTao.ToString("yyyy-MM-dd")">
+                            <td>
+                                <input type="checkbox" class="user-checkbox" value="@user.Id">
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-3">
+                                        @user.HoTen.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">@user.HoTen</div>
+                                        <small class="text-muted">@user.Email</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@user.Email</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(user.MaSo))
                                 {
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-circle me-2">
-                                                    @user.HoTen.Substring(0, 1).ToUpper()
-                                                </div>
-                                                <span>@user.HoTen</span>
-                                            </div>
-                                        </td>
-                                        <td>@user.Email</td>
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(user.MaSo))
-                                            {
-                                                <span class="badge bg-secondary">@user.MaSo</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">-</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @switch (user.VaiTro)
-                                            {
-                                                case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.ThuThu:
-                                                    <span class="badge bg-primary">Thủ thư</span>
-                                                    break;
-                                                case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.GiangVien:
-                                                    <span class="badge bg-success">Giảng viên</span>
-                                                    break;
-                                                case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.SinhVien:
-                                                    <span class="badge bg-info">Sinh viên</span>
-                                                    break;
-                                                default:
-                                                    <span class="badge bg-secondary">Không xác định</span>
-                                                    break;
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (user.ChuyenNganh != null)
-                                            {
-                                                @user.ChuyenNganh.TenChuyenNganh
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">-</span>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (user.TrangThaiHoatDong)
-                                            {
-                                                <span class="badge bg-success">Hoạt động</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="badge bg-warning">Không hoạt động</span>
-                                            }
-                                        </td>
-                                        <td>@user.NgayTao.ToString("dd/MM/yyyy")</td>
-                                        <td>
-                                            <div class="btn-group btn-group-sm" role="group">
-                                                <button type="button" class="btn btn-outline-primary" title="Chỉnh sửa"
-                                                    onclick="editUser('@user.Id', '@user.HoTen')">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-outline-info" title="Đổi mật khẩu"
-                                                    onclick="changePassword('@user.Id', '@user.HoTen', '@user.Email')">
-                                                    <i class="fas fa-key"></i>
-                                                </button>
-                                                @if (user.TrangThaiHoatDong)
-                                                {
-                                                    <button type="button" class="btn btn-outline-warning" title="Vô hiệu hóa"
-                                                        onclick="toggleUserStatus('@user.Id', '@user.HoTen', false)">
-                                                        <i class="fas fa-ban"></i>
-                                                    </button>
-                                                }
-                                                else
-                                                {
-                                                    <button type="button" class="btn btn-outline-success" title="Kích hoạt"
-                                                        onclick="toggleUserStatus('@user.Id', '@user.HoTen', true)">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                }
-                                                <button type="button" class="btn btn-outline-danger" title="Xóa"
-                                                    onclick="deleteUser('@user.Id', '@user.HoTen')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                    <span class="badge bg-secondary">@user.MaSo</span>
                                 }
-                            </tbody>
-                        </table>
-                    </div>
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @switch (user.VaiTro)
+                                {
+                                    case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.ThuThu:
+                                        <span class="badge bg-primary">Thủ thư</span>
+                                        break;
+                                    case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.GiangVien:
+                                        <span class="badge bg-success">Giảng viên</span>
+                                        break;
+                                    case QuanLyTaiLieuKhoaHoc.Web.Models.VaiTroNguoiDung.SinhVien:
+                                        <span class="badge bg-info">Sinh viên</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">Không xác định</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                @if (user.ChuyenNganh != null)
+                                {
+                                    @user.ChuyenNganh.TenChuyenNganh
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>
+                                @if (user.TrangThaiHoatDong)
+                                {
+                                    <span class="badge bg-success">Hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning">Không hoạt động</span>
+                                }
+                            </td>
+                            <td>@user.NgayTao.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button type="button" class="btn-action btn-edit" title="Chỉnh sửa"
+                                        onclick="editUser('@user.Id', '@user.HoTen')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn-action btn-password" title="Đổi mật khẩu"
+                                        onclick="changePassword('@user.Id', '@user.HoTen', '@user.Email')">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                    @if (user.TrangThaiHoatDong)
+                                    {
+                                        <button type="button" class="btn-action btn-toggle" title="Vô hiệu hóa"
+                                            onclick="toggleUserStatus('@user.Id', '@user.HoTen', false)">
+                                            <i class="fas fa-ban"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn-action btn-activate" title="Kích hoạt"
+                                            onclick="toggleUserStatus('@user.Id', '@user.HoTen', true)">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    }
+                                    <button type="button" class="btn-action btn-delete" title="Xóa"
+                                        onclick="deleteUser('@user.Id', '@user.HoTen')">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
                 else
                 {
-                    <div class="text-center py-5">
-                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">Không có người dùng nào</h5>
-                        <p class="text-muted">Hiện tại chưa có người dùng nào trong hệ thống.</p>
-                    </div>
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h3>Không có người dùng nào</h3>
+                                <p>Hiện tại chưa có người dùng nào trong hệ thống.</p>
+                                <button type="button" class="btn-add-user" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                                    <i class="fas fa-plus me-2"></i>Thêm người dùng đầu tiên
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
                 }
-            </div>
+            </tbody>
+        </table>
+    </div>
+</div>
         </div>
     </div>
 </div>
 
 <!-- Modal thêm người dùng -->
 <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="addUserModalLabel">
@@ -157,39 +295,69 @@
             </div>
             <form id="addUserForm">
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="addUserHoTen" class="form-label">Họ tên</label>
-                        <input type="text" class="form-control" id="addUserHoTen" name="HoTen" required />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addUserHoTen" class="form-label">Họ tên <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="addUserHoTen" name="HoTen" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addUserEmail" class="form-label">Email <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="addUserEmail" name="Email" required />
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="addUserEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="addUserEmail" name="Email" required />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addUserMaSo" class="form-label">Mã số</label>
+                                <input type="text" class="form-control" id="addUserMaSo" name="MaSo" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addUserVaiTro" class="form-label">Vai trò <span class="text-danger">*</span></label>
+                                <select class="form-select" id="addUserVaiTro" name="VaiTro" required>
+                                    <option value="">-- Chọn vai trò --</option>
+                                    <option value="ThuThu">Thủ thư</option>
+                                    <option value="GiangVien">Giảng viên</option>
+                                    <option value="SinhVien">Sinh viên</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="addUserMaSo" class="form-label">Mã số</label>
-                        <input type="text" class="form-control" id="addUserMaSo" name="MaSo" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="addUserVaiTro" class="form-label">Vai trò</label>
-                        <select class="form-select" id="addUserVaiTro" name="VaiTro" required>
-                            <option value="">-- Chọn vai trò --</option>
-                            <option value="ThuThu">Thủ thư</option>
-                            <option value="GiangVien">Giảng viên</option>
-                            <option value="SinhVien">Sinh viên</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="addUserChuyenNganh" class="form-label">Chuyên ngành</label>
-                        <input type="text" class="form-control" id="addUserChuyenNganh" name="ChuyenNganh" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="addUserSoDienThoai" class="form-label">Số điện thoại</label>
-                        <input type="text" class="form-control" id="addUserSoDienThoai" name="SoDienThoai" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addUserChuyenNganh" class="form-label">Chuyên ngành</label>
+                                <input type="text" class="form-control" id="addUserChuyenNganh" name="ChuyenNganh" list="majorsList" />
+                                <datalist id="majorsList">
+                                    @if (Model != null)
+                                    {
+                                        var majors = Model.Where(u => u.ChuyenNganh != null).Select(u => u.ChuyenNganh.TenChuyenNganh).Distinct();
+                                        foreach (var major in majors)
+                                        {
+                                            <option value="@major" />
+                                        }
+                                    }
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="addUserSoDienThoai" class="form-label">Số điện thoại</label>
+                                <input type="tel" class="form-control" id="addUserSoDienThoai" name="SoDienThoai" />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-primary">Thêm</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Thêm người dùng
+                    </button>
                 </div>
             </form>
         </div>
@@ -215,23 +383,29 @@
                         <strong>Email:</strong> <span id="changePasswordUserEmail"></span>
                     </div>
                     <div class="mb-3">
-                        <label for="newPassword" class="form-label">Mật khẩu mới</label>
+                        <label for="newPassword" class="form-label">Mật khẩu mới <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="newPassword" name="newPassword" required minlength="6" />
+                            <input type="password" class="form-control" id="newPassword" name="newPassword" required minlength="6" onkeyup="checkPasswordStrength(this.value)" />
                             <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('newPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
-                        <div class="form-text">Mật khẩu phải có ít nhất 6 ký tự</div>
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <div class="strength-text" id="strengthText">Nhập mật khẩu để kiểm tra độ mạnh</div>
+                        </div>
                     </div>
                     <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                        <label for="confirmPassword" class="form-label">Xác nhận mật khẩu <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6" />
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="6" onkeyup="checkPasswordMatch()" />
                             <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('confirmPassword')">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
+                        <div class="form-text" id="passwordMatchText"></div>
                     </div>
                     <div class="alert alert-warning">
                         <i class="fas fa-exclamation-triangle me-2"></i>
@@ -303,6 +477,168 @@
 
 @section Scripts {
     <script>
+        // Search functionality
+        $('#userSearch').on('keyup', function() {
+            var searchTerm = $(this).val().toLowerCase();
+            $('#usersTable tbody tr').each(function() {
+                var userName = $(this).find('td:eq(1)').text().toLowerCase();
+                var userEmail = $(this).find('td:eq(2)').text().toLowerCase();
+                var userCode = $(this).find('td:eq(3)').text().toLowerCase();
+                
+                if (userName.includes(searchTerm) || userEmail.includes(searchTerm) || userCode.includes(searchTerm)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+
+        // Filter functionality
+        function applyFilters() {
+            var roleFilter = $('#roleFilter').val();
+            var statusFilter = $('#statusFilter').val();
+            var majorFilter = $('#majorFilter').val();
+            var dateFilter = $('#dateFilter').val();
+            
+            $('#usersTable tbody tr').each(function() {
+                var row = $(this);
+                var role = row.data('role');
+                var status = row.data('status').toString();
+                var major = row.data('major');
+                var date = row.data('date');
+                
+                var showRow = true;
+                
+                if (roleFilter && role !== roleFilter) showRow = false;
+                if (statusFilter && status !== statusFilter) showRow = false;
+                if (majorFilter && major !== majorFilter) showRow = false;
+                if (dateFilter) {
+                    var userDate = new Date(date);
+                    var today = new Date();
+                    var diffTime = Math.abs(today - userDate);
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (dateFilter === 'today' && diffDays > 1) showRow = false;
+                    if (dateFilter === 'week' && diffDays > 7) showRow = false;
+                    if (dateFilter === 'month' && diffDays > 30) showRow = false;
+                }
+                
+                if (showRow) {
+                    row.show();
+                } else {
+                    row.hide();
+                }
+            });
+        }
+
+        // Bulk actions
+        function toggleSelectAll() {
+            var isChecked = $('#selectAll').is(':checked');
+            $('.user-checkbox').prop('checked', isChecked);
+        }
+
+        function bulkActivate() {
+            var selectedUsers = $('.user-checkbox:checked').map(function() {
+                return $(this).val();
+            }).get();
+            
+            if (selectedUsers.length === 0) {
+                toastr.warning('Vui lòng chọn ít nhất một người dùng.');
+                return;
+            }
+            
+            if (confirm(`Bạn có chắc chắn muốn kích hoạt ${selectedUsers.length} người dùng đã chọn?`)) {
+                $.ajax({
+                    url: '@Url.Action("BulkActivateUsers", "Librarian")',
+                    type: 'POST',
+                    data: { userIds: selectedUsers },
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success(response.message);
+                            setTimeout(function () { location.reload(); }, 1000);
+                        } else {
+                            toastr.error(response.message);
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Có lỗi xảy ra khi kích hoạt người dùng.');
+                    }
+                });
+            }
+        }
+
+        function exportUsers() {
+            var searchTerm = $('#userSearch').val();
+            var roleFilter = $('#roleFilter').val();
+            var statusFilter = $('#statusFilter').val();
+            var majorFilter = $('#majorFilter').val();
+            
+            var params = new URLSearchParams();
+            if (searchTerm) params.append('search', searchTerm);
+            if (roleFilter) params.append('role', roleFilter);
+            if (statusFilter) params.append('status', statusFilter);
+            if (majorFilter) params.append('major', majorFilter);
+            
+            window.location.href = '@Url.Action("ExportUsers", "Librarian")?' + params.toString();
+        }
+
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            var strength = 0;
+            var feedback = '';
+            
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password)) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            var strengthFill = $('#strengthFill');
+            var strengthText = $('#strengthText');
+            
+            strengthFill.removeClass('strength-weak strength-medium strength-strong strength-very-strong');
+            
+            if (password.length === 0) {
+                strengthFill.css('width', '0%');
+                strengthText.text('Nhập mật khẩu để kiểm tra độ mạnh');
+                strengthText.css('color', '#6b7280');
+            } else if (strength <= 2) {
+                strengthFill.addClass('strength-weak');
+                strengthText.text('Mật khẩu yếu');
+                strengthText.css('color', '#ef4444');
+            } else if (strength <= 3) {
+                strengthFill.addClass('strength-medium');
+                strengthText.text('Mật khẩu trung bình');
+                strengthText.css('color', '#f59e0b');
+            } else if (strength <= 4) {
+                strengthFill.addClass('strength-strong');
+                strengthText.text('Mật khẩu mạnh');
+                strengthText.css('color', '#10b981');
+            } else {
+                strengthFill.addClass('strength-very-strong');
+                strengthText.text('Mật khẩu rất mạnh');
+                strengthText.css('color', '#10b981');
+            }
+        }
+
+        function checkPasswordMatch() {
+            var password = $('#newPassword').val();
+            var confirmPassword = $('#confirmPassword').val();
+            var matchText = $('#passwordMatchText');
+            
+            if (confirmPassword.length === 0) {
+                matchText.text('');
+            } else if (password === confirmPassword) {
+                matchText.text('✓ Mật khẩu khớp');
+                matchText.css('color', '#10b981');
+            } else {
+                matchText.text('✗ Mật khẩu không khớp');
+                matchText.css('color', '#ef4444');
+            }
+        }
+
+        // Form submission
         $('#addUserForm').on('submit', function (e) {
             e.preventDefault();
             var formData = $(this).serialize();
@@ -314,7 +650,6 @@
                     if (response.success) {
                         toastr.success(response.message);
                         $('#addUserModal').modal('hide');
-                        // Xóa dữ liệu form sau khi thêm thành công
                         $('#addUserForm')[0].reset();
                         setTimeout(function () { location.reload(); }, 1000);
                     } else {
@@ -487,33 +822,15 @@
                 icon.classList.add('fa-eye');
             }
         }
+
+        // Initialize tooltips
+        $(document).ready(function() {
+            // Auto-hide alerts after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut();
+            }, 5000);
+            
+            // Initialize any additional plugins if needed
+        });
     </script>
 }
-
-<style>
-    .avatar-circle {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        background: var(--primary-color);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    .badge {
-        font-size: 0.75rem;
-    }
-
-    .btn-group-sm .btn {
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-    }
-
-    .table td {
-        vertical-align: middle;
-    }
-</style>

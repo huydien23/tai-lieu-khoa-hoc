@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Data;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
 using QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels;
+
 using QuanLyTaiLieuKhoaHoc.Web.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -1451,6 +1452,111 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             catch (Exception ex)
             {
                 return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        // Bulk activate users
+        [HttpPost]
+        public async Task<IActionResult> BulkActivateUsers(List<string> userIds)
+        {
+            try
+            {
+                if (userIds == null || !userIds.Any())
+                {
+                    return Json(new { success = false, message = "Không có người dùng nào được chọn!" });
+                }
+
+                var users = await _context.Users
+                    .Where(u => userIds.Contains(u.Id))
+                    .ToListAsync();
+
+                foreach (var user in users)
+                {
+                    user.TrangThaiHoatDong = true;
+                }
+
+                await _context.SaveChangesAsync();
+
+                // Ghi log hoạt động
+                var activity = new SystemActivity
+                {
+                    LoạiHoạtĐộng = ActivityType.BulkUserActivation,
+                    TiêuĐề = "Kích hoạt hàng loạt người dùng",
+                    MôTả = $"Đã kích hoạt {users.Count} người dùng trong hệ thống",
+                    ThờiGian = DateTime.Now,
+                    MứcĐộƯuTiên = ActivityPriority.Thấp,
+                    ĐãXửLý = true,
+                    NgườiThựcHiện = User.Identity?.Name,
+                    DữLiệuBổSung = string.Join(",", userIds)
+                };
+
+                await _systemActivityService.CreateActivityAsync(activity);
+
+                return Json(new { success = true, message = $"Đã kích hoạt {users.Count} người dùng!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Có lỗi xảy ra: {ex.Message}" });
+            }
+        }
+
+        // Export users to Excel
+        [HttpGet]
+        public async Task<IActionResult> ExportUsers(string? search, string? role, string? status, string? major)
+        {
+            try
+            {
+                var query = _context.Users
+                    .Include(u => u.ChuyenNganh)
+                    .AsQueryable();
+
+                // Apply filters
+                if (!string.IsNullOrEmpty(search))
+                {
+                    query = query.Where(u => u.HoTen.Contains(search) || u.Email.Contains(search) || u.MaSo.Contains(search));
+                }
+
+                if (!string.IsNullOrEmpty(role))
+                {
+                    if (Enum.TryParse<VaiTroNguoiDung>(role, out var roleEnum))
+                    {
+                        query = query.Where(u => u.VaiTro == roleEnum);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(status))
+                {
+                    if (bool.TryParse(status, out var statusBool))
+                    {
+                        query = query.Where(u => u.TrangThaiHoatDong == statusBool);
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(major))
+                {
+                    query = query.Where(u => u.ChuyenNganh.TenChuyenNganh == major);
+                }
+
+                var users = await query.ToListAsync();
+
+                // Create Excel file content (CSV format for simplicity)
+                var csv = new System.Text.StringBuilder();
+                csv.AppendLine("Họ tên,Email,Mã số,Vai trò,Chuyên ngành,Trạng thái,Ngày tạo");
+
+                foreach (var user in users)
+                {
+                    csv.AppendLine($"\"{user.HoTen}\",\"{user.Email}\",\"{user.MaSo}\",\"{user.VaiTro}\",\"{user.ChuyenNganh?.TenChuyenNganh ?? ""}\",\"{(user.TrangThaiHoatDong ? "Hoạt động" : "Không hoạt động")}\",\"{user.NgayTao:dd/MM/yyyy}\"");
+                }
+
+                var bytes = System.Text.Encoding.UTF8.GetBytes(csv.ToString());
+                var fileName = $"danh_sach_nguoi_dung_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
+
+                return File(bytes, "text/csv", fileName);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Có lỗi xảy ra khi xuất dữ liệu: {ex.Message}";
+                return RedirectToAction("ManageUsers");
             }
         }
     }
