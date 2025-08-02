@@ -23,8 +23,8 @@
                 <div class="search-box">
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="search-input" id="globalSearch" placeholder="Tìm kiếm theo mã số, họ tên, tài liệu...">
-                    <button class="search-clear" id="clearGlobalSearch" style="display: none;">
-                        <i class="fas fa-times"></i>
+                    <button class="search-btn" type="button" title="Bộ lọc tìm kiếm">
+                        <i class="fas fa-filter"></i>
                     </button>
                 </div>
             </div>
@@ -186,26 +186,12 @@
         $(document).ready(function () {
             // Global search functionality
             var $globalSearch = $('#globalSearch');
-            var $clearGlobalSearch = $('#clearGlobalSearch');
             var currentTab = 'requests';
             
             // Handle global search input
             $globalSearch.on('input', function () {
                 var value = $(this).val().toLowerCase();
-                if (value) {
-                    $clearGlobalSearch.show();
-                } else {
-                    $clearGlobalSearch.hide();
-                }
                 performGlobalSearch(value);
-            });
-            
-            // Handle clear search
-            $clearGlobalSearch.on('click', function () {
-                $globalSearch.val('');
-                $clearGlobalSearch.hide();
-                $globalSearch.focus();
-                performGlobalSearch('');
             });
             
             // Handle Enter key

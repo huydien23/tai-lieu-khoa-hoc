@@ -110,11 +110,11 @@
 }
 
 .search-box {
-    position: relative;
     display: flex;
     align-items: center;
     background: rgba(255, 255, 255, 0.15);
-    border-radius: var(--border-radius-lg);
+    border-radius: 25px;
+    padding: 0.5rem 1rem;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: var(--transition);
@@ -128,7 +128,7 @@
 
 .search-icon {
     color: rgba(255, 255, 255, 0.8);
-    margin-left: 1rem;
+    margin-right: 0.5rem;
     font-size: 1.1rem;
 }
 
@@ -136,39 +136,35 @@
     background: transparent;
     border: none;
     color: white;
-    padding: 0.75rem 1rem;
-    padding-right: 2.5rem;
-    font-size: 1rem;
-    width: 300px;
     outline: none;
+    width: 250px;
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+    margin-left: 25px;
 }
 
 .search-input::placeholder {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.search-clear {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
+.search-btn {
     background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: rgba(255, 255, 255, 0.8);
-    padding: 0.25rem;
+    color: white;
     border-radius: 50%;
-    cursor: pointer;
-    transition: var(--transition);
-    width: 24px;
-    height: 24px;
+    width: 35px;
+    height: 35px;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 0.5rem;
 }
 
-.search-clear:hover {
+.search-btn:hover {
     background: rgba(255, 255, 255, 0.3);
-    color: white;
+    transform: scale(1.1);
 }
 
 .btn-refresh {
