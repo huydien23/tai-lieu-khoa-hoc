@@ -32,16 +32,16 @@
 .document-details-page {
     background: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%);
     min-height: 100vh;
-    padding: 2rem 0;
+    padding: 1rem 0;
 }
 
 /* Document Header Section */
 .document-header-section {
     background: var(--bg-primary);
-    border-radius: var(--border-radius-xl);
-    padding: 2.5rem;
-    margin-bottom: 2rem;
-    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-md);
     border: 1px solid var(--border-light);
     position: relative;
     overflow: hidden;
@@ -62,12 +62,12 @@
     align-items: center;
     background: var(--gradient-primary);
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.375rem 0.75rem;
     border-radius: var(--border-radius);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     font-weight: 600;
-    font-size: 0.875rem;
-    box-shadow: var(--shadow-md);
+    font-size: 0.8rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .document-type-indicator .type-icon {
@@ -76,10 +76,10 @@
 }
 
 .document-main-title {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     line-height: 1.2;
     background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
     -webkit-background-clip: text;
@@ -91,8 +91,8 @@
     display: flex;
     align-items: center;
     color: var(--text-secondary);
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    margin-bottom: 1rem;
 }
 
 .document-author-info i {
@@ -103,7 +103,7 @@
 
 .document-stats {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
 }
 
@@ -124,15 +124,15 @@
 .status-banner {
     background: var(--bg-primary);
     border-radius: var(--border-radius-lg);
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: var(--shadow-md);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
     display: flex;
     justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .status-item {
@@ -151,10 +151,10 @@
 
 .status-value {
     display: block;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     border-radius: var(--border-radius);
-    padding: 0.5rem 1rem;
+    padding: 0.375rem 0.75rem;
 }
 
 .status-value.total {
@@ -180,7 +180,7 @@
 /* Content Sections */
 .content-sections {
     display: grid;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .info-section {
@@ -199,7 +199,7 @@
 
 .section-header {
     background: var(--bg-secondary);
-    padding: 1.5rem;
+    padding: 1rem;
     border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
@@ -211,16 +211,16 @@
 }
 
 .section-icon {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: var(--primary-color);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-right: 1rem;
-    font-size: 1.1rem;
+    margin-right: 0.75rem;
+    font-size: 1rem;
 }
 
 .section-header.special .section-icon {
@@ -230,19 +230,19 @@
 
 .section-header h2 {
     margin: 0;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 600;
 }
 
 .section-content {
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 /* Info Grid */
 .info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
 }
 
 .info-item {
@@ -286,8 +286,8 @@
 .action-section {
     background: var(--bg-primary);
     border-radius: var(--border-radius-lg);
-    padding: 2rem;
-    box-shadow: var(--shadow-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
     border: 1px solid var(--border-light);
     text-align: center;
 }
@@ -302,15 +302,15 @@
 .action-btn {
     display: inline-flex;
     align-items: center;
-    padding: 0.875rem 1.5rem;
+    padding: 0.75rem 1.25rem;
     border-radius: var(--border-radius);
     font-weight: 600;
     text-decoration: none;
     border: none;
     cursor: pointer;
     transition: var(--transition);
-    font-size: 1rem;
-    min-width: 140px;
+    font-size: 0.9rem;
+    min-width: 120px;
     justify-content: center;
 }
 
@@ -393,14 +393,14 @@
 }
 
 .related-documents {
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .related-item {
     border: 1px solid var(--border-light);
     border-radius: var(--border-radius);
-    padding: 1.5rem;
-    margin-bottom: 1rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
     transition: var(--transition);
     background: var(--bg-secondary);
 }
@@ -416,8 +416,8 @@
 }
 
 .related-item h4 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
+    margin: 0 0 0.375rem 0;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -432,8 +432,8 @@
 
 .related-author {
     color: var(--text-secondary);
-    margin-bottom: 0.75rem;
-    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
 }
 
 .related-meta {
@@ -460,7 +460,7 @@
 /* Loading State */
 .loading-state {
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem;
     color: var(--text-secondary);
 }
 
@@ -487,7 +487,7 @@
 /* No Related Documents */
 .no-related {
     text-align: center;
-    padding: 2rem;
+    padding: 1.5rem;
     color: var(--text-secondary);
 }
 

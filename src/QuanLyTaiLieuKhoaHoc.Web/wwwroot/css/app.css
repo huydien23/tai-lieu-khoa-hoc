@@ -2635,6 +2635,8 @@ p {
 
 /* Top Bar Styling */
 .top-bar {
+    background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-700) 100%) !important;
+    color: white !important;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.875rem;
 }
@@ -2784,11 +2786,12 @@ p {
    =================================== */
 
 .footer-custom {
-    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-    color: rgba(255, 255, 255, 0.9);
+    background: linear-gradient(135deg, var(--blue-400) 0%, var(--blue-500) 100%);
+    color: white;
     margin-top: auto;
     position: relative;
     overflow: hidden;
+    border-top: 1px solid var(--border-color);
 }
 
 .footer-custom::before {
@@ -2839,13 +2842,13 @@ p {
 }
 
 .footer-subtitle {
-    color: rgba(255, 255, 255, 0.7);
+    color: white;
     font-size: 0.875rem;
     font-weight: 500;
 }
 
 .footer-description {
-    color: rgba(255, 255, 255, 0.8);
+    color: white;
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
@@ -2881,7 +2884,7 @@ p {
 }
 
 .footer-links a {
-    color: rgba(255, 255, 255, 0.8);
+    color: white;
     text-decoration: none;
     transition: var(--transition);
     display: flex;
@@ -2912,7 +2915,7 @@ p {
     align-items: center;
     margin-bottom: 0.75rem;
     font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+    color: white;
 }
 
 .contact-item i {
@@ -2922,7 +2925,7 @@ p {
 }
 
 .footer-support p {
-    color: rgba(255, 255, 255, 0.8);
+    color: white;
     font-size: 0.9rem;
     margin-bottom: 0.5rem;
 }
@@ -2946,7 +2949,7 @@ p {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: white;
     text-decoration: none;
     transition: var(--transition);
     backdrop-filter: blur(10px);
@@ -2965,14 +2968,14 @@ p {
 
 /* Footer Bottom */
 .footer-bottom {
-    background: rgba(0, 0, 0, 0.2);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, var(--blue-500) 0%, var(--blue-600) 100%);
+    border-top: 1px solid var(--border-color);
     position: relative;
     z-index: 2;
 }
 
 .footer-bottom p {
-    color: rgba(255, 255, 255, 0.7);
+    color: white;
     font-size: 0.875rem;
 }
 
@@ -2986,7 +2989,7 @@ p {
 .stat-item {
     display: flex;
     align-items: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: white;
     font-size: 0.875rem;
     font-weight: 500;
 }
