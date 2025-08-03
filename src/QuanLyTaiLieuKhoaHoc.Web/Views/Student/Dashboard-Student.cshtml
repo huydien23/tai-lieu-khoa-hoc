@@ -5,77 +5,108 @@
     Layout = "_Layout";
 }
 
-<!-- Dashboard Header -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/student-dashboard.css" />
+}
+
+<!-- Modern Dashboard Header -->
 <div class="page-header">
     <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="h2 fw-bold mb-2">
-                <i class="fas fa-graduation-cap me-3 text-primary"></i>
-                Dashboard Sinh viên
-            </h1>
-            <p class="text-muted mb-0">Khám phá tài liệu học tập và nghiên cứu</p>
+        <div class="d-flex align-items-center">
+            <div class="header-icon me-4">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div>
+                <h1 class="mb-2">
+                    Dashboard Sinh viên
+                </h1>
+                <p class="text-muted mb-0">Khám phá tài liệu học tập và nghiên cứu</p>
+            </div>
+        </div>
+        <div class="header-actions d-none d-md-flex">
+            <div class="current-time me-3">
+                <i class="fas fa-clock me-2"></i>
+                <span id="currentTime"></span>
+            </div>
+            <div class="user-info">
+                <span class="user-name">@User.Identity?.Name</span>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Key Statistics -->
-<div class="row g-3 mb-4">
+<!-- Modern Key Statistics -->
+<div class="row g-4 mb-4">
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon text-info"><i class="fas fa-heart"></i></div>
-            <div class="stats-number">@Model.SoLuongYeuThich</div>
-            <div class="stats-label">Yêu thích</div>
+        <div class="stats-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="stats-icon text-info">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="stats-number" data-count="@Model.SoLuongYeuThich">0</div>
+            <div class="stats-label">YÊU THÍCH</div>
         </div>
     </div>
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon text-warning"><i class="fas fa-hourglass-half"></i></div>
-            <div class="stats-number">@Model.SoPhieuChoDuyet</div>
-            <div class="stats-label">Chờ duyệt</div>
+        <div class="stats-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="stats-icon text-warning">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stats-number" data-count="@Model.SoPhieuChoDuyet">0</div>
+            <div class="stats-label">CHỜ DUYỆT</div>
         </div>
     </div>
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon text-primary"><i class="fas fa-book"></i></div>
-            <div class="stats-number">@Model.SoPhieuDangMuon</div>
-            <div class="stats-label">Đang mượn</div>
+        <div class="stats-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="stats-icon text-primary">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stats-number" data-count="@Model.SoPhieuDangMuon">0</div>
+            <div class="stats-label">ĐANG MƯỢN</div>
         </div>
     </div>
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon text-danger"><i class="fas fa-times-circle"></i></div>
-            <div class="stats-number">@Model.SoPhieuTuChoi</div>
-            <div class="stats-label">Từ chối</div>
+        <div class="stats-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="stats-icon text-danger">
+                <i class="fas fa-times-circle"></i>
+            </div>
+            <div class="stats-number" data-count="@Model.SoPhieuTuChoi">0</div>
+            <div class="stats-label">TỪ CHỐI</div>
         </div>
     </div>
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon text-success"><i class="fas fa-download"></i></div>
-            <div class="stats-number">@Model.SoLuotTaiXuong</div>
-            <div class="stats-label">Lượt tải xuống</div>
+        <div class="stats-card" data-aos="fade-up" data-aos-delay="500">
+            <div class="stats-icon text-success">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="stats-number" data-count="@Model.SoLuotTaiXuong">0</div>
+            <div class="stats-label">LƯỢT TẢI XUỐNG</div>
         </div>
     </div>
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card">
-            <div class="stats-icon text-secondary"><i class="fas fa-check-circle"></i></div>
-            <div class="stats-number">@Model.SoPhieuDaTra</div>
-            <div class="stats-label">Đã trả</div>
+        <div class="stats-card" data-aos="fade-up" data-aos-delay="600">
+            <div class="stats-icon text-secondary">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="stats-number" data-count="@Model.SoPhieuDaTra">0</div>
+            <div class="stats-label">ĐÃ TRẢ</div>
         </div>
     </div>
     <div class="col-lg-2 col-md-4 col-sm-6">
-        <div class="stats-card" id="quaHanCard" style="display: none;">
-            <div class="stats-icon text-danger"><i class="fas fa-exclamation-triangle"></i></div>
-            <div class="stats-number" id="soTaiLieuQuaHan">0</div>
-            <div class="stats-label">Quá hạn</div>
+        <div class="stats-card" id="quaHanCard" style="display: none;" data-aos="fade-up" data-aos-delay="700">
+            <div class="stats-icon text-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stats-number" id="soTaiLieuQuaHan" data-count="0">0</div>
+            <div class="stats-label">QUÁ HẠN</div>
         </div>
     </div>
 </div>
 
 <!-- Dashboard Content with Tab Layout -->
 <div class="row g-4">
-    <!-- Tab Navigation (Left) -->
+    <!-- Modern Sidebar Navigation -->
     <div class="col-lg-3">
-        <div class="card-custom">
+        <div class="card-custom" data-aos="fade-right" data-aos-delay="100">
             <div class="card-header-custom">
                 <h6 class="mb-0">
                     <i class="fas fa-layer-group me-2"></i>
@@ -86,40 +117,47 @@
                 <div class="nav flex-column nav-pills dashboard-nav" id="v-pills-tab" role="tablist">
                     <button class="nav-link active" id="v-pills-overview-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-overview" type="button" role="tab">
-                        <i class="fas fa-chart-pie me-2"></i>Tổng quan
+                        <i class="fas fa-chart-pie"></i>
+                        <span class="menu-text">Tổng quan</span>
                     </button>
                     <button class="nav-link" id="v-pills-borrowreturn-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-borrowreturn" type="button" role="tab">
-                        <i class="fas fa-book-reader me-2"></i>Mượn/Trả tài liệu
+                        <i class="fas fa-book-reader"></i>
+                        <span class="menu-text">Mượn/Trả tài liệu</span>
                     </button>
                     <button class="nav-link" id="v-pills-overdue-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-overdue" type="button" role="tab">
-                        <i class="fas fa-exclamation-triangle me-2"></i>Tài liệu quá hạn
-                        <span id="overdueBadge" class="badge bg-danger ms-2" style="display: none;">0</span>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span class="menu-text">Tài liệu quá hạn</span>
+                        <span id="overdueBadge" class="badge bg-danger ms-auto" style="display: none;">0</span>
                     </button>
                     <button class="nav-link" id="v-pills-favorites-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-favorites" type="button" role="tab">
-                        <i class="fas fa-star me-2"></i>Yêu thích
+                        <i class="fas fa-star"></i>
+                        <span class="menu-text">Yêu thích</span>
                     </button>
                     <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-profile" type="button" role="tab">
-                        <i class="fas fa-star me-2"></i>Thông tin tài khoản
+                        <i class="fas fa-user"></i>
+                        <span class="menu-text">Thông tin tài khoản</span>
                     </button>
                     <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-settings" type="button" role="tab">
-                        <i class="fas fa-cog me-2"></i>Cài đặt tài khoản
+                        <i class="fas fa-cog"></i>
+                        <span class="menu-text">Cài đặt tài khoản</span>
                     </button>
                     <button class="nav-link" id="v-pills-downloads-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-downloads" type="button" role="tab">
-                        <i class="fas fa-download me-2"></i>Tài liệu đã tải
+                        <i class="fas fa-download"></i>
+                        <span class="menu-text">Tài liệu đã tải</span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Tab Content (Right) -->
+    <!-- Modern Tab Content -->
     <div class="col-lg-9">
-        <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-content" id="v-pills-tabContent" data-aos="fade-left" data-aos-delay="200">
 
         <!-- Profile Tab -->
             <div class="tab-pane fade" id="v-pills-profile" role="tabpanel">
@@ -179,12 +217,12 @@
                     </div>
                 </div>
             </div>
-            <!-- Overview Tab -->
+            <!-- Modern Overview Tab -->
             <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
                 <div class="row g-4">
-                    <!-- Study Progress -->                                
+                    <!-- Quick Actions Section -->
                     <div class="col-12">
-                        <div class="card-custom">
+                        <div class="card-custom" data-aos="zoom-in" data-aos-delay="300">
                             <div class="card-header-custom">
                                 <h6 class="mb-0">
                                     <i class="fas fa-bolt me-2"></i>
@@ -194,18 +232,21 @@
                             <div class="card-body">
                                 <div class="row g-3">
                                     <div class="col-md-4">
-                                        <a href="@Url.Action("Index", "TaiLieu")" class="btn btn-outline-primary w-100">
-                                            <i class="fas fa-search me-2"></i>Tìm tài liệu
+                                        <a href="@Url.Action("Index", "TaiLieu")" class="btn btn-outline-primary w-100 quick-action-btn">
+                                            <i class="fas fa-search me-2"></i>
+                                            <span>Tìm tài liệu</span>
                                         </a>
                                     </div>
                                     <div class="col-md-4">
-                                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-info w-100">
-                                            <i class="fas fa-star me-2"></i>Trang chủ
+                                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-info w-100 quick-action-btn">
+                                            <i class="fas fa-home me-2"></i>
+                                            <span>Trang chủ</span>
                                         </a>
                                     </div>
                                     <div class="col-md-4">
-                                        <a href="@Url.Action("Index", "TaiLieu")" class="btn btn-outline-warning w-100">
-                                            <i class="fas fa-lightbulb me-2"></i>Tài liệu đề xuất
+                                        <a href="@Url.Action("Index", "TaiLieu")" class="btn btn-outline-warning w-100 quick-action-btn">
+                                            <i class="fas fa-lightbulb me-2"></i>
+                                            <span>Tài liệu đề xuất</span>
                                         </a>
                                     </div>
                                 </div>
@@ -213,9 +254,9 @@
                         </div>
                     </div>
                 </div>
-                <!-- Tài liệu đang mượn -->
+                <!-- Modern Tài liệu đang mượn Section -->
                 <div class="col-12">
-                    <div class="card-custom">
+                    <div class="card-custom" data-aos="zoom-in" data-aos-delay="400">
                         <div class="card-header-custom">
                             <h6 class="mb-0">
                                 <i class="fas fa-book me-2"></i>
@@ -227,7 +268,7 @@
                             {
                                 <div class="table-responsive">
                                     <table class="table table-hover">
-                                        <thead class="table-light">
+                                        <thead>
                                             <tr>
                                                 <th>Mã phiếu</th>
                                                 <th>Tài liệu</th>
@@ -239,22 +280,32 @@
                                         <tbody>
                                         @foreach (var phieu in Model.TaiLieuDangMuon)
                                         {
-                                            <tr>
-                                                <td><span class="badge bg-secondary">#@phieu.MaPhieu</span></td>
+                                            <tr class="table-row-hover">
                                                 <td>
-                                                    <div>
-                                                        <strong>@phieu.TaiLieu?.TenTaiLieu</strong>
+                                                    <span class="badge bg-secondary">#@phieu.MaPhieu</span>
+                                                </td>
+                                                <td>
+                                                    <div class="document-info">
+                                                        <strong class="document-title">@phieu.TaiLieu?.TenTaiLieu</strong>
                                                         @if (!string.IsNullOrEmpty(phieu.TaiLieu?.TacGia))
                                                         {
-                                                            <br><small class="text-muted">Tác giả: @phieu.TaiLieu.TacGia</small>
+                                                            <div class="document-meta">Tác giả: @phieu.TaiLieu.TacGia</div>
                                                         }
                                                     </div>
                                                 </td>
-                                                <td>@phieu.NgayMuon.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>
+                                                    <div class="date-info">
+                                                        <span class="date-value">@phieu.NgayMuon.ToString("dd/MM/yyyy")</span>
+                                                        <div class="time-value">@phieu.NgayMuon.ToString("HH:mm")</div>
+                                                    </div>
+                                                </td>
                                                 <td>
                                                     @if (phieu.NgayTraDuKien.HasValue)
                                                     {
-                                                        <span class="text-info">@phieu.NgayTraDuKien.Value.ToString("dd/MM/yyyy")</span>
+                                                        <div class="date-info">
+                                                            <span class="date-value text-info">@phieu.NgayTraDuKien.Value.ToString("dd/MM/yyyy")</span>
+                                                            <div class="time-value text-muted">Dự kiến trả</div>
+                                                        </div>
                                                     }
                                                     else
                                                     {
@@ -265,9 +316,10 @@
                                                     @if (phieu.TaiLieu != null)
                                                     {
                                                         <a href="/TaiLieu/Details/@phieu.TaiLieu.MaTaiLieu" 
-                                                           class="btn btn-sm btn-outline-primary" 
+                                                           class="btn btn-sm btn-outline-primary action-btn" 
                                                            title="Xem chi tiết tài liệu">
-                                                            <i class="fas fa-eye"></i> Xem
+                                                            <i class="fas fa-eye me-1"></i>
+                                                            <span>Xem</span>
                                                         </a>
                                                     }
                                                 </td>
@@ -279,12 +331,15 @@
                             }
                             else
                             {
-                                <div class="text-center py-4">
-                                    <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
-                                    <h5 class="text-muted">Chưa có tài liệu đang mượn</h5>
-                                    <p class="text-muted">Bạn chưa mượn tài liệu nào hoặc đã trả hết.</p>
-                                    <a href="/TaiLieu" class="btn btn-primary">
-                                        <i class="fas fa-search me-2"></i>Tìm tài liệu để mượn
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-book-open"></i>
+                                    </div>
+                                    <h5>Chưa có tài liệu đang mượn</h5>
+                                    <p>Bạn chưa mượn tài liệu nào hoặc đã trả hết.</p>
+                                    <a href="/TaiLieu" class="btn btn-primary empty-action-btn">
+                                        <i class="fas fa-search me-2"></i>
+                                        <span>Tìm tài liệu để mượn</span>
                                     </a>
                                 </div>
                             }
@@ -489,8 +544,11 @@
 </div>
 
 <script>
-    // Đảm bảo jQuery đã được load và DOM đã sẵn sàng
+    // Modern Dashboard JavaScript
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize modern dashboard features
+        initializeDashboard();
+        
         // Chờ jQuery load
         function waitForJQuery(callback) {
             if (typeof $ !== 'undefined') {
@@ -512,6 +570,67 @@
             });
         });
     });
+
+    // Initialize modern dashboard features
+    function initializeDashboard() {
+        // Update current time
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+        
+        // Animate statistics counters
+        animateCounters();
+        
+        // Initialize AOS animations
+        if (typeof AOS !== 'undefined') {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                offset: 100
+            });
+        }
+    }
+
+    // Update current time display
+    function updateCurrentTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        const dateString = now.toLocaleDateString('vi-VN', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+        
+        const timeElement = document.getElementById('currentTime');
+        if (timeElement) {
+            timeElement.textContent = `${dateString} ${timeString}`;
+        }
+    }
+
+    // Animate statistics counters
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stats-number[data-count]');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000; // 2 seconds
+            const step = target / (duration / 16); // 60fps
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current);
+            }, 16);
+        });
+    }
 
     function checkTaiLieuQuaHan() {
         if (typeof $ === 'undefined') {
