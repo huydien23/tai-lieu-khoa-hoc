@@ -285,7 +285,8 @@
 .dashboard-nav .nav-link.active {
     background: var(--gradient-primary);
     color: white;
-    box-shadow: var(--shadow-md);
+    margin-top: 5px;
+    border-radius: 5px;
 }
 
 .dashboard-nav .nav-link.active i {

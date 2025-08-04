@@ -3139,7 +3139,6 @@ body {
 
 .dashboard-container .sidebar {
     margin-top: 0;
-    height: calc(100vh - 40px);
 }
 
 .dashboard-container .main-content {

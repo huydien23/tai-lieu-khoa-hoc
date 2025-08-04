@@ -219,41 +219,6 @@
             </div>
             <!-- Modern Overview Tab -->
             <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
-                <div class="row g-4">
-                    <!-- Quick Actions Section -->
-                    <div class="col-12">
-                        <div class="card-custom" data-aos="zoom-in" data-aos-delay="300">
-                            <div class="card-header-custom">
-                                <h6 class="mb-0">
-                                    <i class="fas fa-bolt me-2"></i>
-                                    Thao tác nhanh
-                                </h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <a href="@Url.Action("Index", "TaiLieu")" class="btn btn-outline-primary w-100 quick-action-btn">
-                                            <i class="fas fa-search me-2"></i>
-                                            <span>Tìm tài liệu</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="@Url.Action("Index", "Home")" class="btn btn-outline-info w-100 quick-action-btn">
-                                            <i class="fas fa-home me-2"></i>
-                                            <span>Trang chủ</span>
-                                        </a>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <a href="@Url.Action("Index", "TaiLieu")" class="btn btn-outline-warning w-100 quick-action-btn">
-                                            <i class="fas fa-lightbulb me-2"></i>
-                                            <span>Tài liệu đề xuất</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <!-- Modern Tài liệu đang mượn Section -->
                 <div class="col-12">
                     <div class="card-custom" data-aos="zoom-in" data-aos-delay="400">
@@ -453,7 +418,7 @@
                                         <tr>
                                             <th>Tài liệu</th>
                                             <th>Thời gian tải</th>
-                                            <th>Thông tin hệ thống</th>
+                                            <th>Trạng thái</th>
                                             <th>Thao tác</th>
                                         </tr>
                                     </thead>
@@ -490,16 +455,25 @@
                                                 </td>
                                                 <td>
                                                     <div>
-                                                        <small class="text-muted">
-                                                            <i class="fas fa-globe me-1"></i>@item.DiaChiIP
-                                                        </small>
-                                                        @if (!string.IsNullOrEmpty(item.UserAgent))
-                                                        {
-                                                            <br><small class="text-muted">
-                                                                <i class="fas fa-desktop me-1"></i>
-                                                                @(item.UserAgent.Length > 50 ? item.UserAgent.Substring(0, 50) + "..." : item.UserAgent)
-                                                            </small>
+                                                        @{
+                                                            var trangThaiClass = item.TrangThai switch
+                                                            {
+                                                                "Thành công" => "text-success",
+                                                                "Đang tải" => "text-warning",
+                                                                "Lỗi" => "text-danger",
+                                                                _ => "text-muted"
+                                                            };
+                                                            var trangThaiIcon = item.TrangThai switch
+                                                            {
+                                                                "Thành công" => "fas fa-check-circle",
+                                                                "Đang tải" => "fas fa-clock",
+                                                                "Lỗi" => "fas fa-exclamation-circle",
+                                                                _ => "fas fa-info-circle"
+                                                            };
                                                         }
+                                                        <span class="@trangThaiClass fw-medium">
+                                                            <i class="@trangThaiIcon me-1"></i>@item.TrangThai
+                                                        </span>
                                                     </div>
                                                 </td>
                                                 <td>

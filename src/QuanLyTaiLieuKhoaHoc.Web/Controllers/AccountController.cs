@@ -2,24 +2,27 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
+using QuanLyTaiLieuKhoaHoc.Web.Data;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
     public class AccountController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-
         private readonly UserManager<NguoiDung> _userManager;
         private readonly SignInManager<NguoiDung> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
         UserManager<NguoiDung> userManager,
         RoleManager<IdentityRole> roleManager,
-        SignInManager<NguoiDung> signInManager)
+        SignInManager<NguoiDung> signInManager,
+        ApplicationDbContext context)
         {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
+        _context = context;
         }
 
         public IActionResult Login()
@@ -120,14 +123,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             int? maChuyenNganh = null;
             if (!string.IsNullOrEmpty(chuyenNganh))
             {
-                using (var scope = HttpContext.RequestServices.CreateScope())
+                var chuyenNganhEntity = await _context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == chuyenNganh);
+                if (chuyenNganhEntity != null)
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<QuanLyTaiLieuKhoaHoc.Web.Data.ApplicationDbContext>();
-                    var chuyenNganhEntity = await context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == chuyenNganh);
-                    if (chuyenNganhEntity != null)
-                    {
-                        maChuyenNganh = chuyenNganhEntity.MaChuyenNganh;
-                    }
+                    maChuyenNganh = chuyenNganhEntity.MaChuyenNganh;
                 }
             }
 
@@ -136,7 +135,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 UserName = username,
                 Email = email,
-                HoTen = HoTen, // Sử dụng đúng họ tên từ form
+                HoTen = HoTen,
                 MaSo = maSo,
                 SoDienThoai = soDienThoai,
                 VaiTro = role switch

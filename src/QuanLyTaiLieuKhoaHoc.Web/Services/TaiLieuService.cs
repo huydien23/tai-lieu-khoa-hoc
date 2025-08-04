@@ -256,7 +256,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                     MaTaiLieu = maTaiLieu,
                     MaNguoiDung = maNguoiDung,
                     ThoiGianTai = DateTime.Now,
-                    DiaChiIP = diaChiIP
+                    DiaChiIP = diaChiIP,
+                    TrangThai = "Thành công"
                 };
                 _context.LichSuTaiTaiLieu.Add(lichSu);
 

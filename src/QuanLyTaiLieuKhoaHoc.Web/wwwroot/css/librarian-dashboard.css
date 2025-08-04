@@ -1,6 +1,5 @@
 /* Sidebar Styling */
 .dashboard-container .sidebar {
-    height: 911px;
     background: var(--gradient-modern) !important;
     color: white;
     box-shadow: var(--shadow-lg);

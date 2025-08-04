@@ -29,6 +29,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Thông tin trình duyệt")]
         public string? UserAgent { get; set; }
 
+        [StringLength(50, ErrorMessage = "Trạng thái không được vượt quá 50 ký tự")]
+        [Display(Name = "Trạng thái")]
+        public string TrangThai { get; set; } = "Thành công";
+
         // Foreign Keys
         [ForeignKey("MaTaiLieu")]
         public virtual TaiLieu? TaiLieu { get; set; }

@@ -57,6 +57,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Include(l => l.TaiLieu)
                 .Where(l => l.MaNguoiDung == userId)
                 .OrderByDescending(l => l.ThoiGianTai)
+                .Select(l => new LichSuTaiTaiLieu
+                {
+                    MaLichSu = l.MaLichSu,
+                    MaTaiLieu = l.MaTaiLieu,
+                    MaNguoiDung = l.MaNguoiDung,
+                    ThoiGianTai = l.ThoiGianTai,
+                    DiaChiIP = l.DiaChiIP,
+                    UserAgent = l.UserAgent,
+                    TrangThai = l.TrangThai ?? "Thành công", // Xử lý NULL
+                    TaiLieu = l.TaiLieu
+                })
                 .ToListAsync();
 
             var model = new DashboardViewModel
