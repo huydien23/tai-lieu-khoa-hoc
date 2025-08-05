@@ -71,7 +71,12 @@
                     <button class="btn btn-sm btn-info btn-xem-phieu" data-maphieu="@item.MaPhieu">
                         <i class="fas fa-eye"></i> Xem chi tiết
                     </button>
-                </td>
+                    @if (item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.DaTra || item.TrangThai == QuanLyTaiLieuKhoaHoc.Web.Models.TrangThaiPhieu.TuChoi)
+                    {
+                        <button class="btn btn-sm btn-danger btn-xoa-phieu" data-maphieu="@item.MaPhieu" data-tentailieu="@item.TaiLieu?.TenTaiLieu">
+                            <i class="fas fa-trash"></i> Xóa
+                        </button>
+                    }
             </tr>
         }
     </tbody>
@@ -169,6 +174,39 @@
         .fail(function (xhr) {
           alert('Không thể tải nội dung phiếu: ' + xhr.status);
         });
+    });
+
+    // Xử lý xóa phiếu mượn trả
+    $(document).on('click', '.btn-xoa-phieu', function () {
+      var maPhieu = $(this).data('maphieu');
+      var tenTaiLieu = $(this).data('tentailieu');
+      
+      if (confirm('Bạn có chắc chắn muốn xóa phiếu mượn trả này?\n\nMã phiếu: ' + maPhieu + '\nTài liệu: ' + tenTaiLieu)) {
+        var btn = $(this);
+        var originalText = btn.html();
+        btn.html('<i class="fas fa-spinner fa-spin"></i> Đang xóa...');
+        btn.prop('disabled', true);
+        
+        $.post('/Librarian/DeletePhieuMuonTra', { maPhieu: maPhieu })
+          .done(function (response) {
+            if (response.success) {
+              toastr.success(response.message);
+              // Xóa dòng khỏi bảng
+              btn.closest('tr').fadeOut(300, function() {
+                $(this).remove();
+              });
+            } else {
+              toastr.error(response.message);
+            }
+          })
+          .fail(function () {
+            toastr.error('Có lỗi xảy ra khi xóa phiếu mượn trả!');
+          })
+          .always(function () {
+            btn.html(originalText);
+            btn.prop('disabled', false);
+          });
+      }
     });
   });
 </script>
