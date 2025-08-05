@@ -1,40 +1,407 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
 
-<div class="modal-header">
-    <h5 class="modal-title">Lập phiếu mượn tài liệu</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title" style="color:white;">
+        <i class="fas fa-file-alt me-2"></i>
+        Lập phiếu mượn tài liệu
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
+
 <form id="lapPhieuMuonForm" method="post" action="/Librarian/LapPhieuMuon">
-    <div class="modal-body">
+    <div class="modal-body p-4">
         <input type="hidden" name="maPhieu" value="@Model.MaPhieu" />
         <input type="hidden" name="maNguoiMuon" value="@Model.MSSV" />
-        <div><b>Họ tên:</b> @Model.HoTen</div>
-        <div><b>MSSV:</b> @Model.MSSV</div>
-        <div><b>Email:</b> @Model.Email</div>
-        <div><b>Chuyên ngành:</b> @Model.ChuyenNganh</div>
-        <div><b>Tài liệu:</b> @Model.TenTaiLieu</div>
-        <div><b>Tác giả:</b> @Model.TacGia</div>
-        <div><b>Lý do:</b> @Model.LyDo</div>
-        <div class="mb-3">
-            <label class="form-label fw-semibold">Tình trạng tài liệu:</label>
-            <div class="d-flex gap-2">
-                <span class="badge bg-primary" id="soLuongTotal">Tổng: @Model.SoLuong</span>
-                <span class="badge bg-warning" id="soLuongDaMuon">Đã mượn: @Model.SoLuongDaMuon</span>
-                <span class="badge bg-success" id="soLuongConLai">Còn lại: @Model.SoLuongConLai</span>
+        
+        <!-- Layout 2 cột: Thông tin người mượn và tài liệu -->
+        <div class="row mb-4">
+            <!-- Thông tin người mượn -->
+            <div class="col-md-6">
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-user me-2"></i>
+                        Thông tin người mượn
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-user-circle text-muted me-2"></i>
+                                Họ tên:
+                            </div>
+                            <div class="info-value">@Model.HoTen</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-id-card text-muted me-2"></i>
+                                MSSV:
+                            </div>
+                            <div class="info-value">@Model.MSSV</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-envelope text-muted me-2"></i>
+                                Email:
+                            </div>
+                            <div class="info-value">@Model.Email</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-graduation-cap text-muted me-2"></i>
+                                Chuyên ngành:
+                            </div>
+                            <div class="info-value">@(string.IsNullOrEmpty(Model.ChuyenNganh) ? "Chưa cập nhật" : Model.ChuyenNganh)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thông tin tài liệu -->
+            <div class="col-md-6">
+                <div class="info-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-book me-2"></i>
+                        Thông tin tài liệu
+                    </div>
+                    <div class="card-body-custom">
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-book-open text-muted me-2"></i>
+                                Tên tài liệu:
+                            </div>
+                            <div class="info-value text-primary fw-medium">@Model.TenTaiLieu</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-user-edit text-muted me-2"></i>
+                                Tác giả:
+                            </div>
+                            <div class="info-value">@Model.TacGia</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">
+                                <i class="fas fa-comment text-muted me-2"></i>
+                                Lý do mượn:
+                            </div>
+                            <div class="info-value">@Model.LyDo</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="mb-2">
-            <label>Ngày mượn thực tế:</label>
-            <input type="datetime-local" name="ngayMuon" class="form-control"
-                value="@(Model.NgayMuon != DateTime.MinValue ? Model.NgayMuon.ToString("yyyy-MM-ddTHH:mm") : "")" required />
+
+        <!-- Tình trạng tài liệu -->
+        <div class="status-card mb-4">
+            <div class="card-header-custom">
+                <i class="fas fa-chart-pie me-2"></i>
+                Tình trạng tài liệu
+            </div>
+            <div class="card-body-custom">
+                <div class="status-grid">
+                    <div class="status-box total">
+                        <div class="status-icon">
+                            <i class="fas fa-cubes"></i>
+                        </div>
+                        <div class="status-number" id="soLuongTotal">@Model.SoLuong</div>
+                        <div class="status-label">Tổng số</div>
+                    </div>
+                    <div class="status-box borrowed">
+                        <div class="status-icon">
+                            <i class="fas fa-hand-holding"></i>
+                        </div>
+                        <div class="status-number" id="soLuongDaMuon">@Model.SoLuongDaMuon</div>
+                        <div class="status-label">Đã mượn</div>
+                    </div>
+                    <div class="status-box available">
+                        <div class="status-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="status-number" id="soLuongConLai">@Model.SoLuongConLai</div>
+                        <div class="status-label">Còn lại</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-2">
-            <label>Ngày trả dự kiến:</label>
-            <input type="date" name="ngayTraDuKien" class="form-control" value="@(Model.NgayTraDuKien.HasValue ? Model.NgayTraDuKien.Value.ToString("yyyy-MM-dd") : "")" required />
+
+        <!-- Form nhập liệu -->
+        <div class="form-card">
+            <div class="card-header-custom">
+                <i class="fas fa-calendar-alt me-2"></i>
+                Thông tin mượn
+            </div>
+            <div class="card-body-custom">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-plus text-primary me-1"></i>
+                            Ngày mượn thực tế
+                        </label>
+                        <input type="datetime-local" name="ngayMuon" class="form-control custom-input"
+                            value="@(Model.NgayMuon != DateTime.MinValue ? Model.NgayMuon.ToString("yyyy-MM-ddTHH:mm") : "")" 
+                            required />
+                        <div class="form-text">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Thời gian bắt đầu mượn tài liệu
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-calendar-check text-success me-1"></i>
+                            Ngày trả dự kiến
+                        </label>
+                        <input type="date" name="ngayTraDuKien" class="form-control custom-input" 
+                            value="@(Model.NgayTraDuKien.HasValue ? Model.NgayTraDuKien.Value.ToString("yyyy-MM-dd") : "")" 
+                            required />
+                        <div class="form-text">
+                            <i class="fas fa-clock me-1"></i>
+                            Hạn chót phải trả tài liệu
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button type="submit" class="btn btn-success">Xác nhận lập phiếu mượn</button>
+
+    <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i>
+            Đóng
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-check me-1"></i>
+            Xác nhận lập phiếu mượn
+        </button>
     </div>
-</form> 
+</form>
+
+<style>
+/* Modal size */
+.modal-dialog {
+    max-width: 900px;
+    width: 95%;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+.modal-header {
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+    padding: 20px 25px;
+}
+
+.modal-footer {
+    border-radius: 0 0 15px 15px;
+    border-top: none;
+    padding: 20px 25px;
+}
+
+/* Card styling */
+.info-card, .status-card, .form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover, .status-card:hover, .form-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #2176FF;
+    font-size: 16px;
+}
+
+.card-body-custom {
+    padding: 20px;
+}
+
+/* Info rows */
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding: 8px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6c757d;
+    min-width: 140px;
+    flex-shrink: 0;
+    padding-right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.info-value {
+    font-size: 14px;
+    font-weight: 400;
+    color: #212529;
+    flex: 1;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+/* Status grid */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.status-box {
+    text-align: center;
+    padding: 20px 15px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2176FF, #1a5bb8);
+}
+
+.status-box.total {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 1px solid #90caf9;
+}
+
+.status-box.borrowed {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%);
+    border: 1px solid #ffb74d;
+}
+
+.status-box.available {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    border: 1px solid #81c784;
+}
+
+.status-icon {
+    font-size: 24px;
+    color: #2176FF;
+    margin-bottom: 10px;
+}
+
+.status-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2176FF;
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.status-label {
+    font-size: 13px;
+    color: #6c757d;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Form styling */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.custom-input {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.custom-input:focus {
+    border-color: #2176FF;
+    box-shadow: 0 0 0 0.2rem rgba(33, 118, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.form-text {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 6px;
+    font-style: italic;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 500;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #2176FF 0%, #1a5bb8 100%);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1a5bb8 0%, #0d47a1 100%);
+    box-shadow: 0 4px 12px rgba(33, 118, 255, 0.3);
+}
+
+/* Responsive */
+@@media (max-width: 768px) {
+    .modal-dialog {
+        width: 98%;
+        margin: 10px auto;
+    }
+    
+    .status-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .info-label {
+        min-width: 120px;
+        font-size: 13px;
+    }
+    
+    .info-value {
+        font-size: 13px;
+    }
+    
+    .card-header-custom {
+        font-size: 15px;
+        padding: 12px 15px;
+    }
+    
+    .card-body-custom {
+        padding: 15px;
+    }
+}
+</style> 

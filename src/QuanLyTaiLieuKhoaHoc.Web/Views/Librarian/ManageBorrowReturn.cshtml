@@ -358,8 +358,8 @@
 
         window.openLapPhieuMuonModal = function (maPhieu) {
             $('#lapPhieuMuonModal').remove();
-            // Thêm modal mới vào body
-            $('body').append('<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
+            // Thêm modal mới vào body với kích thước lớn
+            $('body').append('<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>');
             $.get('/PhieuMuonTra/LapPhieuMuon', { maPhieu: maPhieu }, function (html) {
                 $('#lapPhieuMuonModal .modal-content').html(html);
                 $('#lapPhieuMuonModal').modal({ backdrop: 'static', keyboard: false });
