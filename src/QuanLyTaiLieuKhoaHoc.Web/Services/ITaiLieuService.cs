@@ -8,7 +8,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         Task<TaiLieuListViewModel> GetDanhSachTaiLieuAsync(int trang = 1, int kichThuocTrang = 10,
             string? timKiem = null, int? maChuyenNganh = null, int? maLoaiTaiLieu = null, string? sapXep = null, string? vaiTro = null);
 
-        Task<TaiLieuViewModel?> GetTaiLieuByIdAsync(int maTaiLieu, string? vaiTro = null);
+        Task<TaiLieuViewModel?> GetTaiLieuByIdAsync(int maTaiLieu, string? vaiTro = null, string? userId = null);
 
         Task<bool> TaoTaiLieuAsync(TaiLieuViewModel model, string maNguoiDung);
 

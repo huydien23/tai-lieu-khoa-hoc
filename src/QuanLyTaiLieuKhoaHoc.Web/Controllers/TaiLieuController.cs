@@ -130,7 +130,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     vaiTro = "ThuThu";
             }
 
-            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id, vaiTro);
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = currentUser?.Id;
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id, vaiTro, userId);
             if (taiLieu == null)
             {
                 // Kiểm tra nếu không có quyền truy cập
@@ -482,6 +484,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
                 _context.YeuThichTaiLieu.Add(yeuThich);
                 await _context.SaveChangesAsync();
+                
+                TempData["SuccessMessage"] = "Đã thêm tài liệu vào danh sách yêu thích!";
+            }
+            else
+            {
+                TempData["InfoMessage"] = "Tài liệu này đã có trong danh sách yêu thích của bạn.";
             }
 
             return RedirectToAction("Details", new { id = maTaiLieu });

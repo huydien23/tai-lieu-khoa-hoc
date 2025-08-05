@@ -93,7 +93,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return result;
         }
 
-        public async Task<TaiLieuViewModel?> GetTaiLieuByIdAsync(int maTaiLieu, string? vaiTro = null)
+        public async Task<TaiLieuViewModel?> GetTaiLieuByIdAsync(int maTaiLieu, string? vaiTro = null, string? userId = null)
         {
             var taiLieu = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
@@ -119,7 +119,17 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
                 // Giảng viên và Thủ thư xem được tất cả
             }
 
-            return MapToViewModel(taiLieu);
+            var viewModel = MapToViewModel(taiLieu);
+            
+            // Kiểm tra trạng thái yêu thích nếu có userId
+            if (!string.IsNullOrEmpty(userId))
+            {
+                var isYeuThich = await _context.YeuThichTaiLieu
+                    .AnyAsync(y => y.MaTaiLieu == maTaiLieu && y.UserId == userId);
+                viewModel.IsYeuThich = isYeuThich;
+            }
+            
+            return viewModel;
         }
 
         public async Task<bool> TaoTaiLieuAsync(TaiLieuViewModel model, string maNguoiDung)

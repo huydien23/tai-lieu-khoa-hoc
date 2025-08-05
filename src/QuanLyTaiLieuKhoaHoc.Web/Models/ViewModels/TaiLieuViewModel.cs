@@ -81,6 +81,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
 
         public double DiemDanhGiaTrungBinh { get; set; }
         public int SoLuotDanhGia { get; set; }
+        
+        // Trạng thái yêu thích của người dùng hiện tại
+        public bool IsYeuThich { get; set; } = false;
     }
 
     public class TaiLieuListViewModel

@@ -341,6 +341,32 @@
     transform: translateY(-1px);
 }
 
+.action-btn.favorite {
+    background: var(--gradient-warning);
+    color: white;
+    border: none;
+    transition: var(--transition);
+}
+
+.action-btn.favorite:hover {
+    background: var(--warning-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.action-btn.favorite.active {
+    background: var(--gradient-danger);
+    color: white;
+    cursor: default;
+    pointer-events: none;
+}
+
+.action-btn.favorite.active:hover {
+    background: var(--gradient-danger);
+    transform: none;
+    box-shadow: var(--shadow-md);
+}
+
 .action-btn.success {
     background: var(--gradient-success);
     color: white;
