@@ -1,7 +1,7 @@
 // EmailJS Configuration
 document.addEventListener('DOMContentLoaded', function () {
     if (typeof window['emailjs'] !== 'undefined') {
-        window['emailjs'].init('wwmbO9Ggo_Apkmmw9');
+        window['emailjs'].init('qQ0PHvVmX02ELlBdD');
         console.log('EmailJS initialized successfully');
     } else {
         console.error('EmailJS library not loaded');

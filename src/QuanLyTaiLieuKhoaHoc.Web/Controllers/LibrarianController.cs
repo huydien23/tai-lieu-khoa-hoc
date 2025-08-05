@@ -1088,28 +1088,71 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Không tìm thấy người dùng!" });
                 }
 
-
-                int userDocuments = 0;
-                if (userDocuments > 0)
+                // Kiểm tra xem người dùng có đang mượn tài liệu nào không
+                var userBorrowing = await _context.PhieuMuonTra
+                    .Where(p => p.MaNguoiMuon == id && p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null)
+                    .CountAsync();
+                
+                if (userBorrowing > 0)
                 {
-                    return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });
+                    return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ đang mượn {userBorrowing} tài liệu chưa trả!" });
                 }
 
-
-
-                var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
-                _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);
-
-                await _context.SaveChangesAsync();
-
-                var result = await _userManager.DeleteAsync(user);
-                if (result.Succeeded)
+                // Xóa tất cả dữ liệu liên quan đến người dùng
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    return Json(new { success = true, message = $"Đã xóa người dùng '{user.HoTen}' thành công!" });
+                    // Xóa lịch sử tải tài liệu
+                    var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
+                    _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);
+
+                    // Xóa yêu thích tài liệu
+                    var userFavorites = await _context.YeuThichTaiLieu.Where(y => y.UserId == id).ToListAsync();
+                    _context.YeuThichTaiLieu.RemoveRange(userFavorites);
+
+                    // Cập nhật các phiếu mượn trả (đặt MaThuThuDuyet = null nếu người dùng là thủ thư duyệt)
+                    var phieuMuonTraAsLibrarian = await _context.PhieuMuonTra
+                        .Where(p => p.MaThuThuDuyet == id)
+                        .ToListAsync();
+                    foreach (var phieu in phieuMuonTraAsLibrarian)
+                    {
+                        phieu.MaThuThuDuyet = null;
+                    }
+
+                    // Cập nhật các phiếu mượn trả (đặt MaNguoiMuon = null nếu người dùng là người mượn)
+                    var phieuMuonTraAsBorrower = await _context.PhieuMuonTra
+                        .Where(p => p.MaNguoiMuon == id)
+                        .ToListAsync();
+                    foreach (var phieu in phieuMuonTraAsBorrower)
+                    {
+                        phieu.MaNguoiMuon = null;
+                        // Chuyển thông tin người mượn vào các trường backup
+                        phieu.HoTenNguoiMuon = user.HoTen;
+                        phieu.MaSoNguoiMuon = user.MaSo;
+                        phieu.EmailNguoiMuon = user.Email;
+                        phieu.SoDienThoaiNguoiMuon = user.SoDienThoai;
+                        phieu.LoaiNguoiMuon = user.VaiTro.ToString();
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    // Xóa người dùng
+                    var result = await _userManager.DeleteAsync(user);
+                    if (result.Succeeded)
+                    {
+                        await transaction.CommitAsync();
+                        return Json(new { success = true, message = $"Đã xóa người dùng '{user.HoTen}' thành công!" });
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return Json(new { success = false, message = "Có lỗi xảy ra khi xóa người dùng: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return Json(new { success = false, message = "Có lỗi xảy ra khi xóa người dùng: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
+                    await transaction.RollbackAsync();
+                    throw;
                 }
             }
             catch (Exception ex)
@@ -1911,6 +1954,73 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 TempData["ErrorMessage"] = $"Có lỗi xảy ra khi xuất dữ liệu: {ex.Message}";
                 return RedirectToAction("ManageUsers");
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> DeletePhieuMuonTra(int maPhieu)
+        {
+            try
+            {
+                var phieuMuonTra = await _context.PhieuMuonTra.FindAsync(maPhieu);
+                if (phieuMuonTra == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn trả!" });
+                }
+
+                // Chỉ cho phép xóa phiếu đã trả hoặc đã từ chối
+                if (phieuMuonTra.TrangThai != TrangThaiPhieu.DaTra && phieuMuonTra.TrangThai != TrangThaiPhieu.TuChoi)
+                {
+                    return Json(new { success = false, message = "Chỉ có thể xóa phiếu đã trả hoặc đã từ chối!" });
+                }
+
+                _context.PhieuMuonTra.Remove(phieuMuonTra);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Đã xóa phiếu mượn trả thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa phiếu mượn trả: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> DeleteMultiplePhieuMuonTra(List<int> maPhieuList)
+        {
+            try
+            {
+                if (maPhieuList == null || !maPhieuList.Any())
+                {
+                    return Json(new { success = false, message = "Vui lòng chọn phiếu cần xóa!" });
+                }
+
+                var phieuMuonTraList = await _context.PhieuMuonTra
+                    .Where(p => maPhieuList.Contains(p.MaPhieu))
+                    .ToListAsync();
+
+                if (!phieuMuonTraList.Any())
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn trả nào!" });
+                }
+
+                // Kiểm tra tất cả phiếu đều đã trả hoặc đã từ chối
+                var invalidPhieu = phieuMuonTraList.Where(p => p.TrangThai != TrangThaiPhieu.DaTra && p.TrangThai != TrangThaiPhieu.TuChoi).ToList();
+                if (invalidPhieu.Any())
+                {
+                    return Json(new { success = false, message = $"Có {invalidPhieu.Count} phiếu chưa trả, không thể xóa!" });
+                }
+
+                _context.PhieuMuonTra.RemoveRange(phieuMuonTraList);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã xóa {phieuMuonTraList.Count} phiếu mượn trả thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa phiếu mượn trả: " + ex.Message });
             }
         }
     }
