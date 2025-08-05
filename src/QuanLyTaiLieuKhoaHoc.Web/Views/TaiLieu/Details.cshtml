@@ -1,3 +1,4 @@
+@using System.IO
 @model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.TaiLieuViewModel
 @{
     ViewData["Title"] = $"Chi tiết: {Model.TenTaiLieu}";
@@ -247,7 +248,17 @@
                         {
                             if (Model.ChoPhepTaiFile)
                             {
-                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="action-btn primary">
+                                var fileExtension = System.IO.Path.GetExtension(Model.DuongDanFile)?.ToLower();
+                                var isPdf = fileExtension == ".pdf";
+                                
+                                @if (isPdf)
+                                {
+                                    <a href="@Url.Action("ViewPdf", "TaiLieu", new { id = Model.MaTaiLieu })" class="action-btn primary" target="_blank">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Xem online</span>
+                                    </a>
+                                }
+                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="action-btn success">
                                     <i class="fas fa-download"></i>
                                     <span>Tải xuống</span>
                                 </a>
@@ -265,7 +276,17 @@
                         {
                             if (Model.ChoPhepTaiFile)
                             {
-                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="action-btn primary">
+                                var fileExtension = System.IO.Path.GetExtension(Model.DuongDanFile)?.ToLower();
+                                var isPdf = fileExtension == ".pdf";
+                                
+                                @if (isPdf)
+                                {
+                                    <a href="@Url.Action("ViewPdf", "TaiLieu", new { id = Model.MaTaiLieu })" class="action-btn primary" target="_blank">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Xem online</span>
+                                    </a>
+                                }
+                                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="action-btn success">
                                     <i class="fas fa-download"></i>
                                     <span>Tải xuống</span>
                                 </a>
