@@ -46,7 +46,8 @@ window.sendOverdueWarning = function (maPhieu, email, hoTen, tenTaiLieu, soNgayQ
         contact_email: 'thuvien@nct.edu.vn',
         contact_phone: '0292 123 4567',
         user_email: email,  
-        recipient_email: email 
+        recipient_email: email,
+        maPhieu: maPhieu
     };
 
     const finalParams = {
