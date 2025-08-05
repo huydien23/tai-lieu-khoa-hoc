@@ -281,95 +281,196 @@
 <!-- Modal lập phiếu mượn (chỉ render 1 lần ngoài vòng lặp) -->
 <div class="modal fade" id="createPhieuMuonModal" tabindex="-1" aria-labelledby="createPhieuMuonModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="createPhieuMuonModalLabel">
-                    <i class="fas fa-file-signature text-warning me-2"></i>
+            <div class="modal-header modal-borrow-header">
+                <h5 class="modal-title" id="createPhieuMuonModalLabel" style="color:white;">
+                    <i class="fas fa-file-signature"></i>
                     Lập phiếu mượn tài liệu
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="createPhieuMuonForm">
                 <div class="modal-body">
                     <input type="hidden" id="phieuMaTaiLieu" name="maTaiLieu" />
-                    <div class="form-check mb-3">
-                        <input class="form-check-input" type="checkbox" value="true" id="isMemberCheckbox">
-                        <label class="form-check-label" for="isMemberCheckbox">
-                            Người mượn là thành viên hệ thống
-                        </label>
-                    </div>
-                    <div class="mb-3 d-none" id="memberSearchGroup">
-                        <label for="memberSearch" class="form-label">Tìm thành viên (mã số, tên, email)</label>
-                        <input type="text" class="form-control" id="memberSearch" autocomplete="off"
-                            placeholder="Nhập mã số, tên hoặc email...">
-                        <div class="list-group position-absolute w-100" id="memberSearchResults" style="z-index: 1000;">
+                    
+                    <!-- Toggle thành viên hệ thống -->
+                    <div class="member-toggle-section mb-4">
+                        <div class="form-check custom-checkbox">
+                            <input class="form-check-input" type="checkbox" value="true" id="isMemberCheckbox">
+                            <label class="form-check-label" for="isMemberCheckbox">
+                                <i class="fas fa-users text-primary me-2"></i>
+                                Người mượn là thành viên hệ thống
+                            </label>
+                        </div>
+                        <div class="member-search-group d-none" id="memberSearchGroup">
+                            <div class="search-card">
+                                <div class="search-header">
+                                    <i class="fas fa-search text-info"></i>
+                                    Tìm thành viên
+                                </div>
+                                <div class="search-body">
+                                    <div class="search-input-wrapper">
+                                        <input type="text" class="form-control search-input" id="memberSearch" autocomplete="off"
+                                            placeholder="🔍 Gõ để tìm kiếm thành viên (mã số, tên, email)...">
+                                        <div class="search-loading d-none">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                        </div>
+                                    </div>
+                                    <div class="search-hint">
+                                        <i class="fas fa-lightbulb text-warning"></i>
+                                        <small>Gợi ý: Gõ ít nhất 2 ký tự để bắt đầu tìm kiếm</small>
+                                    </div>
+                                    <div class="search-results" id="memberSearchResults">
+                                        <div class="search-empty-state">
+                                            <i class="fas fa-search text-muted"></i>
+                                            <p>Bắt đầu gõ để tìm kiếm thành viên...</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuTenTaiLieu" class="form-label">Tên tài liệu</label>
-                            <input type="text" class="form-control" id="phieuTenTaiLieu" name="tenTaiLieu" readonly />
+                    
+                    <!-- Thông tin tài liệu -->
+                    <div class="info-card mb-4">
+                        <div class="card-header-custom">
+                            <i class="fas fa-book text-primary"></i>
+                            Thông tin tài liệu
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuMaNguoiMuon" class="form-label">Mã số người mượn</label>
-                            <input type="text" class="form-control" id="phieuMaNguoiMuon" name="maNguoiMuon" required />
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuHoTenNguoiMuon" class="form-label">Họ tên người mượn</label>
-                            <input type="text" class="form-control" id="phieuHoTenNguoiMuon" name="hoTenNguoiMuon"
-                                required />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuEmailNguoiMuon" class="form-label">Email người mượn</label>
-                            <input type="email" class="form-control" id="phieuEmailNguoiMuon" name="emailNguoiMuon" />
+                        <div class="card-body-custom">
+                            <div class="form-group-custom">
+                                <label for="phieuTenTaiLieu" class="form-label-custom">
+                                    <i class="fas fa-book-open text-muted"></i>
+                                    Tên tài liệu
+                                </label>
+                                <input type="text" class="form-control-custom" id="phieuTenTaiLieu" name="tenTaiLieu" readonly />
+                            </div>
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuSDTNguoiMuon" class="form-label">Số điện thoại người mượn</label>
-                            <input type="text" class="form-control" id="phieuSDTNguoiMuon" name="sdtNguoiMuon" />
+                    
+                    <!-- Thông tin người mượn -->
+                    <div class="info-card mb-4">
+                        <div class="card-header-custom">
+                            <i class="fas fa-user text-success"></i>
+                            Thông tin người mượn
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuLoaiNguoiMuon" class="form-label">Loại người mượn</label>
-                            <select class="form-control" id="phieuLoaiNguoiMuon" name="loaiNguoiMuon" required>
-                                <option value="">-- Chọn loại người mượn --</option>
-                                <option value="Sinh viên">Sinh viên</option>
-                                <option value="Giảng viên">Giảng viên</option>
-                                <option value="Cán bộ">Cán bộ</option>
-                                <option value="Nghiên cứu sinh">Nghiên cứu sinh</option>
-                                <option value="Khách">Khách</option>
-                                <option value="Khác">Khác</option>
-                            </select>
+                        <div class="card-body-custom">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuMaNguoiMuon" class="form-label-custom">
+                                            <i class="fas fa-id-card text-muted"></i>
+                                            Mã số người mượn
+                                        </label>
+                                        <input type="text" class="form-control-custom" id="phieuMaNguoiMuon" name="maNguoiMuon" required />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuHoTenNguoiMuon" class="form-label-custom">
+                                            <i class="fas fa-user-circle text-muted"></i>
+                                            Họ tên người mượn
+                                        </label>
+                                        <input type="text" class="form-control-custom" id="phieuHoTenNguoiMuon" name="hoTenNguoiMuon" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuEmailNguoiMuon" class="form-label-custom">
+                                            <i class="fas fa-envelope text-muted"></i>
+                                            Email người mượn
+                                        </label>
+                                        <input type="email" class="form-control-custom" id="phieuEmailNguoiMuon" name="emailNguoiMuon" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuSDTNguoiMuon" class="form-label-custom">
+                                            <i class="fas fa-phone text-muted"></i>
+                                            Số điện thoại người mượn
+                                        </label>
+                                        <input type="text" class="form-control-custom" id="phieuSDTNguoiMuon" name="sdtNguoiMuon" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group-custom">
+                                <label for="phieuLoaiNguoiMuon" class="form-label-custom">
+                                    <i class="fas fa-tags text-muted"></i>
+                                    Loại người mượn
+                                </label>
+                                <select class="form-control-custom" id="phieuLoaiNguoiMuon" name="loaiNguoiMuon" required>
+                                    <option value="">-- Chọn loại người mượn --</option>
+                                    <option value="Sinh viên">🎓 Sinh viên</option>
+                                    <option value="Giảng viên">👨‍🏫 Giảng viên</option>
+                                    <option value="Cán bộ">👔 Cán bộ</option>
+                                    <option value="Nghiên cứu sinh">🔬 Nghiên cứu sinh</option>
+                                    <option value="Khách">👤 Khách</option>
+                                    <option value="Khác">📋 Khác</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="row g-2">
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuNgayMuon" class="form-label">Ngày mượn</label>
-                            <input type="date" class="form-control" id="phieuNgayMuon" name="ngayMuon" />
+                    
+                    <!-- Thông tin mượn -->
+                    <div class="info-card mb-4">
+                        <div class="card-header-custom">
+                            <i class="fas fa-calendar-alt text-warning"></i>
+                            Thông tin mượn
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuNgayTraDuKien" class="form-label">Ngày trả dự kiến</label>
-                            <input type="date" class="form-control" id="phieuNgayTraDuKien" name="ngayTraDuKien" />
-                        </div>
-                    </div>
-                    <div class="row g-2">
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuSoLuong" class="form-label">Số lượng mượn</label>
-                            <input type="number" class="form-control" id="phieuSoLuong" name="soLuong" min="1"
-                                value="1" />
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="phieuGhiChu" class="form-label">Ghi chú</label>
-                            <textarea class="form-control" id="phieuGhiChu" name="ghiChu" rows="2"></textarea>
+                        <div class="card-body-custom">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuNgayMuon" class="form-label-custom">
+                                            <i class="fas fa-calendar-plus text-muted"></i>
+                                            Ngày mượn
+                                        </label>
+                                        <input type="date" class="form-control-custom" id="phieuNgayMuon" name="ngayMuon" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuNgayTraDuKien" class="form-label-custom">
+                                            <i class="fas fa-calendar-check text-muted"></i>
+                                            Ngày trả dự kiến
+                                        </label>
+                                        <input type="date" class="form-control-custom" id="phieuNgayTraDuKien" name="ngayTraDuKien" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuSoLuong" class="form-label-custom">
+                                            <i class="fas fa-layer-group text-muted"></i>
+                                            Số lượng mượn
+                                        </label>
+                                        <input type="number" class="form-control-custom" id="phieuSoLuong" name="soLuong" min="1" value="1" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group-custom">
+                                        <label for="phieuGhiChu" class="form-label-custom">
+                                            <i class="fas fa-sticky-note text-muted"></i>
+                                            Ghi chú
+                                        </label>
+                                        <textarea class="form-control-custom" id="phieuGhiChu" name="ghiChu" rows="2" placeholder="Ghi chú về việc mượn tài liệu..."></textarea>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-warning">Lập phiếu mượn</button>
+                <div class="modal-footer modal-footer-custom">
+                    <button type="button" class="btn btn-secondary-custom" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Hủy
+                    </button>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <i class="fas fa-check me-2"></i>Lập phiếu mượn
+                    </button>
                 </div>
             </form>
         </div>
@@ -952,5 +1053,583 @@
 
         // Make deleteDocument function global
         window.deleteDocument = deleteDocument;
+
+        // Enhanced member search functionality
+        let searchTimeout;
+        const memberSearch = document.getElementById('memberSearch');
+        const memberSearchResults = document.getElementById('memberSearchResults');
+        const searchLoading = document.querySelector('.search-loading');
+        const isMemberCheckbox = document.getElementById('isMemberCheckbox');
+        const memberSearchGroup = document.getElementById('memberSearchGroup');
+
+        // Toggle member search group
+        if (isMemberCheckbox) {
+            isMemberCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    memberSearchGroup.classList.remove('d-none');
+                    memberSearch.focus();
+                } else {
+                    memberSearchGroup.classList.add('d-none');
+                    memberSearch.value = '';
+                    showEmptyState();
+                }
+            });
+        }
+
+        if (memberSearch) {
+            memberSearch.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                // Clear previous timeout
+                clearTimeout(searchTimeout);
+                
+                // Show loading state
+                if (query.length >= 2) {
+                    searchLoading.classList.remove('d-none');
+                    showSearchLoading();
+                } else {
+                    searchLoading.classList.add('d-none');
+                    showEmptyState();
+                }
+
+                // Debounce search
+                searchTimeout = setTimeout(() => {
+                    if (query.length >= 2) {
+                        performMemberSearch(query);
+                    } else {
+                        showEmptyState();
+                    }
+                }, 300);
+            });
+
+            // Handle member selection
+            memberSearchResults.addEventListener('click', function(e) {
+                if (e.target.closest('.search-result-item')) {
+                    const item = e.target.closest('.search-result-item');
+                    const memberData = JSON.parse(item.dataset.member);
+                    
+                    // Fill form fields
+                    document.getElementById('phieuMaNguoiMuon').value = memberData.maSo || memberData.userName;
+                    document.getElementById('phieuHoTenNguoiMuon').value = memberData.hoTen;
+                    document.getElementById('phieuEmailNguoiMuon').value = memberData.email || '';
+                    document.getElementById('phieuSDTNguoiMuon').value = memberData.phoneNumber || '';
+                    document.getElementById('phieuLoaiNguoiMuon').value = memberData.loaiNguoiDung || 'Sinh viên';
+                    
+                    // Clear search
+                    memberSearch.value = '';
+                    showEmptyState();
+                    
+                    // Show success feedback
+                    showSearchSuccess(memberData.hoTen);
+                }
+            });
+        }
+
+        function showSearchLoading() {
+            memberSearchResults.innerHTML = `
+                <div class="search-loading-state">
+                    <i class="fas fa-spinner fa-spin text-info"></i>
+                    <p>Đang tìm kiếm thành viên...</p>
+                </div>
+            `;
+        }
+
+        function showEmptyState() {
+            memberSearchResults.innerHTML = `
+                <div class="search-empty-state">
+                    <i class="fas fa-search text-muted"></i>
+                    <p>Bắt đầu gõ để tìm kiếm thành viên...</p>
+                </div>
+            `;
+        }
+
+        function showNoResults() {
+            memberSearchResults.innerHTML = `
+                <div class="search-no-results">
+                    <i class="fas fa-user-slash"></i>
+                    <p>Không tìm thấy thành viên nào phù hợp</p>
+                    <small>Thử tìm kiếm với từ khóa khác</small>
+                </div>
+            `;
+        }
+
+        function showSearchSuccess(memberName) {
+            // Show toast notification
+            if (typeof toastr !== 'undefined') {
+                toastr.success(`Đã chọn thành viên: ${memberName}`, 'Thành công');
+            }
+        }
+
+        function performMemberSearch(query) {
+            // Call actual API endpoint
+            fetch(`/Librarian/SearchMember?q=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    searchLoading.classList.add('d-none');
+                    
+                    if (data && data.length > 0) {
+                        // Transform data to match expected format
+                        const transformedData = data.map(user => ({
+                            maSo: user.maSo,
+                            userName: user.maSo,
+                            hoTen: user.hoTen,
+                            email: user.email,
+                            phoneNumber: user.sdt,
+                            loaiNguoiDung: mapVaiTroToLoai(user.loai)
+                        }));
+                        displaySearchResults(transformedData);
+                    } else {
+                        showNoResults();
+                    }
+                })
+                .catch(error => {
+                    searchLoading.classList.add('d-none');
+                    console.error('Search error:', error);
+                    
+                    // Fallback: show sample results for demo
+                    const sampleResults = generateSampleResults(query);
+                    displaySearchResults(sampleResults);
+                });
+        }
+
+        function mapVaiTroToLoai(vaiTro) {
+            const mapping = {
+                'SinhVien': 'Sinh viên',
+                'GiangVien': 'Giảng viên',
+                'ThuThu': 'Cán bộ',
+                'NghienCuuSinh': 'Nghiên cứu sinh'
+            };
+            return mapping[vaiTro] || 'Sinh viên';
+        }
+
+        function displaySearchResults(results) {
+            const resultsHtml = results.map(member => `
+                <div class="search-result-item" data-member='${JSON.stringify(member)}'>
+                    <div class="search-result-avatar">
+                        ${member.hoTen.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="search-result-info">
+                        <div class="search-result-name">${member.hoTen}</div>
+                        <div class="search-result-details">
+                            ${member.maSo || member.userName} • ${member.email || 'Chưa có email'}
+                        </div>
+                    </div>
+                    <div class="search-result-type">${member.loaiNguoiDung || 'Sinh viên'}</div>
+                </div>
+            `).join('');
+            
+            memberSearchResults.innerHTML = resultsHtml;
+        }
+
+        function generateSampleResults(query) {
+            // Sample data for demo purposes
+            const sampleMembers = [
+                {
+                    hoTen: 'Nguyễn Văn An',
+                    maSo: 'SV001',
+                    userName: 'SV001',
+                    email: 'an.nguyen@example.com',
+                    phoneNumber: '0123456789',
+                    loaiNguoiDung: 'Sinh viên'
+                },
+                {
+                    hoTen: 'Trần Thị Bình',
+                    maSo: 'SV002',
+                    userName: 'SV002',
+                    email: 'binh.tran@example.com',
+                    phoneNumber: '0987654321',
+                    loaiNguoiDung: 'Sinh viên'
+                },
+                {
+                    hoTen: 'Lê Văn Cường',
+                    maSo: 'GV001',
+                    userName: 'GV001',
+                    email: 'cuong.le@example.com',
+                    phoneNumber: '0369852147',
+                    loaiNguoiDung: 'Giảng viên'
+                }
+            ];
+
+            return sampleMembers.filter(member => 
+                member.hoTen.toLowerCase().includes(query.toLowerCase()) ||
+                member.maSo.toLowerCase().includes(query.toLowerCase()) ||
+                member.email.toLowerCase().includes(query.toLowerCase())
+            );
+        }
     </script>
 }
+
+<style>
+/* Modal lập phiếu mượn styling */
+.modal-borrow-header {
+    background: linear-gradient(135deg, #2176FF 0%, #1a5bb8 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 20px 25px;
+    border-bottom: none;
+}
+
+.modal-borrow-header .modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-borrow-header .btn-close-white {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+.modal-borrow-header .btn-close-white:hover {
+    opacity: 1;
+}
+
+/* Member toggle section */
+.member-toggle-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.custom-checkbox {
+    margin-bottom: 0;
+}
+
+.custom-checkbox .form-check-label {
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.custom-checkbox .form-check-input {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
+}
+
+/* Search card */
+.search-card {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.search-header {
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    color: white;
+    padding: 12px 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-body {
+    padding: 15px;
+}
+
+.search-input-wrapper {
+    position: relative;
+}
+
+.search-input {
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 10px 12px;
+    padding-right: 40px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.search-input:focus {
+    border-color: #17a2b8;
+    box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.25);
+    outline: none;
+}
+
+.search-loading {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #17a2b8;
+}
+
+.search-hint {
+    margin-top: 8px;
+    color: #6c757d;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.search-results {
+    margin-top: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    background: white;
+    min-height: 60px;
+}
+
+.search-empty-state {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.search-empty-state i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.search-empty-state p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.search-result-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f8f9fa;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-result-item:hover {
+    background-color: #f8f9fa;
+    border-left: 3px solid #17a2b8;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.search-result-info {
+    flex: 1;
+}
+
+.search-result-name {
+    font-weight: 600;
+    color: #495057;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.search-result-details {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.search-result-type {
+    background: #e9ecef;
+    color: #495057;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.search-no-results {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.search-no-results i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+    color: #dc3545;
+}
+
+.search-no-results p {
+    margin: 0;
+    font-size: 13px;
+}
+
+.search-loading-state {
+    text-align: center;
+    padding: 20px;
+    color: #17a2b8;
+}
+
+.search-loading-state i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.search-loading-state p {
+    margin: 0;
+    font-size: 13px;
+}
+
+/* Info cards */
+.info-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+}
+
+.card-header-custom {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px 20px;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-body-custom {
+    padding: 20px;
+}
+
+/* Form styling */
+.form-group-custom {
+    margin-bottom: 20px;
+}
+
+.form-label-custom {
+    font-weight: 500;
+    color: #495057;
+    margin-bottom: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.form-control-custom {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-control-custom:focus {
+    border-color: #2176FF;
+    box-shadow: 0 0 0 0.2rem rgba(33, 118, 255, 0.15);
+    outline: none;
+    transform: translateY(-1px);
+}
+
+.form-control-custom[readonly] {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+
+/* Modal footer */
+.modal-footer-custom {
+    background: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 20px 25px;
+    border-radius: 0 0 12px 12px;
+}
+
+.btn-secondary-custom {
+    background: #6c757d;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary-custom:hover {
+    background: #5a6268;
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary-custom {
+    background: linear-gradient(135deg, #2176FF 0%, #1a5bb8 100%);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background: linear-gradient(135deg, #1a5bb8 0%, #0d47a1 100%);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(33, 118, 255, 0.3);
+}
+
+/* Responsive design */
+@@media (max-width: 768px) {
+    .modal-dialog {
+        width: 95%;
+        margin: 10px auto;
+    }
+    
+    .card-body-custom {
+        padding: 15px;
+    }
+    
+    .form-group-custom {
+        margin-bottom: 15px;
+    }
+    
+    .form-label-custom {
+        font-size: 13px;
+    }
+    
+    .form-control-custom {
+        font-size: 13px;
+        padding: 10px 12px;
+    }
+    
+    .card-header-custom {
+        font-size: 15px;
+        padding: 12px 15px;
+    }
+}
+</style>

@@ -1,42 +1,344 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
 
-<div class="modal-header">
-    <h5 class="modal-title">Xác nhận trả tài liệu</h5>
+<style>
+    .modal-return-header {
+        background: linear-gradient(135deg, #3686dd 0%,rgb(90, 146, 206) 100%);
+        color: white;
+        border-radius: 8px 8px 0 0;
+        padding: 20px 25px;
+        border-bottom: none;
+    }
+    
+    .modal-return-header .modal-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .modal-return-header .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+    }
+    
+    .modal-return-header .btn-close:hover {
+        opacity: 1;
+    }
+    
+    .info-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .info-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 15px;
+        font-weight: 600;
+        color: #495057;
+        font-size: 16px;
+    }
+    
+    .info-row {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f3f4;
+    }
+    
+    .info-row:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .info-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #6c757d;
+        min-width: 140px;
+        flex-shrink: 0;
+        padding-right: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .info-value {
+        font-size: 14px;
+        font-weight: 400;
+        color: #212529;
+        flex: 1;
+        word-wrap: break-word;
+        line-height: 1.4;
+    }
+    
+    .form-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    
+    .form-card-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 20px;
+        font-weight: 600;
+        color: #495057;
+        font-size: 16px;
+    }
+    
+    .form-group-custom {
+        margin-bottom: 20px;
+    }
+    
+    .form-group-custom label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .form-control-custom {
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 10px 12px;
+        font-size: 14px;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .form-control-custom:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+        outline: 0;
+    }
+    
+    .form-control-custom[readonly] {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+    
+    .modal-footer-custom {
+        background: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        padding: 20px 25px;
+        border-radius: 0 0 8px 8px;
+    }
+    
+    .btn-custom {
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+    }
+    
+    .btn-custom:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .btn-success-custom {
+        background: linear-gradient(135deg, #3686dd 0%,rgb(90, 146, 206) 100%);
+        border: none;
+        color: white;
+    }
+    
+    .btn-success-custom:hover {
+        background: linear-gradient(135deg,rgb(28, 91, 158) 0%,rgb(68, 113, 161) 100%);
+        color: white;
+    }
+    
+    .btn-secondary-custom {
+        background: #6c757d;
+        border: none;
+        color: white;
+    }
+    
+    .btn-secondary-custom:hover {
+        background: #5a6268;
+        color: white;
+    }
+    
+    /* Responsive layout cho 2 cột */
+    @@media (max-width: 768px) {
+        .col-md-6 {
+            margin-bottom: 20px;
+        }
+        
+        .info-card {
+            margin-bottom: 15px;
+        }
+    }
+    
+    /* Tăng kích thước modal */
+    .modal-dialog {
+        max-width: 900px !important;
+        width: 90% !important;
+    }
+    
+    /* Điều chỉnh padding cho modal body */
+    .modal-body {
+        padding: 30px !important;
+    }
+    
+    /* Tăng font size cho labels */
+    .info-label {
+        font-size: 15px !important;
+        min-width: 150px !important;
+    }
+    
+    .info-value {
+        font-size: 15px !important;
+    }
+    
+    .form-group-custom label {
+        font-size: 15px !important;
+    }
+    
+    .form-control-custom {
+        font-size: 15px !important;
+        padding: 12px 15px !important;
+    }
+</style>
+
+<div class="modal-header modal-return-header">
+    <h5 class="modal-title" style="color:white;">
+        <i class="fas fa-check-circle"></i>
+        Xác nhận trả tài liệu
+    </h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
+
 <form id="lapPhieuTraForm" method="post" action="/PhieuMuonTra/LapPhieuTra">
     <div class="modal-body">
         <input type="hidden" name="maPhieu" value="@Model.MaPhieu" />
-        <div><b>Họ tên:</b> @(string.IsNullOrEmpty(Model.HoTen) ? "Chưa có thông tin" : Model.HoTen)</div>
-        <div><b>Mã số:</b> @(string.IsNullOrEmpty(Model.MSSV) ? "Chưa có thông tin" : Model.MSSV)</div>
-        <div><b>Email:</b> @(string.IsNullOrEmpty(Model.Email) ? "Chưa có thông tin" : Model.Email)</div>
-        <div><b>Thông tin khác:</b> @(string.IsNullOrEmpty(Model.ChuyenNganh) ? "Chưa có thông tin" : Model.ChuyenNganh)</div>
-        <div><b>Tài liệu:</b> @Model.TenTaiLieu</div>
-        <div><b>Tác giả:</b> @Model.TacGia</div>
-        <div class="mb-2">
-            <label>Ngày mượn:</label>
-            <input type="text" class="form-control" value="@(Model.NgayMuon != DateTime.MinValue ? Model.NgayMuon.ToString("dd/MM/yyyy HH:mm") : "")" readonly />
+        
+        <!-- Thông tin người mượn và tài liệu - Layout 2 cột -->
+        <div class="row">
+            <!-- Thông tin người mượn - Cột trái -->
+            <div class="col-md-6">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <i class="fas fa-user-circle text-primary"></i>
+                        Thông tin người mượn
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user text-muted"></i>
+                            Họ tên:
+                        </div>
+                        <div class="info-value">@(string.IsNullOrEmpty(Model.HoTen) ? "Chưa có thông tin" : Model.HoTen)</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-id-card text-muted"></i>
+                            Mã số:
+                        </div>
+                        <div class="info-value">@(string.IsNullOrEmpty(Model.MSSV) ? "Chưa có thông tin" : Model.MSSV)</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-envelope text-muted"></i>
+                            Email:
+                        </div>
+                        <div class="info-value">@(string.IsNullOrEmpty(Model.Email) ? "Chưa có thông tin" : Model.Email)</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-graduation-cap text-muted"></i>
+                            Chuyên ngành:
+                        </div>
+                        <div class="info-value">@(string.IsNullOrEmpty(Model.ChuyenNganh) ? "Chưa có thông tin" : Model.ChuyenNganh)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Thông tin tài liệu - Cột phải -->
+            <div class="col-md-6">
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <i class="fas fa-book text-success"></i>
+                        Thông tin tài liệu
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-book-open text-muted"></i>
+                            Tài liệu:
+                        </div>
+                        <div class="info-value">@Model.TenTaiLieu</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-user-edit text-muted"></i>
+                            Tác giả:
+                        </div>
+                        <div class="info-value">@Model.TacGia</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">
+                            <i class="fas fa-calendar-alt text-muted"></i>
+                            Ngày mượn:
+                        </div>
+                        <div class="info-value">@(Model.NgayMuon != DateTime.MinValue ? Model.NgayMuon.ToString("dd/MM/yyyy HH:mm") : "Chưa có thông tin")</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="mb-2">
-            <label>Ngày trả thực tế:</label>
-            <input type="datetime-local" name="ngayTra" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
-        </div>
-        <div class="mb-2">
-            <label>Tình trạng tài liệu:</label>
-            <select name="tinhTrang" class="form-control">
-                <option value="Tốt">Tốt</option>
-                <option value="Hơi mòn">Hơi mòn</option>
-                <option value="Hư hỏng nhẹ">Hư hỏng nhẹ</option>
-                <option value="Hư hỏng nặng">Hư hỏng nặng</option>
-            </select>
-        </div>
-        <div class="mb-2">
-            <label>Ghi chú:</label>
-            <textarea name="ghiChu" class="form-control" rows="2" placeholder="Ghi chú về việc trả tài liệu (nếu có)"></textarea>
+        
+        <!-- Form xác nhận trả -->
+        <div class="form-card">
+            <div class="form-card-header">
+                <i class="fas fa-clipboard-check text-warning"></i>
+                Xác nhận trả tài liệu
+            </div>
+            <div class="form-group-custom">
+                <label>
+                    <i class="fas fa-calendar-plus text-primary"></i>
+                    Ngày trả thực tế:
+                </label>
+                <input type="datetime-local" name="ngayTra" class="form-control form-control-custom" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" required />
+            </div>
+            <div class="form-group-custom">
+                <label>
+                    <i class="fas fa-tags text-info"></i>
+                    Tình trạng tài liệu:
+                </label>
+                <select name="tinhTrang" class="form-control form-control-custom">
+                    <option value="Tốt">✅ Tốt</option>
+                    <option value="Hơi mòn">⚠️ Hơi mòn</option>
+                    <option value="Hư hỏng nhẹ">🔧 Hư hỏng nhẹ</option>
+                    <option value="Hư hỏng nặng">❌ Hư hỏng nặng</option>
+                </select>
+            </div>
+            <div class="form-group-custom">
+                <label>
+                    <i class="fas fa-sticky-note text-secondary"></i>
+                    Ghi chú:
+                </label>
+                <textarea name="ghiChu" class="form-control form-control-custom" rows="3" placeholder="Ghi chú về việc trả tài liệu (nếu có)"></textarea>
+            </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-        <button type="submit" class="btn btn-success">Xác nhận trả</button>
+    
+    <div class="modal-footer modal-footer-custom">
+        <button type="button" class="btn btn-secondary-custom btn-custom" data-bs-dismiss="modal">
+            <i class="fas fa-times me-2"></i>Đóng
+        </button>
+        <button type="submit" class="btn btn-success-custom btn-custom">
+            <i class="fas fa-check me-2"></i>Xác nhận trả
+        </button>
     </div>
 </form> 
