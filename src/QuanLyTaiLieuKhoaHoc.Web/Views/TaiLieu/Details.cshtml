@@ -15,15 +15,6 @@
 
 <div class="document-details-page">
     <!-- Success/Info Messages -->
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="fas fa-check-circle"></i>
-            @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
-    
     @if (TempData["InfoMessage"] != null)
     {
         <div class="alert alert-info alert-dismissible fade show" role="alert">
