@@ -1,78 +1,316 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.PhieuMuonTra
+
+<style>
+    .detail-modal .modal-header {
+        background: linear-gradient(135deg, #1c5b9e 0%, #44719f 100%);
+        color: white;
+        border-bottom: none;
+    }
+    
+    .detail-modal .modal-title {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+    }
+    
+    .detail-modal .btn-close {
+        filter: brightness(0) invert(1);
+    }
+    
+    .detail-modal .modal-body {
+        padding: 1.5rem;
+        background: #f8fafb;
+    }
+    
+    .info-section {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #28a745;
+    }
+    
+    .info-section h6 {
+        color: #1c5b9e;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-row {
+        display: flex;
+        margin-bottom: 0.75rem;
+        align-items: flex-start;
+    }
+    
+    .info-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .info-label {
+        flex: 0 0 35%;
+        color: #6c757d;
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .info-value {
+        flex: 1;
+        color: #495057;
+        font-weight: 500;
+    }
+    
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .status-badge.cho-duyet {
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
+    }
+    
+    .status-badge.da-duyet {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+    }
+    
+    .status-badge.da-tra {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+    
+    .status-badge.qua-han {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
+    
+    .highlight-value {
+        color: #1c5b9e;
+        font-weight: 600;
+    }
+    
+    .contact-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.9rem;
+    }
+</style>
+
 <div class="modal-header">
-    <h5 class="modal-title">Chi tiết phiếu mượn/trả</h5>
+    <h5 class="modal-title">
+        <i class="fas fa-file-alt me-2"></i>
+        Chi tiết phiếu mượn/trả
+    </h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 <div class="modal-body">
-    <dl class="row" style="word-break: break-word;">
-        <dt class="col-sm-4">Mã phiếu</dt>
-        <dd class="col-sm-8">@Model.MaPhieu</dd>
-        <dt class="col-sm-4">Tên tài liệu</dt>
-        <dd class="col-sm-8">@Model.TaiLieu?.TenTaiLieu</dd>
-        <dt class="col-sm-4">Người mượn</dt>
-        <dd class="col-sm-8">
-            @if (Model.NguoiMuon != null)
-            {
-                @(Model.NguoiMuon.HoTen + " (" + Model.NguoiMuon.MaSo + ")")
-            }
-            else if (!string.IsNullOrEmpty(Model.HoTenNguoiMuon))
-            {
-                @(Model.HoTenNguoiMuon + 
-                  (!string.IsNullOrEmpty(Model.MaSoNguoiMuon) ? " (" + Model.MaSoNguoiMuon + ")" : "") +
-                  (!string.IsNullOrEmpty(Model.LoaiNguoiMuon) ? " - " + Model.LoaiNguoiMuon : ""))
-            }
-            else
-            {
-                @:"Không rõ"
-            }
-        </dd>
+    <!-- Thông tin cơ bản -->
+    <div class="info-section">
+        <h6><i class="fas fa-info-circle"></i> Thông tin cơ bản</h6>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-hashtag"></i> Mã phiếu
+            </div>
+            <div class="info-value highlight-value">@Model.MaPhieu</div>
+        </div>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-book"></i> Tên tài liệu
+            </div>
+            <div class="info-value">@Model.TaiLieu?.TenTaiLieu</div>
+        </div>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-user"></i> Người mượn
+            </div>
+            <div class="info-value">
+                @if (Model.NguoiMuon != null)
+                {
+                    <strong>@Model.NguoiMuon.HoTen</strong> <span class="text-muted">(@Model.NguoiMuon.MaSo)</span>
+                }
+                else if (!string.IsNullOrEmpty(Model.HoTenNguoiMuon))
+                {
+                    <strong>@Model.HoTenNguoiMuon</strong>
+                    @if (!string.IsNullOrEmpty(Model.MaSoNguoiMuon))
+                    {
+                        <span class="text-muted">(@Model.MaSoNguoiMuon)</span>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.LoaiNguoiMuon))
+                    {
+                        <span class="badge bg-secondary ms-2">@Model.LoaiNguoiMuon</span>
+                    }
+                }
+                else
+                {
+                    <span class="text-muted">Không rõ</span>
+                }
+            </div>
+        </div>
+        
         @if (Model.NguoiMuon == null && (!string.IsNullOrEmpty(Model.EmailNguoiMuon) || !string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon)))
         {
-            <dt class="col-sm-4">Thông tin liên hệ</dt>
-            <dd class="col-sm-8">
-                @if (!string.IsNullOrEmpty(Model.EmailNguoiMuon))
-                {
-                    @Model.EmailNguoiMuon
-                }
-                @if (!string.IsNullOrEmpty(Model.EmailNguoiMuon) && !string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon))
-                {
-                    @(" • ")
-                }
-                @if (!string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon))
-                {
-                    @Model.SoDienThoaiNguoiMuon
-                }
-            </dd>
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="fas fa-address-book"></i> Liên hệ
+                </div>
+                <div class="info-value">
+                    <div class="contact-info">
+                        @if (!string.IsNullOrEmpty(Model.EmailNguoiMuon))
+                        {
+                            <div class="contact-item">
+                                <i class="fas fa-envelope text-primary"></i>
+                                @Model.EmailNguoiMuon
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon))
+                        {
+                            <div class="contact-item">
+                                <i class="fas fa-phone text-success"></i>
+                                @Model.SoDienThoaiNguoiMuon
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
         }
-        <dt class="col-sm-4">Ngày mượn</dt>
-        <dd class="col-sm-8">@Model.NgayMuon.ToString("dd/MM/yyyy HH:mm")</dd>
-        <dt class="col-sm-4">Số lượng mượn</dt>
-        <dd class="col-sm-8">@Model.SoLuongMuon bản</dd>
-        <dt class="col-sm-4">Ngày trả</dt>
-        <dd class="col-sm-8">
-            @if (Model.NgayTra.HasValue)
-            {
-                @Model.NgayTra.Value.ToString("dd/MM/yyyy HH:mm")
-            }
-            else if (Model.NgayTraDuKien.HasValue)
-            {
-                @Model.NgayTraDuKien.Value.ToString("dd/MM/yyyy HH:mm")
-            }
-            else
-            {
-                @:"-"
-            }
-        </dd>
-        <dt class="col-sm-4">Trạng thái</dt>
-        <dd class="col-sm-8">@Model.TrangThai.ToString()</dd>
-        <dt class="col-sm-4">Tình trạng sau trả</dt>
-        <dd class="col-sm-8">@Model.TinhTrangSauTra</dd>
-        <dt class="col-sm-4">Ghi chú</dt>
-        <dd class="col-sm-8">@Model.GhiChu</dd>
-        <dt class="col-sm-4">Thủ thư duyệt/trả</dt>
-        <dd class="col-sm-8">@(Model.ThuThuDuyet?.HoTen ?? Model.ThuThuDuyet?.UserName ?? Model.MaThuThuDuyet)</dd>
-    </dl>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-calendar-plus"></i> Ngày mượn
+            </div>
+            <div class="info-value">@Model.NgayMuon.ToString("dd/MM/yyyy HH:mm")</div>
+        </div>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-sort-numeric-up"></i> Số lượng
+            </div>
+            <div class="info-value highlight-value">@Model.SoLuongMuon bản</div>
+        </div>
+    </div>
+    
+    <!-- Thông tin trạng thái -->
+    <div class="info-section">
+        <h6><i class="fas fa-tasks"></i> Thông tin trạng thái</h6>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-flag"></i> Trạng thái
+            </div>
+            <div class="info-value">
+                @{
+                    string statusClass = Model.TrangThai.ToString().ToLower() switch
+                    {
+                        var s when s.Contains("cho") && s.Contains("duyet") => "cho-duyet",
+                        var s when s.Contains("da") && s.Contains("duyet") => "da-duyet", 
+                        var s when s.Contains("da") && s.Contains("tra") => "da-tra",
+                        var s when s.Contains("qua") && s.Contains("han") => "qua-han",
+                        _ => "cho-duyet"
+                    };
+                    
+                    string statusIcon = statusClass switch
+                    {
+                        "cho-duyet" => "fas fa-clock",
+                        "da-duyet" => "fas fa-check-circle",
+                        "da-tra" => "fas fa-check-double", 
+                        "qua-han" => "fas fa-exclamation-triangle",
+                        _ => "fas fa-clock"
+                    };
+                }
+                <span class="status-badge @statusClass">
+                    <i class="@statusIcon"></i>
+                    @Model.TrangThai.ToString()
+                </span>
+            </div>
+        </div>
+        
+        <div class="info-row">
+            <div class="info-label">
+                <i class="fas fa-calendar-check"></i> Ngày trả
+            </div>
+            <div class="info-value">
+                @if (Model.NgayTra.HasValue)
+                {
+                    <span class="text-success">
+                        <i class="fas fa-check me-1"></i>
+                        @Model.NgayTra.Value.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                }
+                else if (Model.NgayTraDuKien.HasValue)
+                {
+                    <span class="text-warning">
+                        <i class="fas fa-clock me-1"></i>
+                        Dự kiến: @Model.NgayTraDuKien.Value.ToString("dd/MM/yyyy HH:mm")
+                    </span>
+                }
+                else
+                {
+                    <span class="text-muted">Chưa xác định</span>
+                }
+            </div>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.TinhTrangSauTra))
+        {
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="fas fa-clipboard-check"></i> Tình trạng sau trả
+                </div>
+                <div class="info-value">@Model.TinhTrangSauTra</div>
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.GhiChu))
+        {
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="fas fa-sticky-note"></i> Ghi chú
+                </div>
+                <div class="info-value">@Model.GhiChu</div>
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.ThuThuDuyet?.HoTen ?? Model.ThuThuDuyet?.UserName ?? Model.MaThuThuDuyet))
+        {
+            <div class="info-row">
+                <div class="info-label">
+                    <i class="fas fa-user-tie"></i> Thủ thư xử lý
+                </div>
+                <div class="info-value">
+                    <strong>@(Model.ThuThuDuyet?.HoTen ?? Model.ThuThuDuyet?.UserName ?? Model.MaThuThuDuyet)</strong>
+                </div>
+            </div>
+        }
+    </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+<div class="modal-footer" style="background: #f8fafb; border-top: 1px solid #dee2e6;">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <i class="fas fa-times me-1"></i> Đóng
+    </button>
 </div> 
