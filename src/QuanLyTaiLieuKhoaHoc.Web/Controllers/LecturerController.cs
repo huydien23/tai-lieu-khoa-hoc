@@ -108,6 +108,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var model = new DashboardViewModel
             {
                 TaiLieuYeuThich = taiLieuYeuThich,
+                SoLuongYeuThich = taiLieuYeuThich.Count,
                 TaiLieuMoiTrongThang = taiLieuMoiTrongThang,
                 TongSoLuotTai = tongLuotTai,
                 LuotTaiTrongTuan = luotTaiTuanNay,
