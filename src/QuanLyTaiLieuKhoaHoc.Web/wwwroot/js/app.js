@@ -483,8 +483,6 @@ function loadMoreDocuments() {
         // Remove loading indicator
         $('#documentsContainer .spinner-border').parent().remove();
         
-        // Add new documents (this would be replaced with actual API call)
-        // loadNewDocuments(currentPage);
         
         isLoading = false;
     }, 1000);
