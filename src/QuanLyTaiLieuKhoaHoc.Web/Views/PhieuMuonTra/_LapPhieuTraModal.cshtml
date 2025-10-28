@@ -7,10 +7,10 @@
 <form id="lapPhieuTraForm" method="post" action="/PhieuMuonTra/LapPhieuTra">
     <div class="modal-body">
         <input type="hidden" name="maPhieu" value="@Model.MaPhieu" />
-        <div><b>Họ tên:</b> @Model.HoTen</div>
-        <div><b>MSSV:</b> @Model.MSSV</div>
-        <div><b>Email:</b> @Model.Email</div>
-        <div><b>Chuyên ngành:</b> @Model.ChuyenNganh</div>
+        <div><b>Họ tên:</b> @(string.IsNullOrEmpty(Model.HoTen) ? "Chưa có thông tin" : Model.HoTen)</div>
+        <div><b>Mã số:</b> @(string.IsNullOrEmpty(Model.MSSV) ? "Chưa có thông tin" : Model.MSSV)</div>
+        <div><b>Email:</b> @(string.IsNullOrEmpty(Model.Email) ? "Chưa có thông tin" : Model.Email)</div>
+        <div><b>Thông tin khác:</b> @(string.IsNullOrEmpty(Model.ChuyenNganh) ? "Chưa có thông tin" : Model.ChuyenNganh)</div>
         <div><b>Tài liệu:</b> @Model.TenTaiLieu</div>
         <div><b>Tác giả:</b> @Model.TacGia</div>
         <div class="mb-2">

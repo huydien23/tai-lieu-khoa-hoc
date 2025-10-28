@@ -39,10 +39,27 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <strong>Lượt mượn:</strong> @Model.LuotMuon
+                            <strong>Lượt mượn:</strong> @Model.SoLuongDaMuon
                         </div>
                         <div class="col-md-6">
-                            <strong>Kích thước:</strong> @((Model.KichThuocFile / 1024).ToString("F1")) KB
+                            <strong>Kích thước:</strong> @(Model.KichThuocFile >= 1024 ? $"{Math.Round(Model.KichThuocFile / 1024.0, 1)} MB" : $"{Model.KichThuocFile} KB")
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>Tình trạng tài liệu:</strong>
+                            <div class="d-flex gap-2 mt-1">
+                                <span class="badge bg-primary">Tổng: @Model.SoLuong</span>
+                                <span class="badge bg-warning">Đã mượn: @Model.SoLuongDaMuon</span>
+                                @if (Model.SoLuongConLai > 0)
+                                {
+                                    <span class="badge bg-success">Còn lại: @Model.SoLuongConLai</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Hết tài liệu</span>
+                                }
+                            </div>
                         </div>
                     </div>
                     @if (Model.ChoPhepTaiFile)
@@ -102,30 +119,49 @@
                             </table>
                         </div>
                     }
-                   @if (User.Identity?.IsAuthenticated == true)
-{
-    <div class="d-flex gap-2">
-        @if (User.IsInRole("GiangVien") || User.IsInRole("SinhVien"))
-        {
-            if (Model.DaDuocDuyet) 
-            {
-                <button type="button" class="btn btn-secondary" disabled>
-                    <i class="fas fa-book me-2"></i> Đã mượn tài liệu
-                </button>
-            }
-            else if (Model.ChoPhepTaiFile)
-            {
-                <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
-                    <i class="fas fa-download me-2"></i> Tải xuống
-                </a>
-            }
-            else
-            {
-                <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                        data-bs-target="#muonModal">
-                    <i class="fas fa-paper-plane me-2"></i> Gửi yêu cầu mượn
-                </button>
-            }
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="d-flex gap-2">
+                            @if (User.IsInRole("GiangVien"))
+                            {
+                                if (Model.ChoPhepTaiFile)
+                                {
+                                    <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
+                                        <i class="fas fa-download me-2"></i>Tải xuống
+                                    </a>
+                                }
+                                <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                        <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fas fa-heart me-2"></i>Yêu thích
+                                        </button>
+                                        </form>
+                            }
+                            else if (User.IsInRole("SinhVien"))
+                            {
+                                if (Model.ChoPhepTaiFile)
+                                {
+                                    <a href="/TaiLieu/Download/@Model.MaTaiLieu" class="btn btn-primary">
+                                        <i class="fas fa-download me-2"></i>Tải xuống
+                                    </a>
+
+                                    <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
+                                        
+                                    
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="maTaiLieu" value="@Model.MaTaiLieu" />
+                                        <button type="submit" class="btn btn-outline-danger">
+                                        <i class="fas fa-heart me-2"></i>Yêu thích
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#muonModal">
+                                        <i class="fas fa-paper-plane me-2"></i>Gửi yêu cầu mượn
+                                    </button>
 
             <form asp-action="ThemYeuThich" asp-controller="TaiLieu" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
@@ -152,8 +188,13 @@ else
                 <div class="card-header">
                     <h5 class="card-title mb-0">Tài liệu liên quan</h5>
                 </div>
-                <div class="card-body">
-                    <p class="text-muted">Các tài liệu cùng chuyên ngành sẽ hiển thị ở đây.</p>
+                <div class="card-body" id="taiLieuLienQuan">
+                    <div class="text-center">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="text-muted mt-2">Đang tải tài liệu liên quan...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -193,3 +234,64 @@ else
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Load tài liệu liên quan khi trang load xong
+            loadTaiLieuLienQuan();
+        });
+
+        function loadTaiLieuLienQuan() {
+            var taiLieuId = @Model.MaTaiLieu;
+            
+            $.ajax({
+                url: '/TaiLieu/GetTaiLieuLienQuan/' + taiLieuId,
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success && response.data && response.data.length > 0) {
+                        renderTaiLieuLienQuan(response.data);
+                    } else {
+                        showNoRelatedDocuments();
+                    }
+                },
+                error: function() {
+                    showNoRelatedDocuments();
+                }
+            });
+        }
+
+        function renderTaiLieuLienQuan(taiLieuList) {
+            var html = '';
+            
+            taiLieuList.forEach(function(taiLieu) {
+                html += '<div class="mb-3 p-3 border rounded">';
+                html += '<h6 class="mb-2"><a href="/TaiLieu/Details/' + taiLieu.maTaiLieu + '" class="text-decoration-none">' + taiLieu.tenTaiLieu + '</a></h6>';
+                html += '<p class="text-muted small mb-2">Tác giả: ' + taiLieu.tacGia + '</p>';
+                html += '<div class="d-flex justify-content-between align-items-center">';
+                html += '<span class="badge bg-success">' + taiLieu.tenChuyenNganh + '</span>';
+                html += '<small class="text-muted">' + formatDate(taiLieu.ngayTaiLen) + '</small>';
+                html += '</div>';
+                html += '</div>';
+            });
+            
+            $('#taiLieuLienQuan').html(html);
+        }
+
+        function showNoRelatedDocuments() {
+            var html = '<div class="text-center">';
+            html += '<i class="fas fa-info-circle text-muted mb-2" style="font-size: 2rem;"></i>';
+            html += '<p class="text-muted">Chưa có tài liệu liên quan.</p>';
+            html += '</div>';
+            
+            $('#taiLieuLienQuan').html(html);
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            var date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        }
+    </script>
+}

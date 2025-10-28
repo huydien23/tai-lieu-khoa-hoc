@@ -16,7 +16,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
     public DbSet<ChuyenNganh> ChuyenNganh { get; set; }
     public DbSet<LoaiTaiLieu> LoaiTaiLieu { get; set; }
     public DbSet<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; }
-    public DbSet<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; }
     public DbSet<PhieuMuonTra> PhieuMuonTra { get; set; }
     public DbSet<YeuThichTaiLieu> YeuThichTaiLieu { get; set; }
 
@@ -31,7 +30,6 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
         builder.Entity<ChuyenNganh>().ToTable("ChuyenNganh");
         builder.Entity<LoaiTaiLieu>().ToTable("LoaiTaiLieu");
         builder.Entity<LichSuTaiTaiLieu>().ToTable("LichSuTaiTaiLieu");
-        builder.Entity<DanhGiaTaiLieu>().ToTable("DanhGiaTaiLieu");
 
         // Cấu hình tên bảng Identity
         builder.Entity<Microsoft.AspNetCore.Identity.IdentityRole>().ToTable("VaiTro");
@@ -70,6 +68,7 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
             .HasOne(ls => ls.NguoiDung)
             .WithMany(nd => nd.LichSuTaiTaiLieu)
             .HasForeignKey(ls => ls.MaNguoiDung)
+            .HasPrincipalKey(nd => nd.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<PhieuMuonTra>()
@@ -77,6 +76,27 @@ public class ApplicationDbContext : IdentityDbContext<NguoiDung>
             .WithMany()
             .HasForeignKey(p => p.MaTaiLieu)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<PhieuMuonTra>()
+            .HasOne(p => p.NguoiMuon)
+            .WithMany()
+            .HasForeignKey(p => p.MaNguoiMuon)
+            .HasPrincipalKey(nd => nd.Id)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<PhieuMuonTra>()
+            .HasOne(p => p.ThuThuDuyet)
+            .WithMany()
+            .HasForeignKey(p => p.MaThuThuDuyet)
+            .HasPrincipalKey(nd => nd.Id)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        builder.Entity<YeuThichTaiLieu>()
+            .HasOne(y => y.NguoiDung)
+            .WithMany(nd => nd.TaiLieuYeuThich)
+            .HasForeignKey(y => y.UserId)
+            .HasPrincipalKey(nd => nd.Id)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Seed data
         SeedData(builder);

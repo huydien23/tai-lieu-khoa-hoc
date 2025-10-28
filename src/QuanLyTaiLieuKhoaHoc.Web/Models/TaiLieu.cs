@@ -36,6 +36,16 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
             get { return PhieuMuonTras?.Count ?? 0; }
         }
 
+        [Display(Name = "Số lượng")]
+        public int SoLuong { get; set; } = 1;
+
+        [Display(Name = "Số lượng đã mượn")]
+        public int SoLuongDaMuon { get; set; } = 0;
+
+        [NotMapped]
+        [Display(Name = "Số lượng còn lại")]
+        public int SoLuongConLai => SoLuong - SoLuongDaMuon;
+
         public virtual ICollection<PhieuMuonTra>? PhieuMuonTras { get; set; }
 
         [Key]
@@ -95,7 +105,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
 
 
         public virtual ICollection<LichSuTaiTaiLieu> LichSuTaiTaiLieu { get; set; } = new List<LichSuTaiTaiLieu>();
-        public virtual ICollection<DanhGiaTaiLieu> DanhGiaTaiLieu { get; set; } = new List<DanhGiaTaiLieu>();
     }
 
     public enum TrangThaiTaiLieu

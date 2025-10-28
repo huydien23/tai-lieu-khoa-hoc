@@ -10,9 +10,44 @@
         <dt class="col-sm-4">Tên tài liệu</dt>
         <dd class="col-sm-8">@Model.TaiLieu?.TenTaiLieu</dd>
         <dt class="col-sm-4">Người mượn</dt>
-        <dd class="col-sm-8">@Model.NguoiMuon?.HoTen (@Model.NguoiMuon?.MaSo)</dd>
+        <dd class="col-sm-8">
+            @if (Model.NguoiMuon != null)
+            {
+                @(Model.NguoiMuon.HoTen + " (" + Model.NguoiMuon.MaSo + ")")
+            }
+            else if (!string.IsNullOrEmpty(Model.HoTenNguoiMuon))
+            {
+                @(Model.HoTenNguoiMuon + 
+                  (!string.IsNullOrEmpty(Model.MaSoNguoiMuon) ? " (" + Model.MaSoNguoiMuon + ")" : "") +
+                  (!string.IsNullOrEmpty(Model.LoaiNguoiMuon) ? " - " + Model.LoaiNguoiMuon : ""))
+            }
+            else
+            {
+                @:"Không rõ"
+            }
+        </dd>
+        @if (Model.NguoiMuon == null && (!string.IsNullOrEmpty(Model.EmailNguoiMuon) || !string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon)))
+        {
+            <dt class="col-sm-4">Thông tin liên hệ</dt>
+            <dd class="col-sm-8">
+                @if (!string.IsNullOrEmpty(Model.EmailNguoiMuon))
+                {
+                    @Model.EmailNguoiMuon
+                }
+                @if (!string.IsNullOrEmpty(Model.EmailNguoiMuon) && !string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon))
+                {
+                    @(" • ")
+                }
+                @if (!string.IsNullOrEmpty(Model.SoDienThoaiNguoiMuon))
+                {
+                    @Model.SoDienThoaiNguoiMuon
+                }
+            </dd>
+        }
         <dt class="col-sm-4">Ngày mượn</dt>
         <dd class="col-sm-8">@Model.NgayMuon.ToString("dd/MM/yyyy HH:mm")</dd>
+        <dt class="col-sm-4">Số lượng mượn</dt>
+        <dd class="col-sm-8">@Model.SoLuongMuon bản</dd>
         <dt class="col-sm-4">Ngày trả</dt>
         <dd class="col-sm-8">
             @if (Model.NgayTra.HasValue)

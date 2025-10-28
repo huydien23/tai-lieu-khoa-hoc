@@ -21,15 +21,32 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            // Lấy vai trò người dùng hiện tại
+            string? vaiTro = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("SinhVien"))
+                    vaiTro = "SinhVien";
+                else if (User.IsInRole("GiangVien"))
+                    vaiTro = "GiangVien";
+                else if (User.IsInRole("ThuThu"))
+                    vaiTro = "ThuThu";
+            }
 
             // Truy vấn đúng tên loại tài liệu đã seed
             var loaiBaiBao = await _context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Bài báo khoa học");
             var loaiDeTai = await _context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Đề tài nghiên cứu khoa học");
             var loaiGiaoTrinh = await _context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Giáo trình - Tài liệu giảng dạy");
 
-            var baiBaoList = loaiBaiBao != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiBaiBao.MaLoaiTaiLieu)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
-            var deTaiList = loaiDeTai != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiDeTai.MaLoaiTaiLieu)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
-            var giaoTrinhList = loaiGiaoTrinh != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiGiaoTrinh.MaLoaiTaiLieu)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
+            var baiBaoList = loaiBaiBao != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiBaiBao.MaLoaiTaiLieu, null, vaiTro)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
+            var deTaiList = loaiDeTai != null ? (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiDeTai.MaLoaiTaiLieu, null, vaiTro)).DanhSachTaiLieu : new List<TaiLieuViewModel>();
+            
+            // Chỉ hiển thị giáo trình cho Giảng viên và Thủ thư
+            var giaoTrinhList = new List<TaiLieuViewModel>();
+            if (vaiTro != "SinhVien" && loaiGiaoTrinh != null)
+            {
+                giaoTrinhList = (await _taiLieuService.GetDanhSachTaiLieuAsync(1, 6, null, null, loaiGiaoTrinh.MaLoaiTaiLieu, null, vaiTro)).DanhSachTaiLieu;
+            }
 
             var model = new DashboardViewModel
             {
@@ -40,8 +57,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     .CountAsync(t => t.NgayTaiLen.Month == DateTime.Now.Month
                                 && t.NgayTaiLen.Year == DateTime.Now.Year),
 
-                TaiLieuMoiNhat = await _taiLieuService.GetTaiLieuMoiNhatAsync(6),
-                TaiLieuPhoBien = await _taiLieuService.GetTaiLieuPhoBienAsync(6),
+                TaiLieuMoiNhat = await _taiLieuService.GetTaiLieuMoiNhatAsync(6, vaiTro),
+                TaiLieuPhoBien = await _taiLieuService.GetTaiLieuPhoBienAsync(6, vaiTro),
 
                 ThongKeTheoChuyenNganh = await _context.TaiLieu
                     .Include(t => t.ChuyenNganh)

@@ -197,7 +197,7 @@
                                                         <h6 class="document-title">@item.TenTaiLieu</h6>
                                                         <p class="document-meta">
                                                             @item.LoaiFile?.ToUpper() • 
-                                                            @(Math.Round(item.KichThuocFile / 1024.0, 1)) MB • 
+                                                            @(item.KichThuocFile >= 1024 ? $"{Math.Round(item.KichThuocFile / 1024.0, 1)} MB" : $"{item.KichThuocFile} KB") • 
                                                             @item.TacGia 
                                                         </p>
                                                         <div class="document-actions">
@@ -314,7 +314,7 @@
                                                 }
                                                 <p class="document-meta">
                                                     @(item.TaiLieu?.LoaiFile?.ToUpper() ?? "FILE") • 
-                                                    @(Math.Round((item.TaiLieu?.KichThuocFile ?? 0L) / 1024.0, 1)) MB • 
+                                                    @((item.TaiLieu?.KichThuocFile ?? 0L) >= 1024 ? $"{Math.Round((item.TaiLieu?.KichThuocFile ?? 0L) / 1024.0, 1)} MB" : $"{item.TaiLieu?.KichThuocFile ?? 0L} KB") • 
                                                     @item.TaiLieu?.TacGia 
                                                 </p>
                                                 <div class="document-actions">
@@ -366,7 +366,7 @@
                                                 <h6 class="mb-1">@item.TenTaiLieu</h6>
                                                 <small class="text-muted">
                                                     @item.TacGia • @item.LoaiFile?.ToUpper() • 
-                                                    @(item.KichThuocFile > 0 ? Math.Round(item.KichThuocFile / 1024.0, 1) : 0) MB
+                                                    @(item.KichThuocFile > 0 ? (item.KichThuocFile >= 1024 ? $"{Math.Round(item.KichThuocFile / 1024.0, 1)} MB" : $"{item.KichThuocFile} KB") : "0 KB")
                                                 </small>
                                             </div>
                                             <a href="/TaiLieu/Details/@item.MaTaiLieu" class="btn btn-sm btn-outline-primary">
@@ -408,7 +408,7 @@
                                                 <small class="text-muted">
                                                     @item?.TacGia ?? "Tác giả không rõ"
                                                     • @item?.LoaiFile?.ToUpper() ?? "?"
-                                                    • @(item?.KichThuocFile > 0 ? Math.Round(item.KichThuocFile / 1024.0, 1) : 0) MB
+                                                    • @(item?.KichThuocFile > 0 ? (item.KichThuocFile >= 1024 ? $"{Math.Round(item.KichThuocFile / 1024.0, 1)} MB" : $"{item.KichThuocFile} KB") : "0 KB")
                                                 </small>
                                             </div>
                                             <a href="/TaiLieu/Details/@item?.MaTaiLieu" class="btn btn-sm btn-outline-primary">

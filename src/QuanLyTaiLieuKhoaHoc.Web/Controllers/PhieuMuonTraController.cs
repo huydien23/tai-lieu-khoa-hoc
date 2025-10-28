@@ -120,7 +120,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 LyDo = phieu.GhiChu ?? "",
                 NgayTra = phieu.NgayTra,
                 NgayTraDuKien = phieu.NgayTraDuKien,
-                IsFromRequest = true
+                IsFromRequest = true,
+                // Thông tin số lượng tài liệu
+                SoLuong = taiLieu?.SoLuong ?? 0,
+                SoLuongDaMuon = taiLieu?.SoLuongDaMuon ?? 0,
+                SoLuongConLai = taiLieu?.SoLuongConLai ?? 0
             };
             return PartialView("~/Views/Shared/_LapPhieuMuonModal.cshtml", vm);
         }
@@ -151,18 +155,42 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         {
             var phieu = await _phieuService.LayPhieuMuonTraByIdAsync(maPhieu);
             if (phieu == null) return NotFound();
-            var sinhVien = phieu.NguoiMuon;
             var taiLieu = phieu.TaiLieu;
+            
+            // Xử lý thông tin người mượn (hệ thống hoặc ngoài hệ thống)
+            string hoTen, mssv, email, chuyenNganh;
+            
+            if (phieu.NguoiMuon != null)
+            {
+                // Người mượn là thành viên hệ thống
+                hoTen = phieu.NguoiMuon.HoTen ?? "";
+                mssv = phieu.NguoiMuon.MaSo ?? "";
+                email = phieu.NguoiMuon.Email ?? "";
+                chuyenNganh = phieu.NguoiMuon.ChuyenNganh?.TenChuyenNganh ?? "";
+            }
+            else
+            {
+                // Người mượn ngoài hệ thống
+                hoTen = phieu.HoTenNguoiMuon ?? "";
+                mssv = phieu.MaSoNguoiMuon ?? "";
+                email = phieu.EmailNguoiMuon ?? "";
+                chuyenNganh = phieu.LoaiNguoiMuon ?? "";
+            }
+            
             var vm = new QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
             {
                 MaPhieu = phieu.MaPhieu,
-                HoTen = sinhVien?.HoTen ?? "",
-                MSSV = sinhVien?.MaSo ?? "",
-                Email = sinhVien?.Email ?? "",
-                ChuyenNganh = sinhVien?.ChuyenNganh?.TenChuyenNganh ?? "",
+                HoTen = hoTen,
+                MSSV = mssv,
+                Email = email,
+                ChuyenNganh = chuyenNganh,
                 TenTaiLieu = taiLieu?.TenTaiLieu ?? "",
                 TacGia = taiLieu?.TacGia ?? "",
-                NgayMuon = phieu.NgayMuon
+                NgayMuon = phieu.NgayMuon,
+                // Thông tin số lượng tài liệu
+                SoLuong = taiLieu?.SoLuong ?? 0,
+                SoLuongDaMuon = taiLieu?.SoLuongDaMuon ?? 0,
+                SoLuongConLai = taiLieu?.SoLuongConLai ?? 0
             };
             return PartialView("~/Views/PhieuMuonTra/_LapPhieuTraModal.cshtml", vm);
         }
@@ -177,6 +205,44 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             if (result)
                 return Json(new { success = true, message = "Trả tài liệu thành công!" });
             return Json(new { success = false, message = "Trả tài liệu thất bại!" });
+        }
+
+        // Chức năng báo tài liệu quá hạn
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> DanhSachTaiLieuQuaHan()
+        {
+            var list = await _phieuService.LayDanhSachTaiLieuQuaHanAsync();
+            ViewData["Title"] = "Danh sách tài liệu quá hạn trả";
+            return View(list);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> GetSoTaiLieuQuaHan()
+        {
+            var soLuong = await _phieuService.DemSoTaiLieuQuaHanAsync();
+            return Json(new { soLuong = soLuong });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TaiLieuQuaHanCuaToi()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+            
+            var list = await _phieuService.LayTaiLieuQuaHanTheoNguoiDungAsync(user.Id);
+            ViewData["Title"] = "Tài liệu quá hạn của tôi";
+            return View(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSoTaiLieuQuaHanCuaToi()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Json(new { soLuong = 0 });
+            
+            var soLuong = await _phieuService.LayTaiLieuQuaHanTheoNguoiDungAsync(user.Id);
+            return Json(new { soLuong = soLuong.Count });
         }
     }
 }

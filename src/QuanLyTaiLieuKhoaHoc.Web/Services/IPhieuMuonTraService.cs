@@ -16,5 +16,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
         Task<List<PhieuMuonTra>> LayLichSuMuonTraCuaNguoiDungAsync(string maNguoiDung);
         Task<PhieuMuonTra?> LayPhieuMuonTraByIdAsync(int maPhieu);
         Task<bool> LapPhieuMuonAsync(int maPhieu, string maThuThu, DateTime ngayMuon, DateTime ngayTraDuKien);
+        
+        // Chức năng báo tài liệu quá hạn
+        Task<List<PhieuMuonTra>> LayDanhSachTaiLieuQuaHanAsync();
+        Task<int> DemSoTaiLieuQuaHanAsync();
+        Task<List<PhieuMuonTra>> LayTaiLieuQuaHanTheoNguoiDungAsync(string maNguoiDung);
     }
 }

@@ -83,8 +83,8 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     maSo = u.MaSo,
                     hoTen = u.HoTen,
                     email = u.Email,
-                    sdt = u.PhoneNumber,
-                    loai = u.VaiTro // Ví dụ: "SinhVien", "GiangVien", "ThuThu"
+                    sdt = u.SoDienThoai,
+                    loai = u.VaiTro.ToString() // Ví dụ: "SinhVien", "GiangVien", "ThuThu"
                 })
                 .Take(10)
                 .ToListAsync();
@@ -557,7 +557,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var document = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
@@ -583,7 +582,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var document = await _context.TaiLieu
                 .Include(t => t.ChuyenNganh)
                 .Include(t => t.LoaiTaiLieu)
-                .Include(t => t.DanhGiaTaiLieu)
                 .Include(t => t.PhieuMuonTras)
                 .Where(t => t.MaTaiLieu == id)
                 .FirstOrDefaultAsync();
@@ -656,6 +654,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 if (model.MaLoaiTaiLieu <= 0)
                 {
                     return Json(new { success = false, message = "Vui lòng chọn loại tài liệu!" });
+                }
+                
+                // Validation số lượng
+                if (model.SoLuong <= 0)
+                {
+                    return Json(new { success = false, message = "Số lượng phải lớn hơn 0!" });
                 }
 
                 var documentType = Request.Form["DocumentType"].ToString();
@@ -752,6 +756,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             taiLieu.NamXuatBan = model.NamXuatBan;
             taiLieu.SoTinChi = model.SoTinChi;
 
+            // Validation số lượng
+            if (model.SoLuong < model.SoLuongDaMuon)
+            {
+                return Json(new { success = false, message = "Số lượng mới không được nhỏ hơn số lượng đang mượn!" });
+            }
+            taiLieu.SoLuong = model.SoLuong;
+
             if (model.FileTaiLieu != null && model.FileTaiLieu.Length > 0)
             {
                 if (!string.IsNullOrEmpty(taiLieu.DuongDanFile))
@@ -824,29 +835,71 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     return Json(new { success = false, message = "Không tìm thấy người dùng!" });
                 }
 
-
-                int userDocuments = 0;
-                if (userDocuments > 0)
+                // Kiểm tra xem người dùng có đang mượn tài liệu nào không
+                var userBorrowing = await _context.PhieuMuonTra
+                    .Where(p => p.MaNguoiMuon == id && p.TrangThai == TrangThaiPhieu.DaDuyet && p.NgayTra == null)
+                    .CountAsync();
+                
+                if (userBorrowing > 0)
                 {
-                    return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ còn có {userDocuments} tài liệu trong hệ thống!" });
+                    return Json(new { success = false, message = $"Không thể xóa người dùng '{user.HoTen}' vì họ đang mượn {userBorrowing} tài liệu chưa trả!" });
                 }
 
-                var userRatings = await _context.DanhGiaTaiLieu.Where(d => d.MaNguoiDung == id).ToListAsync();
-                _context.DanhGiaTaiLieu.RemoveRange(userRatings);
-
-                var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
-                _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);
-
-                await _context.SaveChangesAsync();
-
-                var result = await _userManager.DeleteAsync(user);
-                if (result.Succeeded)
+                // Xóa tất cả dữ liệu liên quan đến người dùng
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    return Json(new { success = true, message = $"Đã xóa người dùng '{user.HoTen}' thành công!" });
+                    // Xóa lịch sử tải tài liệu
+                    var userDownloads = await _context.LichSuTaiTaiLieu.Where(l => l.MaNguoiDung == id).ToListAsync();
+                    _context.LichSuTaiTaiLieu.RemoveRange(userDownloads);
+
+                    // Xóa yêu thích tài liệu
+                    var userFavorites = await _context.YeuThichTaiLieu.Where(y => y.UserId == id).ToListAsync();
+                    _context.YeuThichTaiLieu.RemoveRange(userFavorites);
+
+                    // Cập nhật các phiếu mượn trả (đặt MaThuThuDuyet = null nếu người dùng là thủ thư duyệt)
+                    var phieuMuonTraAsLibrarian = await _context.PhieuMuonTra
+                        .Where(p => p.MaThuThuDuyet == id)
+                        .ToListAsync();
+                    foreach (var phieu in phieuMuonTraAsLibrarian)
+                    {
+                        phieu.MaThuThuDuyet = null;
+                    }
+
+                    // Cập nhật các phiếu mượn trả (đặt MaNguoiMuon = null nếu người dùng là người mượn)
+                    var phieuMuonTraAsBorrower = await _context.PhieuMuonTra
+                        .Where(p => p.MaNguoiMuon == id)
+                        .ToListAsync();
+                    foreach (var phieu in phieuMuonTraAsBorrower)
+                    {
+                        phieu.MaNguoiMuon = null;
+                        // Chuyển thông tin người mượn vào các trường backup
+                        phieu.HoTenNguoiMuon = user.HoTen;
+                        phieu.MaSoNguoiMuon = user.MaSo;
+                        phieu.EmailNguoiMuon = user.Email;
+                        phieu.SoDienThoaiNguoiMuon = user.SoDienThoai;
+                        phieu.LoaiNguoiMuon = user.VaiTro.ToString();
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    // Xóa người dùng
+                    var result = await _userManager.DeleteAsync(user);
+                    if (result.Succeeded)
+                    {
+                        await transaction.CommitAsync();
+                        return Json(new { success = true, message = $"Đã xóa người dùng '{user.HoTen}' thành công!" });
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return Json(new { success = false, message = "Có lỗi xảy ra khi xóa người dùng: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    return Json(new { success = false, message = "Có lỗi xảy ra khi xóa người dùng: " + string.Join(", ", result.Errors.Select(e => e.Description)) });
+                    await transaction.RollbackAsync();
+                    throw;
                 }
             }
             catch (Exception ex)
@@ -947,6 +1000,59 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
         // LẬP PHIẾU MƯỢN TÀI LIỆU
         [HttpPost]
+        public async Task<IActionResult> LapPhieuMuonTrucTiep(int maTaiLieu, string hoTenNguoiMuon, string maSoNguoiMuon, 
+            string emailNguoiMuon, string soDienThoaiNguoiMuon, string loaiNguoiMuon, 
+            DateTime ngayMuon, DateTime ngayTraDuKien, int soLuongMuon, string ghiChu)
+        {
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+            {
+                return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
+            }
+
+            // Kiểm tra tài liệu
+            var taiLieu = await _context.TaiLieu.FindAsync(maTaiLieu);
+            if (taiLieu == null)
+            {
+                return Json(new { success = false, message = "Không tìm thấy tài liệu!" });
+            }
+
+            // Kiểm tra số lượng còn lại
+            if (taiLieu.SoLuongConLai < soLuongMuon)
+            {
+                return Json(new { success = false, message = $"Tài liệu chỉ còn {taiLieu.SoLuongConLai} bản, không đủ để mượn {soLuongMuon} bản!" });
+            }
+
+            // Tạo phiếu mượn mới
+            var phieuMuon = new PhieuMuonTra
+            {
+                MaTaiLieu = maTaiLieu,
+                MaNguoiMuon = null, // Không phải thành viên hệ thống
+                HoTenNguoiMuon = hoTenNguoiMuon,
+                MaSoNguoiMuon = maSoNguoiMuon,
+                EmailNguoiMuon = emailNguoiMuon,
+                SoDienThoaiNguoiMuon = soDienThoaiNguoiMuon,
+                LoaiNguoiMuon = loaiNguoiMuon,
+                NgayMuon = ngayMuon,
+                NgayTraDuKien = ngayTraDuKien,
+                SoLuongMuon = soLuongMuon,
+                TrangThai = TrangThaiPhieu.DaDuyet, // Trực tiếp duyệt
+                MaThuThuDuyet = currentUser.Id,
+                NgayTao = DateTime.Now,
+                GhiChu = ghiChu
+            };
+
+            _context.PhieuMuonTra.Add(phieuMuon);
+
+            // Cập nhật số lượng đã mượn
+            taiLieu.SoLuongDaMuon += soLuongMuon;
+
+            await _context.SaveChangesAsync();
+
+            return Json(new { success = true, message = "Lập phiếu mượn trực tiếp thành công!" });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> LapPhieuMuon(int maPhieu, DateTime ngayMuon, DateTime ngayTraDuKien)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -971,6 +1077,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             var maTaiLieu = phieuYeuCau.MaTaiLieu;
 
+            // Kiểm tra số lượng còn lại
+            if (phieuYeuCau.TaiLieu?.SoLuongConLai <= 0)
+            {
+                return Json(new { success = false, message = "Tài liệu đã hết, không thể mượn!" });
+            }
+
             // Kiểm tra nếu đã có phiếu mượn ĐANG HOẠT ĐỘNG cho tài liệu này
             var phieuDangMuon = await _context.PhieuMuonTra
                 .Where(p => p.MaTaiLieu == maTaiLieu && p.TrangThai == TrangThaiPhieu.DaDuyet)
@@ -985,6 +1097,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             phieuYeuCau.NgayMuon = ngayMuon;
             phieuYeuCau.NgayTraDuKien = ngayTraDuKien;
             phieuYeuCau.MaThuThuDuyet = currentUser.Id;
+
+            // Cập nhật số lượng đã mượn
+            if (phieuYeuCau.TaiLieu != null)
+            {
+                phieuYeuCau.TaiLieu.SoLuongDaMuon++;
+            }
 
             await _context.SaveChangesAsync();
 
@@ -1028,10 +1146,25 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     phieu.GhiChu = ghiChuMoi;
                 }
 
+                // Giảm số lượng đã mượn
+                if (phieu.TaiLieu != null)
+                {
+                    // Đảm bảo SoLuongMuon có giá trị hợp lệ (mặc định là 1 nếu null hoặc 0)
+                    var soLuongMuon = phieu.SoLuongMuon > 0 ? phieu.SoLuongMuon : 1;
+                    phieu.TaiLieu.SoLuongDaMuon -= soLuongMuon;
+                    
+                    // Đảm bảo không âm
+                    if (phieu.TaiLieu.SoLuongDaMuon < 0)
+                    {
+                        phieu.TaiLieu.SoLuongDaMuon = 0;
+                    }
+                }
+
                 await _context.SaveChangesAsync();
 
                 // Tạo thông báo thành công chi tiết
-                var message = $"Đã xác nhận trả tài liệu '{phieu.TaiLieu?.TenTaiLieu}' cho {phieu.NguoiMuon?.HoTen}' thành công!";
+                var tenNguoiMuon = phieu.NguoiMuon?.HoTen ?? phieu.HoTenNguoiMuon ?? "Không rõ";
+                var message = $"Đã xác nhận trả tài liệu '{phieu.TaiLieu?.TenTaiLieu}' cho {tenNguoiMuon} thành công!";
                 if (!string.IsNullOrWhiteSpace(tinhTrang))
                 {
                     message += $" Tình trạng: {tinhTrang}.";
@@ -1108,7 +1241,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 if (!await _userManager.IsInRoleAsync(user, identityRole))
                 {
                     // Tạo role nếu chưa có
-                    var roleManager = (RoleManager<IdentityRole>)HttpContext.RequestServices.GetService(typeof(RoleManager<IdentityRole>));
+                    var roleManager = (RoleManager<IdentityRole>?)HttpContext.RequestServices.GetService(typeof(RoleManager<IdentityRole>));
                     if (roleManager != null && !await roleManager.RoleExistsAsync(identityRole))
                     {
                         await roleManager.CreateAsync(new IdentityRole(identityRole));
@@ -1133,6 +1266,176 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                 .Take(200)
                 .ToListAsync();
             return View(list);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetTaiLieuSoLuong(int maTaiLieu)
+        {
+            var taiLieu = await _context.TaiLieu.FindAsync(maTaiLieu);
+            if (taiLieu == null)
+                return Json(new { success = false });
+                
+            return Json(new { 
+                success = true, 
+                soLuong = taiLieu.SoLuong,
+                soLuongDaMuon = taiLieu.SoLuongDaMuon,
+                soLuongConLai = taiLieu.SoLuongConLai
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> FixSoLuongMuonData()
+        {
+            try
+            {
+                // Cập nhật tất cả phiếu mượn có SoLuongMuon = 0 hoặc null thành 1
+                var phieuMuonWithZeroSoLuong = await _context.PhieuMuonTra
+                    .Where(p => p.SoLuongMuon <= 0)
+                    .ToListAsync();
+
+                foreach (var phieu in phieuMuonWithZeroSoLuong)
+                {
+                    phieu.SoLuongMuon = 1;
+                }
+
+                // Tính lại số lượng đã mượn cho tất cả tài liệu
+                var allTaiLieu = await _context.TaiLieu.ToListAsync();
+                foreach (var taiLieu in allTaiLieu)
+                {
+                    var soLuongDaMuon = await _context.PhieuMuonTra
+                        .Where(p => p.MaTaiLieu == taiLieu.MaTaiLieu && 
+                                   p.TrangThai == TrangThaiPhieu.DaDuyet && 
+                                   !p.NgayTra.HasValue)
+                        .SumAsync(p => p.SoLuongMuon);
+                    
+                    taiLieu.SoLuongDaMuon = soLuongDaMuon;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã cập nhật lại {phieuMuonWithZeroSoLuong.Count} phiếu mượn và đồng bộ số lượng cho {allTaiLieu.Count} tài liệu!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> ChangeUserPassword(string userId, string newPassword)
+        {
+            try
+            {
+                // Kiểm tra quyền thủ thư
+                var currentUser = await _userManager.GetUserAsync(User);
+                if (currentUser?.VaiTro != VaiTroNguoiDung.ThuThu)
+                {
+                    return Json(new { success = false, message = "Bạn không có quyền thực hiện chức năng này!" });
+                }
+
+                // Tìm người dùng cần đổi mật khẩu
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy người dùng!" });
+                }
+
+                // Kiểm tra mật khẩu mới
+                if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                {
+                    return Json(new { success = false, message = "Mật khẩu phải có ít nhất 6 ký tự!" });
+                }
+
+                // Đổi mật khẩu
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+                if (result.Succeeded)
+                {
+                    return Json(new { 
+                        success = true, 
+                        message = $"Đã đổi mật khẩu thành công cho người dùng {user.HoTen}. Vui lòng thông báo mật khẩu mới cho người dùng." 
+                    });
+                }
+                else
+                {
+                    var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                    return Json(new { success = false, message = $"Không thể đổi mật khẩu: {errors}" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi đổi mật khẩu: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> DeletePhieuMuonTra(int maPhieu)
+        {
+            try
+            {
+                var phieuMuonTra = await _context.PhieuMuonTra.FindAsync(maPhieu);
+                if (phieuMuonTra == null)
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn trả!" });
+                }
+
+                // Chỉ cho phép xóa phiếu đã trả hoặc đã từ chối
+                if (phieuMuonTra.TrangThai != TrangThaiPhieu.DaTra && phieuMuonTra.TrangThai != TrangThaiPhieu.TuChoi)
+                {
+                    return Json(new { success = false, message = "Chỉ có thể xóa phiếu đã trả hoặc đã từ chối!" });
+                }
+
+                _context.PhieuMuonTra.Remove(phieuMuonTra);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Đã xóa phiếu mượn trả thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa phiếu mượn trả: " + ex.Message });
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "ThuThu")]
+        public async Task<IActionResult> DeleteMultiplePhieuMuonTra(List<int> maPhieuList)
+        {
+            try
+            {
+                if (maPhieuList == null || !maPhieuList.Any())
+                {
+                    return Json(new { success = false, message = "Vui lòng chọn phiếu cần xóa!" });
+                }
+
+                var phieuMuonTraList = await _context.PhieuMuonTra
+                    .Where(p => maPhieuList.Contains(p.MaPhieu))
+                    .ToListAsync();
+
+                if (!phieuMuonTraList.Any())
+                {
+                    return Json(new { success = false, message = "Không tìm thấy phiếu mượn trả nào!" });
+                }
+
+                // Kiểm tra tất cả phiếu đều đã trả hoặc đã từ chối
+                var invalidPhieu = phieuMuonTraList.Where(p => p.TrangThai != TrangThaiPhieu.DaTra && p.TrangThai != TrangThaiPhieu.TuChoi).ToList();
+                if (invalidPhieu.Any())
+                {
+                    return Json(new { success = false, message = $"Có {invalidPhieu.Count} phiếu chưa trả, không thể xóa!" });
+                }
+
+                _context.PhieuMuonTra.RemoveRange(phieuMuonTraList);
+                await _context.SaveChangesAsync();
+
+                return Json(new { success = true, message = $"Đã xóa {phieuMuonTraList.Count} phiếu mượn trả thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Có lỗi xảy ra khi xóa phiếu mượn trả: " + ex.Message });
+            }
         }
     }
 }

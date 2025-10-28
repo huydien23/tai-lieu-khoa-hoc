@@ -21,5 +21,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public bool IsFromRequest { get; set; }
         // Ngày trả dự kiến
         public DateTime? NgayTraDuKien { get; set; }
+        // Thông tin số lượng tài liệu
+        public int SoLuong { get; set; }
+        public int SoLuongDaMuon { get; set; }
+        public int SoLuongConLai { get; set; }
     }
 } 

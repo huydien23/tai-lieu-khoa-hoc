@@ -86,6 +86,22 @@
     </div>
 </div>
 
+<!-- Thống kê tài liệu quá hạn -->
+<div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stats-card" id="quaHanCard" style="display: none;">
+            <div class="stats-icon text-danger">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stats-number" id="soTaiLieuQuaHan">0</div>
+            <div class="stats-label">Tài liệu quá hạn</div>
+            <small class="text-danger">
+                <i class="fas fa-clock me-1"></i>Cần xử lý
+            </small>
+        </div>
+    </div>
+</div>
+
 <!-- Content Row -->
 <div class="row">
     <!-- Recent Documents -->
@@ -182,30 +198,6 @@
         </div>
     </div>
 
-    <!-- Modal xem chi tiết tài liệu -->
-    <div class="modal fade" id="documentDetailsModal" tabindex="-1" aria-labelledby="documentDetailsModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="documentDetailsModalLabel">
-                        <i class="fas fa-file-alt text-primary me-2"></i>
-                        Chi tiết tài liệu
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body" id="documentDetailsContent">
-                    <div class="text-center py-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- Statistics Charts -->
     <div class="col-lg-4">
         <!-- Documents by Specialty -->
@@ -280,17 +272,18 @@
     </div>
 </div>
 
-<!-- Modal for creating new document -->
-<div class="modal fade" id="createDocumentModal" tabindex="-1" aria-labelledby="createDocumentModalLabel"
-    aria-hidden="true">
+
+
+<!-- Modal Container -->
+<div id="modalContainer"></div>
+
+<!-- Create Document Modal -->
+<div class="modal fade" id="createDocumentModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createDocumentModalLabel">
-                    <i class="fas fa-plus-circle text-success me-2"></i>
-                    Thêm tài liệu mới
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">Thêm tài liệu mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body" id="createDocumentContent">
                 <div class="text-center py-3">
@@ -304,7 +297,29 @@
     </div>
 </div>
 
+<!-- Document Details Modal -->
+<div class="modal fade" id="documentDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết tài liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="documentDetailsContent">
+                <div class="text-center py-3">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Đang tải thông tin...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
+
+
     .page-header {
         background: var(--gradient-hero);
         border-radius: var(--border-radius-xl);
@@ -540,6 +555,23 @@
 
 @section Scripts {
     <script>
+        // Kiểm tra tài liệu quá hạn khi trang load
+        $(document).ready(function() {
+            loadSoTaiLieuQuaHan();
+        });
+
+        function loadSoTaiLieuQuaHan() {
+            $.get('/PhieuMuonTra/GetSoTaiLieuQuaHan', function(data) {
+                if (data.soLuong > 0) {
+                    $('#soTaiLieuQuaHan').text(data.soLuong);
+                    $('#quaHanCard').show();
+                    $('#quaHanCard').addClass('pulse-animation');
+                } else {
+                    $('#quaHanCard').hide();
+                }
+            });
+        }
+
         // Load create document modal
         $('#createDocumentModal').on('show.bs.modal', function (e) {
             $.get('@Url.Action("CreateDocument")', function (data) {

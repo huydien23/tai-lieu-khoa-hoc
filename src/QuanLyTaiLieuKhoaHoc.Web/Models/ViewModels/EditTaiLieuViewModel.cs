@@ -31,6 +31,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels
         public string? DonViPhatHanh { get; set; }
         public int? NamXuatBan { get; set; }
         public int? SoTinChi { get; set; }
+        // Số lượng
+        public int SoLuong { get; set; } = 1;
+        public int SoLuongDaMuon { get; set; } = 0;
         // File upload
         public Microsoft.AspNetCore.Http.IFormFile? FileTaiLieu { get; set; }
     }

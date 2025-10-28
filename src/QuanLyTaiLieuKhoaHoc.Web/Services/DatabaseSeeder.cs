@@ -9,7 +9,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
     {
         public static async Task SeedSampleDataAsync(ApplicationDbContext context, UserManager<NguoiDung> userManager)
         {
-            // Seed các loại tài liệu đặc biệt nếu chưa có (không gán MaLoaiTaiLieu, để tự tăng)
+            // Seed các loại tài liệu đặc biệt
             LoaiTaiLieu? loaiBaiBao = await context.LoaiTaiLieu.FirstOrDefaultAsync(l => l.TenLoaiTaiLieu == "Bài báo khoa học");
             if (loaiBaiBao == null)
             {

@@ -1,9 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
-
-window.openTraPhieuModal = function(maPhieu) {
+﻿window.openTraPhieuModal = function(maPhieu) {
     $('#traPhieuModal').remove();
     $('body').append('<div class="modal fade" id="traPhieuModal" tabindex="-1" aria-labelledby="traPhieuModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
     $.get('/PhieuMuonTra/LapPhieuTra', { maPhieu: maPhieu }, function(html) {
