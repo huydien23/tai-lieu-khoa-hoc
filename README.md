@@ -390,34 +390,6 @@ SystemSettings    -- Cài đặt hệ thống
 
 ---
 
-## 🧪 TESTING
-
-### 📝 TEST STRATEGY
-
-- **Unit Tests**: Minimum 80% code coverage với xUnit
-- **Integration Tests**: Database và API testing với WebApplicationFactory
-- **UI Tests**: Selenium automation tests cho user workflows
-- **Performance Tests**: Load testing với NBomber
-- **Security Tests**: OWASP security testing
-- **Accessibility Tests**: Pa11y automation testing
-
-### 🏃‍♂️ CHẠY TESTS
-
-```bash
-# Run all tests
-dotnet test
-
-# Run with coverage
-dotnet test --collect:"XPlat Code Coverage"
-
-# Run specific test project
-dotnet test tests/UnitTests/
-
-# Run Selenium tests
-dotnet test tests/Web.Tests/ --filter Category=UI
-```
-
----
 
 ## 🚀 DEPLOYMENT
 
@@ -469,13 +441,6 @@ docker run -p 80:80 scientific-document-management
 | **"Website không load"** | .NET Runtime thiếu | Cài .NET 8 Runtime |
 | **"HTTPS certificate error"** | SSL certificate không hợp lệ | Sử dụng dotnet dev-certs https --trust |
 
-### 📞 HỖ TRỢ
-
-- **📧 Email**: support@scientificdms.com
-- **📱 Hotline**: 1900-xxxx-xxx
-- **💬 Chat**: Zalo/Telegram support
-- **📖 Wiki**: Xem docs/ folder để biết chi tiết
-
 ---
 
 ## 🔮 PHÁT TRIỂN TƯƠNG LAI
@@ -504,55 +469,6 @@ docker run -p 80:80 scientific-document-management
 - **Citation generator**: Tạo trích dẫn tự động
 - **Social features**: Rating, review, favorite
 - **Integration**: Google Drive, OneDrive, Dropbox
-
----
-
-## 👨‍💻 THÔNG TIN PHÁT TRIỂN
-
-### 👥 TEAM
-
-- **🏗️ Lead Developer**: [Tên của bạn]
-- **🎨 UI/UX Designer**: [Tên designer]  
-- **🧪 QA Tester**: [Tên tester]
-- **📝 Technical Writer**: [Tên writer]
-
-### 📅 TIMELINE
-
-| Giai đoạn | Thời gian | Mô tả |
-|-----------|-----------|-------|
-| **Planning & Design** | 2 tuần | Phân tích yêu cầu, thiết kế database & UI |
-| **Core Development** | 6 tuần | Phát triển tính năng chính |
-| **Testing & Polish** | 2 tuần | Test, fix bugs, polish UI/UX |
-| **Deployment** | 1 tuần | Deploy và training người dùng |
-
-### 💰 BUDGET ESTIMATION
-
-| Hạng mục | Chi phí | Ghi chú |
-|----------|---------|---------|
-| **Development** | 80% | Coding, testing, documentation |
-| **Design** | 10% | UI/UX design, graphics |
-| **Infrastructure** | 5% | Hosting, tools, licenses |
-| **Contingency** | 5% | Buffer cho unplanned work |
-
----
-
-## 📄 LICENSE
-
-Dự án này được phát triển theo **MIT License**. Xem file [LICENSE.md](LICENSE.md) để biết chi tiết.
-
----
-
-## 🙏 LỜI CẢM ƠN
-
-Cảm ơn các thư viện và tools đã hỗ trợ trong quá trình phát triển:
-
-- **Microsoft** - .NET Framework & Visual Studio
-- **Entity Framework Team** - ORM tuyệt vời
-- **AutoMapper Contributors** - Object mapping
-- **FluentValidation Team** - Validation framework  
-- **LiveCharts Contributors** - Beautiful charts
-- **Material Design Team** - Design system
-- **Stack Overflow Community** - Giải đáp thắc mắc 😄
 
 ---
 
