@@ -443,24 +443,6 @@ docker run -p 80:80 scientific-document-management
 
 ---
 
-## 🔮 PHÁT TRIỂN TƯƠNG LAI
-
-### 🎯 ROADMAP
-
-#### **Version 2.0** (Q3 2025)
-- 🚀 **Performance optimization**: Caching, CDN integration
-- 📱 **Progressive Web App (PWA)**: Offline support, push notifications
-- 🔗 **API integration**: Google Scholar, CrossRef, ORCID
-- 🌐 **Multi-tenancy**: Hỗ trợ nhiều tổ chức cùng lúc
-- 📊 **Advanced analytics**: Machine learning insights
-
-#### **Version 3.0** (Q1 2026)
-- 🤖 **AI features**: Smart document classification, auto-tagging
-- � **Mobile app**: React Native hoặc Flutter
-- 🔄 **Real-time collaboration**: SignalR cho multi-user editing
-- 🌍 **Multi-language**: English, Chinese support
-- ☁️ **Cloud-native**: Microservices với Docker & Kubernetes
-
 ### 💡 Ý TƯỞNG TÍNH NĂNG MỚI
 
 - **QR Code scanning**: Quét mã QR để mượn/trả nhanh
