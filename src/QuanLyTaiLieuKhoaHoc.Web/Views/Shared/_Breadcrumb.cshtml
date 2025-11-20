@@ -1,0 +1,92 @@
+@model List<BreadcrumbItem>
+
+@if (Model != null && Model.Any())
+{
+    <div class="breadcrumb-section">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Index", "Home")" class="breadcrumb-link">
+                            <i class="fas fa-home me-1"></i>Trang chủ
+                        </a>
+                    </li>
+                    @foreach (var item in Model)
+                    {
+                        if (item == Model.Last())
+                        {
+                            <li class="breadcrumb-item active" aria-current="page">
+                                <i class="@item.Icon me-1"></i>@item.Text
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="breadcrumb-item">
+                                <a href="@item.Url" class="breadcrumb-link">
+                                    <i class="@item.Icon me-1"></i>@item.Text
+                                </a>
+                            </li>
+                        }
+                    }
+                </ol>
+            </nav>
+        </div>
+    </div>
+}
+
+<style>
+.breadcrumb-section {
+    background: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 100%);
+    padding: 1rem 0;
+    border-bottom: 1px solid #E2E8F0;
+    margin-bottom: 2rem;
+}
+
+.breadcrumb {
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.breadcrumb-item {
+    color: #6B7280;
+}
+
+.breadcrumb-item.active {
+    color: #1E40AF;
+    font-weight: 600;
+}
+
+.breadcrumb-link {
+    color: #6B7280;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+    color: #1E40AF;
+    text-decoration: none;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">";
+    color: #9CA3AF;
+    margin: 0 0.5rem;
+}
+
+.breadcrumb-item i {
+    font-size: 0.8rem;
+}
+
+@@media (max-width: 768px) {
+    .breadcrumb-section {
+        padding: 0.75rem 0;
+        margin-bottom: 1rem;
+    }
+    
+    .breadcrumb {
+        font-size: 0.8rem;
+    }
+}
+</style> 

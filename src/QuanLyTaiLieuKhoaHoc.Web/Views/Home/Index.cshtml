@@ -3,172 +3,228 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<div class="welcome-section">
+<!-- Hero Section với Gradient Background -->
+<div class="hero-section">
+    <div class="hero-background"></div>
     <div class="container">
-        <div class="row align-items-center">
+        <div class="row align-items-center min-vh-75">
             <div class="col-lg-6">
-                <h1 class="fw-bold">Hệ thống Quản lý Tài liệu Khoa học</h1>
-                <p class="lead">Nền tảng hiện đại giúp bạn dễ dàng tìm kiếm, quản lý và chia sẻ tài liệu khoa học một
-                    cách hiệu quả.</p>
-
-                <div class="d-flex flex-wrap gap-2 mb-4">
-                    <a href="/TaiLieu" class="btn btn-primary">
-                        <i class="fas fa-book me-2"></i>Khám phá tài liệu
-                    </a>
-                    <a href="/TaiLieu" class="btn btn-outline-primary">
-                        <i class="fas fa-search me-2"></i>Tìm kiếm nâng cao
-                    </a>
+                <div class="hero-content">
+                    <h1 class="hero-title">Hệ thống Quản lý Tài liệu Khoa học</h1>
+                    <p class="hero-subtitle" style="color: white;">Nền tảng hiện đại giúp bạn dễ dàng tìm kiếm, quản lý và chia sẻ tài liệu khoa học một cách hiệu quả.</p>
+                    
+                    <div class="hero-actions">
+                        <a href="/TaiLieu" class="btn btn-primary btn-lg hero-btn">
+                            <i class="fas fa-book me-2"></i>Khám phá tài liệu
+                        </a>
+                        <a href="/TaiLieu" class="btn btn-outline-light btn-lg hero-btn">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm nâng cao
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block">
-                <img src="~/images/hero-illustration.svg" alt="Minh họa tài liệu khoa học" class="img-fluid"
-                    onerror="this.style.display='none'">
+                <div class="hero-illustration">
+                    <div class="floating-documents">
+                        <div class="doc-icon doc-1"><i class="fas fa-file-alt"></i></div>
+                        <div class="doc-icon doc-2"><i class="fas fa-book"></i></div>
+                        <div class="doc-icon doc-3"><i class="fas fa-chart-line"></i></div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Tìm kiếm nhanh -->
-<div class="search-section rounded-lg p-5 mb-5 bg-light">
-    <h2 class="fw-bold mb-4 text-center">Tìm kiếm tài liệu</h2>
-
-    <form action="/TaiLieu" method="get" class="mb-4">
-        <div class="input-group input-group-lg">
-            <input type="text" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." name="q">
-            <button class="btn btn-primary" type="submit">
-                <i class="fas fa-search me-2"></i>Tìm kiếm
-            </button>
+<!-- Search Section với Glassmorphism -->
+<div class="search-section">
+    <div class="container">
+        <div class="search-container">
+            <h2 class="search-title">Tìm kiếm tài liệu</h2>
+            
+            <form action="/TaiLieu" method="get" class="search-form">
+                <div class="search-input-group">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Nhập từ khóa tìm kiếm..." name="q">
+                        <button type="button" class="voice-search-btn" title="Tìm kiếm bằng giọng nói">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <button class="search-submit-btn" type="submit">
+                        <i class="fas fa-search me-2"></i>Tìm kiếm
+                    </button>
+                </div>
+            </form>
+            
+            <div class="popular-keywords">
+                <span class="keywords-label">Từ khóa phổ biến:</span>
+                <div class="keyword-tags">
+                    <a href="/TaiLieu?timKiem=deep+learning" class="keyword-tag">Deep Learning</a>
+                    <a href="/TaiLieu?timKiem=java" class="keyword-tag">Lập trình Java</a>
+                    <a href="/TaiLieu?timKiem=cấu+trúc+dữ+liệu" class="keyword-tag">Cấu trúc dữ liệu</a>
+                    <a href="/TaiLieu?timKiem=AI" class="keyword-tag">Trí tuệ nhân tạo</a>
+                    <a href="/TaiLieu?timKiem=kinh+tế" class="keyword-tag">Kinh tế</a>
+                </div>
+            </div>
         </div>
-    </form>
-
-    <div class="popular-keywords text-center">
-        <span class="text-muted me-2">Từ khóa phổ biến:</span>
-        <a href="/TaiLieu?timKiem=machine+learning" class="badge bg-light text-dark me-2 mb-2">Machine Learning</a>
-        <a href="/TaiLieu?timKiem=blockchain" class="badge bg-light text-dark me-2 mb-2">Blockchain</a>
-        <a href="/TaiLieu?timKiem=data+science" class="badge bg-light text-dark me-2 mb-2">Data Science</a>
-        <a href="/TaiLieu?timKiem=internet+of+things" class="badge bg-light text-dark me-2 mb-2">Internet of Things</a>
-        <a href="/TaiLieu?timKiem=cloud+computing" class="badge bg-light text-dark me-2 mb-2">Cloud Computing</a>
     </div>
 </div>
 
-<div class="container py-5">
-    <div class="row">
-        <!-- Main content: left column -->
-        <div class="col-lg-8">
-            
-            <!-- Tài liệu phổ biến -->
-            <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="fw-bold">Tài liệu phổ biến</h2>
-                    <a href="/TaiLieu?sapXep=luot_tai_desc" class="btn btn-outline-primary btn-sm">Xem tất cả</a>
-                </div>
-                <div class="row g-4">
-                    @foreach (var taiLieu in Model.TaiLieuPhoBien)
-                    {
-                        var moTaTomTat = taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa;
-                        <div class="col-md-6 col-lg-4 mb-4">
-                            <div class="card shadow-sm rounded-4 h-100 document-card border-0">
-                                <div class="card-body d-flex flex-column">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <i class="fas fa-file-alt fs-4 text-primary me-2"></i>
-                                        <h5 class="card-title mb-0 flex-grow-1">@(taiLieu.TenTaiLieu ?? "N/A")</h5>
+<div class="main-content">
+    <div class="container">
+        <div class="row">
+            <!-- Main content: left column -->
+            <div class="col-lg-8">
+                <!-- Tài liệu phổ biến -->
+                <div class="popular-documents-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Tài liệu phổ biến</h2>
+                        <a href="/TaiLieu?sapXep=luot_tai_desc" class="view-all-btn">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="documents-grid">
+                        @foreach (var taiLieu in Model.TaiLieuPhoBien)
+                        {
+                            var moTaTomTat = taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa;
+                            <div class="document-card-wrapper">
+                                <div class="document-card">
+                                    <div class="card-header">
+                                        <div class="doc-icon-wrapper">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div class="doc-info">
+                                            <h3 class="doc-title">@(taiLieu.TenTaiLieu ?? "N/A")</h3>
+                                            <div class="doc-meta">
+                                                <span class="doc-author">
+                                                    <i class="fas fa-user"></i>
+                                                    @(taiLieu.TacGia ?? "N/A")
+                                                </span>
+                                                <span class="doc-date">
+                                                    <i class="fas fa-calendar"></i>
+                                                    @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <ul class="list-unstyled small text-muted mb-2">
-                                        <li><i class="fas fa-user me-1"></i> @(taiLieu.TacGia ?? "N/A")</li>
-                                        <li><i class="fas fa-calendar me-1"></i> @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</li>
-                                        <li><i class="fas fa-book-reader me-1"></i> @taiLieu.SoLuongDaMuon lượt mượn</li>
-                                        <li><i class="fas fa-tag me-1"></i> @(taiLieu.TenChuyenNganh ?? "N/A")</li>
-                                    </ul>
-                                    <p class="card-text flex-grow-1">@Html.Raw(moTaTomTat ?? "")</p>
-                                    <div class="d-flex justify-content-between align-items-center mt-auto gap-2 flex-wrap">
-                                        <span class="badge bg-info text-dark px-3 py-2 flex-shrink-0">@(taiLieu.TenLoaiTaiLieu ?? "")</span>
-                                        <a class="btn btn-primary btn-sm rounded-pill d-inline-flex align-items-center gap-1 flex-shrink-0" href="/TaiLieu/Details/@taiLieu.MaTaiLieu" style="white-space:nowrap; min-width:120px;">
-                                            <i class="fas fa-eye"></i> <span>Xem tóm tắt</span>
-                                        </a>
-                                    </div>
+                                    
+                                                                         <div class="card-body">
+                                         <!-- Mô tả tài liệu -->
+                                         <div class="doc-description-section">
+                                             <h4 class="description-title">
+                                                 <i class="fas fa-info-circle"></i>
+                                                 Mô tả
+                                             </h4>
+                                             <p class="doc-description">@Html.Raw(moTaTomTat ?? "Chưa có mô tả cho tài liệu này.")</p>
+                                         </div>
+                                         
+                                         <!-- Thông tin chi tiết -->
+                                         <div class="doc-details-section">
+                                             <h4 class="details-title">
+                                                 <i class="fas fa-list-alt"></i>
+                                                 Chi tiết
+                                             </h4>
+                                             <div class="doc-stats">
+                                                 <div class="stat-item">
+                                                     <i class="fas fa-book-reader"></i>
+                                                     <span>@taiLieu.SoLuongDaMuon lượt mượn</span>
+                                                 </div>
+                                                 <div class="stat-item">
+                                                     <i class="fas fa-tag"></i>
+                                                     <span>@(taiLieu.TenChuyenNganh ?? "N/A")</span>
+                                                 </div>
+                                                 <div class="stat-item">
+                                                     <i class="fas fa-calendar-alt"></i>
+                                                     <span>@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                                                 </div>
+                                             </div>
+                                         </div>
+                                         
+                                         <!-- Actions -->
+                                         <div class="card-actions">
+                                             <div class="action-left">
+                                                 <span class="doc-category">@(taiLieu.TenLoaiTaiLieu ?? "")</span>
+                                                 <span class="doc-status available">
+                                                     <i class="fas fa-check-circle"></i>
+                                                     Có sẵn
+                                                 </span>
+                                             </div>
+                                             <div class="action-right">
+                                                 <a class="view-summary-btn" href="/TaiLieu/Details/@taiLieu.MaTaiLieu">
+                                                     <i class="fas fa-eye"></i>
+                                                     <span>Xem tóm tắt</span>
+                                                 </a>
+                                             </div>
+                                         </div>
+                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Sidebar: right column -->
-        <div class="col-lg-4">
-            <div class="sticky-top" style="top: 90px; z-index: 1;">
-                <div class="mb-4 shadow-sm rounded-4 bg-white p-4 border border-2" style="background: #f8fbff;">
-                    <h5 class="fw-bold text-primary mb-3"><i class="fas fa-chart-bar me-2"></i>Thống kê theo Chuyên
-                        ngành</h5>
-                    @foreach (var item in Model.ThongKeTheoChuyenNganh)
-                    {
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>@item.Key</span>
-                            <span class="badge bg-primary">@item.Value</span>
+            
+            <!-- Sidebar: right column -->
+            <div class="col-lg-4">
+                <div class="sidebar">
+                    <div class="stats-card">
+                        <div class="stats-header">
+                            <h3 class="stats-title">
+                                <i class="fas fa-chart-bar"></i>
+                                Thống kê theo Chuyên ngành
+                            </h3>
                         </div>
-                    }
-                    <h5 class="fw-bold text-info mb-3"><i class="fas fa-layer-group me-2"></i>Thống kê theo Loại tài
-                        liệu</h5>
-                    @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
-                    {
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>@item.Key</span>
-                            <span class="badge bg-info">@item.Value</span>
+                        
+                        <div class="stats-content">
+                            @foreach (var item in Model.ThongKeTheoChuyenNganh)
+                            {
+                                <div class="stat-row">
+                                    <div class="stat-label">@item.Key</div>
+                                    <div class="stat-value">
+                                        <span class="stat-number">@item.Value</span>
+                                        <div class="stat-bar">
+                                            <div class="stat-progress" style="width: @(item.Value * 100 / Model.ThongKeTheoChuyenNganh.Values.Max())%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
                         </div>
-                    }
+                        
+                        <div class="stats-divider"></div>
+                        
+                        <div class="stats-header">
+                            <h3 class="stats-title">
+                                <i class="fas fa-layer-group"></i>
+                                Thống kê theo Loại tài liệu
+                            </h3>
+                        </div>
+                        
+                        <div class="stats-content">
+                            @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
+                            {
+                                <div class="stat-row">
+                                    <div class="stat-label">@item.Key</div>
+                                    <div class="stat-value">
+                                        <span class="stat-number">@item.Value</span>
+                                        <div class="stat-bar">
+                                            <div class="stat-progress" style="width: @(item.Value * 100 / Model.ThongKeTheoLoaiTaiLieu.Values.Max())%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-
-
-
-    <!-- Modal xem tóm tắt tài liệu -->
-    @{
-        await Html.RenderPartialAsync("_DocumentSummaryModal");
-    }
-    
 </div>
 
-<style>
-.document-card {
-    transition: box-shadow 0.2s, transform 0.2s;
+<!-- Modal xem tóm tắt tài liệu -->
+@{
+    await Html.RenderPartialAsync("_DocumentSummaryModal");
 }
-.document-card:hover {
-    box-shadow: 0 8px 32px rgba(30, 34, 90, 0.18) !important;
-    transform: scale(1.02);
-}
-.card-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #1A237E;
-}
-.badge.bg-info {
-    background: #e3f2fd !important;
-    color: #1976d2 !important;
-    font-weight: 600;
-}
-.btn-primary, .btn-success {
-    font-weight: 600;
-}
-.document-card .btn, .document-card .btn-primary {
-    writing-mode: unset !important;
-    transform: unset !important;
-    display: inline-flex !important;
-    align-items: center;
-    gap: 0.25rem;
-    white-space: nowrap;
-    min-width: 120px;
-    max-width: 100%;
-    overflow: visible;
-}
-.document-card .badge {
-    max-width: 100%;
-    overflow: visible;
-    white-space: normal;
-}
-.document-card .d-flex {
-    flex-wrap: wrap !important;
-}
-</style>
     

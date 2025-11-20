@@ -2,24 +2,27 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTaiLieuKhoaHoc.Web.Models;
+using QuanLyTaiLieuKhoaHoc.Web.Data;
 
 namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 {
     public class AccountController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
-
         private readonly UserManager<NguoiDung> _userManager;
         private readonly SignInManager<NguoiDung> _signInManager;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
         UserManager<NguoiDung> userManager,
         RoleManager<IdentityRole> roleManager,
-        SignInManager<NguoiDung> signInManager)
+        SignInManager<NguoiDung> signInManager,
+        ApplicationDbContext context)
         {
         _userManager = userManager;
         _roleManager = roleManager;
         _signInManager = signInManager;
+        _context = context;
         }
 
         public IActionResult Login()
@@ -120,14 +123,10 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             int? maChuyenNganh = null;
             if (!string.IsNullOrEmpty(chuyenNganh))
             {
-                using (var scope = HttpContext.RequestServices.CreateScope())
+                var chuyenNganhEntity = await _context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == chuyenNganh);
+                if (chuyenNganhEntity != null)
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<QuanLyTaiLieuKhoaHoc.Web.Data.ApplicationDbContext>();
-                    var chuyenNganhEntity = await context.ChuyenNganh.FirstOrDefaultAsync(c => c.TenChuyenNganh == chuyenNganh);
-                    if (chuyenNganhEntity != null)
-                    {
-                        maChuyenNganh = chuyenNganhEntity.MaChuyenNganh;
-                    }
+                    maChuyenNganh = chuyenNganhEntity.MaChuyenNganh;
                 }
             }
 
@@ -136,7 +135,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             {
                 UserName = username,
                 Email = email,
-                HoTen = HoTen, // Sử dụng đúng họ tên từ form
+                HoTen = HoTen,
                 MaSo = maSo,
                 SoDienThoai = soDienThoai,
                 VaiTro = role switch
@@ -154,7 +153,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
-    // Gán role
+            // Gán role
             var identityRole = role switch
             {
             "lecturer" => "GiangVien",
@@ -162,13 +161,13 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             _ => "SinhVien"
             };
 
-    // Tạo role nếu chưa tồn tại
+            // Tạo role nếu chưa tồn tại
             if (!await _roleManager.RoleExistsAsync(identityRole))
             {
                 await _roleManager.CreateAsync(new IdentityRole(identityRole));
             }
  
-    // Gán user vào role
+            // Gán user vào role
             await _userManager.AddToRoleAsync(user, identityRole);
 
                 TempData["SuccessMessage"] = "Đăng ký tài khoản thành công! Vui lòng đăng nhập.";
@@ -204,7 +203,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
         [HttpPost]
         public IActionResult ForgotPassword(string email)
         {
-            // TODO: Implement forgot password logic
             TempData["SuccessMessage"] = "Hướng dẫn đặt lại mật khẩu đã được gửi tới email của bạn";
             return View();
         }
@@ -302,7 +300,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
         }
 
-        // Temporary method to force seed users
         [HttpGet]
         public async Task<IActionResult> ForceSeed()
         {
@@ -323,14 +320,14 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                         UserName = "thuthu@library.edu.vn",
                         Email = "thuthu@library.edu.vn",
                         EmailConfirmed = true,
-                        HoTen = "Nguyễn Thị Hoa",
+                        HoTen = "Nguyễn Huy Điền",
                         VaiTro = VaiTroNguoiDung.ThuThu,
                         MaChuyenNganh = 1,
                         MaSo = "TT001",
                         NgayTao = DateTime.Now,
                         TrangThaiHoatDong = true
                     };
-                    var result = await _userManager.CreateAsync(librarianUser, "ThuThu@2024");
+                    var result = await _userManager.CreateAsync(librarianUser, "thuthu123");
 
                     if (result.Succeeded)
                     {
@@ -359,7 +356,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             }
         }
 
-        // Temporary method to check users in database
         [HttpGet]
         public async Task<IActionResult> CheckUsers()
         {

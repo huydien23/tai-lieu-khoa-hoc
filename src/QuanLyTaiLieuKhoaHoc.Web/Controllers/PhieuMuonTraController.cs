@@ -107,13 +107,21 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             if (phieu == null) return NotFound();
             var sinhVien = phieu.NguoiMuon;
             var taiLieu = phieu.TaiLieu;
+            
+            // Debug: Kiểm tra thông tin chuyên ngành
+            var chuyenNganh = sinhVien?.ChuyenNganh?.TenChuyenNganh ?? "";
+            System.Diagnostics.Debug.WriteLine($"Debug - MaPhieu: {maPhieu}");
+            System.Diagnostics.Debug.WriteLine($"Debug - SinhVien: {sinhVien?.HoTen}");
+            System.Diagnostics.Debug.WriteLine($"Debug - ChuyenNganh: {chuyenNganh}");
+            System.Diagnostics.Debug.WriteLine($"Debug - ChuyenNganh Object: {sinhVien?.ChuyenNganh}");
+            
             var vm = new QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.LapPhieuMuonViewModel
             {
                 MaPhieu = phieu.MaPhieu,
                 HoTen = sinhVien?.HoTen ?? "",
                 MSSV = sinhVien?.MaSo ?? "",
                 Email = sinhVien?.Email ?? "",
-                ChuyenNganh = sinhVien?.ChuyenNganh?.TenChuyenNganh ?? "",
+                ChuyenNganh = chuyenNganh,
                 TenTaiLieu = taiLieu?.TenTaiLieu ?? "",
                 TacGia = taiLieu?.TacGia ?? "",
                 NgayMuon = phieu.NgayMuon,

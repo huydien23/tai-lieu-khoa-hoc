@@ -29,7 +29,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Models
         [Display(Name = "Trạng thái hoạt động")]
         public bool TrangThaiHoatDong { get; set; } = true;
 
-        // Navigation Properties
         public virtual ICollection<TaiLieu> TaiLieu { get; set; } = new List<TaiLieu>();
     }
 }

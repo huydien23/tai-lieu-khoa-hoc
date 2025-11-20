@@ -92,7 +92,6 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
             ViewData["Title"] = "Danh sách / Tìm kiếm tài liệu";
 
-            // Chuẩn bị data cho dropdown
             await LoadDropdownData();
 
             // Set ViewBag cho form tìm kiếm
@@ -131,7 +130,9 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
                     vaiTro = "ThuThu";
             }
 
-            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id, vaiTro);
+            var currentUser = await _userManager.GetUserAsync(User);
+            var userId = currentUser?.Id;
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id, vaiTro, userId);
             if (taiLieu == null)
             {
                 // Kiểm tra nếu không có quyền truy cập
@@ -303,6 +304,59 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return File(fileBytes, "application/octet-stream", fileName);
         }
 
+        [Authorize(Roles = "GiangVien,ThuThu,SinhVien")]
+        public async Task<IActionResult> ViewPdf(int id)
+        {
+            var taiLieu = await _taiLieuService.GetTaiLieuByIdAsync(id);
+            if (taiLieu == null)
+            {
+                return NotFound();
+            }
+
+            if (!taiLieu.ChoPhepTaiFile)
+            {
+                TempData["ErrorMessage"] = "Tài liệu này không cho phép xem online.";
+                return RedirectToAction("Details", new { id });
+            }
+
+            // Kiểm tra file có phải PDF không
+            var fileExtension = Path.GetExtension(taiLieu.DuongDanFile)?.ToLower();
+            if (fileExtension != ".pdf")
+            {
+                TempData["ErrorMessage"] = "Chỉ hỗ trợ xem file PDF online.";
+                return RedirectToAction("Details", new { id });
+            }
+
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", taiLieu.DuongDanFile.TrimStart('/'));
+            if (!System.IO.File.Exists(filePath))
+            {
+                TempData["ErrorMessage"] = "File không tồn tại.";
+                return RedirectToAction("Details", new { id });
+            }
+
+            // Ghi log xem tài liệu
+            var lichSuTai = new LichSuTaiTaiLieu
+            {
+                MaTaiLieu = taiLieu.MaTaiLieu,
+                MaNguoiDung = currentUser.Id,
+                ThoiGianTai = DateTime.Now,
+                TrangThai = "Xem online",
+                DiaChiIP = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                UserAgent = HttpContext.Request.Headers["User-Agent"].ToString()
+            };
+
+            _context.LichSuTaiTaiLieu.Add(lichSuTai);
+            await _context.SaveChangesAsync();
+
+            return View(taiLieu);
+        }
+
         public async Task<IActionResult> MyDocuments(int trang = 1)
         {
             var currentUser = await _userManager.GetUserAsync(User);
@@ -430,6 +484,12 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
 
                 _context.YeuThichTaiLieu.Add(yeuThich);
                 await _context.SaveChangesAsync();
+                
+                TempData["SuccessMessage"] = "Đã thêm tài liệu vào danh sách yêu thích!";
+            }
+            else
+            {
+                TempData["InfoMessage"] = "Tài liệu này đã có trong danh sách yêu thích của bạn.";
             }
 
             return RedirectToAction("Details", new { id = maTaiLieu });

@@ -2,94 +2,109 @@
 
 @{
     ViewData["Title"] = "Dashboard Giảng viên";
+    Layout = "_Layout";
 }
 
-<!-- Dashboard Header -->
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="h2 fw-bold mb-2">
-                <i class="fas fa-chalkboard-teacher me-3 text-primary"></i>
-                Dashboard Giảng viên
-            </h1>
-            <p class="text-muted mb-0">Tra cứu và khám phá tài liệu nghiên cứu, giảng dạy</p>
-        </div>
-    </div>
-</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/lecturer-dashboard.css" />
+}
 
-<!-- Quick Search Section -->
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="card-custom">
-            <div class="card-body p-4">
-                <h5 class="mb-3">
-                    <i class="fas fa-search me-2 text-primary"></i>
-                    Tìm kiếm nhanh
-                </h5>
-                <form action="/TaiLieu" method="get" class="search-form">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="input-group input-group-lg">
-                                <input type="text" name="timKiem" class="form-control" 
-                                       placeholder="Nhập từ khóa tìm kiếm tài liệu..." 
-                                       value="@(ViewBag.TimKiem ?? "")">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fas fa-search me-2"></i>Tìm kiếm
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <select name="maChuyenNganh" class="form-select">
-                                <option value="">-- Tất cả chuyên ngành --</option>
-                                @if (ViewBag.ChuyenNganh != null)
-                                {
-                                    @foreach (var item in ViewBag.ChuyenNganh as SelectList ?? new SelectList(new List<object>()))
-                                    {
-                                        <option value="@item.Value" selected="@(item.Selected)">
-                                            @item.Text
-                                        </option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select name="maLoaiTaiLieu" class="form-select">
-                                <option value="">-- Tất cả loại --</option>
-                                @if (ViewBag.LoaiTaiLieu != null)
-                                {
-                                    @foreach (var item in ViewBag.LoaiTaiLieu as SelectList ?? new SelectList(new List<object>()))
-                                    {
-                                        <option value="@item.Value" selected="@(item.Selected)">
-                                            @item.Text
-                                        </option>
-                                    }
-                                }
-                            </select>
-                        </div>
-                    </div>
-                </form>
+<!-- Modern Dashboard Header -->
+<div class="page-header" data-aos="fade-down" data-aos-delay="100">
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <div class="header-icon me-3">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div>
+                <h1 class="mb-2">Dashboard Giảng viên</h1>
+                <p class="text-muted mb-0">Tra cứu và khám phá tài liệu nghiên cứu, giảng dạy</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="current-time">
+                <i class="fas fa-clock"></i>
+                <span id="current-time"></span>
+            </div>
+            <div class="user-info">
+                <div class="user-name">
+                    <i class="fas fa-user me-2"></i>
+                    @((ViewBag.CurrentUser as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung)?.HoTen ?? "Giảng viên")
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Key Statistics -->
+<!-- Modern Quick Search Section -->
+<div class="row mb-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="col-12">
+        <form action="/TaiLieu" method="get" class="search-form">
+            <h5>
+                <i class="fas fa-search me-2 text-primary"></i>
+                Tìm kiếm nhanh
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group input-group-lg">
+                        <input type="text" name="timKiem" class="form-control" 
+                               placeholder="Nhập từ khóa tìm kiếm tài liệu..." 
+                               value="@(ViewBag.TimKiem ?? "")">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fas fa-search me-2"></i>Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select name="maChuyenNganh" class="form-select">
+                        <option value="">-- Tất cả chuyên ngành --</option>
+                        @if (ViewBag.ChuyenNganh != null)
+                        {
+                            @foreach (var item in ViewBag.ChuyenNganh as SelectList ?? new SelectList(new List<object>()))
+                            {
+                                <option value="@item.Value" selected="@(item.Selected)">
+                                    @item.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="maLoaiTaiLieu" class="form-select">
+                        <option value="">-- Tất cả loại --</option>
+                        @if (ViewBag.LoaiTaiLieu != null)
+                        {
+                            @foreach (var item in ViewBag.LoaiTaiLieu as SelectList ?? new SelectList(new List<object>()))
+                            {
+                                <option value="@item.Value" selected="@(item.Selected)">
+                                    @item.Text
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modern Key Statistics -->
 <div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
         <div class="stats-card">
             <div class="stats-icon text-primary"><i class="fas fa-book-open"></i></div>
-            <div class="stats-number">@Model.TaiLieuMoiTrongThang</div>
-            <div class="stats-label">Tài liệu mới</div>
+            <div class="stats-number" data-count="@Model.TaiLieuMoiTrongThang">0</div>
+            <div class="stats-label">TÀI LIỆU MỚI</div>
             <small class="text-muted">
                 <i class="fas fa-calendar me-1"></i>Đã thêm trong tháng này
             </small>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="200">
         <div class="stats-card">
             <div class="stats-icon text-success"><i class="fas fa-download"></i></div>
-            <div class="stats-number">@Model.TongSoLuotTai</div>
-            <div class="stats-label">Đã tải xuống</div>
+            <div class="stats-number" data-count="@Model.TongSoLuotTai">0</div>
+            <div class="stats-label">ĐÃ TẢI XUỐNG</div>
             <small class="text-success">
                 <i class="fas fa-arrow-up me-1"></i>
                 @{
@@ -101,21 +116,21 @@
             </small>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
         <div class="stats-card">
             <div class="stats-icon text-info"><i class="fas fa-bookmark"></i></div>
-            <div class="stats-number">@Model.SoLuongYeuThich</div>
-            <div class="stats-label">Đã đánh dấu</div>
+            <div class="stats-number" data-count="@Model.SoLuongYeuThich">0</div>
+            <div class="stats-label">ĐÃ ĐÁNH DẤU</div>
             <small class="text-muted">
                 <i class="fas fa-star me-1"></i>Tài liệu yêu thích
             </small>
         </div>
     </div>
-    <div class="col-xl-3 col-md-6">
+    <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="400">
         <div class="stats-card">
             <div class="stats-icon text-warning"><i class="fas fa-eye"></i></div>
-            <div class="stats-number">@Model.SoLuotXemGanDay</div>
-            <div class="stats-label">Đã xem</div>
+            <div class="stats-number" data-count="@Model.SoLuotXemGanDay">0</div>
+            <div class="stats-label">ĐÃ XEM</div>
             <small class="text-muted">
                 <i class="fas fa-history me-1"></i>Xem gần đây
             </small>
@@ -125,8 +140,8 @@
 
 <!-- Dashboard Content with Tab Layout -->
 <div class="row g-4">
-    <!-- Tab Navigation (Left) -->
-    <div class="col-lg-3">
+    <!-- Modern Sidebar Navigation -->
+    <div class="col-lg-3" data-aos="fade-right" data-aos-delay="100">
         <div class="card-custom">
             <div class="card-header-custom">
                 <h6 class="mb-0">
@@ -138,27 +153,27 @@
                 <div class="nav flex-column nav-pills dashboard-nav" id="v-pills-tab" role="tablist">
                     <button class="nav-link active" id="v-pills-overview-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-overview" type="button" role="tab">
-                        <i class="fas fa-chart-pie me-2"></i>Tổng quan
+                        <i class="fas fa-chart-pie me-2"></i><span class="menu-text">Tổng quan</span>
                     </button>
                     <button class="nav-link" id="v-pills-favorites-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-favorites" type="button" role="tab">
-                        <i class="fas fa-star me-2"></i>Yêu thích
+                        <i class="fas fa-star me-2"></i><span class="menu-text">Yêu thích</span>
                     </button>
                     <button class="nav-link" id="v-pills-recent-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-recent" type="button" role="tab">
-                        <i class="fas fa-history me-2"></i>Xem gần đây
+                        <i class="fas fa-history me-2"></i><span class="menu-text">Xem gần đây</span>
                     </button>
                     <button class="nav-link" id="v-pills-downloaded-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-downloaded" type="button" role="tab">
-                        <i class="fas fa-download me-2"></i>Đã tải
+                        <i class="fas fa-download me-2"></i><span class="menu-text">Đã tải</span>
                     </button>
                     <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-profile" type="button" role="tab">
-                        <i class="fas fa-id-card me-2"></i>Thông tin tài khoản
+                        <i class="fas fa-user me-2"></i><span class="menu-text">Thông tin tài khoản</span>
                     </button>
                     <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
                         data-bs-target="#v-pills-settings" type="button" role="tab">
-                        <i class="fas fa-cog me-2"></i>Cài đặt tài khoản
+                        <i class="fas fa-cog me-2"></i><span class="menu-text">Cài đặt tài khoản</span>
                     </button>
                 </div>
             </div>
@@ -166,12 +181,12 @@
     </div>
     <!-- Tab Content (Right) -->
     <div class="col-lg-9">
-        <div class="tab-content" id="v-pills-tabContent">
+        <div class="tab-content" id="v-pills-tabContent" data-aos="fade-left" data-aos-delay="200">
             <!-- Overview Tab -->
             <div class="tab-pane fade show active" id="v-pills-overview" role="tabpanel">
                 <div class="row g-4">
                     <!-- Tài liệu mới nhất -->
-                    <div class="col-12">
+                    <div class="col-12" data-aos="fade-up" data-aos-delay="100">
                         <div class="card-custom">
                             <div class="card-header-custom d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0">
@@ -213,7 +228,16 @@
                                     else
                                     {
                                         <div class="col-12">
-                                            <p class="text-muted text-center">Chưa có tài liệu nào được xem gần đây.</p>
+                                            <div class="empty-state">
+                                                <div class="empty-icon">
+                                                    <i class="fas fa-file-alt"></i>
+                                                </div>
+                                                <h5>Chưa có tài liệu nào</h5>
+                                                <p>Bạn chưa xem tài liệu nào gần đây. Hãy khám phá thư viện để tìm tài liệu phù hợp.</p>
+                                                <a href="/TaiLieu" class="empty-action-btn">
+                                                    <i class="fas fa-search me-2"></i>Khám phá tài liệu
+                                                </a>
+                                            </div>
                                         </div>
                                     }
                                 </div>
@@ -222,7 +246,7 @@
                     </div>
 
                     <!-- Thống kê -->
-                    <div class="col-12">
+                    <div class="col-12" data-aos="fade-up" data-aos-delay="200">
                         <div class="card-custom">
                             <div class="card-header-custom">
                                 <h6 class="mb-0">
@@ -285,7 +309,7 @@
 
             <!-- Favorites Tab -->
             <div class="tab-pane fade" id="v-pills-favorites" role="tabpanel">
-                <div class="card-custom">
+                <div class="card-custom" data-aos="fade-up" data-aos-delay="100">
                     <div class="card-header-custom">
                         <h6 class="mb-0">
                             <i class="fas fa-star me-2"></i>
@@ -337,7 +361,16 @@
                             else
                             {
                                 <div class="col-12">
-                                    <p class="text-muted text-center">Bạn chưa có tài liệu yêu thích nào.</p>
+                                    <div class="empty-state">
+                                        <div class="empty-icon">
+                                            <i class="fas fa-heart"></i>
+                                        </div>
+                                        <h5>Chưa có tài liệu yêu thích</h5>
+                                        <p>Bạn chưa đánh dấu tài liệu nào làm yêu thích. Hãy khám phá và đánh dấu những tài liệu hữu ích.</p>
+                                        <a href="/TaiLieu" class="empty-action-btn">
+                                            <i class="fas fa-search me-2"></i>Khám phá tài liệu
+                                        </a>
+                                    </div>
                                 </div>
                             }
                         </div>
@@ -488,3 +521,56 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Initialize dashboard functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeDashboard();
+    });
+
+    function initializeDashboard() {
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Start real-time clock
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+
+        // Animate counters
+        animateCounters();
+    }
+
+    function updateCurrentTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('vi-VN', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+        document.getElementById('current-time').textContent = timeString;
+    }
+
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stats-number[data-count]');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-count'));
+            const duration = 2000; // 2 seconds
+            const step = target / (duration / 16); // 60fps
+            let current = 0;
+
+            const timer = setInterval(() => {
+                current += step;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = Math.floor(current);
+            }, 16);
+        });
+    }
+</script>

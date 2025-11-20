@@ -79,6 +79,11 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Controllers
             return View(model);
         }
 
+        public IActionResult HuongDan()
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

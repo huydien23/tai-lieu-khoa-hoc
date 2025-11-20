@@ -41,6 +41,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return await _context.PhieuMuonTra
                 .Include(p => p.TaiLieu)
                 .Include(p => p.NguoiMuon)
+                    .ThenInclude(n => n.ChuyenNganh)
                 .Where(p => p.TrangThai == TrangThaiPhieu.ChoDuyet)
                 .ToListAsync();
         }
@@ -112,6 +113,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return await _context.PhieuMuonTra
                 .Include(p => p.TaiLieu)
                 .Include(p => p.NguoiMuon)
+                    .ThenInclude(n => n.ChuyenNganh)
                 .Include(p => p.ThuThuDuyet)
                 .FirstOrDefaultAsync(p => p.MaPhieu == maPhieu);
         }
@@ -123,6 +125,7 @@ namespace QuanLyTaiLieuKhoaHoc.Web.Services
             return await _context.PhieuMuonTra
                 .Include(p => p.TaiLieu)
                 .Include(p => p.NguoiMuon)
+                    .ThenInclude(n => n.ChuyenNganh)
                 .Where(p => p.TrangThai == TrangThaiPhieu.DaDuyet && 
                            p.NgayTra == null && 
                            p.NgayTraDuKien.HasValue && 

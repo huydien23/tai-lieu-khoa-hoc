@@ -1,14 +1,92 @@
 @model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.DashboardViewModel
+@using QuanLyTaiLieuKhoaHoc.Web.Models
 @{
     ViewData["Title"] = "Quản lý mượn trả";
 }
-<div class="card shadow-sm mt-4">
+
+<link rel="stylesheet" href="~/css/borrow-return-management.css" />
+
+<!-- Modern Header -->
+<div class="borrow-return-header">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="header-icon">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+            <div class="header-text">
+                <h1>Quản lý mượn trả tài liệu</h1>
+                <p>Quản lý yêu cầu mượn, theo dõi tài liệu quá hạn và lịch sử mượn trả</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="globalSearch" placeholder="Tìm kiếm theo mã số, họ tên, tài liệu...">
+                    <button class="search-btn" type="button" title="Bộ lọc tìm kiếm">
+                        <i class="fas fa-filter"></i>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="btn-refresh" onclick="loadSoTaiLieuQuaHan()" title="Cập nhật dữ liệu">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-container">
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon requests">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.YeuCauMuonTra.Count()</div>
+        <div class="stat-label">Yêu cầu chờ duyệt</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon overdue">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+        <div class="stat-number" id="overdueCount">0</div>
+        <div class="stat-label">Tài liệu quá hạn</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon history">
+                <i class="fas fa-history"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.LichSuMuonTra.Count()</div>
+        <div class="stat-label">Lịch sử mượn trả</div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-header">
+            <div class="stat-icon active">
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+        <div class="stat-number">@Model.LichSuMuonTra.Count(l => l.TrangThai == TrangThaiPhieu.DaTra)</div>
+        <div class="stat-label">Đã trả hôm nay</div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="card shadow-sm">
     <div class="card-header bg-white border-0 py-3">
         <ul class="nav nav-tabs" id="borrowReturnTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests"
                         type="button" role="tab" aria-controls="requests" aria-selected="true">
                     <i class="fas fa-clipboard-list me-2"></i> Yêu cầu mượn
+                    @if (Model.YeuCauMuonTra.Count() > 0)
+                    {
+                        <span class="badge bg-warning ms-2">@Model.YeuCauMuonTra.Count()</span>
+                    }
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -29,23 +107,21 @@
     <div class="card-body">
         <div class="tab-content" id="borrowReturnTabsContent">
             <div class="tab-pane fade show active" id="requests" role="tabpanel" aria-labelledby="requests-tab">
-                <form id="searchRequestsForm" class="position-relative mb-3" style="max-width: 400px;"
-                      autocomplete="off" onsubmit="return false;">
-                    <div class="input-group">
-                        <input type="text" class="form-control ps-3 pe-5" id="searchRequests"
-                               placeholder="Tìm kiếm theo mã số, họ tên...">
-                        <button class="btn btn-outline-secondary search-btn" type="button" id="searchRequestsButton"
-                                tabindex="0"
-                                style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); z-index: 2; border: none; background: none;">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button type="button" class="btn btn-link clear-btn p-0" id="clearSearchRequests" tabindex="0"
-                                style="position: absolute; right: 2.5rem; top: 50%; transform: translateY(-50%); z-index: 2; color: #aaa; display: none;">
-                            <i class="fas fa-times"></i>
-                        </button>
+                <div class="requests-section">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="search-info">
+                                <span class="text-muted">Tìm kiếm trong: <strong>Yêu cầu mượn</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="requests-info">
+                                <span class="text-muted">Tổng cộng: <strong id="requestsCount">@Model.YeuCauMuonTra.Count()</strong> yêu cầu chờ duyệt</span>
+                            </div>
+                        </div>
                     </div>
-                </form>
-                <partial name="~/Views/PhieuMuonTra/DanhSachYeuCauChoDuyet.cshtml" model="Model.YeuCauMuonTra" />
+                    <partial name="~/Views/PhieuMuonTra/DanhSachYeuCauChoDuyet.cshtml" model="Model.YeuCauMuonTra" />
+                </div>
             </div>
             <div class="tab-pane fade" id="overdue" role="tabpanel" aria-labelledby="overdue-tab">
                 <div id="overdueContent">
@@ -58,189 +134,154 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                <form id="searchHistoryForm" class="position-relative mb-3" style="max-width: 400px;" autocomplete="off"
-                      onsubmit="return false;">
-                    <div class="input-group">
-                        <input type="text" class="form-control ps-3 pe-5" id="searchHistory"
-                               placeholder="Tìm kiếm theo mã số, họ tên...">
-                        <button class="btn btn-outline-secondary search-btn" type="button" id="searchHistoryButton"
-                                tabindex="0"
-                                style="position: absolute; right: 0.5rem; top: 50%; transform: translateY(-50%); z-index: 2; border: none; background: none;">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button type="button" class="btn btn-link clear-btn p-0" id="clearSearchHistory" tabindex="0"
-                                style="position: absolute; right: 2.5rem; top: 50%; transform: translateY(-50%); z-index: 2; color: #aaa; display: none;">
-                            <i class="fas fa-times"></i>
-                        </button>
+                <div class="history-section">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="search-info">
+                                <span class="text-muted">Tìm kiếm trong: <strong>Lịch sử mượn trả</strong></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <div class="history-info">
+                                <span class="text-muted">Tổng cộng: <strong id="historyCount">@Model.LichSuMuonTra.Count()</strong> bản ghi</span>
+                            </div>
+                        </div>
                     </div>
-                </form>
-                <partial name="~/Views/PhieuMuonTra/LichSuMuonTra.cshtml" model="Model.LichSuMuonTra" />
+                    <partial name="~/Views/PhieuMuonTra/LichSuMuonTra.cshtml" model="Model.LichSuMuonTra" />
+                </div>
             </div>
         </div>
     </div>
-
-    <!-- Modal lập phiếu mượn -->
-    <div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Nội dung sẽ được load động bằng AJAX -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal lập phiếu trả -->
-    <div class="modal fade" id="lapPhieuTraModal" tabindex="-1" aria-labelledby="lapPhieuTraModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Nội dung sẽ được load động bằng AJAX -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal xem chi tiết phiếu -->
-    <div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <!-- Nội dung sẽ được load động bằng AJAX -->
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .nav-tabs .nav-link {
-            color: #295BA4;
-            background: #e3eafc;
-            border: none;
-            border-radius: 0.5rem 0.5rem 0 0;
-            font-weight: 500;
-            margin-right: 2px;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .nav-tabs .nav-link.active {
-            background: #fff;
-            color: #1a237e;
-            font-weight: 700;
-            border-bottom: 2px solid #fff;
-            box-shadow: 0 -2px 8px rgba(41, 91, 164, 0.05);
-        }
-
-        .nav-tabs {
-            border-bottom: 2px solid #295BA4;
-        }
-
-        /* Search input custom style */
-        .input-group .form-control {
-            border: 2px solid #b6d4fe;
-            border-radius: 0.4rem;
-            box-shadow: none;
-            transition: border-color 0.2s;
-        }
-
-        .input-group .form-control:focus {
-            border-color: #295BA4;
-            box-shadow: 0 0 0 2px #e3eafc;
-        }
-
-        .input-group .search-btn i,
-        .input-group .clear-btn i {
-            color: #b0b3b8;
-            font-size: 1.1em;
-            transition: color 0.2s;
-        }
-
-        .input-group .search-btn:hover i,
-        .input-group .search-btn:focus i,
-        .input-group .clear-btn:hover i,
-        .input-group .clear-btn:focus i {
-            color: #295BA4;
-        }
-
-        .input-group .search-btn,
-        .input-group .clear-btn {
-            background: none;
-            border: none;
-            outline: none;
-            box-shadow: none;
-        }
-
-        .input-group .form-control::placeholder {
-            color: #6c757d;
-            opacity: 1;
-        }
-    </style>
 </div>
 
+<!-- Modal lập phiếu mượn -->
+<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Nội dung sẽ được load động bằng AJAX -->
+        </div>
+    </div>
+</div>
 
+<!-- Modal lập phiếu trả -->
+<div class="modal fade" id="lapPhieuTraModal" tabindex="-1" aria-labelledby="lapPhieuTraModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Nội dung sẽ được load động bằng AJAX -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal xem chi tiết phiếu -->
+<div class="modal fade" id="xemPhieuModal" tabindex="-1" aria-labelledby="xemPhieuModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Nội dung sẽ được load động bằng AJAX -->
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
         $(document).ready(function () {
-            // Thanh tìm kiếm tab Yêu cầu mượn
-            var $inputReq = $('#searchRequests');
-            var $clearReq = $('#clearSearchRequests');
-            var $btnReq = $('#searchRequestsButton');
-            $inputReq.on('input', function () {
-                if ($inputReq.val()) {
-                    $clearReq.show();
-                } else {
-                    $clearReq.hide();
-                }
-                filterRequests();
+            // Global search functionality
+            var $globalSearch = $('#globalSearch');
+            var currentTab = 'requests';
+            
+            // Handle global search input
+            $globalSearch.on('input', function () {
+                var value = $(this).val().toLowerCase();
+                performGlobalSearch(value);
             });
-            $clearReq.on('click', function () {
-                $inputReq.val('');
-                $clearReq.hide();
-                $inputReq.focus();
-                filterRequests();
-            });
-            $btnReq.on('click', function () {
-                filterRequests();
-            });
-            $inputReq.on('keydown', function (e) {
+            
+            // Handle Enter key
+            $globalSearch.on('keydown', function (e) {
                 if (e.key === 'Enter') {
-                    filterRequests();
+                    performGlobalSearch($(this).val().toLowerCase());
                 }
             });
-            function filterRequests() {
-                var value = $inputReq.val().toLowerCase();
-                $('#requests table tbody tr').filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                });
+            
+            // Global search function
+            function performGlobalSearch(searchTerm) {
+                switch (currentTab) {
+                    case 'requests':
+                        filterRequests(searchTerm);
+                        break;
+                    case 'overdue':
+                        filterOverdue(searchTerm);
+                        break;
+                    case 'history':
+                        filterHistory(searchTerm);
+                        break;
+                }
             }
-
-            // Thanh tìm kiếm tab Lịch sử mượn trả
-            var $inputHis = $('#searchHistory');
-            var $clearHis = $('#clearSearchHistory');
-            var $btnHis = $('#searchHistoryButton');
-            $inputHis.on('input', function () {
-                if ($inputHis.val()) {
-                    $clearHis.show();
-                } else {
-                    $clearHis.hide();
-                }
-                filterHistory();
-            });
-            $clearHis.on('click', function () {
-                $inputHis.val('');
-                $clearHis.hide();
-                $inputHis.focus();
-                filterHistory();
-            });
-            $btnHis.on('click', function () {
-                filterHistory();
-            });
-            $inputHis.on('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    filterHistory();
-                }
-            });
-            function filterHistory() {
-                var value = $inputHis.val().toLowerCase();
-                $('#history table tbody tr').filter(function () {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            
+            // Filter functions for each tab
+            function filterRequests(searchTerm) {
+                var visibleCount = 0;
+                $('#requests table tbody tr').each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    var isVisible = !searchTerm || rowText.indexOf(searchTerm) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) visibleCount++;
                 });
+                $('#requestsCount').text(visibleCount);
             }
+            
+            function filterOverdue(searchTerm) {
+                var visibleCount = 0;
+                $('#overdueContent table tbody tr').each(function () {
+                    var rowText = $(this).text().toLowerCase();
+                    var isVisible = !searchTerm || rowText.indexOf(searchTerm) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) visibleCount++;
+                });
+                // Update overdue count if available
+                if ($('#overdueCount').length) {
+                    $('#overdueCount').text(visibleCount);
+                }
+            }
+            
+            function filterHistory(searchTerm) {
+                var visibleCount = 0;
+                $('#history .history-card').each(function () {
+                    var cardText = $(this).text().toLowerCase();
+                    var isVisible = !searchTerm || cardText.indexOf(searchTerm) > -1;
+                    $(this).toggle(isVisible);
+                    if (isVisible) visibleCount++;
+                });
+                $('#historyCount').text(visibleCount);
+            }
+            
+            // Tab change handler
+            $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var target = $(e.target).attr('data-bs-target');
+                switch (target) {
+                    case '#requests':
+                        currentTab = 'requests';
+                        break;
+                    case '#overdue':
+                        currentTab = 'overdue';
+                        break;
+                    case '#history':
+                        currentTab = 'history';
+                        break;
+                }
+                
+                // Update search placeholder based on current tab
+                var placeholders = {
+                    'requests': 'Tìm kiếm trong yêu cầu mượn...',
+                    'overdue': 'Tìm kiếm trong tài liệu quá hạn...',
+                    'history': 'Tìm kiếm trong lịch sử mượn trả...'
+                };
+                $globalSearch.attr('placeholder', placeholders[currentTab]);
+                
+                // Re-apply current search if any
+                var currentSearch = $globalSearch.val().toLowerCase();
+                if (currentSearch) {
+                    performGlobalSearch(currentSearch);
+                }
+            });
 
             // Load số lượng tài liệu quá hạn khi trang load
             loadSoTaiLieuQuaHan();
@@ -255,8 +296,10 @@
             $.get('/PhieuMuonTra/GetSoTaiLieuQuaHan', function (data) {
                 if (data.soLuong > 0) {
                     $('#overdueBadge').text(data.soLuong).show();
+                    $('#overdueCount').text(data.soLuong);
                 } else {
                     $('#overdueBadge').hide();
+                    $('#overdueCount').text('0');
                 }
             });
         }
@@ -279,6 +322,11 @@
 
                 if (tableContent) {
                     $('#overdueContent').html(tableContent.outerHTML);
+                    // Re-apply search if any
+                    var currentSearch = $('#globalSearch').val().toLowerCase();
+                    if (currentSearch) {
+                        filterOverdue(currentSearch);
+                    }
                 } else {
                     $('#overdueContent').html(`
                         <div class="alert alert-success">
@@ -297,10 +345,21 @@
             });
         }
 
+        // Helper function for overdue filtering (accessible globally)
+        function filterOverdue(searchTerm) {
+            var visibleCount = 0;
+            $('#overdueContent table tbody tr').each(function () {
+                var rowText = $(this).text().toLowerCase();
+                var isVisible = !searchTerm || rowText.indexOf(searchTerm) > -1;
+                $(this).toggle(isVisible);
+                if (isVisible) visibleCount++;
+            });
+        }
+
         window.openLapPhieuMuonModal = function (maPhieu) {
             $('#lapPhieuMuonModal').remove();
-            // Thêm modal mới vào body
-            $('body').append('<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"></div></div></div>');
+            // Thêm modal mới vào body với kích thước lớn
+            $('body').append('<div class="modal fade" id="lapPhieuMuonModal" tabindex="-1" aria-labelledby="lapPhieuMuonModalLabel" aria-hidden="true"><div class="modal-dialog modal-lg"><div class="modal-content"></div></div></div>');
             $.get('/PhieuMuonTra/LapPhieuMuon', { maPhieu: maPhieu }, function (html) {
                 $('#lapPhieuMuonModal .modal-content').html(html);
                 $('#lapPhieuMuonModal').modal({ backdrop: 'static', keyboard: false });
@@ -396,7 +455,5 @@
         $('#xemPhieuModal').on('hidden.bs.modal', function () {
             $(this).find('.modal-content').html('');
         });
-
-
     </script>
 }
