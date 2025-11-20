@@ -3,614 +3,290 @@
     ViewData["Title"] = "Dashboard Thủ thư";
 }
 
-<!-- Dashboard Header -->
-<div class="page-header">
-    <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <h1 class="h2 fw-bold mb-2">
-                <i class="fas fa-book-reader me-3 text-primary"></i>
-                Dashboard Thủ thư
-            </h1>
-            <p class="text-muted mb-0">Quản lý và giám sát tài liệu khoa học</p>
-        </div>
-        <div class="page-actions">
-            <button type="button" class="btn btn-success me-2" data-bs-toggle="modal"
-                data-bs-target="#createDocumentModal">
-                <i class="fas fa-plus me-2"></i>Thêm tài liệu
-            </button>
-            <a href="@Url.Action("ManageDocuments")" class="btn btn-primary me-2">
-                <i class="fas fa-tasks me-2"></i>Quản lý tài liệu
-            </a>
-            <a href="@Url.Action("ManageBorrowReturn")" class="btn btn-warning me-2">
-                <i class="fas fa-exchange-alt me-2"></i>Quản lý mượn/trả
-            </a>
-            <a href="@Url.Action("ManageUsers")" class="btn btn-outline-primary" style="color: white;">
-                <i class="fas fa-users me-2"></i>Quản lý người dùng
-            </a>
-        </div>
-    </div>
-</div>
+@functions {
+    public string GetTimeAgo(DateTime time)
+    {
+        var timeSpan = DateTime.Now - time;
+        
+        if (timeSpan.TotalMinutes < 1)
+            return "Vừa xong";
+        else if (timeSpan.TotalMinutes < 60)
+            return $"{(int)timeSpan.TotalMinutes} phút trước";
+        else if (timeSpan.TotalHours < 24)
+            return $"{(int)timeSpan.TotalHours} giờ trước";
+        else
+            return $"{(int)timeSpan.TotalDays} ngày trước";
+    }
+}
 
-<!-- Key Statistics -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-primary">
-                <i class="fas fa-book-open"></i>
+<!-- Modern Dashboard Header -->
+<div class="modern-header">
+    <div class="header-background">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <div class="header-text">
+                    <h1 class="header-title">Dashboard Thủ thư</h1>
+                    <p class="header-subtitle">Quản lý & giám sát tài liệu khoa học</p>
+                </div>
             </div>
-            <div class="stats-number">@Model.TongSoTaiLieu</div>
-            <div class="stats-label">Tổng tài liệu</div>
-            <small class="text-success">
-                <i class="fas fa-arrow-up me-1"></i>@Model.TaiLieuMoiTrongThang mới tháng này
-            </small>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-success">
-                <i class="fas fa-users"></i>
-            </div>
-            <div class="stats-number">@Model.TongSoNguoiDung</div>
-            <div class="stats-label">Người dùng</div>
-            <small class="text-info">
-                <i class="fas fa-info-circle me-1"></i>Đã đăng ký
-            </small>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-warning">
-                <i class="fas fa-book-reader"></i>
-            </div>
-            <div class="stats-number">@Model.TongSoLuotMuon</div>
-            <div class="stats-label">Tổng lượt mượn</div>
-            <small class="text-success">
-                <i class="fas fa-chart-line me-1"></i>Tổng cộng
-            </small>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon text-info">
-                <i class="fas fa-calendar-plus"></i>
-            </div>
-            <div class="stats-number">@Model.TaiLieuMoiTrongThang</div>
-            <div class="stats-label">Mới tháng này</div>
-            <small class="text-primary">
-                <i class="fas fa-calendar me-1"></i>@DateTime.Now.ToString("MM/yyyy")
-            </small>
-        </div>
-    </div>
-</div>
-
-<!-- Thống kê tài liệu quá hạn -->
-<div class="row g-4 mb-4">
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card" id="quaHanCard" style="display: none;">
-            <div class="stats-icon text-danger">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
-            <div class="stats-number" id="soTaiLieuQuaHan">0</div>
-            <div class="stats-label">Tài liệu quá hạn</div>
-            <small class="text-danger">
-                <i class="fas fa-clock me-1"></i>Cần xử lý
-            </small>
-        </div>
-    </div>
-</div>
-
-<!-- Content Row -->
-<div class="row">
-    <!-- Recent Documents -->
-    <div class="col-lg-8">
-        <div class="card shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold" style="color: #295BA4;">
-                        <i class="fas fa-clock text-primary me-2"></i>
-                        Tài liệu mới nhất
-                    </h5>
-                    <a href="@Url.Action("ManageDocuments")" class="btn btn-outline-primary btn-sm">
-                        Xem tất cả
+            <div class="header-right">
+                <div class="header-info">
+                    <div class="current-time">
+                        <i class="fas fa-clock me-2"></i>
+                        <span id="currentDateTime">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">Thủ thư</span>
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("Logout", "Account")" class="logout-btn" title="Đăng xuất">
+                        <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </div>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th class="border-0 ps-4">Tài liệu</th>
-                                <th class="border-0">Tác giả</th>
-                                <th class="border-0">Chuyên ngành</th>
-                                <th class="border-0">Ngày tải</th>
-                                <th class="border-0">Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model.TaiLieuMoiNhat?.Any() == true)
-                            {
-                                @foreach (var taiLieu in Model.TaiLieuMoiNhat.Take(8))
-                                {
-                                    <tr>
-                                        <td class="ps-4">
-                                            <div class="d-flex align-items-center">
-                                                <div class="document-icon me-3">
-                                                    <i class="fas fa-file-pdf text-danger"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="fw-semibold">@taiLieu.TenTaiLieu</div>
-                                                    <small class="text-muted">@taiLieu.TenLoaiTaiLieu</small>
-                                                    <br />
-                                                    <a href="#"
-                                                        class="text-primary text-decoration-underline fw-normal btn-view-details"
-                                                        data-id="@taiLieu.MaTaiLieu" style="font-size: 0.95em;">Xem chi tiết</a>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="text-dark">@taiLieu.TacGia</div>
-                                        </td>
-                                        <td>
-                                            <span class="badge bg-light text-dark">
-                                                @taiLieu.TenChuyenNganh
-                                            </span>
-                                        </td>
-                                        <td class="text-muted">
-                                            @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")
-                                        </td>
-                                        <td>
-                                            @switch (taiLieu.TrangThai)
-                                            {
-                                                case 0: // ChoDuyet
-                                                        <span class="badge bg-warning">Chờ duyệt</span>
-                                                    break;
-                                                case 1: // DaDuyet
-                                                        <span class="badge bg-success">Đã duyệt</span>
-                                                    break;
-                                                case 2: // TuChoi
-                                                        <span class="badge bg-danger">Từ chối</span>
-                                                    break;
-                                                default:
-                                                    <span class="badge bg-secondary">Không xác định</span>
-                                                    break;
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            }
-                            else
-                            {
-                                <tr>
-                                    <td colspan="5" class="text-center py-4 text-muted">
-                                        <i class="fas fa-folder-open fa-2x mb-3"></i>
-                                        <br />Chưa có tài liệu nào
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Grid Layout 2x2 -->
+<div class="dashboard-grid">
+    <!-- Top Left: Hoạt động hôm nay -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h5 class="section-title">
+                <i class="fas fa-chart-line me-2"></i>
+                Hoạt động hôm nay
+            </h5>
+        </div>
+        <div class="activity-cards">
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">1</div>
+                    <div class="activity-label">ĐÃ MƯỢN</div>
+                </div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">0</div>
+                    <div class="activity-label">ĐÃ TRẢ</div>
+                </div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">0</div>
+                    <div class="activity-label">CHỜ DUYỆT</div>
+                </div>
+            </div>
+            <div class="activity-card">
+                <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="activity-content">
+                    <div class="activity-number">0</div>
+                    <div class="activity-label">ĐANG ONLINE</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Statistics Charts -->
-    <div class="col-lg-4">
-        <!-- Documents by Specialty -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-white border-0 py-3">
-                <h5 class="mb-0 fw-bold" style="color: #295BA4;">
-                    <i class="fas fa-chart-pie text-primary me-2"></i>
-                    Theo chuyên ngành
+    <!-- Top Right: Thống kê nhanh -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h5 class="section-title">
+                <i class="fas fa-list me-2"></i>
+                Thống kê nhanh
+            </h5>
+        </div>
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">@Model.TongSoTaiLieu</div>
+                    <div class="stat-label">Tổng tài liệu</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">@Model.TongSoNguoiDung</div>
+                    <div class="stat-label">Tổng người dùng</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <div class="stat-number">@Model.TongSoLuotMuon</div>
+                    <div class="stat-label">Lượt mượn tháng</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Left: Tài liệu cần xử lý -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <h5 class="section-title">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Tài liệu cần xử lý
+            </h5>
+        </div>
+        <div class="process-cards">
+            <div class="process-card overdue">
+                <div class="process-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="process-content">
+                    <div class="process-number">1</div>
+                    <div class="process-label">QUÁ HẠN</div>
+                </div>
+            </div>
+            <div class="process-card pending">
+                <div class="process-icon">
+                    <i class="fas fa-hourglass-half"></i>
+                </div>
+                <div class="process-content">
+                    <div class="process-number">0</div>
+                    <div class="process-label">CHỜ DUYỆT</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Right: Hoạt động hệ thống -->
+    <div class="dashboard-section">
+        <div class="section-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="section-title">
+                    <i class="fas fa-bell me-2"></i>
+                    Hoạt động hệ thống
                 </h5>
+                <!-- <a href="#" class="view-all-link">Xem tất cả</a> -->
             </div>
-            <div class="card-body">
-                @if (Model.ThongKeTheoChuyenNganh?.Any() == true)
+        </div>
+        <div class="system-activities">
+            @{
+                // Lấy số lượng tài liệu quá hạn
+                var soTaiLieuQuaHan = Model.SoPhieuDangMuon;
+                var nguoiDungMoi = ViewBag.NguoiDungMoi as QuanLyTaiLieuKhoaHoc.Web.Models.NguoiDung;
+                
+                var activities = new List<dynamic>();
+                
+                if (soTaiLieuQuaHan > 0)
                 {
-                    @foreach (var item in Model.ThongKeTheoChuyenNganh.Take(5))
+                    activities.Add(new {
+                        Type = ActivityType.TàiLiệuQuáHạn,
+                        Title = "Tài liệu quá hạn",
+                        Description = $"{soTaiLieuQuaHan} tài liệu đã quá hạn cần xử lý ngay",
+                        Time = DateTime.Now.AddMinutes(-5),
+                        IconClass = "fas fa-exclamation-triangle",
+                        BgColor = "#ef4444",
+                        BorderColor = "#ef4444"
+                    });
+                }
+                
+                // Thêm thống kê hoạt động
+                activities.Add(new {
+                    Type = ActivityType.ThốngKêHoạtĐộng,
+                    Title = "Thống kê hoạt động",
+                    Description = $"Hôm nay có {Model.SoPhieuDangMuon} lượt mượn tài liệu mới",
+                    Time = DateTime.Now.AddMinutes(-10),
+                    IconClass = "fas fa-chart-line",
+                    BgColor = "#10b981",
+                    BorderColor = "#10b981"
+                });
+                
+                if (nguoiDungMoi != null)
+                {
+                    var vaiTroText = nguoiDungMoi.VaiTro switch
                     {
-                        <div class="progress-item mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-dark fw-medium">@item.Key</span>
-                                <span class="text-muted">@item.Value</span>
-                            </div>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-primary"
-                                    style="width: @((double)item.Value / Model.TongSoTaiLieu * 100)%"></div>
-                            </div>
+                        VaiTroNguoiDung.SinhVien => "Sinh viên",
+                        VaiTroNguoiDung.GiangVien => "Giảng viên",
+                        VaiTroNguoiDung.ThuThu => "Thủ thư",
+                        _ => "Người dùng"
+                    };
+                    
+                    activities.Add(new {
+                        Type = ActivityType.NgườiDùngMớiĐăngKý,
+                        Title = "Người dùng mới đăng ký",
+                        Description = $"{nguoiDungMoi.HoTen} ({vaiTroText}) đã đăng ký tài khoản mới",
+                        Time = nguoiDungMoi.NgayTao,
+                        IconClass = "fas fa-user-plus",
+                        BgColor = "#10b981",
+                        BorderColor = "#10b981"
+                    });
+                }
+                
+                if (!activities.Any())
+                {
+                    activities.Add(new {
+                        Type = ActivityType.ThốngKêHoạtĐộng,
+                        Title = "Hệ thống hoạt động bình thường",
+                        Description = "Không có hoạt động đặc biệt nào cần xử lý",
+                        Time = DateTime.Now.AddMinutes(-30),
+                        IconClass = "fas fa-check-circle",
+                        BgColor = "#6b7280",
+                        BorderColor = "#6b7280"
+                    });
+                }
+                
+                foreach (var activity in activities)
+                {
+                    var timeAgo = GetTimeAgo(activity.Time);
+                    
+                    <div class="system-activity">
+                        <div class="activity-border" style="background-color: @activity.BorderColor;"></div>
+                        <div class="activity-icon-circle" style="background-color: @activity.BgColor;">
+                            <i class="@activity.IconClass"></i>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-chart-pie fa-2x mb-2"></i>
-                        <br>Chưa có dữ liệu
-                    </div>
-                }
-            </div>
-        </div>
-
-        <!-- Documents by Type -->
-        <div class="card shadow-sm">
-            <div class="card-header bg-white border-0 py-3">
-                <h5 class="mb-0 fw-bold" style="color: #295BA4;">
-                    <i class="fas fa-chart-bar text-success me-2"></i>
-                    Theo loại tài liệu
-                </h5>
-            </div>
-            <div class="card-body">
-                @if (Model.ThongKeTheoLoaiTaiLieu?.Any() == true)
-                {
-                    @foreach (var item in Model.ThongKeTheoLoaiTaiLieu)
-                    {
-                        <div class="progress-item mb-3">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-dark fw-medium">@item.Key</span>
-                                <span class="text-muted">@item.Value</span>
-                            </div>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar bg-success"
-                                    style="width: @((double)item.Value / Model.TongSoTaiLieu * 100)%"></div>
-                            </div>
+                        <div class="activity-details">
+                            <div class="activity-title">@activity.Title</div>
+                            <div class="activity-description">@activity.Description</div>
+                            <div class="activity-time">@timeAgo</div>
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-chart-bar fa-2x mb-2"></i>
-                        <br>Chưa có dữ liệu
                     </div>
                 }
-            </div>
+            }
         </div>
     </div>
 </div>
 
 
-
-<!-- Modal Container -->
-<div id="modalContainer"></div>
-
-<!-- Create Document Modal -->
-<div class="modal fade" id="createDocumentModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Thêm tài liệu mới</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="createDocumentContent">
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Đang tải form...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Document Details Modal -->
-<div class="modal fade" id="documentDetailsModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Chi tiết tài liệu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body" id="documentDetailsContent">
-                <div class="text-center py-3">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2 text-muted">Đang tải thông tin...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-
-
-    .page-header {
-        background: var(--gradient-hero);
-        border-radius: var(--border-radius-xl);
-        padding: 2.5rem;
-        margin-bottom: 2rem;
-        color: white;
-        box-shadow: var(--shadow-xl);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .page-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
-        pointer-events: none;
-    }
-
-    .page-header h1 {
-        color: white !important;
-        font-weight: 700;
-        text-shadow: var(--shadow-sm);
-    }
-
-    .page-header .text-muted {
-        color: rgba(255, 255, 255, 0.9) !important;
-        font-size: 1.1rem;
-    }
-
-    /* Stats cards với màu từ bảng màu hệ thống */
-    .stats-card {
-        background: var(--gradient-card);
-        border-radius: var(--border-radius-xl);
-        padding: 2rem;
-        box-shadow: var(--shadow-lg);
-        border: 1px solid var(--border-light);
-        transition: var(--transition);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .stats-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: var(--shadow-xl);
-        border-color: var(--primary-lighter);
-    }
-
-    .stats-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
-        background: var(--gradient-modern);
-        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
-    }
-
-    .stats-icon {
-        font-size: 3rem;
-        margin-bottom: 1.2rem;
-        background: var(--gradient-primary);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        filter: drop-shadow(0 2px 4px rgba(52, 132, 220, 0.2));
-    }
-
-    .stats-number {
-        font-size: 3rem;
-        font-weight: 800;
-        background: linear-gradient(45deg, var(--primary-dark), var(--primary-color));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        margin-bottom: 0.5rem;
-        line-height: 1;
-    }
-
-    .stats-label {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 0.75rem;
-    }
-
-    /* Document icons với màu từ bảng màu hệ thống */
-    .document-icon {
-        width: 45px;
-        height: 45px;
-        background: var(--gradient-soft);
-        border-radius: var(--border-radius-lg);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        color: var(--primary-color);
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* Progress bars với gradient từ bảng màu hệ thống */
-    .progress-item .progress {
-        background: var(--bg-light);
-        border-radius: 15px;
-        height: 12px;
-        box-shadow: inset var(--shadow-xs);
-    }
-
-    .progress-item .progress-bar {
-        background: var(--gradient-modern);
-        border-radius: 15px;
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* Cards với màu từ bảng màu hệ thống */
-    .card {
-        border: none;
-        border-radius: var(--border-radius-xl);
-        box-shadow: var(--shadow-md);
-        transition: var(--transition);
-    }
-
-    .card:hover {
-        box-shadow: var(--shadow-lg);
-    }
-
-    .card-header {
-        background: var(--gradient-soft);
-        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0 !important;
-        border-bottom: 2px solid var(--border-color);
-        padding: 1.5rem;
-    }
-
-    .card-header h6 {
-        color: var(--primary-dark);
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin: 0;
-    }
-
-    /* Table styling với màu từ bảng màu hệ thống */
-    .table th {
-        font-weight: 700;
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        color: #1e40af;
-        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-        border: none;
-        padding: 1rem;
-    }
-
-    .table td {
-        color: #374151;
-        padding: 1rem;
-        border-color: rgba(14, 165, 233, 0.1);
-        vertical-align: middle;
-    }
-
-    .table tbody tr:hover {
-        background: var(--bg-secondary);
-        transition: var(--transition-fast);
-    }
-
-    /* Badges với màu từ bảng màu hệ thống */
-    .badge {
-        font-weight: 600;
-        padding: 0.5rem 1rem;
-        font-size: 0.75rem;
-        border-radius: var(--border-radius-xl);
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .badge.bg-success {
-        background: linear-gradient(45deg, var(--success-color), var(--success-light)) !important;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .badge.bg-warning {
-        background: linear-gradient(45deg, var(--warning-color), var(--warning-light)) !important;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .badge.bg-info {
-        background: linear-gradient(45deg, var(--info-color), var(--primary-lighter)) !important;
-        box-shadow: var(--shadow-sm);
-    }
-
-    .badge.bg-primary {
-        background: var(--gradient-primary) !important;
-        box-shadow: var(--shadow-sm);
-    }
-
-    /* Custom scrollbar với màu hệ thống */
-    .table-responsive::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .table-responsive::-webkit-scrollbar-track {
-        background: var(--bg-light);
-        border-radius: 10px;
-    }
-
-    .table-responsive::-webkit-scrollbar-thumb {
-        background: var(--gradient-primary);
-        border-radius: 10px;
-    }
-
-    /* Animation for loading states */
-    @@keyframes shimmer {
-        0% {
-            background-position: -200px 0;
-        }
-
-        100% {
-            background-position: calc(200px + 100%) 0;
-        }
-    }
-
-    .shimmer {
-        background: linear-gradient(90deg, var(--bg-light) 25%, var(--bg-darker) 50%, var(--bg-light) 75%);
-        background-size: 200px 100%;
-        animation: shimmer 1.5s infinite;
-    }
-</style>
 
 @section Scripts {
     <script>
-        // Kiểm tra tài liệu quá hạn khi trang load
-        $(document).ready(function() {
-            loadSoTaiLieuQuaHan();
-        });
-
-        function loadSoTaiLieuQuaHan() {
-            $.get('/PhieuMuonTra/GetSoTaiLieuQuaHan', function(data) {
-                if (data.soLuong > 0) {
-                    $('#soTaiLieuQuaHan').text(data.soLuong);
-                    $('#quaHanCard').show();
-                    $('#quaHanCard').addClass('pulse-animation');
-                } else {
-                    $('#quaHanCard').hide();
-                }
-            });
+        // Update current time every minute
+        function updateCurrentTime() {
+            var now = new Date();
+            var timeString = now.getDate().toString().padStart(2, '0') + '/' + 
+                           (now.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                           now.getFullYear() + ' ' + 
+                           now.getHours().toString().padStart(2, '0') + ':' + 
+                           now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('currentDateTime').textContent = timeString;
         }
 
-        // Load create document modal
-        $('#createDocumentModal').on('show.bs.modal', function (e) {
-            $.get('@Url.Action("CreateDocument")', function (data) {
-                $('#createDocumentContent').html(data);
-            }).fail(function () {
-                $('#createDocumentContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải form!</div>');
-            });
-        });
-
-        // Reset modal when hidden
-        $('#createDocumentModal').on('hidden.bs.modal', function (e) {
-            $('#createDocumentContent').html(`
-                                <div class="text-center py-3">
-                                    <div class="spinner-border text-primary" role="status">
-                                        <span class="visually-hidden">Loading...</span>
-                                    </div>
-                                    <p class="mt-2 text-muted">Đang tải form...</p>
-                                </div>
-                            `);
-        });
-
-        // Xem chi tiết tài liệu
-        $(document).on('click', '.btn-view-details', function (e) {
-            e.preventDefault();
-            var id = $(this).data('id');
-            $('#documentDetailsModal').modal('show');
-            $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
-            $.get('@Url.Action("ChiTietTaiLieu", "Librarian")', { id: id }, function (data) {
-                // Replace "Lượt tải" with "Lượt mượn" in the returned HTML if present
-                var html = data.replace(/Lượt tải/g, 'Lượt mượn');
-                $('#documentDetailsContent').html(html);
-            }).fail(function () {
-                $('#documentDetailsContent').html('<div class="alert alert-danger">Có lỗi xảy ra khi tải thông tin!</div>');
-            });
-        });
-
-        // Reset modal chi tiết khi đóng
-        $('#documentDetailsModal').on('hidden.bs.modal', function (e) {
-            $('#documentDetailsContent').html('<div class="text-center py-3"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2 text-muted">Đang tải thông tin...</p></div>');
-        });
+        // Initialize time update
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 60000); // Update every minute
     </script>
 }

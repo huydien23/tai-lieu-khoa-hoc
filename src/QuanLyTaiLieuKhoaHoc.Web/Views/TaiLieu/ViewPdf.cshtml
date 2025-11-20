@@ -1,0 +1,299 @@
+@model QuanLyTaiLieuKhoaHoc.Web.Models.ViewModels.TaiLieuViewModel
+@{
+    ViewData["Title"] = $"Xem: {Model.TenTaiLieu}";
+    var breadcrumbItems = new List<BreadcrumbItem>
+    {
+        new BreadcrumbItem("Tài liệu", Url.Action("Index", "TaiLieu"), "fas fa-book"),
+        new BreadcrumbItem(Model.TenTaiLieu, Url.Action("Details", "TaiLieu", new { id = Model.MaTaiLieu }), "fas fa-file-alt"),
+        new BreadcrumbItem("Xem online", null, "fas fa-eye")
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pdf-viewer.css" />
+}
+
+<div class="pdf-viewer-page">
+    <!-- Breadcrumb -->
+    @await Html.PartialAsync("_Breadcrumb", breadcrumbItems)
+
+    <div class="container-fluid">
+        <!-- Document Info Header -->
+        <div class="document-info-header">
+            <div class="document-title">
+                <h1><i class="fas fa-file-pdf text-danger"></i> @Model.TenTaiLieu</h1>
+                <p class="document-meta">
+                    <span><i class="fas fa-user"></i> @Model.TacGia</span>
+                    <span><i class="fas fa-calendar"></i> @Model.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                    <span><i class="fas fa-download"></i> @Model.LuotTai lượt tải</span>
+                </p>
+            </div>
+            
+            <div class="document-actions">
+                <a href="@Url.Action("Download", "TaiLieu", new { id = Model.MaTaiLieu })" class="btn btn-success">
+                    <i class="fas fa-download"></i> Tải về
+                </a>
+                <a href="@Url.Action("Details", "TaiLieu", new { id = Model.MaTaiLieu })" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left"></i> Quay lại
+                </a>
+            </div>
+        </div>
+
+        <!-- PDF Viewer Container -->
+        <div class="pdf-viewer-container">
+            <!-- Toolbar -->
+            <div class="pdf-toolbar">
+                <div class="toolbar-left">
+                    <button id="prev" class="btn btn-outline-primary" title="Trang trước">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="page-info">
+                        Trang <span id="page-num">1</span> / <span id="page-count">0</span>
+                    </span>
+                    <button id="next" class="btn btn-outline-primary" title="Trang sau">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="toolbar-center">
+                    <div class="zoom-controls">
+                        <button id="zoom-out" class="btn btn-outline-secondary" title="Thu nhỏ">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <span id="zoom-level">100%</span>
+                        <button id="zoom-in" class="btn btn-outline-secondary" title="Phóng to">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+                        <button id="zoom-fit" class="btn btn-outline-secondary" title="Vừa màn hình">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="toolbar-right">
+                    <button id="fullscreen" class="btn btn-outline-dark" title="Toàn màn hình">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- PDF Canvas Container -->
+            <div class="pdf-canvas-container">
+                <div id="loading" class="loading-overlay">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Đang tải tài liệu...</p>
+                    </div>
+                </div>
+                <canvas id="pdf-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        // Cấu hình PDF.js
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let pageNumPending = null;
+        let scale = 1.0;
+        let canvas = null;
+        let ctx = null;
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', function() {
+            canvas = document.getElementById('pdf-canvas');
+            ctx = canvas.getContext('2d');
+            
+            // Load PDF
+            loadPdf();
+            
+            // Event listeners
+            setupEventListeners();
+        });
+
+        function loadPdf() {
+            const pdfUrl = '@Model.DuongDanFile';
+            
+            // Hiển thị loading
+            document.getElementById('loading').style.display = 'flex';
+            
+            pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page-count').textContent = pdfDoc.numPages;
+                
+                // Ẩn loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Render trang đầu tiên
+                renderPage(pageNum);
+            }).catch(function(error) {
+                console.error('Lỗi khi tải PDF:', error);
+                document.getElementById('loading').innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle text-danger"></i>
+                        <p>Không thể tải tài liệu. Vui lòng thử lại sau.</p>
+                        <button onclick="loadPdf()" class="btn btn-primary">Thử lại</button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderPage(num) {
+            pageRendering = true;
+            
+            pdfDoc.getPage(num).then(function(page) {
+                let viewport = page.getViewport({scale: scale});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+
+                let renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                let renderTask = page.render(renderContext);
+                renderTask.promise.then(function() {
+                    pageRendering = false;
+                    if (pageNumPending !== null) {
+                        renderPage(pageNumPending);
+                        pageNumPending = null;
+                    }
+                });
+            });
+
+            document.getElementById('page-num').textContent = num;
+        }
+
+        function queueRenderPage(num) {
+            if (pageRendering) {
+                pageNumPending = num;
+            } else {
+                renderPage(num);
+            }
+        }
+
+        function onPrevPage() {
+            if (pageNum <= 1) {
+                return;
+            }
+            pageNum--;
+            queueRenderPage(pageNum);
+        }
+
+        function onNextPage() {
+            if (pageNum >= pdfDoc.numPages) {
+                return;
+            }
+            pageNum++;
+            queueRenderPage(pageNum);
+        }
+
+        function zoomIn() {
+            scale *= 1.2;
+            updateZoomLevel();
+            queueRenderPage(pageNum);
+        }
+
+        function zoomOut() {
+            scale /= 1.2;
+            updateZoomLevel();
+            queueRenderPage(pageNum);
+        }
+
+        function zoomFit() {
+            const container = document.querySelector('.pdf-canvas-container');
+            const containerWidth = container.clientWidth - 40; // Trừ padding
+            
+            pdfDoc.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({scale: 1});
+                scale = containerWidth / viewport.width;
+                updateZoomLevel();
+                queueRenderPage(pageNum);
+            });
+        }
+
+        function updateZoomLevel() {
+            document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+        }
+
+        function toggleFullscreen() {
+            const container = document.querySelector('.pdf-viewer-container');
+            
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => {
+                    console.log('Lỗi khi vào chế độ toàn màn hình:', err);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function setupEventListeners() {
+            // Navigation
+            document.getElementById('prev').addEventListener('click', onPrevPage);
+            document.getElementById('next').addEventListener('click', onNextPage);
+            
+            // Zoom
+            document.getElementById('zoom-in').addEventListener('click', zoomIn);
+            document.getElementById('zoom-out').addEventListener('click', zoomOut);
+            document.getElementById('zoom-fit').addEventListener('click', zoomFit);
+            
+            // Fullscreen
+            document.getElementById('fullscreen').addEventListener('click', toggleFullscreen);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    return;
+                }
+                
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        e.preventDefault();
+                        onPrevPage();
+                        break;
+                    case 'ArrowRight':
+                        e.preventDefault();
+                        onNextPage();
+                        break;
+                    case '+':
+                    case '=':
+                        e.preventDefault();
+                        zoomIn();
+                        break;
+                    case '-':
+                        e.preventDefault();
+                        zoomOut();
+                        break;
+                    case '0':
+                        e.preventDefault();
+                        zoomFit();
+                        break;
+                    case 'f':
+                    case 'F':
+                        e.preventDefault();
+                        toggleFullscreen();
+                        break;
+                }
+            });
+            
+            // Mouse wheel zoom
+            canvas.addEventListener('wheel', function(e) {
+                if (e.ctrlKey) {
+                    e.preventDefault();
+                    if (e.deltaY < 0) {
+                        zoomIn();
+                    } else {
+                        zoomOut();
+                    }
+                }
+            });
+        }
+    </script>
+} 

@@ -3,138 +3,234 @@
 
 @if (Model.DanhSachTaiLieu.Any())
 {
-    <div class="row">
-        @foreach (var taiLieu in Model.DanhSachTaiLieu)
-        {
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card shadow-sm rounded-4 h-100 document-card border-0">
-                    <div class="card-body d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="fas fa-file-alt fs-4 text-primary me-2"></i>
-                            <h5 class="card-title mb-0 flex-grow-1">@taiLieu.TenTaiLieu</h5>
-                        </div>
-                        <ul class="list-unstyled small text-muted mb-2">
-                            <li><i class="fas fa-user me-1"></i> @taiLieu.TacGia</li>
-                            <li><i class="fas fa-calendar me-1"></i> @taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</li>
-                            <li><i class="fas fa-book-reader me-1"></i> @taiLieu.SoLuongDaMuon lượt mượn</li>
-                            <li><i class="fas fa-tag me-1"></i> @taiLieu.TenChuyenNganh</li>
-                        </ul>
-                        @if (!string.IsNullOrEmpty(taiLieu.MoTa))
-                        {
-                            <p class="card-text flex-grow-1">@(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa)</p>
-                        }
-                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <div class="d-flex flex-column gap-1">
-                                <span class="badge bg-info text-dark px-3 py-2">@taiLieu.TenLoaiTaiLieu</span>
-                                @if (taiLieu.SoLuongConLai <= 0)
-                                {
-                                    <span class="badge bg-danger px-3 py-2">
-                                        <i class="fas fa-times-circle me-1"></i>Hết tài liệu
+    <!-- Advanced Search Results Header -->
+    <div class="search-results-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="results-summary">
+                <h4 class="mb-1">
+                    <i class="fas fa-search text-primary me-2"></i>
+                    Tìm thấy <span class="text-primary fw-bold">@Model.TongSoTaiLieu</span> tài liệu
+                </h4>
+                @if (!string.IsNullOrEmpty(Model.TimKiem))
+                {
+                    <p class="text-muted mb-0">
+                        Kết quả cho: <span class="badge bg-light text-dark">"@Model.TimKiem"</span>
+                    </p>
+                }
+            </div>
+            <div class="view-controls">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-outline-primary active" id="gridView" title="Xem dạng lưới">
+                        <i class="fas fa-th-large"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-primary" id="listView" title="Xem dạng danh sách">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modern Document Grid -->
+    <div class="documents-grid-modern" id="documentsContainer">
+        <div class="row g-4">
+            @foreach (var taiLieu in Model.DanhSachTaiLieu)
+            {
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <div class="document-card-master">
+                        <!-- Card Container with Glass Effect -->
+                        <div class="card-container">
+                            <!-- Header with Gradient and Pattern -->
+                            <div class="card-header-master">
+                                <div class="header-background">
+                                    <div class="gradient-overlay"></div>
+                                    <div class="pattern-overlay"></div>
+                                </div>
+                                
+                                <!-- Document Type Badge -->
+                                <div class="document-type-badge-master">
+                                    <span class="badge-content">
+                                        <i class="fas fa-file-alt me-1"></i>
+                                        @taiLieu.TenLoaiTaiLieu
                                     </span>
-                                }
+                                </div>
+                                
+                                <!-- Quick Actions -->
+                                <div class="quick-actions">
+                                    <button class="btn-quick-action" title="Thêm vào yêu thích">
+                                        <i class="far fa-heart"></i>
+                                    </button>
+                                    <button class="btn-quick-action" title="Chia sẻ">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div>
-                                <a asp-controller="TaiLieu" asp-action="Details" asp-route-id="@taiLieu.MaTaiLieu"
-                                   class="btn btn-primary btn-sm rounded-pill me-1" title="Xem chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("SinhVien")) && taiLieu.ChoPhepTaiFile)
+                            
+                            <!-- Card Content -->
+                            <div class="card-content-master">
+                                <!-- Document Icon and Title -->
+                                <div class="document-header">
+                                    <div class="document-icon-master">
+                                        <div class="icon-wrapper">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                    </div>
+                                    <div class="document-info-master">
+                                        <h5 class="document-title">@taiLieu.TenTaiLieu</h5>
+                                        <p class="document-author">
+                                            <i class="fas fa-user-circle me-1"></i>
+                                            @taiLieu.TacGia
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Document Metadata -->
+                                <div class="document-metadata">
+                                    <div class="metadata-grid">
+                                        <div class="metadata-item">
+                                            <i class="fas fa-calendar-alt text-primary"></i>
+                                            <span>@taiLieu.NgayTaiLen.ToString("dd/MM/yyyy")</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <i class="fas fa-book-reader text-success"></i>
+                                            <span>@taiLieu.SoLuongDaMuon lượt mượn</span>
+                                        </div>
+                                        <div class="metadata-item">
+                                            <i class="fas fa-graduation-cap text-info"></i>
+                                            <span>@taiLieu.TenChuyenNganh</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Document Description -->
+                                @if (!string.IsNullOrEmpty(taiLieu.MoTa))
                                 {
-                                    <a asp-controller="TaiLieu" asp-action="Download" asp-route-id="@taiLieu.MaTaiLieu"
-                                       class="btn btn-success btn-sm rounded-pill" title="Tải xuống">
-                                        <i class="fas fa-download"></i>
-                                    </a>
+                                    <div class="document-description-master">
+                                        <p class="description-text">
+                                            @(taiLieu.MoTa.Length > 100 ? taiLieu.MoTa.Substring(0, 100) + "..." : taiLieu.MoTa)
+                                        </p>
+                                    </div>
                                 }
+                                
+                                <!-- Document Status -->
+                                <div class="document-status-master">
+                                    <div class="status-badge">
+                                        @if (taiLieu.SoLuongConLai <= 0)
+                                        {
+                                            <span class="badge-status unavailable">
+                                                <i class="fas fa-times-circle me-1"></i>
+                                                Hết tài liệu
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge-status available">
+                                                <i class="fas fa-check-circle me-1"></i>
+                                                Còn @taiLieu.SoLuongConLai bản
+                                            </span>
+                                        }
+                                    </div>
+                                    <!-- Document Type Color Indicator -->
+                                    <div class="document-type-indicator">
+                                        <span class="type-dot @DocumentHelper.GetDocumentTypeClass(taiLieu.TenLoaiTaiLieu ?? "")"></span>
+                                        <span class="type-label">@taiLieu.TenLoaiTaiLieu</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Card Footer with Actions -->
+                            <div class="card-footer-master">
+                                <div class="action-buttons">
+                                    <a asp-controller="TaiLieu" asp-action="Details" asp-route-id="@taiLieu.MaTaiLieu"
+                                       class="btn btn-primary-master" title="Xem chi tiết">
+                                        <i class="fas fa-eye me-1"></i>
+                                        Chi tiết
+                                    </a>
+                                    @if (User.Identity?.IsAuthenticated == true && (User.IsInRole("GiangVien") || User.IsInRole("SinhVien")) && taiLieu.ChoPhepTaiFile)
+                                    {
+                                        <a asp-controller="TaiLieu" asp-action="Download" asp-route-id="@taiLieu.MaTaiLieu"
+                                           class="btn btn-success-master" title="Tải xuống">
+                                            <i class="fas fa-download me-1"></i>
+                                            Tải
+                                        </a>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
 
-    <!-- Pagination -->
+    <!-- Enhanced Pagination -->
     @if (Model.TongSoTrang > 1)
     {
-        <nav aria-label="Phân trang">
-            <ul class="pagination justify-content-center">
-                @if (Model.TrangHienTai > 1)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-controller="TaiLieu"
-                           asp-route-trang="@(Model.TrangHienTai - 1)"
-                           asp-route-timKiem="@Model.TimKiem"
-                           asp-route-maChuyenNganh="@Model.MaChuyenNganh"
-                           asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
-                           asp-route-sapXep="@Model.SapXep">
-                            <i class="fas fa-chevron-left"></i>
-                        </a>
-                    </li>
-                }
+        <div class="pagination-modern mt-5">
+            <nav aria-label="Phân trang">
+                <ul class="pagination justify-content-center">
+                    @if (Model.TrangHienTai > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link-modern" asp-action="Index" asp-controller="TaiLieu"
+                               asp-route-trang="@(Model.TrangHienTai - 1)"
+                               asp-route-timKiem="@Model.TimKiem"
+                               asp-route-maChuyenNganh="@Model.MaChuyenNganh"
+                               asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
+                               asp-route-sapXep="@Model.SapXep">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    }
 
-                @for (int i = Math.Max(1, Model.TrangHienTai - 2); i <= Math.Min(Model.TongSoTrang, Model.TrangHienTai + 2); i++)
-                {
-                    <li class="page-item @(i == Model.TrangHienTai ? "active" : "")">
-                        <a class="page-link" asp-action="Index" asp-controller="TaiLieu"
-                           asp-route-trang="@i"
-                           asp-route-timKiem="@Model.TimKiem"
-                           asp-route-maChuyenNganh="@Model.MaChuyenNganh"
-                           asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
-                           asp-route-sapXep="@Model.SapXep">
-                            @i
-                        </a>
-                    </li>
-                }
+                    @for (int i = Math.Max(1, Model.TrangHienTai - 2); i <= Math.Min(Model.TongSoTrang, Model.TrangHienTai + 2); i++)
+                    {
+                        <li class="page-item @(i == Model.TrangHienTai ? "active" : "")">
+                            <a class="page-link-modern" asp-action="Index" asp-controller="TaiLieu"
+                               asp-route-trang="@i"
+                               asp-route-timKiem="@Model.TimKiem"
+                               asp-route-maChuyenNganh="@Model.MaChuyenNganh"
+                               asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
+                               asp-route-sapXep="@Model.SapXep">
+                                @i
+                            </a>
+                        </li>
+                    }
 
-                @if (Model.TrangHienTai < Model.TongSoTrang)
-                {
-                    <li class="page-item">
-                        <a class="page-link" asp-action="Index" asp-controller="TaiLieu"
-                           asp-route-trang="@(Model.TrangHienTai + 1)"
-                           asp-route-timKiem="@Model.TimKiem"
-                           asp-route-maChuyenNganh="@Model.MaChuyenNganh"
-                           asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
-                           asp-route-sapXep="@Model.SapXep">
-                            <i class="fas fa-chevron-right"></i>
-                        </a>
-                    </li>
-                }
-            </ul>
-        </nav>
+                    @if (Model.TrangHienTai < Model.TongSoTrang)
+                    {
+                        <li class="page-item">
+                            <a class="page-link-modern" asp-action="Index" asp-controller="TaiLieu"
+                               asp-route-trang="@(Model.TrangHienTai + 1)"
+                               asp-route-timKiem="@Model.TimKiem"
+                               asp-route-maChuyenNganh="@Model.MaChuyenNganh"
+                               asp-route-maLoaiTaiLieu="@Model.MaLoaiTaiLieu"
+                               asp-route-sapXep="@Model.SapXep">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
     }
 }
 else
 {
-    <div class="text-center py-5">
-        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-        <h4 class="text-muted">Không tìm thấy tài liệu nào</h4>
-        <p class="text-muted">Thử thay đổi điều kiện tìm kiếm hoặc bộ lọc</p>
+    <!-- Enhanced No Results -->
+    <div class="no-results-master">
+        <div class="no-results-content">
+            <div class="no-results-icon">
+                <i class="fas fa-search"></i>
+            </div>
+            <h3>Không tìm thấy tài liệu nào</h3>
+            <p>Thử thay đổi điều kiện tìm kiếm hoặc bộ lọc để có kết quả phù hợp</p>
+            <div class="no-results-actions">
+                <a asp-action="Index" asp-controller="TaiLieu" class="btn btn-primary-master">
+                    <i class="fas fa-refresh me-2"></i>
+                    Xem tất cả tài liệu
+                </a>
+            </div>
+        </div>
     </div>
 }
-
-<style>
-    .document-card {
-        transition: box-shadow 0.2s, transform 0.2s;
-    }
-
-    .document-card:hover {
-        box-shadow: 0 8px 32px rgba(30, 34, 90, 0.18) !important;
-        transform: scale(1.02);
-    }
-
-    .card-title {
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: #1A237E;
-    }
-
-    .badge.bg-info {
-        background: #e3f2fd !important;
-        color: #1976d2 !important;
-        font-weight: 600;
-    }
-
-    .btn-primary, .btn-success {
-        font-weight: 600;
-    }
-</style>
